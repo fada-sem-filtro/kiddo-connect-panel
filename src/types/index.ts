@@ -63,6 +63,36 @@ export interface Recado {
   updatedAt: string;
 }
 
+// Feriado e Evento Futuro
+export interface Feriado {
+  id: string;
+  nome: string;
+  data: string;
+  recorrente: boolean;
+  createdAt: string;
+}
+
+export interface EventoFuturo {
+  id: string;
+  nome: string;
+  descricao?: string;
+  dataInicio: string;
+  dataFim?: string;
+  turmaId?: string; // undefined = todas as turmas
+  createdAt: string;
+}
+
+// Notificação
+export interface Notificacao {
+  id: string;
+  titulo: string;
+  mensagem: string;
+  tipo: 'evento' | 'recado' | 'feriado' | 'sistema';
+  lida: boolean;
+  criancaId?: string;
+  createdAt: string;
+}
+
 export const EVENT_TYPE_LABELS: Record<EventType, string> = {
   ALIMENTACAO: 'Alimentação',
   SONECA: 'Soneca',
