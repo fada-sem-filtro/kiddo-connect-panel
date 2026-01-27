@@ -1,81 +1,93 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Lullaby Design System - Escola Infantil
-   Cores suaves e amigáveis inspiradas no design de referência
+/* Lullaby Design System - Kawaii Style
+   Cores pastéis suaves, formas arredondadas, visual fofo
 */
 
 @layer base {
   :root {
-    /* Core backgrounds */
-    --background: 30 25% 98%;
-    --foreground: 25 30% 20%;
+    /* Core backgrounds - tom creme suave */
+    --background: 40 40% 97%;
+    --foreground: 280 20% 25%;
 
     /* Card surfaces */
     --card: 0 0% 100%;
-    --card-foreground: 25 30% 20%;
+    --card-foreground: 280 20% 25%;
 
     /* Popover */
     --popover: 0 0% 100%;
-    --popover-foreground: 25 30% 20%;
+    --popover-foreground: 280 20% 25%;
 
-    /* Primary - Coral/Peach (inspirado na imagem) */
-    --primary: 15 80% 60%;
+    /* Primary - Rosa sakura kawaii */
+    --primary: 340 65% 70%;
     --primary-foreground: 0 0% 100%;
 
-    /* Secondary - Lavanda suave */
-    --secondary: 250 30% 92%;
-    --secondary-foreground: 250 30% 30%;
+    /* Secondary - Lavanda pastel */
+    --secondary: 270 50% 92%;
+    --secondary-foreground: 270 40% 35%;
 
     /* Muted */
-    --muted: 30 15% 95%;
-    --muted-foreground: 25 15% 50%;
+    --muted: 40 30% 95%;
+    --muted-foreground: 280 15% 50%;
 
-    /* Accent - Verde menta */
-    --accent: 150 30% 90%;
-    --accent-foreground: 150 40% 25%;
+    /* Accent - Menta suave */
+    --accent: 160 45% 88%;
+    --accent-foreground: 160 50% 25%;
 
     /* Destructive */
-    --destructive: 0 72% 55%;
+    --destructive: 0 65% 65%;
     --destructive-foreground: 0 0% 100%;
 
     /* Borders and inputs */
-    --border: 30 20% 90%;
-    --input: 30 20% 90%;
-    --ring: 15 80% 60%;
+    --border: 280 20% 90%;
+    --input: 280 20% 92%;
+    --ring: 340 65% 70%;
 
-    --radius: 0.75rem;
+    --radius: 1rem;
 
-    /* Sidebar */
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 25 30% 30%;
-    --sidebar-primary: 15 80% 60%;
+    /* Sidebar - suave e acolhedor */
+    --sidebar-background: 340 30% 98%;
+    --sidebar-foreground: 280 20% 30%;
+    --sidebar-primary: 340 65% 70%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 30 25% 96%;
-    --sidebar-accent-foreground: 25 30% 20%;
-    --sidebar-border: 30 20% 92%;
-    --sidebar-ring: 15 80% 60%;
+    --sidebar-accent: 40 40% 96%;
+    --sidebar-accent-foreground: 280 20% 25%;
+    --sidebar-border: 340 25% 92%;
+    --sidebar-ring: 340 65% 70%;
 
-    /* Custom colors for event cards */
-    --event-meal: 15 75% 92%;
-    --event-meal-border: 15 80% 75%;
-    --event-sleep: 250 40% 92%;
-    --event-sleep-border: 250 50% 75%;
-    --event-play: 150 35% 90%;
-    --event-play-border: 150 45% 70%;
-    --event-activity: 40 80% 92%;
-    --event-activity-border: 40 85% 70%;
+    /* Custom colors for event cards - Kawaii pastels */
+    --event-meal: 20 85% 93%;
+    --event-meal-border: 20 75% 70%;
+    --event-sleep: 270 55% 93%;
+    --event-sleep-border: 270 50% 75%;
+    --event-play: 160 50% 90%;
+    --event-play-border: 160 50% 65%;
+    --event-activity: 45 80% 92%;
+    --event-activity-border: 45 80% 65%;
+    --event-hygiene: 200 60% 92%;
+    --event-hygiene-border: 200 55% 65%;
+    --event-other: 300 40% 93%;
+    --event-other-border: 300 40% 70%;
 
-    /* Status colors */
-    --success: 150 60% 45%;
+    /* Status colors - suaves */
+    --success: 160 55% 50%;
     --success-foreground: 0 0% 100%;
-    --warning: 40 95% 55%;
-    --warning-foreground: 40 95% 15%;
-    --info: 210 80% 55%;
+    --warning: 45 90% 60%;
+    --warning-foreground: 45 95% 15%;
+    --info: 210 70% 60%;
     --info-foreground: 0 0% 100%;
+
+    /* Kawaii extras */
+    --kawaii-pink: 340 65% 75%;
+    --kawaii-blue: 200 70% 80%;
+    --kawaii-yellow: 45 85% 80%;
+    --kawaii-purple: 280 50% 80%;
+    --kawaii-mint: 160 50% 80%;
   }
 }
 
@@ -86,65 +98,93 @@
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
-    font-family: 'Nunito', sans-serif;
+    font-family: 'Quicksand', 'Nunito', sans-serif;
   }
 
   h1, h2, h3, h4, h5, h6 {
     @apply font-bold tracking-tight;
+    font-family: 'Quicksand', sans-serif;
   }
 }
 
 @layer components {
-  /* Event card variants */
+  /* Kawaii Event card variants */
   .event-card-meal {
-    @apply bg-[hsl(var(--event-meal))] border-l-4 border-l-[hsl(var(--event-meal-border))];
+    @apply bg-[hsl(var(--event-meal))] border-2 border-[hsl(var(--event-meal-border))] rounded-2xl shadow-sm;
   }
   
   .event-card-sleep {
-    @apply bg-[hsl(var(--event-sleep))] border-l-4 border-l-[hsl(var(--event-sleep-border))];
+    @apply bg-[hsl(var(--event-sleep))] border-2 border-[hsl(var(--event-sleep-border))] rounded-2xl shadow-sm;
   }
   
   .event-card-play {
-    @apply bg-[hsl(var(--event-play))] border-l-4 border-l-[hsl(var(--event-play-border))];
+    @apply bg-[hsl(var(--event-play))] border-2 border-[hsl(var(--event-play-border))] rounded-2xl shadow-sm;
   }
   
   .event-card-activity {
-    @apply bg-[hsl(var(--event-activity))] border-l-4 border-l-[hsl(var(--event-activity-border))];
+    @apply bg-[hsl(var(--event-activity))] border-2 border-[hsl(var(--event-activity-border))] rounded-2xl shadow-sm;
   }
 
-  /* Summary cards */
+  .event-card-hygiene {
+    @apply bg-[hsl(var(--event-hygiene))] border-2 border-[hsl(var(--event-hygiene-border))] rounded-2xl shadow-sm;
+  }
+
+  .event-card-other {
+    @apply bg-[hsl(var(--event-other))] border-2 border-[hsl(var(--event-other-border))] rounded-2xl shadow-sm;
+  }
+
+  /* Kawaii Summary cards */
   .summary-card {
-    @apply rounded-xl p-4 transition-all duration-200 hover:shadow-md;
+    @apply rounded-2xl p-4 transition-all duration-300 hover:shadow-lg hover:scale-[1.02] border-2;
   }
 
   .summary-card-meal {
-    @apply summary-card bg-[hsl(var(--event-meal))];
+    @apply summary-card bg-[hsl(var(--event-meal))] border-[hsl(var(--event-meal-border))];
   }
 
   .summary-card-sleep {
-    @apply summary-card bg-[hsl(var(--event-sleep))];
+    @apply summary-card bg-[hsl(var(--event-sleep))] border-[hsl(var(--event-sleep-border))];
   }
 
   .summary-card-play {
-    @apply summary-card bg-[hsl(var(--event-play))];
+    @apply summary-card bg-[hsl(var(--event-play))] border-[hsl(var(--event-play-border))];
+  }
+
+  .summary-card-activity {
+    @apply summary-card bg-[hsl(var(--event-activity))] border-[hsl(var(--event-activity-border))];
   }
 
   /* Thread message styling */
   .thread-message {
-    @apply relative pl-4 before:absolute before:left-0 before:top-0 before:bottom-0 before:w-0.5 before:bg-primary/30;
+    @apply relative pl-4 before:absolute before:left-0 before:top-0 before:bottom-0 before:w-1 before:bg-primary/30 before:rounded-full;
   }
 
-  /* Calendar day pill */
+  /* Kawaii Calendar day pill */
   .day-pill {
-    @apply flex flex-col items-center justify-center px-4 py-2 rounded-xl cursor-pointer transition-all duration-200;
+    @apply flex flex-col items-center justify-center px-4 py-2 rounded-2xl cursor-pointer transition-all duration-300;
   }
 
   .day-pill-active {
-    @apply bg-primary text-primary-foreground shadow-md;
+    @apply bg-primary text-primary-foreground shadow-lg scale-105;
   }
 
   .day-pill-inactive {
-    @apply bg-card hover:bg-muted border border-border;
+    @apply bg-card hover:bg-muted border-2 border-border hover:border-primary/30;
+  }
+
+  /* Kawaii buttons */
+  .kawaii-btn {
+    @apply rounded-2xl font-semibold transition-all duration-300 hover:scale-105 hover:shadow-lg active:scale-95;
+  }
+
+  /* Kawaii cards */
+  .kawaii-card {
+    @apply rounded-3xl border-2 border-border bg-card shadow-sm transition-all duration-300 hover:shadow-lg;
+  }
+
+  /* Notification badge */
+  .notification-badge {
+    @apply absolute -top-1 -right-1 min-w-[20px] h-5 px-1.5 rounded-full bg-destructive text-destructive-foreground text-xs font-bold flex items-center justify-center animate-pulse;
   }
 }
 
@@ -164,6 +204,16 @@
 
   .scrollbar-thin::-webkit-scrollbar-thumb {
     background-color: hsl(var(--border));
-    border-radius: 3px;
+    border-radius: 6px;
+  }
+
+  /* Kawaii hover effect */
+  .kawaii-hover {
+    @apply transition-all duration-300 hover:scale-105 hover:-translate-y-0.5;
+  }
+
+  /* Cute shadow */
+  .kawaii-shadow {
+    box-shadow: 0 4px 20px -4px hsl(var(--primary) / 0.2);
   }
 }

@@ -14,7 +14,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ["Nunito", "sans-serif"],
+        sans: ["Quicksand", "Nunito", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -81,6 +81,17 @@ export default {
           "play-border": "hsl(var(--event-play-border))",
           activity: "hsl(var(--event-activity))",
           "activity-border": "hsl(var(--event-activity-border))",
+          hygiene: "hsl(var(--event-hygiene))",
+          "hygiene-border": "hsl(var(--event-hygiene-border))",
+          other: "hsl(var(--event-other))",
+          "other-border": "hsl(var(--event-other-border))",
+        },
+        kawaii: {
+          pink: "hsl(var(--kawaii-pink))",
+          blue: "hsl(var(--kawaii-blue))",
+          yellow: "hsl(var(--kawaii-yellow))",
+          purple: "hsl(var(--kawaii-purple))",
+          mint: "hsl(var(--kawaii-mint))",
         },
       },
       borderRadius: {

@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { Crianca, Educador, Evento, Recado, Turma } from '@/types';
+import React, { createContext, useContext, useState, ReactNode, useCallback } from 'react';
+import { Crianca, Educador, Evento, Recado, Turma, Feriado, EventoFuturo } from '@/types';
 import { 
   criancasData, 
   educadoresData, 
@@ -7,6 +7,13 @@ import {
   recadosData, 
   turmas as turmasData 
 } from '@/data/mockData';
+
+// Hook para usar notificações (será injetado pelo App)
+let notifyNewEvento: ((criancaNome: string, tipoEvento: string) => void) | null = null;
+
+export function setNotifyCallback(callback: (criancaNome: string, tipoEvento: string) => void) {
+  notifyNewEvento = callback;
+}
 
 interface DataContextType {
   // Turmas
@@ -40,9 +47,33 @@ interface DataContextType {
   updateRecado: (id: string, recado: Partial<Recado>) => void;
   deleteRecado: (id: string) => void;
   addResposta: (parentId: string, resposta: Omit<Recado, 'id' | 'createdAt' | 'updatedAt' | 'lido' | 'respostas' | 'parentId'>) => void;
+
+  // Feriados
+  feriados: Feriado[];
+  addFeriado: (feriado: Omit<Feriado, 'id' | 'createdAt'>) => void;
+  updateFeriado: (id: string, feriado: Partial<Feriado>) => void;
+  deleteFeriado: (id: string) => void;
+
+  // Eventos Futuros
+  eventosFuturos: EventoFuturo[];
+  addEventoFuturo: (evento: Omit<EventoFuturo, 'id' | 'createdAt'>) => void;
+  updateEventoFuturo: (id: string, evento: Partial<EventoFuturo>) => void;
+  deleteEventoFuturo: (id: string) => void;
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
+
+// Mock data for feriados and eventos futuros
+const feriadosData: Feriado[] = [
+  { id: '1', nome: 'Carnaval', data: '2026-02-17', recorrente: true, createdAt: '2024-01-01' },
+  { id: '2', nome: 'Páscoa', data: '2026-04-05', recorrente: true, createdAt: '2024-01-01' },
+  { id: '3', nome: 'Dia das Crianças', data: '2026-10-12', recorrente: true, createdAt: '2024-01-01' },
+];
+
+const eventosFuturosData: EventoFuturo[] = [
+  { id: '1', nome: 'Festa Junina', descricao: 'Festa tradicional com danças e comidas típicas', dataInicio: '2026-06-15', createdAt: '2024-01-01' },
+  { id: '2', nome: 'Reunião de Pais', descricao: 'Reunião semestral com os responsáveis', dataInicio: '2026-02-20', turmaId: '3', createdAt: '2024-01-01' },
+];
 
 export function DataProvider({ children }: { children: ReactNode }) {
   const [turmas] = useState<Turma[]>(turmasData);
@@ -50,6 +81,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
   const [educadores, setEducadores] = useState<Educador[]>(educadoresData);
   const [eventos, setEventos] = useState<Evento[]>(eventosData);
   const [recados, setRecados] = useState<Recado[]>(recadosData);
+  const [feriados, setFeriados] = useState<Feriado[]>(feriadosData);
+  const [eventosFuturos, setEventosFuturos] = useState<EventoFuturo[]>(eventosFuturosData);
 
   // Crianças
   const addCrianca = (crianca: Omit<Crianca, 'id' | 'createdAt'>) => {
@@ -99,6 +132,12 @@ export function DataProvider({ children }: { children: ReactNode }) {
       createdAt: new Date().toISOString(),
     };
     setEventos(prev => [...prev, newEvento]);
+    
+    // Notificar responsável
+    const crianca = criancas.find(c => c.id === evento.criancaId);
+    if (crianca && notifyNewEvento) {
+      notifyNewEvento(crianca.nome, evento.tipo);
+    }
   };
 
   const addEventoTurma = (turmaId: string, evento: Omit<Evento, 'id' | 'createdAt' | 'criancaId'>) => {
@@ -110,6 +149,12 @@ export function DataProvider({ children }: { children: ReactNode }) {
       createdAt: new Date().toISOString(),
     }));
     setEventos(prev => [...prev, ...novosEventos]);
+
+    // Notificar sobre evento da turma
+    const turma = turmas.find(t => t.id === turmaId);
+    if (turma && notifyNewEvento) {
+      notifyNewEvento(`Turma ${turma.nome}`, evento.tipo);
+    }
   };
 
   const updateEvento = (id: string, evento: Partial<Evento>) => {
@@ -128,6 +173,42 @@ export function DataProvider({ children }: { children: ReactNode }) {
       const targetDate = new Date(date).toDateString();
       return matchesCrianca && eventDate === targetDate;
     });
+  };
+
+  // Feriados
+  const addFeriado = (feriado: Omit<Feriado, 'id' | 'createdAt'>) => {
+    const newFeriado: Feriado = {
+      ...feriado,
+      id: Date.now().toString(),
+      createdAt: new Date().toISOString(),
+    };
+    setFeriados(prev => [...prev, newFeriado]);
+  };
+
+  const updateFeriado = (id: string, feriado: Partial<Feriado>) => {
+    setFeriados(prev => prev.map(f => f.id === id ? { ...f, ...feriado } : f));
+  };
+
+  const deleteFeriado = (id: string) => {
+    setFeriados(prev => prev.filter(f => f.id !== id));
+  };
+
+  // Eventos Futuros
+  const addEventoFuturo = (evento: Omit<EventoFuturo, 'id' | 'createdAt'>) => {
+    const newEvento: EventoFuturo = {
+      ...evento,
+      id: Date.now().toString(),
+      createdAt: new Date().toISOString(),
+    };
+    setEventosFuturos(prev => [...prev, newEvento]);
+  };
+
+  const updateEventoFuturo = (id: string, evento: Partial<EventoFuturo>) => {
+    setEventosFuturos(prev => prev.map(e => e.id === id ? { ...e, ...evento } : e));
+  };
+
+  const deleteEventoFuturo = (id: string) => {
+    setEventosFuturos(prev => prev.filter(e => e.id !== id));
   };
 
   // Recados
@@ -225,6 +306,14 @@ export function DataProvider({ children }: { children: ReactNode }) {
       updateRecado,
       deleteRecado,
       addResposta,
+      feriados,
+      addFeriado,
+      updateFeriado,
+      deleteFeriado,
+      eventosFuturos,
+      addEventoFuturo,
+      updateEventoFuturo,
+      deleteEventoFuturo,
     }}>
       {children}
     </DataContext.Provider>
