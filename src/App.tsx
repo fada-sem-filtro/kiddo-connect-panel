@@ -15,6 +15,7 @@ import AdminPage from "./pages/AdminPage";
 import FeriadosPage from "./pages/FeriadosPage";
 import CalendarioAdminPage from "./pages/CalendarioAdminPage";
 import ResponsavelEventosPage from "./pages/ResponsavelEventosPage";
+import EducadorTurmaPage from "./pages/EducadorTurmaPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -49,6 +50,7 @@ const App = () => (
             <BrowserRouter>
               <Routes>
                 <Route path="/" element={<Index />} />
+                <Route path="/educador/turma" element={<EducadorTurmaPage />} />
                 <Route path="/criancas" element={<CriancasPage />} />
                 <Route path="/educadores" element={<EducadoresPage />} />
                 <Route path="/recados" element={<RecadosPage />} />

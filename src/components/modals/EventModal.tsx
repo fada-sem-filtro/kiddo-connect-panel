@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -40,22 +40,38 @@ interface EventModalProps {
   onOpenChange: (open: boolean) => void;
   mode: 'individual' | 'turma';
   editData?: EventFormData & { id: string };
+  preSelectedCriancaId?: string;
+  preSelectedTurmaId?: string;
 }
 
-export function EventModal({ open, onOpenChange, mode, editData }: EventModalProps) {
+export function EventModal({ open, onOpenChange, mode, editData, preSelectedCriancaId, preSelectedTurmaId }: EventModalProps) {
   const { criancas, turmas, addEvento, addEventoTurma, updateEvento } = useData();
   
   const form = useForm<EventFormData>({
     resolver: zodResolver(eventSchema),
     defaultValues: editData || {
       tipo: '',
-      criancaId: '',
-      turmaId: '',
+      criancaId: preSelectedCriancaId || '',
+      turmaId: preSelectedTurmaId || '',
       observacao: '',
       dataInicio: new Date().toISOString().slice(0, 16),
       dataFim: '',
     },
   });
+
+  // Reset form when modal opens with preselected values
+  useEffect(() => {
+    if (open) {
+      form.reset({
+        tipo: editData?.tipo || '',
+        criancaId: preSelectedCriancaId || editData?.criancaId || '',
+        turmaId: preSelectedTurmaId || editData?.turmaId || '',
+        observacao: editData?.observacao || '',
+        dataInicio: editData?.dataInicio || new Date().toISOString().slice(0, 16),
+        dataFim: editData?.dataFim || '',
+      });
+    }
+  }, [open, preSelectedCriancaId, preSelectedTurmaId, editData, form]);
 
   const onSubmit = (data: EventFormData) => {
     if (editData) {
