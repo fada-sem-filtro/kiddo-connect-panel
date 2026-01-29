@@ -12,7 +12,8 @@ import {
   Settings,
   CalendarDays,
   BarChart3,
-  PartyPopper
+  PartyPopper,
+  ClipboardList
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -23,6 +24,10 @@ const navigation = [
   { name: 'Crianças', href: '/criancas', icon: Users },
   { name: 'Educadores', href: '/educadores', icon: GraduationCap },
   { name: 'Recados', href: '/recados', icon: MessageSquare },
+];
+
+const responsavelNavigation = [
+  { name: 'Meus Eventos', href: '/responsavel/eventos', icon: ClipboardList },
 ];
 
 const adminNavigation = [
@@ -113,6 +118,33 @@ export function Sidebar() {
                     <item.icon className="w-5 h-5" />
                     {item.name}
                     {isActive && <span className="ml-auto">✨</span>}
+                  </Link>
+                );
+              })}
+            </div>
+
+            {/* Responsavel navigation */}
+            <div className="space-y-2">
+              <p className="px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                👨‍👩‍👧 Responsável
+              </p>
+              {responsavelNavigation.map((item) => {
+                const isActive = location.pathname === item.href;
+                return (
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    onClick={() => setIsOpen(false)}
+                    className={cn(
+                      "flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold transition-all duration-300",
+                      isActive
+                        ? "bg-gradient-to-r from-kawaii-mint to-kawaii-blue text-foreground shadow-lg scale-[1.02]"
+                        : "text-muted-foreground hover:bg-muted hover:text-foreground hover:scale-[1.01]"
+                    )}
+                  >
+                    <item.icon className="w-5 h-5" />
+                    {item.name}
+                    {isActive && <span className="ml-auto">💕</span>}
                   </Link>
                 );
               })}
