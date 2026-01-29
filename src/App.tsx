@@ -14,6 +14,7 @@ import RecadosPage from "./pages/RecadosPage";
 import AdminPage from "./pages/AdminPage";
 import FeriadosPage from "./pages/FeriadosPage";
 import CalendarioAdminPage from "./pages/CalendarioAdminPage";
+import ResponsavelEventosPage from "./pages/ResponsavelEventosPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -54,6 +55,7 @@ const App = () => (
                 <Route path="/admin" element={<AdminPage />} />
                 <Route path="/admin/feriados" element={<FeriadosPage />} />
                 <Route path="/admin/calendario" element={<CalendarioAdminPage />} />
+                <Route path="/responsavel/eventos" element={<ResponsavelEventosPage />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
