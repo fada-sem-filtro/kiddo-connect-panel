@@ -21,6 +21,7 @@ import { NotificationBell } from '@/components/notifications/NotificationBell';
 
 const navigation = [
   { name: 'Agenda', href: '/', icon: Calendar },
+  { name: 'Minha Turma', href: '/educador/turma', icon: Users },
   { name: 'Crianças', href: '/criancas', icon: Users },
   { name: 'Educadores', href: '/educadores', icon: GraduationCap },
   { name: 'Recados', href: '/recados', icon: MessageSquare },
