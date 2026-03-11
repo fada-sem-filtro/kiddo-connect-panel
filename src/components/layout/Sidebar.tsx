@@ -52,8 +52,8 @@ export function Sidebar() {
     mainNavigation.push({ name: 'Educadores', href: '/educadores', icon: GraduationCap });
   }
 
-  // Admin and educador see Recados
-  if (role === 'admin' || role === 'educador') {
+  // Everyone except pure responsavel without recados sees Recados
+  if (role === 'admin' || role === 'educador' || role === 'responsavel') {
     mainNavigation.push({ name: 'Recados', href: '/recados', icon: MessageSquare });
   }
 

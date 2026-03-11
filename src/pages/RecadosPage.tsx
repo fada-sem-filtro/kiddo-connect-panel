@@ -6,6 +6,7 @@ import { RecadoThread } from '@/components/recados/RecadoThread';
 import { RecadoModal } from '@/components/modals/RecadoModal';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 
 export interface RecadoDb {
   id: string;
@@ -25,12 +26,14 @@ export interface RecadoDb {
 }
 
 export default function RecadosPage() {
+  const { role } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
   const [filterTurma, setFilterTurma] = useState<string>('all');
   const [recados, setRecados] = useState<RecadoDb[]>([]);
   const [turmas, setTurmas] = useState<{ id: string; nome: string }[]>([]);
   const [loading, setLoading] = useState(true);
+  const canCreate = role === 'admin' || role === 'educador';
 
   const fetchRecados = useCallback(async () => {
     // Fetch all recados (parents + children)
@@ -108,14 +111,18 @@ export default function RecadosPage() {
                 ))}
               </SelectContent>
             </Select>
-            <Button onClick={() => setIsModalOpen(true)}>
-              <Plus className="w-4 h-4 mr-2" />
-              Novo Recado
-            </Button>
-            <Button variant="outline" onClick={() => setIsBulkModalOpen(true)}>
-              <Users className="w-4 h-4 mr-2" />
-              Recado p/ Turma
-            </Button>
+            {canCreate && (
+              <>
+                <Button onClick={() => setIsModalOpen(true)}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Novo Recado
+                </Button>
+                <Button variant="outline" onClick={() => setIsBulkModalOpen(true)}>
+                  <Users className="w-4 h-4 mr-2" />
+                  Recado p/ Turma
+                </Button>
+              </>
+            )}
           </div>
         </div>
 

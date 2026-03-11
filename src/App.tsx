@@ -41,7 +41,7 @@ const App = () => (
               <Route path="/educador/turma" element={<ProtectedRoute allowedRoles={['admin', 'educador']}><EducadorTurmaPage /></ProtectedRoute>} />
               <Route path="/criancas" element={<ProtectedRoute allowedRoles={['admin']}><CriancasPage /></ProtectedRoute>} />
               <Route path="/educadores" element={<ProtectedRoute allowedRoles={['admin']}><EducadoresPage /></ProtectedRoute>} />
-              <Route path="/recados" element={<ProtectedRoute allowedRoles={['admin', 'educador']}><RecadosPage /></ProtectedRoute>} />
+              <Route path="/recados" element={<ProtectedRoute allowedRoles={['admin', 'educador', 'responsavel']}><RecadosPage /></ProtectedRoute>} />
               <Route path="/admin" element={<ProtectedRoute allowedRoles={['admin']}><AdminPage /></ProtectedRoute>} />
               <Route path="/admin/feriados" element={<ProtectedRoute allowedRoles={['admin']}><FeriadosPage /></ProtectedRoute>} />
               <Route path="/admin/calendario" element={<ProtectedRoute allowedRoles={['admin']}><CalendarioAdminPage /></ProtectedRoute>} />
