@@ -124,18 +124,6 @@ export function CrecheMembrosModal({ open, onOpenChange, creche }: CrecheMembros
     }
   };
 
-  const toggleDiretor = async (membroId: string, currentValue: boolean) => {
-    const { error } = await supabase
-      .from('creche_membros')
-      .update({ is_diretor: !currentValue })
-      .eq('id', membroId);
-    if (error) {
-      toast.error('Erro ao atualizar');
-    } else {
-      fetchMembros();
-    }
-  };
-
   const getRoleBadge = (role?: string) => {
     switch (role) {
       case 'admin': return <Badge className="bg-destructive/10 text-destructive">Admin</Badge>;
