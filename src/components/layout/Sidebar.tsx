@@ -13,7 +13,8 @@ import {
   PartyPopper,
   ClipboardList,
   UserCog,
-  Building2 } from
+  Building2,
+  Baby } from
 'lucide-react';
 import { cn } from '@/lib/utils';
 import logoFleur from '@/assets/logo-fleur.webp';
