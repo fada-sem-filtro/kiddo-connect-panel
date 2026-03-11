@@ -42,6 +42,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [role, setRole] = useState<AppRole | null>(null);
   const [loading, setLoading] = useState(true);
+  const [userCreche, setUserCreche] = useState<UserCreche | null>(null);
+  const [isDiretor, setIsDiretor] = useState(false);
 
   const fetchUserData = async (userId: string) => {
     try {
@@ -59,6 +61,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         .rpc('get_user_role', { _user_id: userId });
       
       if (roleData) setRole(roleData);
+
+      // Fetch creche membership
+      const { data: membroData } = await supabase
+        .from('creche_membros')
+        .select('creche_id, is_diretor, creches(id, nome)')
+        .eq('user_id', userId)
+        .limit(1)
+        .maybeSingle();
+
+      if (membroData && membroData.creches) {
+        const creche = membroData.creches as unknown as { id: string; nome: string };
+        setUserCreche({
+          id: creche.id,
+          nome: creche.nome,
+          is_diretor: membroData.is_diretor,
+        });
+        setIsDiretor(membroData.is_diretor);
+      } else {
+        setUserCreche(null);
+        setIsDiretor(false);
+      }
     } catch (error) {
       console.error('Error fetching user data:', error);
     }
