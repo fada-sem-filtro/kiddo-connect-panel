@@ -65,19 +65,31 @@ export default function CriancasPage() {
     if (criancaIds.length > 0) {
       const { data: respData } = await supabase
         .from('crianca_responsaveis')
-        .select('id, crianca_id, parentesco, responsavel_user_id, profiles:responsavel_user_id(nome, email, telefone)')
+        .select('id, crianca_id, parentesco, responsavel_user_id')
         .in('crianca_id', criancaIds);
 
-      (respData || []).forEach((r: any) => {
-        if (!responsaveisMap[r.crianca_id]) responsaveisMap[r.crianca_id] = [];
-        responsaveisMap[r.crianca_id].push({
-          id: r.id,
-          nome: r.profiles?.nome || '',
-          email: r.profiles?.email || '',
-          telefone: r.profiles?.telefone || '',
-          parentesco: r.parentesco,
+      if (respData && respData.length > 0) {
+        const respUserIds = [...new Set(respData.map(r => r.responsavel_user_id))];
+        const { data: profiles } = await supabase
+          .from('profiles')
+          .select('user_id, nome, email, telefone')
+          .in('user_id', respUserIds);
+
+        const profileMap: Record<string, any> = {};
+        (profiles || []).forEach(p => { profileMap[p.user_id] = p; });
+
+        respData.forEach((r) => {
+          if (!responsaveisMap[r.crianca_id]) responsaveisMap[r.crianca_id] = [];
+          const profile = profileMap[r.responsavel_user_id];
+          responsaveisMap[r.crianca_id].push({
+            id: r.id,
+            nome: profile?.nome || '',
+            email: profile?.email || '',
+            telefone: profile?.telefone || '',
+            parentesco: r.parentesco,
+          });
         });
-      });
+      }
     }
 
     setCriancas((criancasData || []).map((c: any) => ({
