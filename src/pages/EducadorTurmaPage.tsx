@@ -201,7 +201,7 @@ export default function EducadorTurmaPage() {
                           </p>
                         </div>
                       </div>
-                      <span className="text-xl group-hover:scale-125 transition-transform">🌟</span>
+                      
                     </div>
                   </CardHeader>
                   
