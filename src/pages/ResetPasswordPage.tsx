@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Flower2, Lock } from 'lucide-react';
+import { Lock } from 'lucide-react';
+import logoFleur from '@/assets/logo-fleur.webp';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
