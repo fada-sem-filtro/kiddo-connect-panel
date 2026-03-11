@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Plus, Search, Edit, Trash2, Eye, Users } from 'lucide-react';
+import { Plus, Search, Edit, Trash2, Users, Link2 } from 'lucide-react';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
 import { CriancaDbModal } from '@/components/modals/CriancaDbModal';
+import { CriancaResponsaveisModal } from '@/components/modals/CriancaResponsaveisModal';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
@@ -35,6 +36,7 @@ export default function CriancasDbPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [selected, setSelected] = useState<CriancaRow | null>(null);
+  const [respModalCrianca, setRespModalCrianca] = useState<CriancaRow | null>(null);
   const [loading, setLoading] = useState(true);
 
   const fetchCriancas = async () => {
@@ -187,6 +189,9 @@ export default function CriancasDbPage() {
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-1">
+                        <Button variant="ghost" size="icon" title="Responsáveis" onClick={() => setRespModalCrianca(crianca)}>
+                          <Link2 className="w-4 h-4" />
+                        </Button>
                         <Button variant="ghost" size="icon" onClick={() => handleEdit(crianca)}>
                           <Edit className="w-4 h-4" />
                         </Button>
@@ -232,6 +237,14 @@ export default function CriancasDbPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <CriancaResponsaveisModal
+        open={!!respModalCrianca}
+        onOpenChange={(open) => !open && setRespModalCrianca(null)}
+        criancaId={respModalCrianca?.id || null}
+        criancaNome={respModalCrianca?.nome || ''}
+        onChanged={fetchCriancas}
+      />
     </MainLayout>
   );
 }
