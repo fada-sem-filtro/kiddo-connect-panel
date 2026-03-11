@@ -26,12 +26,14 @@ export interface RecadoDb {
 }
 
 export default function RecadosPage() {
+  const { role } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
   const [filterTurma, setFilterTurma] = useState<string>('all');
   const [recados, setRecados] = useState<RecadoDb[]>([]);
   const [turmas, setTurmas] = useState<{ id: string; nome: string }[]>([]);
   const [loading, setLoading] = useState(true);
+  const canCreate = role === 'admin' || role === 'educador';
 
   const fetchRecados = useCallback(async () => {
     // Fetch all recados (parents + children)
