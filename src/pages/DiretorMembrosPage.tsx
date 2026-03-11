@@ -15,10 +15,10 @@ interface MemberInfo {
   email: string;
   telefone: string | null;
   role: string;
-  is_diretor: boolean;
 }
 
 const ROLE_LABELS: Record<string, string> = {
+  diretor: 'Diretor(a)',
   educador: 'Educador(a)',
   responsavel: 'Responsável',
 };
