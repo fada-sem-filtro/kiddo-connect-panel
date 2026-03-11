@@ -100,7 +100,6 @@ export function CrecheMembrosModal({ open, onOpenChange, creche }: CrecheMembros
     const { error } = await supabase.from('creche_membros').insert({
       creche_id: creche.id,
       user_id: selectedUserId,
-      is_diretor: isDiretor,
     });
 
     if (error) {
@@ -109,7 +108,6 @@ export function CrecheMembrosModal({ open, onOpenChange, creche }: CrecheMembros
     } else {
       toast.success('Membro adicionado!');
       setSelectedUserId('');
-      setIsDiretor(false);
       fetchMembros();
       fetchAvailableUsers();
     }
