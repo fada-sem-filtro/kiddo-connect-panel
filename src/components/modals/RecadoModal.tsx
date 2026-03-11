@@ -1,26 +1,19 @@
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
+  Dialog, DialogContent, DialogHeader, DialogTitle,
 } from '@/components/ui/dialog';
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+  Form, FormControl, FormField, FormItem, FormLabel, FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useData } from '@/contexts/DataContext';
-import { Recado } from '@/types';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 
 const recadoSchema = z.object({
@@ -36,55 +29,57 @@ interface RecadoModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   mode: 'individual' | 'turma';
-  editData?: Recado | null;
+  onSaved?: () => void;
 }
 
-export function RecadoModal({ open, onOpenChange, mode, editData }: RecadoModalProps) {
-  const { criancas, turmas, addRecado, addRecadoTurma, updateRecado } = useData();
-  
+export function RecadoModal({ open, onOpenChange, mode, onSaved }: RecadoModalProps) {
+  const { user } = useAuth();
+  const [loading, setLoading] = useState(false);
+  const [criancas, setCriancas] = useState<{ id: string; nome: string }[]>([]);
+  const [turmas, setTurmas] = useState<{ id: string; nome: string }[]>([]);
+
   const form = useForm<RecadoFormData>({
     resolver: zodResolver(recadoSchema),
-    defaultValues: editData ? {
-      titulo: editData.titulo,
-      conteudo: editData.conteudo,
-      criancaId: editData.criancaId || '',
-      turmaId: editData.turmaId || '',
-    } : {
-      titulo: '',
-      conteudo: '',
-      criancaId: '',
-      turmaId: '',
-    },
+    defaultValues: { titulo: '', conteudo: '', criancaId: '', turmaId: '' },
   });
 
-  const onSubmit = (data: RecadoFormData) => {
-    if (editData) {
-      updateRecado(editData.id, {
-        titulo: data.titulo,
-        conteudo: data.conteudo,
+  useEffect(() => {
+    if (open) {
+      form.reset({ titulo: '', conteudo: '', criancaId: '', turmaId: '' });
+      supabase.from('criancas').select('id, nome').order('nome').then(({ data }) => {
+        if (data) setCriancas(data);
       });
-      toast.success('Recado atualizado com sucesso!');
-    } else if (mode === 'turma' && data.turmaId) {
-      addRecadoTurma(data.turmaId, {
-        titulo: data.titulo,
-        conteudo: data.conteudo,
-        remetenteId: '1', // Current user
-        remetenteTipo: 'educador',
+      supabase.from('turmas').select('id, nome').order('nome').then(({ data }) => {
+        if (data) setTurmas(data);
       });
-      toast.success('Recado enviado para a turma!');
-    } else if (data.criancaId) {
-      addRecado({
-        titulo: data.titulo,
-        conteudo: data.conteudo,
-        criancaId: data.criancaId,
-        remetenteId: '1', // Current user
-        remetenteTipo: 'educador',
-      });
-      toast.success('Recado enviado com sucesso!');
     }
-    
-    form.reset();
-    onOpenChange(false);
+  }, [open, form]);
+
+  const onSubmit = async (data: RecadoFormData) => {
+    if (!user) return;
+    setLoading(true);
+    try {
+      const payload: any = {
+        titulo: data.titulo,
+        conteudo: data.conteudo,
+        remetente_user_id: user.id,
+      };
+      if (mode === 'turma' && data.turmaId) {
+        payload.turma_id = data.turmaId;
+      } else if (data.criancaId) {
+        payload.crianca_id = data.criancaId;
+      }
+
+      const { error } = await supabase.from('recados').insert(payload);
+      if (error) throw error;
+      toast.success(mode === 'turma' ? 'Recado enviado para a turma!' : 'Recado enviado!');
+      onOpenChange(false);
+      form.reset();
+      onSaved?.();
+    } catch (err: any) {
+      toast.error(err.message || 'Erro ao enviar recado');
+    }
+    setLoading(false);
   };
 
   return (
@@ -92,102 +87,70 @@ export function RecadoModal({ open, onOpenChange, mode, editData }: RecadoModalP
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>
-            {editData ? 'Editar Recado' : mode === 'turma' ? 'Recado para Turma' : 'Novo Recado'}
+            {mode === 'turma' ? 'Recado para Turma' : 'Novo Recado'}
           </DialogTitle>
         </DialogHeader>
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             {mode === 'turma' ? (
-              <FormField
-                control={form.control}
-                name="turmaId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Turma</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Selecione a turma" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {turmas.map((turma) => (
-                          <SelectItem key={turma.id} value={turma.id}>
-                            {turma.nome}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <FormField control={form.control} name="turmaId" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Turma</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger><SelectValue placeholder="Selecione a turma" /></SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {turmas.map(t => (
+                        <SelectItem key={t.id} value={t.id}>{t.nome}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )} />
             ) : (
-              <FormField
-                control={form.control}
-                name="criancaId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Criança</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Selecione a criança" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {criancas.map((crianca) => (
-                          <SelectItem key={crianca.id} value={crianca.id}>
-                            {crianca.nome}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <FormField control={form.control} name="criancaId" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Criança</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger><SelectValue placeholder="Selecione a criança" /></SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {criancas.map(c => (
+                        <SelectItem key={c.id} value={c.id}>{c.nome}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )} />
             )}
 
-            <FormField
-              control={form.control}
-              name="titulo"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Título</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Assunto do recado" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <FormField control={form.control} name="titulo" render={({ field }) => (
+              <FormItem>
+                <FormLabel>Título</FormLabel>
+                <FormControl><Input placeholder="Assunto do recado" {...field} /></FormControl>
+                <FormMessage />
+              </FormItem>
+            )} />
 
-            <FormField
-              control={form.control}
-              name="conteudo"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Mensagem</FormLabel>
-                  <FormControl>
-                    <Textarea 
-                      placeholder="Escreva sua mensagem..."
-                      className="resize-none min-h-[120px]"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <FormField control={form.control} name="conteudo" render={({ field }) => (
+              <FormItem>
+                <FormLabel>Mensagem</FormLabel>
+                <FormControl>
+                  <Textarea placeholder="Escreva sua mensagem..." className="resize-none min-h-[120px]" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )} />
 
             <div className="flex gap-2 justify-end pt-4">
-              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-                Cancelar
-              </Button>
-              <Button type="submit">
-                {editData ? 'Salvar' : 'Enviar'}
+              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancelar</Button>
+              <Button type="submit" disabled={loading}>
+                {loading ? 'Enviando...' : 'Enviar'}
               </Button>
             </div>
           </form>
