@@ -28,6 +28,8 @@ interface AuthContextType {
   loading: boolean;
   userCreche: UserCreche | null;
   isDiretor: boolean;
+  mustChangePassword: boolean;
+  setMustChangePassword: (v: boolean) => void;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<{ error: Error | null }>;
@@ -44,6 +46,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [userCreche, setUserCreche] = useState<UserCreche | null>(null);
   const [isDiretor, setIsDiretor] = useState(false);
+  const [mustChangePassword, setMustChangePassword] = useState(false);
 
   const fetchUserData = async (userId: string) => {
     try {
@@ -95,6 +98,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUser(session?.user ?? null);
 
         if (session?.user) {
+          // Check if first access
+          const meta = session.user.user_metadata;
+          if (meta?.must_change_password) {
+            setMustChangePassword(true);
+          }
           // Use setTimeout to avoid Supabase client deadlock
           setTimeout(() => fetchUserData(session.user.id), 0);
         } else {
@@ -144,7 +152,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, profile, role, loading, userCreche, isDiretor, signIn, signOut, resetPassword, updatePassword }}>
+    <AuthContext.Provider value={{ user, session, profile, role, loading, userCreche, isDiretor, mustChangePassword, setMustChangePassword, signIn, signOut, resetPassword, updatePassword }}>
       {children}
     </AuthContext.Provider>
   );

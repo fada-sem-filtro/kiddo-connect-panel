@@ -106,7 +106,7 @@ export default function UsuariosPage() {
   };
 
   const handleCreateUser = async () => {
-    if (!form.nome || !form.email || !form.password || !form.role) {
+    if (!form.nome || !form.email || !form.role) {
       toast.error('Preencha todos os campos obrigatórios');
       return;
     }
@@ -115,7 +115,6 @@ export default function UsuariosPage() {
     const { data, error } = await supabase.functions.invoke('create-user', {
       body: {
         email: form.email,
-        password: form.password,
         nome: form.nome,
         telefone: form.telefone || null,
         role: form.role,
@@ -262,9 +261,10 @@ export default function UsuariosPage() {
                   <Label>Email *</Label>
                   <Input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="email@exemplo.com" required />
                 </div>
-                <div className="space-y-2">
-                  <Label>Senha *</Label>
-                  <Input type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} placeholder="Mínimo 6 caracteres" required />
+                <div className="p-3 rounded-xl bg-muted/50 border border-border">
+                  <p className="text-xs text-muted-foreground">
+                    🔑 A senha padrão de primeiro acesso é <strong>fleur@2026</strong>. O usuário será solicitado a alterá-la no primeiro login.
+                  </p>
                 </div>
               </>
             )}

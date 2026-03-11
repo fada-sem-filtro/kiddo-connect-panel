@@ -42,23 +42,25 @@ serve(async (req) => {
       });
     }
 
-    const { email, password, nome, telefone, role } = await req.json();
+    const { email, nome, telefone, role } = await req.json();
 
-    if (!email || !password || !nome || !role) {
+    if (!email || !nome || !role) {
       return new Response(JSON.stringify({ error: 'Missing required fields' }), {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
+    const defaultPassword = 'fleur@2026';
+
     // Use service role client to create user
     const adminClient = createClient(supabaseUrl, serviceRoleKey);
 
     const { data: newUser, error: createError } = await adminClient.auth.admin.createUser({
       email,
-      password,
+      password: defaultPassword,
       email_confirm: true,
-      user_metadata: { nome, telefone },
+      user_metadata: { nome, telefone, must_change_password: true },
     });
 
     if (createError) {
