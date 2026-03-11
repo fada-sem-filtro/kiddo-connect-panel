@@ -239,6 +239,14 @@ export default function TurmasPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <TurmaEducadoresModal
+        open={!!eduModalTurma}
+        onOpenChange={(open) => !open && setEduModalTurma(null)}
+        turmaId={eduModalTurma?.id || null}
+        turmaNome={eduModalTurma?.nome || ''}
+        onChanged={fetchTurmas}
+      />
     </MainLayout>
   );
 }
