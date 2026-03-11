@@ -80,7 +80,7 @@ export function Sidebar() {
         </Button>
         
         <div className="flex items-center gap-2">
-          <Flower2 className="w-5 h-5 text-primary" />
+          <img src={logoFleur} alt="Fleur" className="w-6 h-6" />
           <span className="font-bold text-foreground">Fleur</span>
         </div>
 
