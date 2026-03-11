@@ -30,7 +30,6 @@ export function CrecheMembrosModal({ open, onOpenChange, creche }: CrecheMembros
   const [membros, setMembros] = useState<Membro[]>([]);
   const [availableUsers, setAvailableUsers] = useState<{ user_id: string; nome: string; email: string; role: string }[]>([]);
   const [selectedUserId, setSelectedUserId] = useState('');
-  const [isDiretor, setIsDiretor] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const fetchMembros = async () => {
