@@ -50,7 +50,7 @@ export function SummaryCards({ eventCounts }: SummaryCardsProps) {
         <div key={item.type} className={cn(item.className, "text-center")}>
             <div className="flex items-center justify-center gap-2 mb-2">
               <item.icon className="w-5 h-5 text-foreground/60" />
-              <span className="text-xl">{item.emoji}</span>
+              
             </div>
             <p className="text-3xl font-bold">{eventCounts[item.type] || 0}</p>
             <p className="text-sm text-muted-foreground font-medium">{item.label}</p>
