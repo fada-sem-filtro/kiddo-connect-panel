@@ -38,7 +38,7 @@ export function CrecheMembrosModal({ open, onOpenChange, creche }: CrecheMembros
 
     const { data, error } = await supabase
       .from('creche_membros')
-      .select('id, user_id, is_diretor')
+      .select('id, user_id')
       .eq('creche_id', creche.id);
 
     if (error) {
