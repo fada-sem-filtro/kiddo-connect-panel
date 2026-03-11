@@ -8,7 +8,6 @@ import {
   Menu,
   X,
   LogOut,
-  Flower2,
   CalendarDays,
   BarChart3,
   PartyPopper,
@@ -16,6 +15,7 @@ import {
   UserCog
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import logoFleur from '@/assets/logo-fleur.webp';
 import { Button } from '@/components/ui/button';
 import { NotificationBell } from '@/components/notifications/NotificationBell';
 import { useAuth } from '@/contexts/AuthContext';
@@ -80,7 +80,7 @@ export function Sidebar() {
         </Button>
         
         <div className="flex items-center gap-2">
-          <Flower2 className="w-5 h-5 text-primary" />
+          <img src={logoFleur} alt="Fleur" className="w-6 h-6" />
           <span className="font-bold text-foreground">Fleur</span>
         </div>
 
@@ -106,12 +106,12 @@ export function Sidebar() {
           {/* Logo */}
           <div className="flex items-center justify-between gap-3 px-6 py-5 border-b-2 border-border bg-gradient-to-r from-primary/5 to-secondary/10">
             <div className="flex items-center gap-3">
-              <div className="flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/20 to-secondary/30 shadow-md">
-                <Flower2 className="w-6 h-6 text-primary" />
+              <div className="flex items-center justify-center w-12 h-12 rounded-2xl shadow-md">
+                <img src={logoFleur} alt="Fleur" className="w-10 h-10" />
               </div>
               <div>
                 <h1 className="text-xl font-bold text-foreground">Fleur</h1>
-                <p className="text-xs text-primary font-semibold">🌸 Escola Infantil</p>
+                <p className="text-xs text-primary font-semibold">🌷 Escola Infantil</p>
               </div>
             </div>
             <div className="hidden lg:block">
