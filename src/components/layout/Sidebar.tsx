@@ -17,7 +17,7 @@ import {
   Baby } from
 'lucide-react';
 import { cn } from '@/lib/utils';
-import logoFleur from '@/assets/logo-fleur.webp';
+import logoFleur from '@/assets/logo-fleur-2.webp';
 import { Button } from '@/components/ui/button';
 import { NotificationBell } from '@/components/notifications/NotificationBell';
 import { useAuth } from '@/contexts/AuthContext';
