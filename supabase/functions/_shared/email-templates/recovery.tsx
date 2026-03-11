@@ -48,7 +48,7 @@ export const RecoveryEmail = ({
 
 export default RecoveryEmail
 
-const logoUrl = 'https://takzcbagxjydlkzenprr.supabase.co/storage/v1/object/public/email-assets/logo-fleur.webp'
+const logoUrl = 'https://takzcbagxjydlkzenprr.supabase.co/storage/v1/object/public/email-assets/logo-fleur-2.webp'
 const main = { backgroundColor: '#ffffff', fontFamily: "'Quicksand', Arial, sans-serif" }
 const container = { padding: '30px 25px', maxWidth: '480px', margin: '0 auto' }
 const logo = { margin: '0 0 20px' }
