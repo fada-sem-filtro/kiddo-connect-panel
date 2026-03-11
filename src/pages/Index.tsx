@@ -13,6 +13,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 
 const Index = () => {
+  const { role } = useAuth();
+  const canCreate = role === 'admin' || role === 'educador';
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedCriancaId, setSelectedCriancaId] = useState<string>('all');
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
