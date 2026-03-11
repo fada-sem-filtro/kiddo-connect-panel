@@ -13,7 +13,8 @@ import {
   PartyPopper,
   ClipboardList,
   UserCog,
-  Building2 } from
+  Building2,
+  Baby } from
 'lucide-react';
 import { cn } from '@/lib/utils';
 import logoFleur from '@/assets/logo-fleur.webp';
@@ -61,12 +62,16 @@ export function Sidebar() {
   [];
 
   const diretorNavigation = isDiretor ? [
-  { name: 'Membros', href: '/diretor/membros', icon: Users }] :
+  { name: 'Membros', href: '/diretor/membros', icon: Users },
+  { name: 'Turmas', href: '/diretor/turmas', icon: GraduationCap },
+  { name: 'Crianças', href: '/diretor/criancas', icon: Baby }] :
   [];
 
   const adminNavigation = role === 'admin' ? [
   { name: 'Dashboard', href: '/admin', icon: BarChart3 },
   { name: 'Creches', href: '/admin/creches', icon: Building2 },
+  { name: 'Turmas', href: '/admin/turmas', icon: GraduationCap },
+  { name: 'Crianças', href: '/admin/criancas', icon: Baby },
   { name: 'Usuários', href: '/admin/usuarios', icon: UserCog },
   { name: 'Feriados', href: '/admin/feriados', icon: PartyPopper },
   { name: 'Calendário', href: '/admin/calendario', icon: CalendarDays }] :
