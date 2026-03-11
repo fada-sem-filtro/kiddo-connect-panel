@@ -175,6 +175,21 @@ export default function UsuariosPage() {
     fetchUsers();
   };
 
+  const handleResetPassword = async (user: UserWithRole) => {
+    if (!confirm(`Resetar a senha de ${user.nome} para a senha padrão (fleur@2026)?`)) return;
+
+    const { data, error } = await supabase.functions.invoke('reset-user-password', {
+      body: { user_id: user.user_id },
+    });
+
+    if (error || data?.error) {
+      toast.error(data?.error || 'Erro ao resetar senha');
+      return;
+    }
+
+    toast.success(`Senha de ${user.nome} resetada! No próximo login será solicitada uma nova senha.`);
+  };
+
   return (
     <MainLayout>
       <div className="max-w-6xl mx-auto space-y-6">
