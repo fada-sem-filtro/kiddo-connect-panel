@@ -6,7 +6,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { useNotifications } from '@/contexts/NotificationContext';
+import { useNotifications, NotificacaoDb } from '@/contexts/NotificationContext';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
@@ -96,7 +96,7 @@ export function NotificationBell() {
                         {notif.mensagem}
                       </p>
                       <p className="text-xs text-muted-foreground mt-1">
-                        {formatDistanceToNow(new Date(notif.createdAt), { 
+                        {formatDistanceToNow(new Date(notif.created_at), { 
                           addSuffix: true, 
                           locale: ptBR 
                         })}
