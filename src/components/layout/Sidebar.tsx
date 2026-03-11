@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { 
-  Calendar, 
-  Users, 
-  MessageSquare, 
+import {
+  Calendar,
+  Users,
+  MessageSquare,
   GraduationCap,
   Menu,
   X,
@@ -13,8 +13,8 @@ import {
   PartyPopper,
   ClipboardList,
   UserCog,
-  Building2
-} from 'lucide-react';
+  Building2 } from
+'lucide-react';
 import { cn } from '@/lib/utils';
 import logoFleur from '@/assets/logo-fleur.webp';
 import { Button } from '@/components/ui/button';
@@ -56,17 +56,17 @@ export function Sidebar() {
     mainNavigation.push({ name: 'Recados', href: '/recados', icon: MessageSquare });
   }
 
-  const responsavelNavigation = (role === 'admin' || role === 'responsavel') ? [
-    { name: 'Meus Eventos', href: '/responsavel/eventos', icon: ClipboardList },
-  ] : [];
+  const responsavelNavigation = role === 'admin' || role === 'responsavel' ? [
+  { name: 'Meus Eventos', href: '/responsavel/eventos', icon: ClipboardList }] :
+  [];
 
   const adminNavigation = role === 'admin' ? [
-    { name: 'Dashboard', href: '/admin', icon: BarChart3 },
-    { name: 'Creches', href: '/admin/creches', icon: Building2 },
-    { name: 'Usuários', href: '/admin/usuarios', icon: UserCog },
-    { name: 'Feriados', href: '/admin/feriados', icon: PartyPopper },
-    { name: 'Calendário', href: '/admin/calendario', icon: CalendarDays },
-  ] : [];
+  { name: 'Dashboard', href: '/admin', icon: BarChart3 },
+  { name: 'Creches', href: '/admin/creches', icon: Building2 },
+  { name: 'Usuários', href: '/admin/usuarios', icon: UserCog },
+  { name: 'Feriados', href: '/admin/feriados', icon: PartyPopper },
+  { name: 'Calendário', href: '/admin/calendario', icon: CalendarDays }] :
+  [];
 
   return (
     <>
@@ -76,8 +76,8 @@ export function Sidebar() {
           variant="ghost"
           size="icon"
           className="rounded-2xl hover:bg-primary/10"
-          onClick={() => setIsOpen(!isOpen)}
-        >
+          onClick={() => setIsOpen(!isOpen)}>
+          
           {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </Button>
         
@@ -90,20 +90,20 @@ export function Sidebar() {
       </div>
 
       {/* Overlay */}
-      {isOpen && (
-        <div 
-          className="fixed inset-0 bg-foreground/20 backdrop-blur-sm z-40 lg:hidden"
-          onClick={() => setIsOpen(false)}
-        />
-      )}
+      {isOpen &&
+      <div
+        className="fixed inset-0 bg-foreground/20 backdrop-blur-sm z-40 lg:hidden"
+        onClick={() => setIsOpen(false)} />
+
+      }
 
       {/* Sidebar */}
       <aside
         className={cn(
           "fixed top-0 left-0 z-40 h-full w-72 bg-card border-r-2 border-border transition-transform duration-300 lg:translate-x-0 shadow-xl",
           isOpen ? "translate-x-0" : "-translate-x-full"
-        )}
-      >
+        )}>
+        
         <div className="flex flex-col h-full">
           {/* Logo */}
           <div className="flex items-center justify-between gap-3 px-6 py-5 border-b-2 border-border bg-gradient-to-r from-primary/5 to-secondary/10">
@@ -122,98 +122,98 @@ export function Sidebar() {
           </div>
 
           {/* User info */}
-          {profile && (
-            <div className="px-6 py-3 border-b border-border bg-muted/30">
+          {profile &&
+          <div className="px-6 py-3 border-b border-border bg-muted/30">
               <p className="text-sm font-semibold text-foreground truncate">{profile.nome}</p>
               <p className="text-xs text-muted-foreground capitalize">{role || ''}</p>
             </div>
-          )}
+          }
 
           {/* Navigation */}
           <nav className="flex-1 px-4 py-6 space-y-6 overflow-y-auto scrollbar-thin">
-            {mainNavigation.length > 0 && (
-              <div className="space-y-2">
+            {mainNavigation.length > 0 &&
+            <div className="space-y-2">
                 <p className="px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                   📚 Principal
                 </p>
                 {mainNavigation.map((item) => {
-                  const isActive = location.pathname === item.href;
-                  return (
-                    <Link
-                      key={item.name}
-                      to={item.href}
-                      onClick={() => setIsOpen(false)}
-                      className={cn(
-                        "flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold transition-all duration-300",
-                        isActive
-                          ? "bg-gradient-to-r from-primary to-primary/80 text-primary-foreground shadow-lg scale-[1.02]"
-                          : "text-muted-foreground hover:bg-muted hover:text-foreground hover:scale-[1.01]"
-                      )}
-                    >
+                const isActive = location.pathname === item.href;
+                return (
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    onClick={() => setIsOpen(false)}
+                    className={cn(
+                      "flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold transition-all duration-300",
+                      isActive ?
+                      "bg-gradient-to-r from-primary to-primary/80 text-primary-foreground shadow-lg scale-[1.02]" :
+                      "text-muted-foreground hover:bg-muted hover:text-foreground hover:scale-[1.01]"
+                    )}>
+                    
                       <item.icon className="w-5 h-5" />
                       {item.name}
-                      {isActive && <span className="ml-auto">✨</span>}
-                    </Link>
-                  );
-                })}
-              </div>
-            )}
+                      {isActive}
+                    </Link>);
 
-            {responsavelNavigation.length > 0 && (
-              <div className="space-y-2">
+              })}
+              </div>
+            }
+
+            {responsavelNavigation.length > 0 &&
+            <div className="space-y-2">
                 <p className="px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                   👨‍👩‍👧 Responsável
                 </p>
                 {responsavelNavigation.map((item) => {
-                  const isActive = location.pathname === item.href;
-                  return (
-                    <Link
-                      key={item.name}
-                      to={item.href}
-                      onClick={() => setIsOpen(false)}
-                      className={cn(
-                        "flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold transition-all duration-300",
-                        isActive
-                          ? "bg-gradient-to-r from-kawaii-mint to-kawaii-blue text-foreground shadow-lg scale-[1.02]"
-                          : "text-muted-foreground hover:bg-muted hover:text-foreground hover:scale-[1.01]"
-                      )}
-                    >
+                const isActive = location.pathname === item.href;
+                return (
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    onClick={() => setIsOpen(false)}
+                    className={cn(
+                      "flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold transition-all duration-300",
+                      isActive ?
+                      "bg-gradient-to-r from-kawaii-mint to-kawaii-blue text-foreground shadow-lg scale-[1.02]" :
+                      "text-muted-foreground hover:bg-muted hover:text-foreground hover:scale-[1.01]"
+                    )}>
+                    
                       <item.icon className="w-5 h-5" />
                       {item.name}
                       {isActive && <span className="ml-auto">💕</span>}
-                    </Link>
-                  );
-                })}
-              </div>
-            )}
+                    </Link>);
 
-            {adminNavigation.length > 0 && (
-              <div className="space-y-2">
+              })}
+              </div>
+            }
+
+            {adminNavigation.length > 0 &&
+            <div className="space-y-2">
                 <p className="px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                   ⚙️ Administração
                 </p>
                 {adminNavigation.map((item) => {
-                  const isActive = location.pathname === item.href;
-                  return (
-                    <Link
-                      key={item.name}
-                      to={item.href}
-                      onClick={() => setIsOpen(false)}
-                      className={cn(
-                        "flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold transition-all duration-300",
-                        isActive
-                          ? "bg-gradient-to-r from-secondary to-secondary/80 text-secondary-foreground shadow-lg scale-[1.02]"
-                          : "text-muted-foreground hover:bg-muted hover:text-foreground hover:scale-[1.01]"
-                      )}
-                    >
+                const isActive = location.pathname === item.href;
+                return (
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    onClick={() => setIsOpen(false)}
+                    className={cn(
+                      "flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold transition-all duration-300",
+                      isActive ?
+                      "bg-gradient-to-r from-secondary to-secondary/80 text-secondary-foreground shadow-lg scale-[1.02]" :
+                      "text-muted-foreground hover:bg-muted hover:text-foreground hover:scale-[1.01]"
+                    )}>
+                    
                       <item.icon className="w-5 h-5" />
                       {item.name}
                       {isActive && <span className="ml-auto">🌸</span>}
-                    </Link>
-                  );
-                })}
+                    </Link>);
+
+              })}
               </div>
-            )}
+            }
           </nav>
 
           {/* Footer */}
@@ -221,14 +221,14 @@ export function Sidebar() {
             <Button
               variant="ghost"
               className="w-full justify-start text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-2xl"
-              onClick={handleSignOut}
-            >
+              onClick={handleSignOut}>
+              
               <LogOut className="w-5 h-5 mr-3" />
               Sair
             </Button>
           </div>
         </div>
       </aside>
-    </>
-  );
+    </>);
+
 }
