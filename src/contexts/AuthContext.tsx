@@ -46,6 +46,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [userCreche, setUserCreche] = useState<UserCreche | null>(null);
   const [isDiretor, setIsDiretor] = useState(false);
+  const [mustChangePassword, setMustChangePassword] = useState(false);
 
   const fetchUserData = async (userId: string) => {
     try {
