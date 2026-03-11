@@ -1,11 +1,15 @@
 import { ReactNode } from 'react';
 import { Sidebar } from './Sidebar';
+import { ChangePasswordModal } from '@/components/modals/ChangePasswordModal';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface MainLayoutProps {
   children: ReactNode;
 }
 
 export function MainLayout({ children }: MainLayoutProps) {
+  const { mustChangePassword, setMustChangePassword } = useAuth();
+
   return (
     <div className="min-h-screen bg-background">
       <Sidebar />
@@ -14,6 +18,10 @@ export function MainLayout({ children }: MainLayoutProps) {
           {children}
         </div>
       </main>
+      <ChangePasswordModal
+        open={mustChangePassword}
+        onSuccess={() => setMustChangePassword(false)}
+      />
     </div>
   );
 }
