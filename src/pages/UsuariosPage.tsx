@@ -257,7 +257,7 @@ export default function UsuariosPage() {
                       <Button variant="ghost" size="icon" onClick={() => openEdit(user)} title="Editar">
                         <Edit className="w-4 h-4" />
                       </Button>
-                      <Button variant="ghost" size="icon" onClick={() => handleResetPassword(user)} title="Resetar senha">
+                      <Button variant="ghost" size="icon" onClick={() => setResetTarget(user)} title="Resetar senha">
                         <KeyRound className="w-4 h-4" />
                       </Button>
                     </TableCell>
