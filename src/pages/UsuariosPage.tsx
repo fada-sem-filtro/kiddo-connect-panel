@@ -44,6 +44,8 @@ export default function UsuariosPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [editingUser, setEditingUser] = useState<UserWithRole | null>(null);
+  const [resetTarget, setResetTarget] = useState<UserWithRole | null>(null);
+  const [isResetting, setIsResetting] = useState(false);
   const [form, setForm] = useState({
     nome: '', email: '', password: '', telefone: '', role: '' as string,
   });
