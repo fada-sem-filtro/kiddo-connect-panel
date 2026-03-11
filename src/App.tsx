@@ -21,6 +21,7 @@ import CalendarioAdminPage from "./pages/CalendarioAdminPage";
 import ResponsavelEventosPage from "./pages/ResponsavelEventosPage";
 import EducadorTurmaPage from "./pages/EducadorTurmaPage";
 import UsuariosPage from "./pages/UsuariosPage";
+import CrechesPage from "./pages/CrechesPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -66,6 +67,7 @@ const App = () => (
                   <Route path="/admin/calendario" element={<ProtectedRoute allowedRoles={['admin']}><CalendarioAdminPage /></ProtectedRoute>} />
                   <Route path="/responsavel/eventos" element={<ProtectedRoute allowedRoles={['admin', 'responsavel']}><ResponsavelEventosPage /></ProtectedRoute>} />
                   <Route path="/admin/usuarios" element={<ProtectedRoute allowedRoles={['admin']}><UsuariosPage /></ProtectedRoute>} />
+                  <Route path="/admin/creches" element={<ProtectedRoute allowedRoles={['admin']}><CrechesPage /></ProtectedRoute>} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </NotificationConnector>

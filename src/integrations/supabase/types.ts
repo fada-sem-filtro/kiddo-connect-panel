@@ -14,6 +14,68 @@ export type Database = {
   }
   public: {
     Tables: {
+      creche_membros: {
+        Row: {
+          created_at: string
+          creche_id: string
+          id: string
+          is_diretor: boolean
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          creche_id: string
+          id?: string
+          is_diretor?: boolean
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          creche_id?: string
+          id?: string
+          is_diretor?: boolean
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "creche_membros_creche_id_fkey"
+            columns: ["creche_id"]
+            isOneToOne: false
+            referencedRelation: "creches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      creches: {
+        Row: {
+          created_at: string
+          email: string | null
+          endereco: string | null
+          id: string
+          nome: string
+          telefone: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          endereco?: string | null
+          id?: string
+          nome: string
+          telefone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          endereco?: string | null
+          id?: string
+          nome?: string
+          telefone?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -79,6 +141,10 @@ export type Database = {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
+        Returns: boolean
+      }
+      is_diretor_of_creche: {
+        Args: { _creche_id: string; _user_id: string }
         Returns: boolean
       }
     }
