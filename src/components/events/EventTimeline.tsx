@@ -1,15 +1,14 @@
-import { format } from 'date-fns';
-import { Evento } from '@/types';
+import { EventoDb } from '@/hooks/useEventos';
 import { EventCard } from './EventCard';
 
 interface EventTimelineProps {
-  eventos: Evento[];
+  eventos: EventoDb[];
+  loading?: boolean;
 }
 
-export function EventTimeline({ eventos }: EventTimelineProps) {
-  // Group events by period (morning/afternoon/evening)
+export function EventTimeline({ eventos, loading }: EventTimelineProps) {
   const groupedEvents = eventos.reduce((acc, evento) => {
-    const hour = new Date(evento.dataInicio).getHours();
+    const hour = new Date(evento.data_inicio).getHours();
     let period: string;
     
     if (hour < 12) {
@@ -25,9 +24,17 @@ export function EventTimeline({ eventos }: EventTimelineProps) {
     }
     acc[period].push(evento);
     return acc;
-  }, {} as Record<string, Evento[]>);
+  }, {} as Record<string, EventoDb[]>);
 
   const periods = ['Manhã', 'Tarde', 'Noite'];
+
+  if (loading) {
+    return (
+      <div className="bg-card rounded-2xl p-6 shadow-sm border border-border">
+        <div className="text-center py-8 text-muted-foreground">Carregando eventos...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-card rounded-2xl p-6 shadow-sm border border-border">

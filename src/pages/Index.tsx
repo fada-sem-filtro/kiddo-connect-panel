@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { addWeeks, subWeeks } from 'date-fns';
 import { Plus, Users } from 'lucide-react';
 import { MainLayout } from '@/components/layout/MainLayout';
@@ -7,16 +7,27 @@ import { SummaryCards } from '@/components/calendar/SummaryCards';
 import { EventTimeline } from '@/components/events/EventTimeline';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { EventModal } from '@/components/modals/EventModal';
-import { useData } from '@/contexts/DataContext';
+import { EventDbModal } from '@/components/modals/EventDbModal';
+import { useEventos, EventoDb } from '@/hooks/useEventos';
+import { supabase } from '@/integrations/supabase/client';
 
 const Index = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedCriancaId, setSelectedCriancaId] = useState<string>('all');
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
   const [isBulkEventModalOpen, setIsBulkEventModalOpen] = useState(false);
-  
-  const { criancas, eventos, turmas } = useData();
+  const [criancas, setCriancas] = useState<{ id: string; nome: string }[]>([]);
+
+  const { eventos, loading, fetchEventos } = useEventos({
+    date: selectedDate,
+    criancaId: selectedCriancaId,
+  });
+
+  useEffect(() => {
+    supabase.from('criancas').select('id, nome').order('nome').then(({ data }) => {
+      if (data) setCriancas(data);
+    });
+  }, []);
 
   const handleWeekChange = (direction: 'prev' | 'next') => {
     setSelectedDate(prev => 
@@ -24,27 +35,16 @@ const Index = () => {
     );
   };
 
-  const filteredEventos = useMemo(() => {
-    return eventos.filter(evento => {
-      const eventDate = new Date(evento.dataInicio).toDateString();
-      const matchesDate = eventDate === selectedDate.toDateString();
-      
-      if (selectedCriancaId === 'all') return matchesDate;
-      return matchesDate && evento.criancaId === selectedCriancaId;
-    });
-  }, [eventos, selectedDate, selectedCriancaId]);
-
   const eventCounts = useMemo(() => {
-    return filteredEventos.reduce((acc, evento) => {
+    return eventos.reduce((acc, evento) => {
       acc[evento.tipo] = (acc[evento.tipo] || 0) + 1;
       return acc;
     }, {} as Record<string, number>);
-  }, [filteredEventos]);
+  }, [eventos]);
 
   return (
     <MainLayout>
       <div className="max-w-5xl mx-auto space-y-6">
-        {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold">Agenda</h1>
@@ -78,30 +78,30 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Calendar */}
         <WeekCalendar 
           selectedDate={selectedDate}
           onDateSelect={setSelectedDate}
           onWeekChange={handleWeekChange}
         />
 
-        {/* Summary */}
         <SummaryCards eventCounts={eventCounts} />
 
-        {/* Timeline */}
-        <EventTimeline eventos={filteredEventos} />
+        <EventTimeline eventos={eventos} loading={loading} />
       </div>
 
-      <EventModal 
+      <EventDbModal 
         open={isEventModalOpen} 
         onOpenChange={setIsEventModalOpen}
         mode="individual"
+        criancas={criancas}
+        onSaved={fetchEventos}
       />
       
-      <EventModal 
+      <EventDbModal 
         open={isBulkEventModalOpen} 
         onOpenChange={setIsBulkEventModalOpen}
         mode="turma"
+        onSaved={fetchEventos}
       />
     </MainLayout>
   );

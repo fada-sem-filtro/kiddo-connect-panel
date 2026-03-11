@@ -1,5 +1,6 @@
 import { format } from 'date-fns';
-import { Evento, EVENT_TYPE_LABELS, EventType } from '@/types';
+import { EventoDb } from '@/hooks/useEventos';
+import { EVENT_TYPE_LABELS, EventType } from '@/types';
 import { cn } from '@/lib/utils';
 import { 
   Utensils, 
@@ -11,12 +12,12 @@ import {
 } from 'lucide-react';
 
 interface EventCardProps {
-  evento: Evento;
+  evento: EventoDb;
   onEdit?: () => void;
   onDelete?: () => void;
 }
 
-const eventStyles: Record<EventType, string> = {
+const eventStyles: Record<string, string> = {
   ALIMENTACAO: 'event-card-meal',
   SONECA: 'event-card-sleep',
   BRINCADEIRA: 'event-card-play',
@@ -25,7 +26,7 @@ const eventStyles: Record<EventType, string> = {
   OUTRO: 'event-card-other',
 };
 
-const eventIcons: Record<EventType, React.ComponentType<{ className?: string }>> = {
+const eventIcons: Record<string, React.ComponentType<{ className?: string }>> = {
   ALIMENTACAO: Utensils,
   SONECA: Moon,
   BRINCADEIRA: Gamepad2,
@@ -34,7 +35,7 @@ const eventIcons: Record<EventType, React.ComponentType<{ className?: string }>>
   OUTRO: MoreHorizontal,
 };
 
-const eventEmojis: Record<EventType, string> = {
+const eventEmojis: Record<string, string> = {
   ALIMENTACAO: '🍽️',
   SONECA: '💤',
   BRINCADEIRA: '🎮',
@@ -44,13 +45,14 @@ const eventEmojis: Record<EventType, string> = {
 };
 
 export function EventCard({ evento }: EventCardProps) {
-  const time = format(new Date(evento.dataInicio), 'HH:mm');
-  const Icon = eventIcons[evento.tipo];
+  const time = format(new Date(evento.data_inicio), 'HH:mm');
+  const Icon = eventIcons[evento.tipo] || MoreHorizontal;
+  const label = EVENT_TYPE_LABELS[evento.tipo as EventType] || evento.tipo;
 
   return (
     <div className={cn(
       "rounded-2xl p-4 animate-fade-in kawaii-hover",
-      eventStyles[evento.tipo]
+      eventStyles[evento.tipo] || 'event-card-other'
     )}>
       <div className="flex items-start gap-3">
         <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-card/60 shadow-sm">
@@ -59,11 +61,15 @@ export function EventCard({ evento }: EventCardProps) {
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
             <h4 className="font-bold text-foreground text-sm">
-              {EVENT_TYPE_LABELS[evento.tipo]}
+              {label}
             </h4>
-            <span className="text-lg">{eventEmojis[evento.tipo]}</span>
+            <span className="text-lg">{eventEmojis[evento.tipo] || '📋'}</span>
           </div>
-          <p className="text-xs text-muted-foreground mt-0.5">{time}</p>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            {time}
+            {evento.crianca_nome && ` · ${evento.crianca_nome}`}
+            {evento.turma_nome && ` · ${evento.turma_nome}`}
+          </p>
           {evento.observacao && (
             <p className="text-sm text-foreground/80 mt-2 line-clamp-2">{evento.observacao}</p>
           )}
