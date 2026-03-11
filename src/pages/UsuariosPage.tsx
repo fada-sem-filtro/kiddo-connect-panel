@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Plus, Search, Users, Shield, GraduationCap, UserCheck } from 'lucide-react';
+import { Plus, Search, Users, Shield, GraduationCap, UserCheck, Edit } from 'lucide-react';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -43,6 +43,7 @@ export default function UsuariosPage() {
   const [search, setSearch] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [editingUser, setEditingUser] = useState<UserWithRole | null>(null);
   const [form, setForm] = useState({
     nome: '', email: '', password: '', telefone: '', role: '' as string,
   });
@@ -76,8 +77,35 @@ export default function UsuariosPage() {
     u.email.toLowerCase().includes(search.toLowerCase())
   );
 
-  const handleCreateUser = async (e: React.FormEvent) => {
+  const openCreate = () => {
+    setEditingUser(null);
+    setForm({ nome: '', email: '', password: '', telefone: '', role: '' });
+    setIsModalOpen(true);
+  };
+
+  const openEdit = (user: UserWithRole) => {
+    setEditingUser(user);
+    setForm({
+      nome: user.nome,
+      email: user.email,
+      password: '',
+      telefone: user.telefone || '',
+      role: user.role,
+    });
+    setIsModalOpen(true);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (editingUser) {
+      await handleUpdateUser();
+    } else {
+      await handleCreateUser();
+    }
+  };
+
+  const handleCreateUser = async () => {
     if (!form.nome || !form.email || !form.password || !form.role) {
       toast.error('Preencha todos os campos obrigatórios');
       return;
@@ -101,7 +129,49 @@ export default function UsuariosPage() {
     }
 
     toast.success(`${form.nome} cadastrado como ${ROLE_LABELS[form.role]}! 🌸`);
-    setForm({ nome: '', email: '', password: '', telefone: '', role: '' });
+    setIsModalOpen(false);
+    fetchUsers();
+  };
+
+  const handleUpdateUser = async () => {
+    if (!editingUser || !form.nome || !form.role) {
+      toast.error('Preencha os campos obrigatórios');
+      return;
+    }
+
+    setIsLoading(true);
+
+    // Update profile
+    const { error: profileError } = await supabase
+      .from('profiles')
+      .update({
+        nome: form.nome,
+        telefone: form.telefone || null,
+      })
+      .eq('user_id', editingUser.user_id);
+
+    if (profileError) {
+      toast.error('Erro ao atualizar perfil');
+      setIsLoading(false);
+      return;
+    }
+
+    // Update role if changed
+    if (form.role !== editingUser.role) {
+      const { error: roleError } = await supabase
+        .from('user_roles')
+        .update({ role: form.role as UserWithRole['role'] })
+        .eq('user_id', editingUser.user_id);
+
+      if (roleError) {
+        toast.error('Erro ao atualizar papel');
+        setIsLoading(false);
+        return;
+      }
+    }
+
+    setIsLoading(false);
+    toast.success('Usuário atualizado!');
     setIsModalOpen(false);
     fetchUsers();
   };
@@ -117,7 +187,7 @@ export default function UsuariosPage() {
             </h1>
             <p className="text-muted-foreground">Gerencie os acessos ao sistema</p>
           </div>
-          <Button onClick={() => setIsModalOpen(true)}>
+          <Button onClick={openCreate}>
             <Plus className="w-4 h-4 mr-2" />
             Novo Usuário
           </Button>
@@ -141,12 +211,13 @@ export default function UsuariosPage() {
                 <TableHead>Email</TableHead>
                 <TableHead>Telefone</TableHead>
                 <TableHead>Papel</TableHead>
+                <TableHead className="text-right">Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filteredUsers.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
+                  <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
                     Nenhum usuário encontrado
                   </TableCell>
                 </TableRow>
@@ -162,6 +233,11 @@ export default function UsuariosPage() {
                         {ROLE_LABELS[user.role]}
                       </Badge>
                     </TableCell>
+                    <TableCell className="text-right">
+                      <Button variant="ghost" size="icon" onClick={() => openEdit(user)}>
+                        <Edit className="w-4 h-4" />
+                      </Button>
+                    </TableCell>
                   </TableRow>
                 ))
               )}
@@ -173,21 +249,31 @@ export default function UsuariosPage() {
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="rounded-3xl">
           <DialogHeader>
-            <DialogTitle>Novo Usuário</DialogTitle>
+            <DialogTitle>{editingUser ? 'Editar Usuário' : 'Novo Usuário'}</DialogTitle>
           </DialogHeader>
-          <form onSubmit={handleCreateUser} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label>Nome *</Label>
               <Input value={form.nome} onChange={(e) => setForm({ ...form, nome: e.target.value })} placeholder="Nome completo" required />
             </div>
-            <div className="space-y-2">
-              <Label>Email *</Label>
-              <Input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="email@exemplo.com" required />
-            </div>
-            <div className="space-y-2">
-              <Label>Senha *</Label>
-              <Input type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} placeholder="Mínimo 6 caracteres" required />
-            </div>
+            {!editingUser && (
+              <>
+                <div className="space-y-2">
+                  <Label>Email *</Label>
+                  <Input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="email@exemplo.com" required />
+                </div>
+                <div className="space-y-2">
+                  <Label>Senha *</Label>
+                  <Input type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} placeholder="Mínimo 6 caracteres" required />
+                </div>
+              </>
+            )}
+            {editingUser && (
+              <div className="space-y-2">
+                <Label>Email</Label>
+                <Input value={form.email} disabled className="opacity-60" />
+              </div>
+            )}
             <div className="space-y-2">
               <Label>Telefone</Label>
               <Input value={form.telefone} onChange={(e) => setForm({ ...form, telefone: e.target.value })} placeholder="(00) 00000-0000" />
@@ -208,7 +294,7 @@ export default function UsuariosPage() {
             <div className="flex justify-end gap-2 pt-2">
               <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)}>Cancelar</Button>
               <Button type="submit" disabled={isLoading}>
-                {isLoading ? 'Criando...' : 'Cadastrar'}
+                {isLoading ? 'Salvando...' : editingUser ? 'Salvar' : 'Cadastrar'}
               </Button>
             </div>
           </form>
