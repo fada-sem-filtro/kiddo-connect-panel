@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Plus, Search, Users, Shield, GraduationCap, UserCheck, Edit, KeyRound } from 'lucide-react';
+import { Plus, Search, Users, Shield, GraduationCap, UserCheck, Edit, KeyRound, AlertTriangle } from 'lucide-react';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,7 +9,7 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '@/components/ui/table';
 import {
-  Dialog, DialogContent, DialogHeader, DialogTitle,
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter,
 } from '@/components/ui/dialog';
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
@@ -44,6 +44,8 @@ export default function UsuariosPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [editingUser, setEditingUser] = useState<UserWithRole | null>(null);
+  const [resetTarget, setResetTarget] = useState<UserWithRole | null>(null);
+  const [isResetting, setIsResetting] = useState(false);
   const [form, setForm] = useState({
     nome: '', email: '', password: '', telefone: '', role: '' as string,
   });
@@ -175,19 +177,23 @@ export default function UsuariosPage() {
     fetchUsers();
   };
 
-  const handleResetPassword = async (user: UserWithRole) => {
-    if (!confirm(`Resetar a senha de ${user.nome} para a senha padrão (fleur@2026)?`)) return;
+  const handleResetPassword = async () => {
+    if (!resetTarget) return;
+    setIsResetting(true);
 
     const { data, error } = await supabase.functions.invoke('reset-user-password', {
-      body: { user_id: user.user_id },
+      body: { user_id: resetTarget.user_id },
     });
+
+    setIsResetting(false);
 
     if (error || data?.error) {
       toast.error(data?.error || 'Erro ao resetar senha');
       return;
     }
 
-    toast.success(`Senha de ${user.nome} resetada! No próximo login será solicitada uma nova senha.`);
+    toast.success(`Senha de ${resetTarget.nome} resetada! No próximo login será solicitada uma nova senha.`);
+    setResetTarget(null);
   };
 
   return (
@@ -251,7 +257,7 @@ export default function UsuariosPage() {
                       <Button variant="ghost" size="icon" onClick={() => openEdit(user)} title="Editar">
                         <Edit className="w-4 h-4" />
                       </Button>
-                      <Button variant="ghost" size="icon" onClick={() => handleResetPassword(user)} title="Resetar senha">
+                      <Button variant="ghost" size="icon" onClick={() => setResetTarget(user)} title="Resetar senha">
                         <KeyRound className="w-4 h-4" />
                       </Button>
                     </TableCell>
@@ -316,6 +322,28 @@ export default function UsuariosPage() {
               </Button>
             </div>
           </form>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!resetTarget} onOpenChange={(open) => !open && setResetTarget(null)}>
+        <DialogContent className="rounded-3xl max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <AlertTriangle className="w-5 h-5 text-amber-500" />
+              Resetar Senha
+            </DialogTitle>
+            <DialogDescription>
+              A senha de <strong>{resetTarget?.nome}</strong> será redefinida para a senha padrão <strong>fleur@2026</strong>. No próximo login, será solicitada uma nova senha.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button variant="outline" onClick={() => setResetTarget(null)} disabled={isResetting}>
+              Cancelar
+            </Button>
+            <Button variant="destructive" onClick={handleResetPassword} disabled={isResetting}>
+              {isResetting ? 'Resetando...' : 'Confirmar Reset'}
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </MainLayout>
