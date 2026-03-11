@@ -10,8 +10,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { EventDbModal } from '@/components/modals/EventDbModal';
 import { useEventos, EventoDb } from '@/hooks/useEventos';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Index = () => {
+  const { role } = useAuth();
+  const canCreate = role === 'admin' || role === 'educador';
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedCriancaId, setSelectedCriancaId] = useState<string>('all');
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
@@ -66,15 +69,19 @@ const Index = () => {
               </SelectContent>
             </Select>
             
-            <Button onClick={() => setIsEventModalOpen(true)}>
-              <Plus className="w-4 h-4 mr-2" />
-              Novo Evento
-            </Button>
-            
-            <Button variant="outline" onClick={() => setIsBulkEventModalOpen(true)}>
-              <Users className="w-4 h-4 mr-2" />
-              Evento p/ Turma
-            </Button>
+            {canCreate && (
+              <>
+                <Button onClick={() => setIsEventModalOpen(true)}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Novo Evento
+                </Button>
+                
+                <Button variant="outline" onClick={() => setIsBulkEventModalOpen(true)}>
+                  <Users className="w-4 h-4 mr-2" />
+                  Evento p/ Turma
+                </Button>
+              </>
+            )}
           </div>
         </div>
 
