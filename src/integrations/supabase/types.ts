@@ -190,6 +190,68 @@ export type Database = {
           },
         ]
       }
+      eventos_futuros: {
+        Row: {
+          created_at: string
+          data_fim: string | null
+          data_inicio: string
+          descricao: string | null
+          id: string
+          nome: string
+          turma_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          data_fim?: string | null
+          data_inicio: string
+          descricao?: string | null
+          id?: string
+          nome: string
+          turma_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          data_fim?: string | null
+          data_inicio?: string
+          descricao?: string | null
+          id?: string
+          nome?: string
+          turma_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "eventos_futuros_turma_id_fkey"
+            columns: ["turma_id"]
+            isOneToOne: false
+            referencedRelation: "turmas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      feriados: {
+        Row: {
+          created_at: string
+          data: string
+          id: string
+          nome: string
+          recorrente: boolean
+        }
+        Insert: {
+          created_at?: string
+          data: string
+          id?: string
+          nome: string
+          recorrente?: boolean
+        }
+        Update: {
+          created_at?: string
+          data?: string
+          id?: string
+          nome?: string
+          recorrente?: boolean
+        }
+        Relationships: []
+      }
       notificacoes: {
         Row: {
           created_at: string
@@ -263,6 +325,67 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      recados: {
+        Row: {
+          conteudo: string
+          created_at: string
+          crianca_id: string | null
+          id: string
+          lido: boolean
+          parent_id: string | null
+          remetente_user_id: string
+          titulo: string
+          turma_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          conteudo: string
+          created_at?: string
+          crianca_id?: string | null
+          id?: string
+          lido?: boolean
+          parent_id?: string | null
+          remetente_user_id: string
+          titulo?: string
+          turma_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          conteudo?: string
+          created_at?: string
+          crianca_id?: string | null
+          id?: string
+          lido?: boolean
+          parent_id?: string | null
+          remetente_user_id?: string
+          titulo?: string
+          turma_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recados_crianca_id_fkey"
+            columns: ["crianca_id"]
+            isOneToOne: false
+            referencedRelation: "criancas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "recados_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "recados"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "recados_turma_id_fkey"
+            columns: ["turma_id"]
+            isOneToOne: false
+            referencedRelation: "turmas"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       turma_educadores: {
         Row: {
