@@ -161,10 +161,6 @@ export function CrecheMembrosModal({ open, onOpenChange, creche }: CrecheMembros
               <Plus className="w-4 h-4" />
             </Button>
           </div>
-          <div className="flex items-center gap-2">
-            <Switch checked={isDiretor} onCheckedChange={setIsDiretor} id="diretor-switch" />
-            <Label htmlFor="diretor-switch" className="text-sm">Diretor(a) desta creche</Label>
-          </div>
         </div>
 
         {/* Members list */}
@@ -181,22 +177,9 @@ export function CrecheMembrosModal({ open, onOpenChange, creche }: CrecheMembros
                   <p className="text-xs text-muted-foreground truncate">{m.profile?.email}</p>
                   <div className="flex gap-1 mt-1">
                     {getRoleBadge(m.role)}
-                    {m.is_diretor && (
-                      <Badge className="bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400">
-                        <Shield className="w-3 h-3 mr-1" />
-                        Diretor(a)
-                      </Badge>
-                    )}
                   </div>
                 </div>
                 <div className="flex items-center gap-2 ml-2">
-                  <Button
-                    variant="ghost" size="sm"
-                    onClick={() => toggleDiretor(m.id, m.is_diretor)}
-                    title={m.is_diretor ? 'Remover cargo de diretor' : 'Tornar diretor'}
-                  >
-                    <Shield className={`w-4 h-4 ${m.is_diretor ? 'text-amber-500' : 'text-muted-foreground'}`} />
-                  </Button>
                   <Button
                     variant="ghost" size="icon"
                     className="text-destructive hover:text-destructive"
