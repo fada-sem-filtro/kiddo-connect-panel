@@ -1,19 +1,20 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { MainLayout } from '@/components/layout/MainLayout';
-import { useData } from '@/contexts/DataContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
-import { CalendarIcon, Baby, Clock, Utensils, Moon, Droplets, Gamepad2, BookOpen, ShowerHead, FileText } from 'lucide-react';
+import { CalendarIcon, Baby, Clock, Utensils, Moon, Gamepad2, BookOpen, ShowerHead, FileText } from 'lucide-react';
 import { format, parseISO, isToday, isSameDay } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { EVENT_TYPE_LABELS, EventType, EVENT_TYPE_ICONS } from '@/types';
+import { EVENT_TYPE_LABELS, EventType } from '@/types';
 import { cn } from '@/lib/utils';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 
-const EVENT_ICONS: Record<EventType, React.ReactNode> = {
+const EVENT_ICONS: Record<string, React.ReactNode> = {
   ALIMENTACAO: <Utensils className="h-4 w-4" />,
   SONECA: <Moon className="h-4 w-4" />,
   BRINCADEIRA: <Gamepad2 className="h-4 w-4" />,
@@ -22,7 +23,7 @@ const EVENT_ICONS: Record<EventType, React.ReactNode> = {
   OUTRO: <FileText className="h-4 w-4" />,
 };
 
-const EVENT_COLORS: Record<EventType, string> = {
+const EVENT_COLORS: Record<string, string> = {
   ALIMENTACAO: 'bg-kawaii-green/20 text-green-700 border-kawaii-green',
   SONECA: 'bg-kawaii-blue/20 text-blue-700 border-kawaii-blue',
   BRINCADEIRA: 'bg-kawaii-purple/20 text-purple-700 border-kawaii-purple',
@@ -31,53 +32,110 @@ const EVENT_COLORS: Record<EventType, string> = {
   OUTRO: 'bg-kawaii-yellow/20 text-yellow-700 border-kawaii-yellow',
 };
 
+interface CriancaInfo {
+  id: string;
+  nome: string;
+  turma_nome: string;
+}
+
+interface EventoInfo {
+  id: string;
+  tipo: string;
+  crianca_id: string;
+  observacao: string | null;
+  data_inicio: string;
+  data_fim: string | null;
+}
+
 export default function ResponsavelEventosPage() {
-  const { criancas, eventos, turmas } = useData();
+  const { user } = useAuth();
+  const [criancas, setCriancas] = useState<CriancaInfo[]>([]);
+  const [eventos, setEventos] = useState<EventoInfo[]>([]);
   const [selectedCrianca, setSelectedCrianca] = useState<string>('all');
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [loading, setLoading] = useState(true);
 
-  // Filtrar crianças (em um app real, filtraria pelo responsável logado)
-  const criancasDoResponsavel = criancas;
+  // Fetch crianças linked to this responsável
+  useEffect(() => {
+    if (!user) return;
 
-  // Filtrar eventos
-  const eventosFiltrados = eventos.filter(evento => {
-    const matchesCrianca = selectedCrianca === 'all' || evento.criancaId === selectedCrianca;
-    const eventoDate = parseISO(evento.dataInicio);
-    const matchesDate = isSameDay(eventoDate, selectedDate);
-    
-    // Verificar se o evento pertence a uma criança do responsável
-    const pertenceAoResponsavel = criancasDoResponsavel.some(c => c.id === evento.criancaId);
-    
-    return matchesCrianca && matchesDate && pertenceAoResponsavel;
-  });
+    const fetchCriancas = async () => {
+      const { data: links } = await supabase
+        .from('crianca_responsaveis')
+        .select('crianca_id')
+        .eq('responsavel_user_id', user.id);
 
-  // Agrupar eventos por criança
-  const eventosPorCrianca = eventosFiltrados.reduce((acc, evento) => {
-    const crianca = criancas.find(c => c.id === evento.criancaId);
-    if (crianca) {
-      if (!acc[crianca.id]) {
-        acc[crianca.id] = { crianca, eventos: [] };
+      if (!links || links.length === 0) {
+        setCriancas([]);
+        setLoading(false);
+        return;
       }
+
+      const criancaIds = links.map(l => l.crianca_id);
+      const { data } = await supabase
+        .from('criancas')
+        .select('id, nome, turmas(nome)')
+        .in('id', criancaIds);
+
+      if (data) {
+        setCriancas(data.map((c: any) => ({
+          id: c.id,
+          nome: c.nome,
+          turma_nome: c.turmas?.nome || 'Sem turma',
+        })));
+      }
+      setLoading(false);
+    };
+
+    fetchCriancas();
+  }, [user]);
+
+  // Fetch eventos for selected date
+  useEffect(() => {
+    if (!user || criancas.length === 0) {
+      setEventos([]);
+      return;
+    }
+
+    const fetchEventos = async () => {
+      const start = new Date(selectedDate);
+      start.setHours(0, 0, 0, 0);
+      const end = new Date(selectedDate);
+      end.setHours(23, 59, 59, 999);
+
+      let query = supabase
+        .from('eventos')
+        .select('id, tipo, crianca_id, observacao, data_inicio, data_fim')
+        .gte('data_inicio', start.toISOString())
+        .lte('data_inicio', end.toISOString())
+        .order('data_inicio');
+
+      if (selectedCrianca !== 'all') {
+        query = query.eq('crianca_id', selectedCrianca);
+      } else {
+        query = query.in('crianca_id', criancas.map(c => c.id));
+      }
+
+      const { data } = await query;
+      setEventos(data || []);
+    };
+
+    fetchEventos();
+  }, [user, criancas, selectedDate, selectedCrianca]);
+
+  // Group events by criança
+  const eventosPorCrianca = eventos.reduce((acc, evento) => {
+    const crianca = criancas.find(c => c.id === evento.crianca_id);
+    if (crianca) {
+      if (!acc[crianca.id]) acc[crianca.id] = { crianca, eventos: [] };
       acc[crianca.id].eventos.push(evento);
     }
     return acc;
-  }, {} as Record<string, { crianca: typeof criancas[0], eventos: typeof eventos }>);
-
-  // Ordenar eventos por hora
-  Object.values(eventosPorCrianca).forEach(group => {
-    group.eventos.sort((a, b) => 
-      new Date(a.dataInicio).getTime() - new Date(b.dataInicio).getTime()
-    );
-  });
-
-  const getTurmaName = (turmaId: string) => {
-    return turmas.find(t => t.id === turmaId)?.nome || 'Sem turma';
-  };
+  }, {} as Record<string, { crianca: CriancaInfo; eventos: EventoInfo[] }>);
 
   return (
     <MainLayout>
       <div className="space-y-6">
-        {/* Header */}
         <div className="flex flex-col gap-4">
           <div>
             <h1 className="text-2xl lg:text-3xl font-bold text-foreground flex items-center gap-2">
@@ -88,7 +146,6 @@ export default function ResponsavelEventosPage() {
             </p>
           </div>
 
-          {/* Filtros */}
           <div className="flex flex-col sm:flex-row gap-3">
             <Popover>
               <PopoverTrigger asChild>
@@ -129,24 +186,35 @@ export default function ResponsavelEventosPage() {
               </SelectTrigger>
               <SelectContent className="rounded-2xl">
                 <SelectItem value="all">Todas as crianças</SelectItem>
-                {criancasDoResponsavel.map(crianca => (
-                  <SelectItem key={crianca.id} value={crianca.id}>
-                    {crianca.nome}
-                  </SelectItem>
+                {criancas.map(c => (
+                  <SelectItem key={c.id} value={c.id}>{c.nome}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
         </div>
 
-        {/* Lista de Eventos */}
-        {Object.keys(eventosPorCrianca).length === 0 ? (
+        {loading ? (
+          <Card className="rounded-3xl border-2">
+            <CardContent className="flex items-center justify-center py-12">
+              <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+            </CardContent>
+          </Card>
+        ) : criancas.length === 0 ? (
+          <Card className="rounded-3xl border-2 border-dashed">
+            <CardContent className="flex flex-col items-center justify-center py-12">
+              <div className="text-6xl mb-4">👶</div>
+              <h3 className="text-lg font-semibold text-muted-foreground">Nenhuma criança vinculada</h3>
+              <p className="text-sm text-muted-foreground text-center mt-1">
+                Solicite ao administrador que vincule suas crianças ao seu perfil
+              </p>
+            </CardContent>
+          </Card>
+        ) : Object.keys(eventosPorCrianca).length === 0 ? (
           <Card className="rounded-3xl border-2 border-dashed">
             <CardContent className="flex flex-col items-center justify-center py-12">
               <div className="text-6xl mb-4">🌸</div>
-              <h3 className="text-lg font-semibold text-muted-foreground">
-                Nenhum evento registrado
-              </h3>
+              <h3 className="text-lg font-semibold text-muted-foreground">Nenhum evento registrado</h3>
               <p className="text-sm text-muted-foreground text-center mt-1">
                 Não há eventos para a data selecionada
               </p>
@@ -159,16 +227,12 @@ export default function ResponsavelEventosPage() {
                 <CardHeader className="bg-gradient-to-r from-kawaii-pink/30 to-kawaii-purple/30 pb-3">
                   <CardTitle className="flex items-center gap-3">
                     <div className="w-12 h-12 rounded-full bg-white shadow-sm flex items-center justify-center text-2xl">
-                      {crianca.foto ? (
-                        <img src={crianca.foto} alt={crianca.nome} className="w-full h-full rounded-full object-cover" />
-                      ) : (
-                        '👶'
-                      )}
+                      👶
                     </div>
                     <div>
                       <h3 className="text-lg font-bold">{crianca.nome}</h3>
                       <p className="text-sm text-muted-foreground font-normal">
-                        {getTurmaName(crianca.turmaId)} • {criancaEventos.length} evento{criancaEventos.length !== 1 ? 's' : ''}
+                        {crianca.turma_nome} • {criancaEventos.length} evento{criancaEventos.length !== 1 ? 's' : ''}
                       </p>
                     </div>
                   </CardTitle>
@@ -180,28 +244,26 @@ export default function ResponsavelEventosPage() {
                         key={evento.id}
                         className={cn(
                           "p-4 rounded-2xl border-2 transition-all hover:shadow-md",
-                          EVENT_COLORS[evento.tipo]
+                          EVENT_COLORS[evento.tipo] || EVENT_COLORS.OUTRO
                         )}
                       >
                         <div className="flex items-start gap-3">
                           <div className="p-2 rounded-xl bg-white/60 shadow-sm">
-                            {EVENT_ICONS[evento.tipo]}
+                            {EVENT_ICONS[evento.tipo] || EVENT_ICONS.OUTRO}
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 flex-wrap">
                               <Badge variant="secondary" className="rounded-full text-xs">
-                                {EVENT_TYPE_LABELS[evento.tipo]}
+                                {EVENT_TYPE_LABELS[evento.tipo as EventType] || evento.tipo}
                               </Badge>
                               <span className="text-xs text-muted-foreground flex items-center gap-1">
                                 <Clock className="h-3 w-3" />
-                                {format(parseISO(evento.dataInicio), 'HH:mm')}
-                                {evento.dataFim && ` - ${format(parseISO(evento.dataFim), 'HH:mm')}`}
+                                {format(parseISO(evento.data_inicio), 'HH:mm')}
+                                {evento.data_fim && ` - ${format(parseISO(evento.data_fim), 'HH:mm')}`}
                               </span>
                             </div>
                             {evento.observacao && (
-                              <p className="mt-2 text-sm text-foreground/80">
-                                {evento.observacao}
-                              </p>
+                              <p className="mt-2 text-sm text-foreground/80">{evento.observacao}</p>
                             )}
                           </div>
                         </div>
@@ -225,21 +287,18 @@ export default function ResponsavelEventosPage() {
             <CardContent>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 {Object.entries(
-                  eventosFiltrados.reduce((acc, evento) => {
+                  eventos.reduce((acc, evento) => {
                     acc[evento.tipo] = (acc[evento.tipo] || 0) + 1;
                     return acc;
                   }, {} as Record<string, number>)
                 ).map(([tipo, count]) => (
-                  <div
-                    key={tipo}
-                    className="flex items-center gap-2 p-3 rounded-2xl bg-white/60"
-                  >
+                  <div key={tipo} className="flex items-center gap-2 p-3 rounded-2xl bg-white/60">
                     <div className="p-2 rounded-xl bg-white shadow-sm">
-                      {EVENT_ICONS[tipo as EventType]}
+                      {EVENT_ICONS[tipo] || EVENT_ICONS.OUTRO}
                     </div>
                     <div>
                       <p className="text-xs text-muted-foreground">
-                        {EVENT_TYPE_LABELS[tipo as EventType]}
+                        {EVENT_TYPE_LABELS[tipo as EventType] || tipo}
                       </p>
                       <p className="font-bold">{count}</p>
                     </div>
