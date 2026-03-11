@@ -1,8 +1,8 @@
-import { useState, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Plus, Trash2, UserPlus } from 'lucide-react';
+import { Plus, Trash2 } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -23,128 +23,163 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
-import { useData } from '@/contexts/DataContext';
-import { Crianca, Responsavel } from '@/types';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 
 const responsavelSchema = z.object({
   id: z.string().optional(),
   nome: z.string().min(1, 'Nome obrigatório'),
-  telefone: z.string().min(1, 'Telefone obrigatório'),
+  telefone: z.string().optional(),
   email: z.string().email('Email inválido'),
   parentesco: z.string().min(1, 'Parentesco obrigatório'),
 });
 
 const criancaSchema = z.object({
   nome: z.string().min(1, 'Nome obrigatório'),
-  dataNascimento: z.string().min(1, 'Data de nascimento obrigatória'),
-  turmaId: z.string().min(1, 'Turma obrigatória'),
+  data_nascimento: z.string().min(1, 'Data de nascimento obrigatória'),
+  turma_id: z.string().min(1, 'Turma obrigatória'),
   observacoes: z.string().optional(),
   responsaveis: z.array(responsavelSchema).min(1, 'Adicione pelo menos um responsável'),
 });
 
 type CriancaFormData = z.infer<typeof criancaSchema>;
 
+interface CriancaEditData {
+  id: string;
+  nome: string;
+  data_nascimento: string;
+  turma_id: string;
+  observacoes: string | null | undefined;
+  responsaveis: { id: string; nome: string; telefone: string; email: string; parentesco: string }[];
+}
+
 interface CriancaModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  editData?: Crianca | null;
+  editData?: CriancaEditData | null;
+  turmas: { id: string; nome: string; descricao?: string }[];
+  onSaved?: () => void;
 }
 
-export function CriancaModal({ open, onOpenChange, editData }: CriancaModalProps) {
-  const { turmas, criancas, addCrianca, updateCrianca } = useData();
-  const [existingPopoverOpen, setExistingPopoverOpen] = useState(false);
-  
+export function CriancaModal({ open, onOpenChange, editData, turmas, onSaved }: CriancaModalProps) {
+  const [saving, setSaving] = useState(false);
+
   const form = useForm<CriancaFormData>({
     resolver: zodResolver(criancaSchema),
-    defaultValues: editData ? {
-      nome: editData.nome,
-      dataNascimento: editData.dataNascimento,
-      turmaId: editData.turmaId,
-      observacoes: editData.observacoes || '',
-      responsaveis: editData.responsaveis,
-    } : {
+    defaultValues: {
       nome: '',
-      dataNascimento: '',
-      turmaId: '',
+      data_nascimento: '',
+      turma_id: '',
       observacoes: '',
       responsaveis: [{ id: '', nome: '', telefone: '', email: '', parentesco: '' }],
     },
   });
+
+  useEffect(() => {
+    if (open) {
+      form.reset(editData ? {
+        nome: editData.nome,
+        data_nascimento: editData.data_nascimento,
+        turma_id: editData.turma_id,
+        observacoes: editData.observacoes || '',
+        responsaveis: editData.responsaveis.length > 0
+          ? editData.responsaveis
+          : [{ id: '', nome: '', telefone: '', email: '', parentesco: '' }],
+      } : {
+        nome: '',
+        data_nascimento: '',
+        turma_id: '',
+        observacoes: '',
+        responsaveis: [{ id: '', nome: '', telefone: '', email: '', parentesco: '' }],
+      });
+    }
+  }, [open, editData, form]);
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: 'responsaveis',
   });
 
-  // Get all unique existing responsáveis from other crianças
-  const existingResponsaveis = useMemo(() => {
-    const map = new Map<string, Responsavel & { criancaNome: string }>();
-    criancas.forEach(c => {
-      if (editData && c.id === editData.id) return;
-      c.responsaveis.forEach(r => {
-        if (!map.has(r.email)) {
-          map.set(r.email, { ...r, criancaNome: c.nome });
+  const onSubmit = async (data: CriancaFormData) => {
+    setSaving(true);
+    try {
+      if (editData) {
+        // Update crianca
+        const { error } = await supabase
+          .from('criancas')
+          .update({
+            nome: data.nome,
+            data_nascimento: data.data_nascimento,
+            turma_id: data.turma_id,
+            observacoes: data.observacoes || null,
+          })
+          .eq('id', editData.id);
+
+        if (error) throw error;
+
+        // Sync responsaveis: delete old, insert new
+        await supabase.from('crianca_responsaveis').delete().eq('crianca_id', editData.id);
+
+        for (const resp of data.responsaveis) {
+          // Find or create profile for responsavel by email
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('user_id')
+            .eq('email', resp.email)
+            .maybeSingle();
+
+          if (profile) {
+            await supabase.from('crianca_responsaveis').insert({
+              crianca_id: editData.id,
+              responsavel_user_id: profile.user_id,
+              parentesco: resp.parentesco,
+            });
+          }
         }
-      });
-    });
-    return Array.from(map.values());
-  }, [criancas, editData]);
 
-  const handleAddExisting = (resp: Responsavel) => {
-    // Check if already added
-    const current = form.getValues('responsaveis');
-    if (current.some(r => r.email === resp.email)) {
-      toast.info('Este responsável já foi adicionado');
-      return;
+        toast.success('Criança atualizada com sucesso!');
+      } else {
+        // Insert crianca
+        const { data: newCrianca, error } = await supabase
+          .from('criancas')
+          .insert({
+            nome: data.nome,
+            data_nascimento: data.data_nascimento,
+            turma_id: data.turma_id,
+            observacoes: data.observacoes || null,
+          })
+          .select('id')
+          .single();
+
+        if (error) throw error;
+
+        // Link responsaveis
+        for (const resp of data.responsaveis) {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('user_id')
+            .eq('email', resp.email)
+            .maybeSingle();
+
+          if (profile) {
+            await supabase.from('crianca_responsaveis').insert({
+              crianca_id: newCrianca.id,
+              responsavel_user_id: profile.user_id,
+              parentesco: resp.parentesco,
+            });
+          }
+        }
+
+        toast.success('Criança cadastrada com sucesso!');
+      }
+
+      onOpenChange(false);
+      onSaved?.();
+    } catch (err: any) {
+      toast.error(err.message || 'Erro ao salvar criança');
+    } finally {
+      setSaving(false);
     }
-    append({
-      id: resp.id,
-      nome: resp.nome,
-      telefone: resp.telefone,
-      email: resp.email,
-      parentesco: resp.parentesco,
-    });
-    setExistingPopoverOpen(false);
-    toast.success(`${resp.nome} adicionado(a)`);
-  };
-
-  const onSubmit = (data: CriancaFormData) => {
-    const responsaveisWithId = data.responsaveis.map((r, index) => ({
-      id: r.id || `resp-${Date.now()}-${index}`,
-      nome: r.nome,
-      telefone: r.telefone,
-      email: r.email,
-      parentesco: r.parentesco,
-    }));
-
-    if (editData) {
-      updateCrianca(editData.id, {
-        nome: data.nome,
-        dataNascimento: data.dataNascimento,
-        turmaId: data.turmaId,
-        observacoes: data.observacoes,
-        responsaveis: responsaveisWithId,
-      });
-      toast.success('Criança atualizada com sucesso!');
-    } else {
-      addCrianca({
-        nome: data.nome,
-        dataNascimento: data.dataNascimento,
-        turmaId: data.turmaId,
-        observacoes: data.observacoes,
-        responsaveis: responsaveisWithId,
-      });
-      toast.success('Criança cadastrada com sucesso!');
-    }
-    
-    form.reset();
-    onOpenChange(false);
   };
 
   return (
@@ -159,7 +194,6 @@ export function CriancaModal({ open, onOpenChange, editData }: CriancaModalProps
         <ScrollArea className="max-h-[70vh] pr-4">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              {/* Dados da Criança */}
               <div className="space-y-4">
                 <h3 className="font-semibold text-foreground">Dados da Criança</h3>
                 
@@ -180,7 +214,7 @@ export function CriancaModal({ open, onOpenChange, editData }: CriancaModalProps
                 <div className="grid grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
-                    name="dataNascimento"
+                    name="data_nascimento"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Data de Nascimento</FormLabel>
@@ -194,11 +228,11 @@ export function CriancaModal({ open, onOpenChange, editData }: CriancaModalProps
 
                   <FormField
                     control={form.control}
-                    name="turmaId"
+                    name="turma_id"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Turma</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <Select onValueChange={field.onChange} value={field.value}>
                           <FormControl>
                             <SelectTrigger>
                               <SelectValue placeholder="Selecione" />
@@ -239,54 +273,18 @@ export function CriancaModal({ open, onOpenChange, editData }: CriancaModalProps
 
               <Separator />
 
-              {/* Responsáveis */}
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <h3 className="font-semibold text-foreground">Responsáveis</h3>
-                  <div className="flex gap-2">
-                    {existingResponsaveis.length > 0 && (
-                      <Popover open={existingPopoverOpen} onOpenChange={setExistingPopoverOpen}>
-                        <PopoverTrigger asChild>
-                          <Button type="button" variant="outline" size="sm">
-                            <UserPlus className="w-4 h-4 mr-2" />
-                            Vincular Existente
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-80 p-0" align="end">
-                          <div className="p-3 border-b border-border">
-                            <p className="text-sm font-semibold">Responsáveis Cadastrados</p>
-                            <p className="text-xs text-muted-foreground">Selecione para vincular a esta criança</p>
-                          </div>
-                          <ScrollArea className="max-h-60">
-                            <div className="p-2 space-y-1">
-                              {existingResponsaveis.map((resp) => (
-                                <button
-                                  key={resp.email}
-                                  type="button"
-                                  className="w-full text-left p-3 rounded-xl hover:bg-muted transition-colors"
-                                  onClick={() => handleAddExisting(resp)}
-                                >
-                                  <p className="text-sm font-medium">{resp.nome}</p>
-                                  <p className="text-xs text-muted-foreground">
-                                    {resp.parentesco} • {resp.email} • Resp. de {resp.criancaNome}
-                                  </p>
-                                </button>
-                              ))}
-                            </div>
-                          </ScrollArea>
-                        </PopoverContent>
-                      </Popover>
-                    )}
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => append({ id: '', nome: '', telefone: '', email: '', parentesco: '' })}
-                    >
-                      <Plus className="w-4 h-4 mr-2" />
-                      Novo
-                    </Button>
-                  </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => append({ id: '', nome: '', telefone: '', email: '', parentesco: '' })}
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Novo
+                  </Button>
                 </div>
 
                 {fields.map((field, index) => (
@@ -373,8 +371,8 @@ export function CriancaModal({ open, onOpenChange, editData }: CriancaModalProps
                 <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
                   Cancelar
                 </Button>
-                <Button type="submit">
-                  {editData ? 'Salvar' : 'Cadastrar'}
+                <Button type="submit" disabled={saving}>
+                  {saving ? 'Salvando...' : editData ? 'Salvar' : 'Cadastrar'}
                 </Button>
               </div>
             </form>
