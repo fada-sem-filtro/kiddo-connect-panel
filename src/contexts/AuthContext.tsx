@@ -14,12 +14,20 @@ interface Profile {
   avatar_url: string | null;
 }
 
+interface UserCreche {
+  id: string;
+  nome: string;
+  is_diretor: boolean;
+}
+
 interface AuthContextType {
   user: User | null;
   session: Session | null;
   profile: Profile | null;
   role: AppRole | null;
   loading: boolean;
+  userCreche: UserCreche | null;
+  isDiretor: boolean;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<{ error: Error | null }>;
