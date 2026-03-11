@@ -76,6 +76,79 @@ export type Database = {
         }
         Relationships: []
       }
+      crianca_responsaveis: {
+        Row: {
+          created_at: string
+          crianca_id: string
+          id: string
+          parentesco: string
+          responsavel_user_id: string
+        }
+        Insert: {
+          created_at?: string
+          crianca_id: string
+          id?: string
+          parentesco?: string
+          responsavel_user_id: string
+        }
+        Update: {
+          created_at?: string
+          crianca_id?: string
+          id?: string
+          parentesco?: string
+          responsavel_user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crianca_responsaveis_crianca_id_fkey"
+            columns: ["crianca_id"]
+            isOneToOne: false
+            referencedRelation: "criancas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      criancas: {
+        Row: {
+          created_at: string
+          data_nascimento: string
+          foto_url: string | null
+          id: string
+          nome: string
+          observacoes: string | null
+          turma_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          data_nascimento: string
+          foto_url?: string | null
+          id?: string
+          nome: string
+          observacoes?: string | null
+          turma_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          data_nascimento?: string
+          foto_url?: string | null
+          id?: string
+          nome?: string
+          observacoes?: string | null
+          turma_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "criancas_turma_id_fkey"
+            columns: ["turma_id"]
+            isOneToOne: false
+            referencedRelation: "turmas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -109,6 +182,70 @@ export type Database = {
         }
         Relationships: []
       }
+      turma_educadores: {
+        Row: {
+          created_at: string
+          educador_user_id: string
+          id: string
+          turma_id: string
+        }
+        Insert: {
+          created_at?: string
+          educador_user_id: string
+          id?: string
+          turma_id: string
+        }
+        Update: {
+          created_at?: string
+          educador_user_id?: string
+          id?: string
+          turma_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "turma_educadores_turma_id_fkey"
+            columns: ["turma_id"]
+            isOneToOne: false
+            referencedRelation: "turmas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      turmas: {
+        Row: {
+          created_at: string
+          creche_id: string
+          descricao: string | null
+          id: string
+          nome: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          creche_id: string
+          descricao?: string | null
+          id?: string
+          nome: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          creche_id?: string
+          descricao?: string | null
+          id?: string
+          nome?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "turmas_creche_id_fkey"
+            columns: ["creche_id"]
+            isOneToOne: false
+            referencedRelation: "creches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           id: string
@@ -132,6 +269,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_creche_id_from_turma: { Args: { _turma_id: string }; Returns: string }
       get_user_role: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["app_role"]
@@ -145,6 +283,14 @@ export type Database = {
       }
       is_diretor_of_creche: {
         Args: { _creche_id: string; _user_id: string }
+        Returns: boolean
+      }
+      is_educador_of_turma: {
+        Args: { _turma_id: string; _user_id: string }
+        Returns: boolean
+      }
+      is_member_of_turma_creche: {
+        Args: { _turma_id: string; _user_id: string }
         Returns: boolean
       }
     }
