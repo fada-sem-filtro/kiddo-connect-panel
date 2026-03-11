@@ -33,7 +33,7 @@ export interface Educador {
   nome: string;
   email: string;
   telefone: string;
-  turmaId: string;
+  turmaIds: string[];
   foto?: string;
   createdAt: string;
 }

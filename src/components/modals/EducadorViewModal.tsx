@@ -22,8 +22,8 @@ export function EducadorViewModal({ open, onOpenChange, educador }: EducadorView
 
   if (!educador) return null;
 
-  const turma = turmas.find(t => t.id === educador.turmaId);
-  const criancasDaTurma = getCriancasByTurma(educador.turmaId);
+  const educadorTurmas = turmas.filter(t => educador.turmaIds.includes(t.id));
+  const todasCriancas = educador.turmaIds.flatMap(tid => getCriancasByTurma(tid));
 
   const initials = educador.nome.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
 
@@ -39,7 +39,12 @@ export function EducadorViewModal({ open, onOpenChange, educador }: EducadorView
             </Avatar>
             <div>
               <p className="font-bold">{educador.nome}</p>
-              <Badge variant="secondary">{turma?.nome || 'Sem turma'}</Badge>
+              <div className="flex flex-wrap gap-1 mt-1">
+                {educadorTurmas.map(t => (
+                  <Badge key={t.id} variant="secondary">{t.nome}</Badge>
+                ))}
+                {educadorTurmas.length === 0 && <Badge variant="secondary">Sem turma</Badge>}
+              </div>
             </div>
           </DialogTitle>
         </DialogHeader>
@@ -59,28 +64,31 @@ export function EducadorViewModal({ open, onOpenChange, educador }: EducadorView
 
           <Separator />
 
-          {/* Crianças da turma */}
+          {/* Crianças das turmas */}
           <div>
             <h3 className="font-semibold mb-3 flex items-center gap-2">
               <Users className="w-4 h-4 text-primary" />
-              Crianças da Turma ({criancasDaTurma.length})
+              Crianças ({todasCriancas.length})
             </h3>
             
-            {criancasDaTurma.length === 0 ? (
-              <p className="text-sm text-muted-foreground">Nenhuma criança nesta turma</p>
+            {todasCriancas.length === 0 ? (
+              <p className="text-sm text-muted-foreground">Nenhuma criança nas turmas</p>
             ) : (
               <div className="grid grid-cols-2 gap-2">
-                {criancasDaTurma.map((crianca) => (
-                  <div 
-                    key={crianca.id} 
-                    className="p-3 rounded-xl border border-border bg-muted/30 text-sm"
-                  >
-                    <p className="font-medium">{crianca.nome}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {crianca.responsaveis[0]?.nome}
-                    </p>
-                  </div>
-                ))}
+                {todasCriancas.map((crianca) => {
+                  const turma = turmas.find(t => t.id === crianca.turmaId);
+                  return (
+                    <div 
+                      key={crianca.id} 
+                      className="p-3 rounded-xl border border-border bg-muted/30 text-sm"
+                    >
+                      <p className="font-medium">{crianca.nome}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {turma?.nome} • {crianca.responsaveis[0]?.nome}
+                      </p>
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>
