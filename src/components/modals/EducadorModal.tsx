@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
 import { useData } from '@/contexts/DataContext';
 import { Educador } from '@/types';
 import { toast } from 'sonner';
@@ -26,7 +26,7 @@ const educadorSchema = z.object({
   nome: z.string().min(1, 'Nome obrigatório'),
   email: z.string().email('Email inválido'),
   telefone: z.string().min(1, 'Telefone obrigatório'),
-  turmaId: z.string().min(1, 'Turma obrigatória'),
+  turmaIds: z.array(z.string()).min(1, 'Selecione pelo menos uma turma'),
 });
 
 type EducadorFormData = z.infer<typeof educadorSchema>;
@@ -46,12 +46,12 @@ export function EducadorModal({ open, onOpenChange, editData }: EducadorModalPro
       nome: editData.nome,
       email: editData.email,
       telefone: editData.telefone,
-      turmaId: editData.turmaId,
+      turmaIds: editData.turmaIds,
     } : {
       nome: '',
       email: '',
       telefone: '',
-      turmaId: '',
+      turmaIds: [],
     },
   });
 
@@ -60,7 +60,7 @@ export function EducadorModal({ open, onOpenChange, editData }: EducadorModalPro
       nome: data.nome,
       email: data.email,
       telefone: data.telefone,
-      turmaId: data.turmaId,
+      turmaIds: data.turmaIds,
     };
 
     if (editData) {
@@ -130,24 +130,42 @@ export function EducadorModal({ open, onOpenChange, editData }: EducadorModalPro
 
             <FormField
               control={form.control}
-              name="turmaId"
-              render={({ field }) => (
+              name="turmaIds"
+              render={() => (
                 <FormItem>
-                  <FormLabel>Turma</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecione a turma" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {turmas.map((turma) => (
-                        <SelectItem key={turma.id} value={turma.id}>
-                          {turma.nome}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <FormLabel>Turmas</FormLabel>
+                  <div className="space-y-2 rounded-xl border border-border p-3">
+                    {turmas.map((turma) => (
+                      <FormField
+                        key={turma.id}
+                        control={form.control}
+                        name="turmaIds"
+                        render={({ field }) => (
+                          <FormItem className="flex items-center gap-3 space-y-0">
+                            <FormControl>
+                              <Checkbox
+                                checked={field.value?.includes(turma.id)}
+                                onCheckedChange={(checked) => {
+                                  const current = field.value || [];
+                                  if (checked) {
+                                    field.onChange([...current, turma.id]);
+                                  } else {
+                                    field.onChange(current.filter((id: string) => id !== turma.id));
+                                  }
+                                }}
+                              />
+                            </FormControl>
+                            <FormLabel className="text-sm font-normal cursor-pointer">
+                              {turma.nome}
+                              {turma.descricao && (
+                                <span className="text-muted-foreground ml-1">— {turma.descricao}</span>
+                              )}
+                            </FormLabel>
+                          </FormItem>
+                        )}
+                      />
+                    ))}
+                  </div>
                   <FormMessage />
                 </FormItem>
               )}

@@ -130,7 +130,11 @@ export default function EducadoresPage() {
                     <TableCell>{educador.email}</TableCell>
                     <TableCell>{educador.telefone}</TableCell>
                     <TableCell>
-                      <Badge variant="secondary">{getTurmaName(educador.turmaId)}</Badge>
+                      <div className="flex flex-wrap gap-1">
+                        {educador.turmaIds.map(tid => (
+                          <Badge key={tid} variant="secondary">{getTurmaName(tid)}</Badge>
+                        ))}
+                      </div>
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-1">

@@ -18,16 +18,24 @@ export default function EducadorTurmaPage() {
   // Simula o educador logado (primeiro educador)
   const [educadorId, setEducadorId] = useState(educadores[0]?.id || '');
   const educadorAtual = educadores.find(e => e.id === educadorId);
-  const turmaAtual = turmas.find(t => t.id === educadorAtual?.turmaId);
+  const educadorTurmas = turmas.filter(t => educadorAtual?.turmaIds.includes(t.id));
   
-  const criancasDaTurma = educadorAtual?.turmaId 
-    ? getCriancasByTurma(educadorAtual.turmaId) 
+  // Selected turma for filtering
+  const [selectedTurmaId, setSelectedTurmaId] = useState<string>('all');
+  
+  const criancasDasTurmas = educadorAtual?.turmaIds
+    ? educadorAtual.turmaIds.flatMap(tid => getCriancasByTurma(tid))
     : [];
+
+  const criancasFiltradas = selectedTurmaId === 'all'
+    ? criancasDasTurmas
+    : criancasDasTurmas.filter(c => c.turmaId === selectedTurmaId);
 
   // Modal states
   const [eventModalOpen, setEventModalOpen] = useState(false);
   const [eventMode, setEventMode] = useState<'individual' | 'turma'>('individual');
   const [selectedCriancaId, setSelectedCriancaId] = useState<string | undefined>();
+  const [selectedTurmaForEvent, setSelectedTurmaForEvent] = useState<string | undefined>();
 
   const handleAddEventoIndividual = (criancaId: string) => {
     setSelectedCriancaId(criancaId);
@@ -35,8 +43,9 @@ export default function EducadorTurmaPage() {
     setEventModalOpen(true);
   };
 
-  const handleAddEventoTurma = () => {
+  const handleAddEventoTurma = (turmaId: string) => {
     setSelectedCriancaId(undefined);
+    setSelectedTurmaForEvent(turmaId);
     setEventMode('turma');
     setEventModalOpen(true);
   };
@@ -67,7 +76,7 @@ export default function EducadorTurmaPage() {
               <Users className="w-6 h-6 text-primary" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-foreground">Minha Turma</h1>
+              <h1 className="text-2xl font-bold text-foreground">Minhas Turmas</h1>
               <p className="text-sm text-muted-foreground">
                 Visualize e registre eventos das crianças ✨
               </p>
@@ -76,7 +85,7 @@ export default function EducadorTurmaPage() {
 
           <div className="flex flex-col sm:flex-row gap-3">
             {/* Selector for demo purposes */}
-            <Select value={educadorId} onValueChange={setEducadorId}>
+            <Select value={educadorId} onValueChange={(val) => { setEducadorId(val); setSelectedTurmaId('all'); }}>
               <SelectTrigger className="w-[200px] rounded-2xl border-2 border-primary/20">
                 <SelectValue placeholder="Selecionar educador" />
               </SelectTrigger>
@@ -88,19 +97,37 @@ export default function EducadorTurmaPage() {
                 ))}
               </SelectContent>
             </Select>
-
-            <Button 
-              onClick={handleAddEventoTurma}
-              className="rounded-2xl bg-gradient-to-r from-primary to-kawaii-purple hover:opacity-90 shadow-lg"
-            >
-              <Sparkles className="w-4 h-4 mr-2" />
-              Evento para Turma
-            </Button>
           </div>
         </div>
 
-        {/* Turma Info Card */}
-        {turmaAtual && (
+        {/* Turmas cards */}
+        {educadorTurmas.length > 0 && (
+          <div className="flex flex-wrap gap-3">
+            <Button
+              variant={selectedTurmaId === 'all' ? 'default' : 'outline'}
+              className="rounded-2xl"
+              onClick={() => setSelectedTurmaId('all')}
+            >
+              Todas ({criancasDasTurmas.length})
+            </Button>
+            {educadorTurmas.map(turma => {
+              const count = getCriancasByTurma(turma.id).length;
+              return (
+                <Button
+                  key={turma.id}
+                  variant={selectedTurmaId === turma.id ? 'default' : 'outline'}
+                  className="rounded-2xl"
+                  onClick={() => setSelectedTurmaId(turma.id)}
+                >
+                  {turma.nome} ({count})
+                </Button>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Turma Info Card with event button */}
+        {educadorTurmas.length > 0 && (
           <Card className="border-2 border-primary/20 bg-gradient-to-r from-kawaii-pink/10 to-kawaii-purple/10 rounded-3xl shadow-lg">
             <CardContent className="p-6">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -110,25 +137,33 @@ export default function EducadorTurmaPage() {
                   </div>
                   <div>
                     <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
-                      {turmaAtual.nome}
+                      {educadorTurmas.map(t => t.nome).join(', ')}
                       <span className="text-lg">🎀</span>
                     </h2>
-                    <p className="text-sm text-muted-foreground">{turmaAtual.descricao}</p>
                     <p className="text-sm text-primary font-medium mt-1">
                       Educador(a): {educadorAtual?.nome}
                     </p>
                   </div>
                 </div>
-                <Badge className="bg-gradient-to-r from-kawaii-mint to-kawaii-blue text-foreground font-bold px-4 py-2 text-base rounded-2xl shadow-md">
-                  {criancasDaTurma.length} crianças
-                </Badge>
+                <div className="flex flex-wrap gap-2">
+                  {(selectedTurmaId === 'all' ? educadorTurmas : educadorTurmas.filter(t => t.id === selectedTurmaId)).map(turma => (
+                    <Button
+                      key={turma.id}
+                      onClick={() => handleAddEventoTurma(turma.id)}
+                      className="rounded-2xl bg-gradient-to-r from-primary to-kawaii-purple hover:opacity-90 shadow-lg"
+                    >
+                      <Sparkles className="w-4 h-4 mr-2" />
+                      Evento - {turma.nome}
+                    </Button>
+                  ))}
+                </div>
               </div>
             </CardContent>
           </Card>
         )}
 
         {/* Crianças Grid */}
-        {criancasDaTurma.length === 0 ? (
+        {criancasFiltradas.length === 0 ? (
           <Card className="border-2 border-dashed border-muted-foreground/30 rounded-3xl">
             <CardContent className="flex flex-col items-center justify-center py-12">
               <Users className="w-16 h-16 text-muted-foreground/50 mb-4" />
@@ -139,8 +174,9 @@ export default function EducadorTurmaPage() {
           </Card>
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {criancasDaTurma.map((crianca) => {
+            {criancasFiltradas.map((crianca) => {
               const eventosHoje = getEventosHoje(crianca.id);
+              const turma = turmas.find(t => t.id === crianca.turmaId);
               
               return (
                 <Card 
@@ -161,7 +197,7 @@ export default function EducadorTurmaPage() {
                             {crianca.nome}
                           </CardTitle>
                           <p className="text-xs text-muted-foreground">
-                            {format(new Date(crianca.dataNascimento), "dd/MM/yyyy", { locale: ptBR })}
+                            {turma?.nome} • {format(new Date(crianca.dataNascimento), "dd/MM/yyyy", { locale: ptBR })}
                           </p>
                         </div>
                       </div>
@@ -227,7 +263,7 @@ export default function EducadorTurmaPage() {
         onOpenChange={setEventModalOpen}
         mode={eventMode}
         preSelectedCriancaId={selectedCriancaId}
-        preSelectedTurmaId={educadorAtual?.turmaId}
+        preSelectedTurmaId={selectedTurmaForEvent || educadorAtual?.turmaIds[0]}
       />
     </MainLayout>
   );
