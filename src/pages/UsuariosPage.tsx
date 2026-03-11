@@ -22,18 +22,20 @@ interface UserWithRole {
   nome: string;
   email: string;
   telefone: string | null;
-  role: 'admin' | 'educador' | 'responsavel';
+  role: 'admin' | 'educador' | 'responsavel' | 'diretor';
   created_at: string;
 }
 
 const ROLE_LABELS: Record<string, string> = {
   admin: 'Administrador',
+  diretor: 'Diretor(a)',
   educador: 'Educador',
   responsavel: 'Responsável',
 };
 
 const ROLE_ICONS: Record<string, React.ReactNode> = {
   admin: <Shield className="w-3 h-3" />,
+  diretor: <Shield className="w-3 h-3" />,
   educador: <GraduationCap className="w-3 h-3" />,
   responsavel: <UserCheck className="w-3 h-3" />,
 };
@@ -310,6 +312,7 @@ export default function UsuariosPage() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="admin">Administrador</SelectItem>
+                  <SelectItem value="diretor">Diretor(a)</SelectItem>
                   <SelectItem value="educador">Educador</SelectItem>
                   <SelectItem value="responsavel">Responsável</SelectItem>
                 </SelectContent>

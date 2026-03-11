@@ -15,15 +15,16 @@ interface MemberInfo {
   email: string;
   telefone: string | null;
   role: string;
-  is_diretor: boolean;
 }
 
 const ROLE_LABELS: Record<string, string> = {
+  diretor: 'Diretor(a)',
   educador: 'Educador(a)',
   responsavel: 'Responsável',
 };
 
 const ROLE_ICONS: Record<string, React.ReactNode> = {
+  diretor: <GraduationCap className="w-3 h-3" />,
   educador: <GraduationCap className="w-3 h-3" />,
   responsavel: <UserCheck className="w-3 h-3" />,
 };
@@ -43,7 +44,7 @@ export default function DiretorMembrosPage() {
       // Get all members of this creche
       const { data: membros } = await supabase
         .from('creche_membros')
-        .select('user_id, is_diretor')
+        .select('user_id')
         .eq('creche_id', userCreche.id);
 
       if (!membros || membros.length === 0) {
@@ -70,14 +71,12 @@ export default function DiretorMembrosPage() {
         const memberList: MemberInfo[] = profiles
           .map((p) => {
             const userRole = roles?.find((r) => r.user_id === p.user_id);
-            const membro = membros.find((m) => m.user_id === p.user_id);
             return {
               user_id: p.user_id,
               nome: p.nome,
               email: p.email,
               telefone: p.telefone,
               role: userRole?.role || 'responsavel',
-              is_diretor: membro?.is_diretor || false,
             };
           })
           // Filter out admins
@@ -149,11 +148,6 @@ export default function DiretorMembrosPage() {
                   <TableRow key={member.user_id}>
                     <TableCell className="font-medium">
                       {member.nome}
-                      {member.is_diretor && (
-                        <Badge variant="outline" className="ml-2 text-xs">
-                          Diretor(a)
-                        </Badge>
-                      )}
                     </TableCell>
                     <TableCell>{member.email}</TableCell>
                     <TableCell>{member.telefone || '—'}</TableCell>

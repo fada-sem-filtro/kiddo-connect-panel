@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Plus, Trash2, Shield } from 'lucide-react';
+import { Plus, Trash2 } from 'lucide-react';
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle,
 } from '@/components/ui/dialog';
@@ -8,15 +8,12 @@ import { Badge } from '@/components/ui/badge';
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
 interface Membro {
   id: string;
   user_id: string;
-  is_diretor: boolean;
   profile?: { nome: string; email: string };
   role?: string;
 }
@@ -31,7 +28,6 @@ export function CrecheMembrosModal({ open, onOpenChange, creche }: CrecheMembros
   const [membros, setMembros] = useState<Membro[]>([]);
   const [availableUsers, setAvailableUsers] = useState<{ user_id: string; nome: string; email: string; role: string }[]>([]);
   const [selectedUserId, setSelectedUserId] = useState('');
-  const [isDiretor, setIsDiretor] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const fetchMembros = async () => {
@@ -40,7 +36,7 @@ export function CrecheMembrosModal({ open, onOpenChange, creche }: CrecheMembros
 
     const { data, error } = await supabase
       .from('creche_membros')
-      .select('id, user_id, is_diretor')
+      .select('id, user_id')
       .eq('creche_id', creche.id);
 
     if (error) {
@@ -102,7 +98,6 @@ export function CrecheMembrosModal({ open, onOpenChange, creche }: CrecheMembros
     const { error } = await supabase.from('creche_membros').insert({
       creche_id: creche.id,
       user_id: selectedUserId,
-      is_diretor: isDiretor,
     });
 
     if (error) {
@@ -111,7 +106,6 @@ export function CrecheMembrosModal({ open, onOpenChange, creche }: CrecheMembros
     } else {
       toast.success('Membro adicionado!');
       setSelectedUserId('');
-      setIsDiretor(false);
       fetchMembros();
       fetchAvailableUsers();
     }
@@ -128,21 +122,10 @@ export function CrecheMembrosModal({ open, onOpenChange, creche }: CrecheMembros
     }
   };
 
-  const toggleDiretor = async (membroId: string, currentValue: boolean) => {
-    const { error } = await supabase
-      .from('creche_membros')
-      .update({ is_diretor: !currentValue })
-      .eq('id', membroId);
-    if (error) {
-      toast.error('Erro ao atualizar');
-    } else {
-      fetchMembros();
-    }
-  };
-
   const getRoleBadge = (role?: string) => {
     switch (role) {
       case 'admin': return <Badge className="bg-destructive/10 text-destructive">Admin</Badge>;
+      case 'diretor': return <Badge className="bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400">Diretor(a)</Badge>;
       case 'educador': return <Badge className="bg-primary/10 text-primary">Educador</Badge>;
       case 'responsavel': return <Badge className="bg-secondary text-secondary-foreground">Responsável</Badge>;
       default: return <Badge variant="outline">Sem papel</Badge>;
@@ -176,10 +159,6 @@ export function CrecheMembrosModal({ open, onOpenChange, creche }: CrecheMembros
               <Plus className="w-4 h-4" />
             </Button>
           </div>
-          <div className="flex items-center gap-2">
-            <Switch checked={isDiretor} onCheckedChange={setIsDiretor} id="diretor-switch" />
-            <Label htmlFor="diretor-switch" className="text-sm">Diretor(a) desta creche</Label>
-          </div>
         </div>
 
         {/* Members list */}
@@ -196,22 +175,9 @@ export function CrecheMembrosModal({ open, onOpenChange, creche }: CrecheMembros
                   <p className="text-xs text-muted-foreground truncate">{m.profile?.email}</p>
                   <div className="flex gap-1 mt-1">
                     {getRoleBadge(m.role)}
-                    {m.is_diretor && (
-                      <Badge className="bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400">
-                        <Shield className="w-3 h-3 mr-1" />
-                        Diretor(a)
-                      </Badge>
-                    )}
                   </div>
                 </div>
                 <div className="flex items-center gap-2 ml-2">
-                  <Button
-                    variant="ghost" size="sm"
-                    onClick={() => toggleDiretor(m.id, m.is_diretor)}
-                    title={m.is_diretor ? 'Remover cargo de diretor' : 'Tornar diretor'}
-                  >
-                    <Shield className={`w-4 h-4 ${m.is_diretor ? 'text-amber-500' : 'text-muted-foreground'}`} />
-                  </Button>
                   <Button
                     variant="ghost" size="icon"
                     className="text-destructive hover:text-destructive"

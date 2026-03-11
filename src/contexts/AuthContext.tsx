@@ -17,7 +17,6 @@ interface Profile {
 interface UserCreche {
   id: string;
   nome: string;
-  is_diretor: boolean;
 }
 
 interface AuthContextType {
@@ -45,8 +44,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [role, setRole] = useState<AppRole | null>(null);
   const [loading, setLoading] = useState(true);
   const [userCreche, setUserCreche] = useState<UserCreche | null>(null);
-  const [isDiretor, setIsDiretor] = useState(false);
   const [mustChangePassword, setMustChangePassword] = useState(false);
+
+  // isDiretor is now derived from role
+  const isDiretor = role === 'diretor';
 
   const fetchUserData = async (userId: string) => {
     try {
@@ -68,7 +69,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // Fetch creche membership
       const { data: membroData } = await supabase
         .from('creche_membros')
-        .select('creche_id, is_diretor, creches(id, nome)')
+        .select('creche_id, creches(id, nome)')
         .eq('user_id', userId)
         .limit(1)
         .maybeSingle();
@@ -78,12 +79,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUserCreche({
           id: creche.id,
           nome: creche.nome,
-          is_diretor: membroData.is_diretor,
         });
-        setIsDiretor(membroData.is_diretor);
       } else {
         setUserCreche(null);
-        setIsDiretor(false);
       }
     } catch (error) {
       console.error('Error fetching user data:', error);
@@ -91,19 +89,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   useEffect(() => {
-    // Set up auth state listener BEFORE getSession
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
 
         if (session?.user) {
-          // Check if first access
           const meta = session.user.user_metadata;
           if (meta?.must_change_password) {
             setMustChangePassword(true);
           }
-          // Use setTimeout to avoid Supabase client deadlock
           setTimeout(() => fetchUserData(session.user.id), 0);
         } else {
           setProfile(null);
@@ -113,7 +108,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     );
 
-    // Then get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
@@ -136,7 +130,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setProfile(null);
     setRole(null);
     setUserCreche(null);
-    setIsDiretor(false);
   };
 
   const resetPassword = async (email: string) => {
