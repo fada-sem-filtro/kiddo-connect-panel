@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Plus, Search, Edit, Trash2, Users, GraduationCap } from 'lucide-react';
+import { Plus, Search, Edit, Trash2, Users, GraduationCap, Link2 } from 'lucide-react';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,6 +12,7 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { TurmaModal } from '@/components/modals/TurmaModal';
+import { TurmaEducadoresModal } from '@/components/modals/TurmaEducadoresModal';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
@@ -34,6 +35,7 @@ export default function TurmasPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [selected, setSelected] = useState<TurmaRow | null>(null);
+  const [eduModalTurma, setEduModalTurma] = useState<TurmaRow | null>(null);
   const [loading, setLoading] = useState(true);
 
   const fetchTurmas = async () => {
@@ -188,6 +190,9 @@ export default function TurmasPage() {
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-1">
+                        <Button variant="ghost" size="icon" title="Educadores" onClick={() => setEduModalTurma(turma)}>
+                          <Link2 className="w-4 h-4" />
+                        </Button>
                         <Button variant="ghost" size="icon" onClick={() => handleEdit(turma)}>
                           <Edit className="w-4 h-4" />
                         </Button>
@@ -234,6 +239,14 @@ export default function TurmasPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <TurmaEducadoresModal
+        open={!!eduModalTurma}
+        onOpenChange={(open) => !open && setEduModalTurma(null)}
+        turmaId={eduModalTurma?.id || null}
+        turmaNome={eduModalTurma?.nome || ''}
+        onChanged={fetchTurmas}
+      />
     </MainLayout>
   );
 }
