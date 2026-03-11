@@ -36,7 +36,7 @@ const EMAIL_TEMPLATES: Record<string, React.ComponentType<any>> = {
 }
 
 // Configuration
-const SITE_NAME = "kiddo-connect-panel"
+const SITE_NAME = "Agenda Fleur"
 const SENDER_DOMAIN = "notify.agendafleur.app"
 const ROOT_DOMAIN = "agendafleur.app"
 const FROM_DOMAIN = "agendafleur.app" // Domain shown in From address (may be root or sender subdomain)
