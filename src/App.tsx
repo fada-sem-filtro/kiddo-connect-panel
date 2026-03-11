@@ -20,6 +20,7 @@ import FeriadosPage from "./pages/FeriadosPage";
 import CalendarioAdminPage from "./pages/CalendarioAdminPage";
 import ResponsavelEventosPage from "./pages/ResponsavelEventosPage";
 import EducadorTurmaPage from "./pages/EducadorTurmaPage";
+import UsuariosPage from "./pages/UsuariosPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
