@@ -15,9 +15,11 @@ interface MemberInfo {
   email: string;
   telefone: string | null;
   role: string;
+  creche_nome?: string;
 }
 
 const ROLE_LABELS: Record<string, string> = {
+  admin: 'Administrador',
   diretor: 'Diretor(a)',
   educador: 'Educador(a)',
   responsavel: 'Responsável',
@@ -30,22 +32,27 @@ const ROLE_ICONS: Record<string, React.ReactNode> = {
 };
 
 export default function DiretorMembrosPage() {
-  const { userCreche } = useAuth();
+  const { userCreche, role } = useAuth();
+  const isAdmin = role === 'admin';
   const [members, setMembers] = useState<MemberInfo[]>([]);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!userCreche) return;
+    if (!isAdmin && !userCreche) return;
 
     const fetchMembers = async () => {
       setLoading(true);
 
-      // Get all members of this creche
-      const { data: membros } = await supabase
+      let membrosQuery = supabase
         .from('creche_membros')
-        .select('user_id')
-        .eq('creche_id', userCreche.id);
+        .select('user_id, creches(nome)');
+
+      if (!isAdmin && userCreche) {
+        membrosQuery = membrosQuery.eq('creche_id', userCreche.id);
+      }
+
+      const { data: membros } = await membrosQuery;
 
       if (!membros || membros.length === 0) {
         setMembers([]);
@@ -53,21 +60,22 @@ export default function DiretorMembrosPage() {
         return;
       }
 
-      const userIds = membros.map((m) => m.user_id);
+      const userIds = [...new Set(membros.map((m) => m.user_id))];
 
-      // Fetch profiles
-      const { data: profiles } = await supabase
-        .from('profiles')
-        .select('user_id, nome, email, telefone')
-        .in('user_id', userIds);
-
-      // Fetch roles
-      const { data: roles } = await supabase
-        .from('user_roles')
-        .select('user_id, role')
-        .in('user_id', userIds);
+      const [{ data: profiles }, { data: roles }] = await Promise.all([
+        supabase.from('profiles').select('user_id, nome, email, telefone').in('user_id', userIds),
+        supabase.from('user_roles').select('user_id, role').in('user_id', userIds),
+      ]);
 
       if (profiles) {
+        const userCrecheMap = new Map<string, string[]>();
+        membros.forEach((m: any) => {
+          const crecheName = m.creches?.nome || 'Sem creche';
+          const existing = userCrecheMap.get(m.user_id) || [];
+          if (!existing.includes(crecheName)) existing.push(crecheName);
+          userCrecheMap.set(m.user_id, existing);
+        });
+
         const memberList: MemberInfo[] = profiles
           .map((p) => {
             const userRole = roles?.find((r) => r.user_id === p.user_id);
@@ -77,10 +85,10 @@ export default function DiretorMembrosPage() {
               email: p.email,
               telefone: p.telefone,
               role: userRole?.role || 'responsavel',
+              creche_nome: userCrecheMap.get(p.user_id)?.join(', '),
             };
           })
-          // Filter out admins
-          .filter((m) => m.role !== 'admin');
+          .filter((m) => isAdmin || m.role !== 'admin');
 
         setMembers(memberList);
       }
@@ -89,7 +97,7 @@ export default function DiretorMembrosPage() {
     };
 
     fetchMembers();
-  }, [userCreche]);
+  }, [userCreche, isAdmin]);
 
   const filteredMembers = members.filter(
     (m) =>
@@ -103,10 +111,12 @@ export default function DiretorMembrosPage() {
         <div>
           <h1 className="text-2xl font-bold flex items-center gap-2">
             <Users className="w-6 h-6 text-primary" />
-            Membros da Creche
+            {isAdmin ? 'Membros — Todas as Creches' : 'Membros da Creche'}
           </h1>
           <p className="text-muted-foreground">
-            Educadores e responsáveis vinculados à {userCreche?.nome || 'sua creche'}
+            {isAdmin
+              ? 'Todos os membros vinculados às creches do sistema'
+              : `Educadores e responsáveis vinculados à ${userCreche?.nome || 'sua creche'}`}
           </p>
         </div>
 
@@ -128,27 +138,26 @@ export default function DiretorMembrosPage() {
                 <TableHead>Email</TableHead>
                 <TableHead>Telefone</TableHead>
                 <TableHead>Papel</TableHead>
+                {isAdmin && <TableHead>Creche</TableHead>}
               </TableRow>
             </TableHeader>
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
+                  <TableCell colSpan={isAdmin ? 5 : 4} className="text-center py-8 text-muted-foreground">
                     Carregando...
                   </TableCell>
                 </TableRow>
               ) : filteredMembers.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
+                  <TableCell colSpan={isAdmin ? 5 : 4} className="text-center py-8 text-muted-foreground">
                     Nenhum membro encontrado
                   </TableCell>
                 </TableRow>
               ) : (
                 filteredMembers.map((member) => (
                   <TableRow key={member.user_id}>
-                    <TableCell className="font-medium">
-                      {member.nome}
-                    </TableCell>
+                    <TableCell className="font-medium">{member.nome}</TableCell>
                     <TableCell>{member.email}</TableCell>
                     <TableCell>{member.telefone || '—'}</TableCell>
                     <TableCell>
@@ -157,6 +166,11 @@ export default function DiretorMembrosPage() {
                         {ROLE_LABELS[member.role] || member.role}
                       </Badge>
                     </TableCell>
+                    {isAdmin && (
+                      <TableCell>
+                        <Badge variant="outline">{member.creche_nome}</Badge>
+                      </TableCell>
+                    )}
                   </TableRow>
                 ))
               )}
