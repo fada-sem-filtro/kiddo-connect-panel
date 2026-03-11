@@ -57,7 +57,7 @@ export default function LoginPage() {
             <Flower2 className="w-10 h-10 text-primary" />
           </div>
           <h1 className="text-3xl font-bold text-foreground">Fleur</h1>
-          <p className="text-muted-foreground">🌸 Escola Infantil</p>
+          
         </div>
 
         {/* Form */}
