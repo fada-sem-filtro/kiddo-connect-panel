@@ -44,7 +44,7 @@ export default function DiretorMembrosPage() {
       // Get all members of this creche
       const { data: membros } = await supabase
         .from('creche_membros')
-        .select('user_id, is_diretor')
+        .select('user_id')
         .eq('creche_id', userCreche.id);
 
       if (!membros || membros.length === 0) {
