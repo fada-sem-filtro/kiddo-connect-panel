@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
   Calendar, 
   Users, 
@@ -9,41 +9,66 @@ import {
   X,
   LogOut,
   Flower2,
-  Settings,
   CalendarDays,
   BarChart3,
   PartyPopper,
-  ClipboardList
+  ClipboardList,
+  UserCog
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { NotificationBell } from '@/components/notifications/NotificationBell';
-
-const navigation = [
-  { name: 'Agenda', href: '/', icon: Calendar },
-  { name: 'Minha Turma', href: '/educador/turma', icon: Users },
-  { name: 'Crianças', href: '/criancas', icon: Users },
-  { name: 'Educadores', href: '/educadores', icon: GraduationCap },
-  { name: 'Recados', href: '/recados', icon: MessageSquare },
-];
-
-const responsavelNavigation = [
-  { name: 'Meus Eventos', href: '/responsavel/eventos', icon: ClipboardList },
-];
-
-const adminNavigation = [
-  { name: 'Dashboard', href: '/admin', icon: BarChart3 },
-  { name: 'Feriados', href: '/admin/feriados', icon: PartyPopper },
-  { name: 'Calendário', href: '/admin/calendario', icon: CalendarDays },
-];
+import { useAuth } from '@/contexts/AuthContext';
+import { toast } from 'sonner';
 
 export function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { role, profile, signOut } = useAuth();
+
+  const handleSignOut = async () => {
+    await signOut();
+    toast.success('Até logo! 🌸');
+    navigate('/login');
+  };
+
+  // Build navigation based on role
+  const mainNavigation = [];
+
+  // Everyone sees Agenda
+  mainNavigation.push({ name: 'Agenda', href: '/', icon: Calendar });
+
+  // Educador and admin see Minha Turma
+  if (role === 'admin' || role === 'educador') {
+    mainNavigation.push({ name: 'Minha Turma', href: '/educador/turma', icon: Users });
+  }
+
+  // Only admin sees Crianças and Educadores
+  if (role === 'admin') {
+    mainNavigation.push({ name: 'Crianças', href: '/criancas', icon: Users });
+    mainNavigation.push({ name: 'Educadores', href: '/educadores', icon: GraduationCap });
+  }
+
+  // Admin and educador see Recados
+  if (role === 'admin' || role === 'educador') {
+    mainNavigation.push({ name: 'Recados', href: '/recados', icon: MessageSquare });
+  }
+
+  const responsavelNavigation = (role === 'admin' || role === 'responsavel') ? [
+    { name: 'Meus Eventos', href: '/responsavel/eventos', icon: ClipboardList },
+  ] : [];
+
+  const adminNavigation = role === 'admin' ? [
+    { name: 'Dashboard', href: '/admin', icon: BarChart3 },
+    { name: 'Usuários', href: '/admin/usuarios', icon: UserCog },
+    { name: 'Feriados', href: '/admin/feriados', icon: PartyPopper },
+    { name: 'Calendário', href: '/admin/calendario', icon: CalendarDays },
+  ] : [];
 
   return (
     <>
-      {/* Mobile header with hamburger and notification */}
+      {/* Mobile header */}
       <div className="fixed top-0 left-0 right-0 z-50 lg:hidden bg-card/95 backdrop-blur-sm border-b border-border px-4 py-3 flex items-center justify-between">
         <Button
           variant="ghost"
@@ -78,7 +103,7 @@ export function Sidebar() {
         )}
       >
         <div className="flex flex-col h-full">
-          {/* Logo - Kawaii style */}
+          {/* Logo */}
           <div className="flex items-center justify-between gap-3 px-6 py-5 border-b-2 border-border bg-gradient-to-r from-primary/5 to-secondary/10">
             <div className="flex items-center gap-3">
               <div className="flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/20 to-secondary/30 shadow-md">
@@ -89,94 +114,104 @@ export function Sidebar() {
                 <p className="text-xs text-primary font-semibold">🌸 Escola Infantil</p>
               </div>
             </div>
-            {/* Notification bell for desktop */}
             <div className="hidden lg:block">
               <NotificationBell />
             </div>
           </div>
 
+          {/* User info */}
+          {profile && (
+            <div className="px-6 py-3 border-b border-border bg-muted/30">
+              <p className="text-sm font-semibold text-foreground truncate">{profile.nome}</p>
+              <p className="text-xs text-muted-foreground capitalize">{role || ''}</p>
+            </div>
+          )}
+
           {/* Navigation */}
           <nav className="flex-1 px-4 py-6 space-y-6 overflow-y-auto scrollbar-thin">
-            {/* Main navigation */}
-            <div className="space-y-2">
-              <p className="px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                📚 Principal
-              </p>
-              {navigation.map((item) => {
-                const isActive = location.pathname === item.href;
-                return (
-                  <Link
-                    key={item.name}
-                    to={item.href}
-                    onClick={() => setIsOpen(false)}
-                    className={cn(
-                      "flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold transition-all duration-300",
-                      isActive
-                        ? "bg-gradient-to-r from-primary to-primary/80 text-primary-foreground shadow-lg scale-[1.02]"
-                        : "text-muted-foreground hover:bg-muted hover:text-foreground hover:scale-[1.01]"
-                    )}
-                  >
-                    <item.icon className="w-5 h-5" />
-                    {item.name}
-                    {isActive && <span className="ml-auto">✨</span>}
-                  </Link>
-                );
-              })}
-            </div>
+            {mainNavigation.length > 0 && (
+              <div className="space-y-2">
+                <p className="px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  📚 Principal
+                </p>
+                {mainNavigation.map((item) => {
+                  const isActive = location.pathname === item.href;
+                  return (
+                    <Link
+                      key={item.name}
+                      to={item.href}
+                      onClick={() => setIsOpen(false)}
+                      className={cn(
+                        "flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold transition-all duration-300",
+                        isActive
+                          ? "bg-gradient-to-r from-primary to-primary/80 text-primary-foreground shadow-lg scale-[1.02]"
+                          : "text-muted-foreground hover:bg-muted hover:text-foreground hover:scale-[1.01]"
+                      )}
+                    >
+                      <item.icon className="w-5 h-5" />
+                      {item.name}
+                      {isActive && <span className="ml-auto">✨</span>}
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
 
-            {/* Responsavel navigation */}
-            <div className="space-y-2">
-              <p className="px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                👨‍👩‍👧 Responsável
-              </p>
-              {responsavelNavigation.map((item) => {
-                const isActive = location.pathname === item.href;
-                return (
-                  <Link
-                    key={item.name}
-                    to={item.href}
-                    onClick={() => setIsOpen(false)}
-                    className={cn(
-                      "flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold transition-all duration-300",
-                      isActive
-                        ? "bg-gradient-to-r from-kawaii-mint to-kawaii-blue text-foreground shadow-lg scale-[1.02]"
-                        : "text-muted-foreground hover:bg-muted hover:text-foreground hover:scale-[1.01]"
-                    )}
-                  >
-                    <item.icon className="w-5 h-5" />
-                    {item.name}
-                    {isActive && <span className="ml-auto">💕</span>}
-                  </Link>
-                );
-              })}
-            </div>
+            {responsavelNavigation.length > 0 && (
+              <div className="space-y-2">
+                <p className="px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  👨‍👩‍👧 Responsável
+                </p>
+                {responsavelNavigation.map((item) => {
+                  const isActive = location.pathname === item.href;
+                  return (
+                    <Link
+                      key={item.name}
+                      to={item.href}
+                      onClick={() => setIsOpen(false)}
+                      className={cn(
+                        "flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold transition-all duration-300",
+                        isActive
+                          ? "bg-gradient-to-r from-kawaii-mint to-kawaii-blue text-foreground shadow-lg scale-[1.02]"
+                          : "text-muted-foreground hover:bg-muted hover:text-foreground hover:scale-[1.01]"
+                      )}
+                    >
+                      <item.icon className="w-5 h-5" />
+                      {item.name}
+                      {isActive && <span className="ml-auto">💕</span>}
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
 
-            {/* Admin navigation */}
-            <div className="space-y-2">
-              <p className="px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                ⚙️ Administração
-              </p>
-              {adminNavigation.map((item) => {
-                const isActive = location.pathname === item.href;
-                return (
-                  <Link
-                    key={item.name}
-                    to={item.href}
-                    onClick={() => setIsOpen(false)}
-                    className={cn(
-                      "flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold transition-all duration-300",
-                      isActive
-                        ? "bg-gradient-to-r from-secondary to-secondary/80 text-secondary-foreground shadow-lg scale-[1.02]"
-                        : "text-muted-foreground hover:bg-muted hover:text-foreground hover:scale-[1.01]"
-                    )}
-                  >
-                    <item.icon className="w-5 h-5" />
-                    {item.name}
-                    {isActive && <span className="ml-auto">🌸</span>}
-                  </Link>
-                );
-              })}
-            </div>
+            {adminNavigation.length > 0 && (
+              <div className="space-y-2">
+                <p className="px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  ⚙️ Administração
+                </p>
+                {adminNavigation.map((item) => {
+                  const isActive = location.pathname === item.href;
+                  return (
+                    <Link
+                      key={item.name}
+                      to={item.href}
+                      onClick={() => setIsOpen(false)}
+                      className={cn(
+                        "flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold transition-all duration-300",
+                        isActive
+                          ? "bg-gradient-to-r from-secondary to-secondary/80 text-secondary-foreground shadow-lg scale-[1.02]"
+                          : "text-muted-foreground hover:bg-muted hover:text-foreground hover:scale-[1.01]"
+                      )}
+                    >
+                      <item.icon className="w-5 h-5" />
+                      {item.name}
+                      {isActive && <span className="ml-auto">🌸</span>}
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
           </nav>
 
           {/* Footer */}
@@ -184,6 +219,7 @@ export function Sidebar() {
             <Button
               variant="ghost"
               className="w-full justify-start text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-2xl"
+              onClick={handleSignOut}
             >
               <LogOut className="w-5 h-5 mr-3" />
               Sair

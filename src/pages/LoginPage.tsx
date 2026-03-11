@@ -1,0 +1,131 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Flower2, Mail, Lock, Eye, EyeOff } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useAuth } from '@/contexts/AuthContext';
+import { toast } from 'sonner';
+
+export default function LoginPage() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
+  const { signIn, resetPassword } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    const { error } = await signIn(email, password);
+    setIsLoading(false);
+
+    if (error) {
+      toast.error('Email ou senha incorretos');
+    } else {
+      toast.success('Bem-vindo ao Fleur! 🌸');
+      navigate('/');
+    }
+  };
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) {
+      toast.error('Digite seu email');
+      return;
+    }
+    setIsLoading(true);
+    const { error } = await resetPassword(email);
+    setIsLoading(false);
+
+    if (error) {
+      toast.error('Erro ao enviar email de recuperação');
+    } else {
+      toast.success('Email de recuperação enviado! Verifique sua caixa de entrada.');
+      setIsForgotPassword(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <div className="w-full max-w-md space-y-8">
+        {/* Logo */}
+        <div className="text-center space-y-2">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-gradient-to-br from-primary/20 to-secondary/30 shadow-lg">
+            <Flower2 className="w-10 h-10 text-primary" />
+          </div>
+          <h1 className="text-3xl font-bold text-foreground">Fleur</h1>
+          <p className="text-muted-foreground">🌸 Escola Infantil</p>
+        </div>
+
+        {/* Form */}
+        <div className="bg-card rounded-3xl border-2 border-border p-8 shadow-xl">
+          <h2 className="text-xl font-bold text-foreground mb-6">
+            {isForgotPassword ? 'Recuperar Senha' : 'Entrar'}
+          </h2>
+
+          <form onSubmit={isForgotPassword ? handleForgotPassword : handleLogin} className="space-y-5">
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="seu@email.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="pl-10"
+                  required
+                />
+              </div>
+            </div>
+
+            {!isForgotPassword && (
+              <div className="space-y-2">
+                <Label htmlFor="password">Senha</Label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <Input
+                    id="password"
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="pl-10 pr-10"
+                    required
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            <Button type="submit" className="w-full rounded-2xl" disabled={isLoading}>
+              {isLoading ? 'Carregando...' : isForgotPassword ? 'Enviar Email' : 'Entrar'}
+            </Button>
+          </form>
+
+          <div className="mt-4 text-center">
+            <Button
+              variant="link"
+              className="text-sm text-muted-foreground"
+              onClick={() => setIsForgotPassword(!isForgotPassword)}
+            >
+              {isForgotPassword ? 'Voltar ao login' : 'Esqueci minha senha'}
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
