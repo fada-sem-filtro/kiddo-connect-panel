@@ -17,12 +17,12 @@ const corsHeaders = {
 }
 
 const EMAIL_SUBJECTS: Record<string, string> = {
-  signup: 'Confirm your email',
-  invite: "You've been invited",
-  magiclink: 'Your login link',
-  recovery: 'Reset your password',
-  email_change: 'Confirm your new email',
-  reauthentication: 'Your verification code',
+  signup: 'Confirme seu e-mail na Agenda Fleur',
+  invite: 'Você foi convidado(a) para a Agenda Fleur',
+  magiclink: 'Seu link de acesso - Agenda Fleur',
+  recovery: 'Redefinir sua senha - Agenda Fleur',
+  email_change: 'Confirme seu novo e-mail - Agenda Fleur',
+  reauthentication: 'Seu código de verificação - Agenda Fleur',
 }
 
 // Template mapping
@@ -36,7 +36,7 @@ const EMAIL_TEMPLATES: Record<string, React.ComponentType<any>> = {
 }
 
 // Configuration
-const SITE_NAME = "kiddo-connect-panel"
+const SITE_NAME = "Agenda Fleur"
 const SENDER_DOMAIN = "notify.agendafleur.app"
 const ROOT_DOMAIN = "agendafleur.app"
 const FROM_DOMAIN = "agendafleur.app" // Domain shown in From address (may be root or sender subdomain)
