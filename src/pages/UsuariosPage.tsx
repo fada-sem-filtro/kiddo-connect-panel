@@ -324,6 +324,28 @@ export default function UsuariosPage() {
           </form>
         </DialogContent>
       </Dialog>
+
+      <Dialog open={!!resetTarget} onOpenChange={(open) => !open && setResetTarget(null)}>
+        <DialogContent className="rounded-3xl max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <AlertTriangle className="w-5 h-5 text-amber-500" />
+              Resetar Senha
+            </DialogTitle>
+            <DialogDescription>
+              A senha de <strong>{resetTarget?.nome}</strong> será redefinida para a senha padrão <strong>fleur@2026</strong>. No próximo login, será solicitada uma nova senha.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button variant="outline" onClick={() => setResetTarget(null)} disabled={isResetting}>
+              Cancelar
+            </Button>
+            <Button variant="destructive" onClick={handleResetPassword} disabled={isResetting}>
+              {isResetting ? 'Resetando...' : 'Confirmar Reset'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </MainLayout>
   );
 }
