@@ -57,7 +57,7 @@ export default function LoginPage() {
           <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl shadow-lg">
             <img src={logoFleur} alt="Fleur" className="w-16 h-16" />
           </div>
-          <h1 className="text-3xl font-bold text-foreground">Fleur</h1>
+          <h1 className="text-3xl font-bold text-foreground">Agenda Fleur</h1>
           
         </div>
 
