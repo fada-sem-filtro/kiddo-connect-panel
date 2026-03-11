@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
 import { CriancaDbModal } from '@/components/modals/CriancaDbModal';
+import { CriancaResponsaveisModal } from '@/components/modals/CriancaResponsaveisModal';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
