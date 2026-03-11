@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Plus, Trash2 } from 'lucide-react';
+import { Plus, Trash2, UserPlus } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -23,8 +23,13 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 import { useData } from '@/contexts/DataContext';
-import { Crianca } from '@/types';
+import { Crianca, Responsavel } from '@/types';
 import { toast } from 'sonner';
 
 const responsavelSchema = z.object({
@@ -52,7 +57,8 @@ interface CriancaModalProps {
 }
 
 export function CriancaModal({ open, onOpenChange, editData }: CriancaModalProps) {
-  const { turmas, addCrianca, updateCrianca } = useData();
+  const { turmas, criancas, addCrianca, updateCrianca } = useData();
+  const [existingPopoverOpen, setExistingPopoverOpen] = useState(false);
   
   const form = useForm<CriancaFormData>({
     resolver: zodResolver(criancaSchema),
@@ -75,6 +81,38 @@ export function CriancaModal({ open, onOpenChange, editData }: CriancaModalProps
     control: form.control,
     name: 'responsaveis',
   });
+
+  // Get all unique existing responsáveis from other crianças
+  const existingResponsaveis = useMemo(() => {
+    const map = new Map<string, Responsavel & { criancaNome: string }>();
+    criancas.forEach(c => {
+      if (editData && c.id === editData.id) return;
+      c.responsaveis.forEach(r => {
+        if (!map.has(r.email)) {
+          map.set(r.email, { ...r, criancaNome: c.nome });
+        }
+      });
+    });
+    return Array.from(map.values());
+  }, [criancas, editData]);
+
+  const handleAddExisting = (resp: Responsavel) => {
+    // Check if already added
+    const current = form.getValues('responsaveis');
+    if (current.some(r => r.email === resp.email)) {
+      toast.info('Este responsável já foi adicionado');
+      return;
+    }
+    append({
+      id: resp.id,
+      nome: resp.nome,
+      telefone: resp.telefone,
+      email: resp.email,
+      parentesco: resp.parentesco,
+    });
+    setExistingPopoverOpen(false);
+    toast.success(`${resp.nome} adicionado(a)`);
+  };
 
   const onSubmit = (data: CriancaFormData) => {
     const responsaveisWithId = data.responsaveis.map((r, index) => ({
@@ -205,15 +243,50 @@ export function CriancaModal({ open, onOpenChange, editData }: CriancaModalProps
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <h3 className="font-semibold text-foreground">Responsáveis</h3>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => append({ id: '', nome: '', telefone: '', email: '', parentesco: '' })}
-                  >
-                    <Plus className="w-4 h-4 mr-2" />
-                    Adicionar
-                  </Button>
+                  <div className="flex gap-2">
+                    {existingResponsaveis.length > 0 && (
+                      <Popover open={existingPopoverOpen} onOpenChange={setExistingPopoverOpen}>
+                        <PopoverTrigger asChild>
+                          <Button type="button" variant="outline" size="sm">
+                            <UserPlus className="w-4 h-4 mr-2" />
+                            Vincular Existente
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-80 p-0" align="end">
+                          <div className="p-3 border-b border-border">
+                            <p className="text-sm font-semibold">Responsáveis Cadastrados</p>
+                            <p className="text-xs text-muted-foreground">Selecione para vincular a esta criança</p>
+                          </div>
+                          <ScrollArea className="max-h-60">
+                            <div className="p-2 space-y-1">
+                              {existingResponsaveis.map((resp) => (
+                                <button
+                                  key={resp.email}
+                                  type="button"
+                                  className="w-full text-left p-3 rounded-xl hover:bg-muted transition-colors"
+                                  onClick={() => handleAddExisting(resp)}
+                                >
+                                  <p className="text-sm font-medium">{resp.nome}</p>
+                                  <p className="text-xs text-muted-foreground">
+                                    {resp.parentesco} • {resp.email} • Resp. de {resp.criancaNome}
+                                  </p>
+                                </button>
+                              ))}
+                            </div>
+                          </ScrollArea>
+                        </PopoverContent>
+                      </Popover>
+                    )}
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => append({ id: '', nome: '', telefone: '', email: '', parentesco: '' })}
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      Novo
+                    </Button>
+                  </div>
                 </div>
 
                 {fields.map((field, index) => (
