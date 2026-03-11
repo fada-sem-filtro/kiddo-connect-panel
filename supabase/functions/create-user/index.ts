@@ -90,6 +90,17 @@ serve(async (req) => {
         .eq('user_id', newUser.user.id);
     }
 
+    // Auto-link to creche if creche_id provided
+    if (creche_id) {
+      const { error: membroError } = await adminClient
+        .from('creche_membros')
+        .insert({ user_id: newUser.user.id, creche_id });
+
+      if (membroError) {
+        console.error('Error linking user to creche:', membroError.message);
+      }
+    }
+
     return new Response(JSON.stringify({ user: newUser.user }), {
       status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
