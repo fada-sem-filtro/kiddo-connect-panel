@@ -42,7 +42,7 @@ serve(async (req) => {
       });
     }
 
-    const { email, nome, telefone, role } = await req.json();
+    const { email, nome, telefone, role, creche_id } = await req.json();
 
     if (!email || !nome || !role) {
       return new Response(JSON.stringify({ error: 'Missing required fields' }), {
@@ -88,6 +88,17 @@ serve(async (req) => {
         .from('profiles')
         .update({ telefone })
         .eq('user_id', newUser.user.id);
+    }
+
+    // Auto-link to creche if creche_id provided
+    if (creche_id) {
+      const { error: membroError } = await adminClient
+        .from('creche_membros')
+        .insert({ user_id: newUser.user.id, creche_id });
+
+      if (membroError) {
+        console.error('Error linking user to creche:', membroError.message);
+      }
     }
 
     return new Response(JSON.stringify({ user: newUser.user }), {
