@@ -42,7 +42,7 @@ serve(async (req) => {
       });
     }
 
-    const { email, nome, telefone, role } = await req.json();
+    const { email, nome, telefone, role, creche_id } = await req.json();
 
     if (!email || !nome || !role) {
       return new Response(JSON.stringify({ error: 'Missing required fields' }), {
