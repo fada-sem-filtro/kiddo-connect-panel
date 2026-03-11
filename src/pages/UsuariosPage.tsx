@@ -357,8 +357,8 @@ export default function UsuariosPage() {
                   <SelectValue placeholder="Selecione o papel" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="admin">Administrador</SelectItem>
-                  <SelectItem value="diretor">Diretor(a)</SelectItem>
+                  {!isDiretor && <SelectItem value="admin">Administrador</SelectItem>}
+                  {!isDiretor && <SelectItem value="diretor">Diretor(a)</SelectItem>}
                   <SelectItem value="educador">Educador</SelectItem>
                   <SelectItem value="responsavel">Responsável</SelectItem>
                 </SelectContent>
