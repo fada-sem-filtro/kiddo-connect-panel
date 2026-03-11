@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Plus, Search, Edit, Trash2, Eye, Users } from 'lucide-react';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { Button } from '@/components/ui/button';
@@ -24,47 +24,105 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { CriancaModal } from '@/components/modals/CriancaModal';
 import { CriancaViewModal } from '@/components/modals/CriancaViewModal';
-import { useData } from '@/contexts/DataContext';
-import { Crianca } from '@/types';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
+import { supabase } from '@/integrations/supabase/client';
+
+interface CriancaRow {
+  id: string;
+  nome: string;
+  data_nascimento: string;
+  turma_id: string;
+  turma_nome: string;
+  observacoes: string | null;
+  responsaveis: { id: string; nome: string; parentesco: string; email: string; telefone: string }[];
+}
 
 export default function CriancasPage() {
   const [search, setSearch] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [selectedCrianca, setSelectedCrianca] = useState<Crianca | null>(null);
-  
-  const { criancas, turmas, deleteCrianca } = useData();
+  const [selectedCrianca, setSelectedCrianca] = useState<CriancaRow | null>(null);
+  const [criancas, setCriancas] = useState<CriancaRow[]>([]);
+  const [turmas, setTurmas] = useState<{ id: string; nome: string; descricao?: string }[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const filteredCriancas = criancas.filter(crianca => 
+  const fetchData = useCallback(async () => {
+    setLoading(true);
+
+    const [{ data: turmasData }, { data: criancasData }] = await Promise.all([
+      supabase.from('turmas').select('id, nome, descricao').order('nome'),
+      supabase.from('criancas').select('id, nome, data_nascimento, turma_id, observacoes, turmas(nome)').order('nome'),
+    ]);
+
+    setTurmas((turmasData || []).map((t: any) => ({ id: t.id, nome: t.nome, descricao: t.descricao })));
+
+    const criancaIds = (criancasData || []).map((c: any) => c.id);
+
+    // Fetch responsaveis
+    let responsaveisMap: Record<string, any[]> = {};
+    if (criancaIds.length > 0) {
+      const { data: respData } = await supabase
+        .from('crianca_responsaveis')
+        .select('id, crianca_id, parentesco, responsavel_user_id, profiles:responsavel_user_id(nome, email, telefone)')
+        .in('crianca_id', criancaIds);
+
+      (respData || []).forEach((r: any) => {
+        if (!responsaveisMap[r.crianca_id]) responsaveisMap[r.crianca_id] = [];
+        responsaveisMap[r.crianca_id].push({
+          id: r.id,
+          nome: r.profiles?.nome || '',
+          email: r.profiles?.email || '',
+          telefone: r.profiles?.telefone || '',
+          parentesco: r.parentesco,
+        });
+      });
+    }
+
+    setCriancas((criancasData || []).map((c: any) => ({
+      id: c.id,
+      nome: c.nome,
+      data_nascimento: c.data_nascimento,
+      turma_id: c.turma_id,
+      turma_nome: c.turmas?.nome || 'Sem turma',
+      observacoes: c.observacoes,
+      responsaveis: responsaveisMap[c.id] || [],
+    })));
+
+    setLoading(false);
+  }, []);
+
+  useEffect(() => { fetchData(); }, [fetchData]);
+
+  const filteredCriancas = criancas.filter(crianca =>
     crianca.nome.toLowerCase().includes(search.toLowerCase())
   );
 
-  const getTurmaName = (turmaId: string) => {
-    return turmas.find(t => t.id === turmaId)?.nome || 'Sem turma';
-  };
-
-  const handleEdit = (crianca: Crianca) => {
+  const handleEdit = (crianca: CriancaRow) => {
     setSelectedCrianca(crianca);
     setIsModalOpen(true);
   };
 
-  const handleView = (crianca: Crianca) => {
+  const handleView = (crianca: CriancaRow) => {
     setSelectedCrianca(crianca);
     setIsViewModalOpen(true);
   };
 
-  const handleDelete = (crianca: Crianca) => {
+  const handleDelete = (crianca: CriancaRow) => {
     setSelectedCrianca(crianca);
     setIsDeleteDialogOpen(true);
   };
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     if (selectedCrianca) {
-      deleteCrianca(selectedCrianca.id);
-      toast.success('Criança removida com sucesso!');
+      const { error } = await supabase.from('criancas').delete().eq('id', selectedCrianca.id);
+      if (error) {
+        toast.error('Erro ao remover criança');
+      } else {
+        toast.success('Criança removida com sucesso!');
+        fetchData();
+      }
     }
     setIsDeleteDialogOpen(false);
     setSelectedCrianca(null);
@@ -118,7 +176,13 @@ export default function CriancasPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredCriancas.length === 0 ? (
+              {loading ? (
+                <TableRow>
+                  <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
+                    Carregando...
+                  </TableCell>
+                </TableRow>
+              ) : filteredCriancas.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
                     Nenhuma criança encontrada
@@ -129,10 +193,10 @@ export default function CriancasPage() {
                   <TableRow key={crianca.id} className="animate-fade-in">
                     <TableCell className="font-medium">{crianca.nome}</TableCell>
                     <TableCell>
-                      {format(new Date(crianca.dataNascimento), 'dd/MM/yyyy')}
+                      {format(new Date(crianca.data_nascimento + 'T00:00:00'), 'dd/MM/yyyy')}
                     </TableCell>
                     <TableCell>
-                      <Badge variant="secondary">{getTurmaName(crianca.turmaId)}</Badge>
+                      <Badge variant="secondary">{crianca.turma_nome}</Badge>
                     </TableCell>
                     <TableCell>
                       <div className="flex flex-wrap gap-1">
@@ -177,7 +241,16 @@ export default function CriancasPage() {
       <CriancaModal 
         open={isModalOpen} 
         onOpenChange={handleModalClose}
-        editData={selectedCrianca}
+        editData={selectedCrianca ? {
+          id: selectedCrianca.id,
+          nome: selectedCrianca.nome,
+          data_nascimento: selectedCrianca.data_nascimento,
+          turma_id: selectedCrianca.turma_id,
+          observacoes: selectedCrianca.observacoes || '',
+          responsaveis: selectedCrianca.responsaveis,
+        } : null}
+        turmas={turmas}
+        onSaved={fetchData}
       />
 
       <CriancaViewModal

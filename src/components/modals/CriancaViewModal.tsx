@@ -8,21 +8,24 @@ import {
 } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { useData } from '@/contexts/DataContext';
-import { Crianca } from '@/types';
+
+interface CriancaViewData {
+  id: string;
+  nome: string;
+  data_nascimento: string;
+  turma_nome: string;
+  observacoes: string | null;
+  responsaveis: { id: string; nome: string; telefone: string; email: string; parentesco: string }[];
+}
 
 interface CriancaViewModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  crianca: Crianca | null;
+  crianca: CriancaViewData | null;
 }
 
 export function CriancaViewModal({ open, onOpenChange, crianca }: CriancaViewModalProps) {
-  const { turmas } = useData();
-
   if (!crianca) return null;
-
-  const turma = turmas.find(t => t.id === crianca.turmaId);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -35,24 +38,22 @@ export function CriancaViewModal({ open, onOpenChange, crianca }: CriancaViewMod
         </DialogHeader>
 
         <div className="space-y-6">
-          {/* Info básica */}
           <div className="grid grid-cols-2 gap-4">
             <div className="flex items-center gap-2 text-sm">
               <Calendar className="w-4 h-4 text-muted-foreground" />
               <span className="text-muted-foreground">Nascimento:</span>
               <span className="font-medium">
-                {format(new Date(crianca.dataNascimento), 'dd/MM/yyyy')}
+                {format(new Date(crianca.data_nascimento + 'T00:00:00'), 'dd/MM/yyyy')}
               </span>
             </div>
             
             <div className="flex items-center gap-2 text-sm">
               <BookOpen className="w-4 h-4 text-muted-foreground" />
               <span className="text-muted-foreground">Turma:</span>
-              <Badge variant="secondary">{turma?.nome || 'Sem turma'}</Badge>
+              <Badge variant="secondary">{crianca.turma_nome}</Badge>
             </div>
           </div>
 
-          {/* Observações */}
           {crianca.observacoes && (
             <div className="p-3 rounded-xl bg-warning/10 border border-warning/20">
               <div className="flex items-center gap-2 mb-1">
@@ -65,7 +66,6 @@ export function CriancaViewModal({ open, onOpenChange, crianca }: CriancaViewMod
 
           <Separator />
 
-          {/* Responsáveis */}
           <div>
             <h3 className="font-semibold mb-3">Responsáveis</h3>
             <div className="space-y-3">
@@ -81,7 +81,7 @@ export function CriancaViewModal({ open, onOpenChange, crianca }: CriancaViewMod
                   <div className="space-y-1 text-sm text-muted-foreground">
                     <div className="flex items-center gap-2">
                       <Phone className="w-3 h-3" />
-                      {resp.telefone}
+                      {resp.telefone || 'Não informado'}
                     </div>
                     <div className="flex items-center gap-2">
                       <Mail className="w-3 h-3" />
@@ -90,6 +90,9 @@ export function CriancaViewModal({ open, onOpenChange, crianca }: CriancaViewMod
                   </div>
                 </div>
               ))}
+              {crianca.responsaveis.length === 0 && (
+                <p className="text-sm text-muted-foreground">Nenhum responsável vinculado</p>
+              )}
             </div>
           </div>
         </div>
