@@ -189,6 +189,9 @@ export default function CriancasDbPage() {
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-1">
+                        <Button variant="ghost" size="icon" title="Responsáveis" onClick={() => setRespModalCrianca(crianca)}>
+                          <Link2 className="w-4 h-4" />
+                        </Button>
                         <Button variant="ghost" size="icon" onClick={() => handleEdit(crianca)}>
                           <Edit className="w-4 h-4" />
                         </Button>
