@@ -55,7 +55,7 @@ export const educadoresData: Educador[] = [
   {
     id: '2',
     nome: 'Carolina Mendes',
-    email: 'carolina@lullaby.com',
+    email: 'carolina@fleur.com',
     telefone: '(11) 99999-6666',
     turmaId: '4',
     createdAt: '2024-01-01',
