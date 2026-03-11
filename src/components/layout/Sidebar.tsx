@@ -61,6 +61,7 @@ export function Sidebar() {
 
   const adminNavigation = role === 'admin' ? [
     { name: 'Dashboard', href: '/admin', icon: BarChart3 },
+    { name: 'Usuários', href: '/admin/usuarios', icon: UserCog },
     { name: 'Feriados', href: '/admin/feriados', icon: PartyPopper },
     { name: 'Calendário', href: '/admin/calendario', icon: CalendarDays },
   ] : [];
