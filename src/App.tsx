@@ -1,14 +1,12 @@
-import { useEffect } from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
-import { DataProvider, setNotifyCallback } from "@/contexts/DataContext";
-import { NotificationProvider, useNotifications } from "@/contexts/NotificationContext";
+import { DataProvider } from "@/contexts/DataContext";
+import { NotificationProvider } from "@/contexts/NotificationContext";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
-import { EVENT_TYPE_LABELS, EventType } from "@/types";
 import Index from "./pages/Index";
 import LoginPage from "./pages/LoginPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
@@ -28,24 +26,6 @@ import CriancasDbPage from "./pages/CriancasDbPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
-
-function NotificationConnector({ children }: { children: React.ReactNode }) {
-  const { addNotificacao } = useNotifications();
-
-  useEffect(() => {
-    setNotifyCallback((criancaNome: string, tipoEvento: string) => {
-      const tipoLabel = EVENT_TYPE_LABELS[tipoEvento as EventType] || tipoEvento;
-      addNotificacao({
-        titulo: `Novo evento: ${tipoLabel} 📅`,
-        mensagem: `Um evento de ${tipoLabel.toLowerCase()} foi registrado para ${criancaNome}.`,
-        tipo: 'evento',
-        criancaId: undefined,
-      });
-    });
-  }, [addNotificacao]);
-
-  return <>{children}</>;
-}
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
