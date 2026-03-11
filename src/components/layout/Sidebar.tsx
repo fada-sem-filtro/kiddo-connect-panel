@@ -12,7 +12,8 @@ import {
   BarChart3,
   PartyPopper,
   ClipboardList,
-  UserCog
+  UserCog,
+  Building2
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import logoFleur from '@/assets/logo-fleur.webp';
