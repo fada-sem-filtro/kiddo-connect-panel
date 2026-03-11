@@ -16,7 +16,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
   const [notificacoes, setNotificacoes] = useState<Notificacao[]>([
     {
       id: '1',
-      titulo: 'Bem-vindo ao Lullaby! 🌸',
+      titulo: 'Bem-vindo ao Fleur! 🌸',
       mensagem: 'Seu painel de gerenciamento está pronto para uso.',
       tipo: 'sistema',
       lida: false,

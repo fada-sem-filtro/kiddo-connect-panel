@@ -1,4 +1,4 @@
-// Types for the Lullaby School Management System
+// Types for the Fleur School Management System
 
 export type EventType = 'ALIMENTACAO' | 'SONECA' | 'BRINCADEIRA' | 'ATIVIDADE' | 'HIGIENE' | 'OUTRO';
 

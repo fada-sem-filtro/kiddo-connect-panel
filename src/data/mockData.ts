@@ -47,7 +47,7 @@ export const educadoresData: Educador[] = [
   {
     id: '1',
     nome: 'Beatriz Costa',
-    email: 'beatriz@lullaby.com',
+    email: 'beatriz@fleur.com',
     telefone: '(11) 99999-5555',
     turmaId: '3',
     createdAt: '2024-01-01',
@@ -55,7 +55,7 @@ export const educadoresData: Educador[] = [
   {
     id: '2',
     nome: 'Carolina Mendes',
-    email: 'carolina@lullaby.com',
+    email: 'carolina@fleur.com',
     telefone: '(11) 99999-6666',
     turmaId: '4',
     createdAt: '2024-01-01',

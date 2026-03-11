@@ -8,7 +8,7 @@ import {
   Menu,
   X,
   LogOut,
-  Sparkles,
+  Flower2,
   Settings,
   CalendarDays,
   BarChart3,
@@ -55,8 +55,8 @@ export function Sidebar() {
         </Button>
         
         <div className="flex items-center gap-2">
-          <Sparkles className="w-5 h-5 text-primary" />
-          <span className="font-bold text-foreground">Lullaby</span>
+          <Flower2 className="w-5 h-5 text-primary" />
+          <span className="font-bold text-foreground">Fleur</span>
         </div>
 
         <NotificationBell />
@@ -82,11 +82,11 @@ export function Sidebar() {
           <div className="flex items-center justify-between gap-3 px-6 py-5 border-b-2 border-border bg-gradient-to-r from-primary/5 to-secondary/10">
             <div className="flex items-center gap-3">
               <div className="flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/20 to-secondary/30 shadow-md">
-                <Sparkles className="w-6 h-6 text-primary" />
+                <Flower2 className="w-6 h-6 text-primary" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-foreground">Lullaby</h1>
-                <p className="text-xs text-primary font-semibold">✨ Escola Infantil</p>
+                <h1 className="text-xl font-bold text-foreground">Fleur</h1>
+                <p className="text-xs text-primary font-semibold">🌸 Escola Infantil</p>
               </div>
             </div>
             {/* Notification bell for desktop */}
