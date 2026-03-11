@@ -111,14 +111,18 @@ export default function RecadosPage() {
                 ))}
               </SelectContent>
             </Select>
-            <Button onClick={() => setIsModalOpen(true)}>
-              <Plus className="w-4 h-4 mr-2" />
-              Novo Recado
-            </Button>
-            <Button variant="outline" onClick={() => setIsBulkModalOpen(true)}>
-              <Users className="w-4 h-4 mr-2" />
-              Recado p/ Turma
-            </Button>
+            {canCreate && (
+              <>
+                <Button onClick={() => setIsModalOpen(true)}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Novo Recado
+                </Button>
+                <Button variant="outline" onClick={() => setIsBulkModalOpen(true)}>
+                  <Users className="w-4 h-4 mr-2" />
+                  Recado p/ Turma
+                </Button>
+              </>
+            )}
           </div>
         </div>
 
