@@ -21,6 +21,7 @@ import CalendarioAdminPage from "./pages/CalendarioAdminPage";
 import ResponsavelEventosPage from "./pages/ResponsavelEventosPage";
 import EducadorTurmaPage from "./pages/EducadorTurmaPage";
 import UsuariosPage from "./pages/UsuariosPage";
+import CrechesPage from "./pages/CrechesPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
