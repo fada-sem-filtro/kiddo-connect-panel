@@ -237,6 +237,14 @@ export default function CriancasDbPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <CriancaResponsaveisModal
+        open={!!respModalCrianca}
+        onOpenChange={(open) => !open && setRespModalCrianca(null)}
+        criancaId={respModalCrianca?.id || null}
+        criancaNome={respModalCrianca?.nome || ''}
+        onChanged={fetchCriancas}
+      />
     </MainLayout>
   );
 }
