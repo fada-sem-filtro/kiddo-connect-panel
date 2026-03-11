@@ -148,11 +148,6 @@ export default function DiretorMembrosPage() {
                   <TableRow key={member.user_id}>
                     <TableCell className="font-medium">
                       {member.nome}
-                      {member.is_diretor && (
-                        <Badge variant="outline" className="ml-2 text-xs">
-                          Diretor(a)
-                        </Badge>
-                      )}
                     </TableCell>
                     <TableCell>{member.email}</TableCell>
                     <TableCell>{member.telefone || '—'}</TableCell>

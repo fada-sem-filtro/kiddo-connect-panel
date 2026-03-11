@@ -41,8 +41,8 @@ export function Sidebar() {
   // Everyone sees Agenda
   mainNavigation.push({ name: 'Agenda', href: '/', icon: Calendar });
 
-  // Educador and admin see Minha Turma
-  if (role === 'admin' || role === 'educador') {
+  // Educador, diretor and admin see Minha Turma
+  if (role === 'admin' || role === 'educador' || role === 'diretor') {
     mainNavigation.push({ name: 'Minha Turma', href: '/educador/turma', icon: Users });
   }
 
@@ -52,8 +52,8 @@ export function Sidebar() {
     mainNavigation.push({ name: 'Educadores', href: '/educadores', icon: GraduationCap });
   }
 
-  // Everyone except pure responsavel without recados sees Recados
-  if (role === 'admin' || role === 'educador' || role === 'responsavel') {
+  // Everyone except pure responsavel sees Recados
+  if (role === 'admin' || role === 'educador' || role === 'responsavel' || role === 'diretor') {
     mainNavigation.push({ name: 'Recados', href: '/recados', icon: MessageSquare });
   }
 
