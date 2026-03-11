@@ -60,6 +60,10 @@ export function Sidebar() {
   { name: 'Meus Eventos', href: '/responsavel/eventos', icon: ClipboardList }] :
   [];
 
+  const diretorNavigation = isDiretor ? [
+  { name: 'Membros', href: '/diretor/membros', icon: Users }] :
+  [];
+
   const adminNavigation = role === 'admin' ? [
   { name: 'Dashboard', href: '/admin', icon: BarChart3 },
   { name: 'Creches', href: '/admin/creches', icon: Building2 },
