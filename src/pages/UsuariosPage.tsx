@@ -232,9 +232,12 @@ export default function UsuariosPage() {
                         {ROLE_LABELS[user.role]}
                       </Badge>
                     </TableCell>
-                    <TableCell className="text-right">
-                      <Button variant="ghost" size="icon" onClick={() => openEdit(user)}>
+                    <TableCell className="text-right space-x-1">
+                      <Button variant="ghost" size="icon" onClick={() => openEdit(user)} title="Editar">
                         <Edit className="w-4 h-4" />
+                      </Button>
+                      <Button variant="ghost" size="icon" onClick={() => handleResetPassword(user)} title="Resetar senha">
+                        <KeyRound className="w-4 h-4" />
                       </Button>
                     </TableCell>
                   </TableRow>
