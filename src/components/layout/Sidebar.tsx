@@ -26,7 +26,7 @@ export function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const { role, profile, signOut } = useAuth();
+  const { role, profile, signOut, userCreche, isDiretor } = useAuth();
 
   const handleSignOut = async () => {
     await signOut();
@@ -60,6 +60,10 @@ export function Sidebar() {
   { name: 'Meus Eventos', href: '/responsavel/eventos', icon: ClipboardList }] :
   [];
 
+  const diretorNavigation = isDiretor ? [
+  { name: 'Membros', href: '/diretor/membros', icon: Users }] :
+  [];
+
   const adminNavigation = role === 'admin' ? [
   { name: 'Dashboard', href: '/admin', icon: BarChart3 },
   { name: 'Creches', href: '/admin/creches', icon: Building2 },
@@ -83,7 +87,9 @@ export function Sidebar() {
         
         <div className="flex items-center gap-2">
           <img src={logoFleur} alt="Fleur" className="w-6 h-6" />
-          <span className="font-bold text-foreground">Agenda Fleur</span>
+          <span className="font-bold text-foreground">
+            {userCreche ? userCreche.nome : 'Agenda Fleur'}
+          </span>
         </div>
 
         <NotificationBell />
@@ -112,8 +118,10 @@ export function Sidebar() {
                 <img src={logoFleur} alt="Fleur" className="w-10 h-10" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-foreground">Agenda Fleur</h1>
-                <p className="text-xs text-primary font-semibold">🌷 Escola Infantil</p>
+                <h1 className="text-xl font-bold text-foreground">
+                  {userCreche ? userCreche.nome : 'Agenda Fleur'}
+                </h1>
+                <p className="text-xs text-primary font-semibold">🌷 Agenda Fleur</p>
               </div>
             </div>
             <div className="hidden lg:block">
@@ -187,6 +195,32 @@ export function Sidebar() {
               </div>
             }
 
+            {diretorNavigation.length > 0 &&
+            <div className="space-y-2">
+                <p className="px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  🏫 Direção
+                </p>
+                {diretorNavigation.map((item) => {
+                const isActive = location.pathname === item.href;
+                return (
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    onClick={() => setIsOpen(false)}
+                    className={cn(
+                      "flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold transition-all duration-300",
+                      isActive ?
+                      "bg-gradient-to-r from-primary to-primary/80 text-primary-foreground shadow-lg scale-[1.02]" :
+                      "text-muted-foreground hover:bg-muted hover:text-foreground hover:scale-[1.01]"
+                    )}>
+                    
+                      <item.icon className="w-5 h-5" />
+                      {item.name}
+                    </Link>);
+              })}
+              </div>
+            }
+
             {adminNavigation.length > 0 &&
             <div className="space-y-2">
                 <p className="px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
@@ -210,7 +244,6 @@ export function Sidebar() {
                       {item.name}
                       {isActive && <span className="ml-auto">🌸</span>}
                     </Link>);
-
               })}
               </div>
             }
