@@ -127,6 +127,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await supabase.auth.signOut();
     setProfile(null);
     setRole(null);
+    setUserCreche(null);
+    setIsDiretor(false);
   };
 
   const resetPassword = async (email: string) => {
@@ -142,7 +144,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, profile, role, loading, signIn, signOut, resetPassword, updatePassword }}>
+    <AuthContext.Provider value={{ user, session, profile, role, loading, userCreche, isDiretor, signIn, signOut, resetPassword, updatePassword }}>
       {children}
     </AuthContext.Provider>
   );
