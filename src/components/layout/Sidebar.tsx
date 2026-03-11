@@ -26,7 +26,7 @@ export function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const { role, profile, signOut } = useAuth();
+  const { role, profile, signOut, userCreche, isDiretor } = useAuth();
 
   const handleSignOut = async () => {
     await signOut();
