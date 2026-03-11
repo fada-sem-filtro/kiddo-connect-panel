@@ -118,8 +118,10 @@ export function Sidebar() {
                 <img src={logoFleur} alt="Fleur" className="w-10 h-10" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-foreground">Agenda Fleur</h1>
-                <p className="text-xs text-primary font-semibold">🌷 Escola Infantil</p>
+                <h1 className="text-xl font-bold text-foreground">
+                  {userCreche ? userCreche.nome : 'Agenda Fleur'}
+                </h1>
+                <p className="text-xs text-primary font-semibold">🌷 Agenda Fleur</p>
               </div>
             </div>
             <div className="hidden lg:block">
