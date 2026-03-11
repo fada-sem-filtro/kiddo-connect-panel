@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { EventDbModal } from '@/components/modals/EventDbModal';
 import { useEventos, EventoDb } from '@/hooks/useEventos';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Index = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
