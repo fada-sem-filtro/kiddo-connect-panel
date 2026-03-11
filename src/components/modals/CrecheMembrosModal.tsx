@@ -16,7 +16,6 @@ import { toast } from 'sonner';
 interface Membro {
   id: string;
   user_id: string;
-  is_diretor: boolean;
   profile?: { nome: string; email: string };
   role?: string;
 }
