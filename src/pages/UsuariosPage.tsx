@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Plus, Search, Users, Shield, GraduationCap, UserCheck, Edit } from 'lucide-react';
+import { Plus, Search, Users, Shield, GraduationCap, UserCheck, Edit, KeyRound } from 'lucide-react';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -175,6 +175,21 @@ export default function UsuariosPage() {
     fetchUsers();
   };
 
+  const handleResetPassword = async (user: UserWithRole) => {
+    if (!confirm(`Resetar a senha de ${user.nome} para a senha padrão (fleur@2026)?`)) return;
+
+    const { data, error } = await supabase.functions.invoke('reset-user-password', {
+      body: { user_id: user.user_id },
+    });
+
+    if (error || data?.error) {
+      toast.error(data?.error || 'Erro ao resetar senha');
+      return;
+    }
+
+    toast.success(`Senha de ${user.nome} resetada! No próximo login será solicitada uma nova senha.`);
+  };
+
   return (
     <MainLayout>
       <div className="max-w-6xl mx-auto space-y-6">
@@ -232,9 +247,12 @@ export default function UsuariosPage() {
                         {ROLE_LABELS[user.role]}
                       </Badge>
                     </TableCell>
-                    <TableCell className="text-right">
-                      <Button variant="ghost" size="icon" onClick={() => openEdit(user)}>
+                    <TableCell className="text-right space-x-1">
+                      <Button variant="ghost" size="icon" onClick={() => openEdit(user)} title="Editar">
                         <Edit className="w-4 h-4" />
+                      </Button>
+                      <Button variant="ghost" size="icon" onClick={() => handleResetPassword(user)} title="Resetar senha">
+                        <KeyRound className="w-4 h-4" />
                       </Button>
                     </TableCell>
                   </TableRow>
