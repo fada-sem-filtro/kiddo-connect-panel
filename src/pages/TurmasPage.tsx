@@ -190,6 +190,9 @@ export default function TurmasPage() {
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-1">
+                        <Button variant="ghost" size="icon" title="Educadores" onClick={() => setEduModalTurma(turma)}>
+                          <Link2 className="w-4 h-4" />
+                        </Button>
                         <Button variant="ghost" size="icon" onClick={() => handleEdit(turma)}>
                           <Edit className="w-4 h-4" />
                         </Button>
