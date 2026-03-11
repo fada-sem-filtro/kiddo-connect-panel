@@ -8,7 +8,7 @@ import {
   Menu,
   X,
   LogOut,
-  Sparkles,
+  Flower2,
   Settings,
   CalendarDays,
   BarChart3,
