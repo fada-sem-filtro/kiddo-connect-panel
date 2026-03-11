@@ -195,7 +195,32 @@ export function Sidebar() {
               </div>
             }
 
-            {adminNavigation.length > 0 &&
+            {diretorNavigation.length > 0 &&
+            <div className="space-y-2">
+                <p className="px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  🏫 Direção
+                </p>
+                {diretorNavigation.map((item) => {
+                const isActive = location.pathname === item.href;
+                return (
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    onClick={() => setIsOpen(false)}
+                    className={cn(
+                      "flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold transition-all duration-300",
+                      isActive ?
+                      "bg-gradient-to-r from-primary to-primary/80 text-primary-foreground shadow-lg scale-[1.02]" :
+                      "text-muted-foreground hover:bg-muted hover:text-foreground hover:scale-[1.01]"
+                    )}>
+                    
+                      <item.icon className="w-5 h-5" />
+                      {item.name}
+                    </Link>);
+              })}
+              </div>
+            }
+
             <div className="space-y-2">
                 <p className="px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                   ⚙️ Administração
