@@ -34,7 +34,6 @@ const App = () => (
         <AuthProvider>
           <NotificationProvider>
             <DataProvider>
-              <NotificationConnector>
                 <Toaster />
                 <Sonner />
                 <Routes>
@@ -58,7 +57,6 @@ const App = () => (
                   <Route path="/admin/criancas" element={<ProtectedRoute allowedRoles={['admin']}><CriancasDbPage /></ProtectedRoute>} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
-              </NotificationConnector>
             </DataProvider>
           </NotificationProvider>
         </AuthProvider>
