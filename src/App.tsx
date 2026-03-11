@@ -48,11 +48,15 @@ const App = () => (
               <Route path="/responsavel/eventos" element={<ProtectedRoute allowedRoles={['admin', 'responsavel']}><ResponsavelEventosPage /></ProtectedRoute>} />
               <Route path="/admin/usuarios" element={<ProtectedRoute allowedRoles={['admin']}><UsuariosPage /></ProtectedRoute>} />
               <Route path="/admin/creches" element={<ProtectedRoute allowedRoles={['admin']}><CrechesPage /></ProtectedRoute>} />
-              <Route path="/diretor/membros" element={<ProtectedRoute allowedRoles={['admin', 'diretor']}><DiretorMembrosPage /></ProtectedRoute>} />
-              <Route path="/diretor/turmas" element={<ProtectedRoute allowedRoles={['admin', 'diretor']}><TurmasPage /></ProtectedRoute>} />
-              <Route path="/diretor/criancas" element={<ProtectedRoute allowedRoles={['admin', 'diretor']}><CriancasDbPage /></ProtectedRoute>} />
               <Route path="/admin/turmas" element={<ProtectedRoute allowedRoles={['admin']}><TurmasPage /></ProtectedRoute>} />
               <Route path="/admin/criancas" element={<ProtectedRoute allowedRoles={['admin']}><CriancasDbPage /></ProtectedRoute>} />
+              <Route path="/admin/membros" element={<ProtectedRoute allowedRoles={['admin']}><DiretorMembrosPage /></ProtectedRoute>} />
+              <Route path="/diretor/membros" element={<ProtectedRoute allowedRoles={['diretor']}><DiretorMembrosPage /></ProtectedRoute>} />
+              <Route path="/diretor/turmas" element={<ProtectedRoute allowedRoles={['diretor']}><TurmasPage /></ProtectedRoute>} />
+              <Route path="/diretor/criancas" element={<ProtectedRoute allowedRoles={['diretor']}><CriancasDbPage /></ProtectedRoute>} />
+              <Route path="/diretor/usuarios" element={<ProtectedRoute allowedRoles={['diretor']}><UsuariosPage /></ProtectedRoute>} />
+              <Route path="/diretor/feriados" element={<ProtectedRoute allowedRoles={['diretor']}><FeriadosPage /></ProtectedRoute>} />
+              <Route path="/diretor/calendario" element={<ProtectedRoute allowedRoles={['diretor']}><CalendarioAdminPage /></ProtectedRoute>} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </NotificationProvider>

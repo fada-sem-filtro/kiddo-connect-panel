@@ -61,21 +61,25 @@ export function Sidebar() {
   { name: 'Meus Eventos', href: '/responsavel/eventos', icon: ClipboardList }] :
   [];
 
-  const diretorNavigation = isDiretor ? [
-  { name: 'Membros', href: '/diretor/membros', icon: Users },
-  { name: 'Turmas', href: '/diretor/turmas', icon: GraduationCap },
-  { name: 'Crianças', href: '/diretor/criancas', icon: Baby }] :
-  [];
+  const diretorNavigation: typeof mainNavigation = [];
 
-  const adminNavigation = role === 'admin' ? [
-  { name: 'Dashboard', href: '/admin', icon: BarChart3 },
-  { name: 'Creches', href: '/admin/creches', icon: Building2 },
-  { name: 'Turmas', href: '/admin/turmas', icon: GraduationCap },
-  { name: 'Crianças', href: '/admin/criancas', icon: Baby },
-  { name: 'Usuários', href: '/admin/usuarios', icon: UserCog },
-  { name: 'Feriados', href: '/admin/feriados', icon: PartyPopper },
-  { name: 'Calendário', href: '/admin/calendario', icon: CalendarDays }] :
-  [];
+  const adminNavigation: typeof mainNavigation = [];
+
+  if (role === 'admin' || isDiretor) {
+    const prefix = isDiretor ? '/diretor' : '/admin';
+
+    if (role === 'admin') {
+      adminNavigation.push({ name: 'Dashboard', href: '/admin', icon: BarChart3 });
+      adminNavigation.push({ name: 'Creches', href: '/admin/creches', icon: Building2 });
+    }
+
+    adminNavigation.push({ name: 'Membros', href: `${prefix}/membros`, icon: Users });
+    adminNavigation.push({ name: 'Turmas', href: `${prefix}/turmas`, icon: GraduationCap });
+    adminNavigation.push({ name: 'Crianças', href: `${prefix}/criancas`, icon: Baby });
+    adminNavigation.push({ name: 'Usuários', href: `${prefix}/usuarios`, icon: UserCog });
+    adminNavigation.push({ name: 'Feriados', href: `${prefix}/feriados`, icon: PartyPopper });
+    adminNavigation.push({ name: 'Calendário', href: `${prefix}/calendario`, icon: CalendarDays });
+  }
 
   return (
     <>
