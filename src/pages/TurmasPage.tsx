@@ -35,6 +35,7 @@ export default function TurmasPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [selected, setSelected] = useState<TurmaRow | null>(null);
+  const [eduModalTurma, setEduModalTurma] = useState<TurmaRow | null>(null);
   const [loading, setLoading] = useState(true);
 
   const fetchTurmas = async () => {
