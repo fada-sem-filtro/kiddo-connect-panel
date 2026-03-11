@@ -22,6 +22,7 @@ import ResponsavelEventosPage from "./pages/ResponsavelEventosPage";
 import EducadorTurmaPage from "./pages/EducadorTurmaPage";
 import UsuariosPage from "./pages/UsuariosPage";
 import CrechesPage from "./pages/CrechesPage";
+import DiretorMembrosPage from "./pages/DiretorMembrosPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
