@@ -24,6 +24,7 @@ const ROLE_LABELS: Record<string, string> = {
 };
 
 const ROLE_ICONS: Record<string, React.ReactNode> = {
+  diretor: <GraduationCap className="w-3 h-3" />,
   educador: <GraduationCap className="w-3 h-3" />,
   responsavel: <UserCheck className="w-3 h-3" />,
 };
