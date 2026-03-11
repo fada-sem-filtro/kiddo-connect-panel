@@ -28,6 +28,8 @@ interface AuthContextType {
   loading: boolean;
   userCreche: UserCreche | null;
   isDiretor: boolean;
+  mustChangePassword: boolean;
+  setMustChangePassword: (v: boolean) => void;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<{ error: Error | null }>;
