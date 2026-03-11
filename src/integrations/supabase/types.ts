@@ -311,6 +311,14 @@ export type Database = {
     }
     Functions: {
       get_creche_id_from_turma: { Args: { _turma_id: string }; Returns: string }
+      get_crianca_ids_for_responsavel: {
+        Args: { _user_id: string }
+        Returns: string[]
+      }
+      get_turma_ids_for_responsavel: {
+        Args: { _user_id: string }
+        Returns: string[]
+      }
       get_user_role: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["app_role"]
@@ -332,6 +340,10 @@ export type Database = {
       }
       is_member_of_turma_creche: {
         Args: { _turma_id: string; _user_id: string }
+        Returns: boolean
+      }
+      is_responsavel_of_crianca: {
+        Args: { _crianca_id: string; _user_id: string }
         Returns: boolean
       }
     }
