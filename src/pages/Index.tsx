@@ -69,15 +69,19 @@ const Index = () => {
               </SelectContent>
             </Select>
             
-            <Button onClick={() => setIsEventModalOpen(true)}>
-              <Plus className="w-4 h-4 mr-2" />
-              Novo Evento
-            </Button>
-            
-            <Button variant="outline" onClick={() => setIsBulkEventModalOpen(true)}>
-              <Users className="w-4 h-4 mr-2" />
-              Evento p/ Turma
-            </Button>
+            {canCreate && (
+              <>
+                <Button onClick={() => setIsEventModalOpen(true)}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Novo Evento
+                </Button>
+                
+                <Button variant="outline" onClick={() => setIsBulkEventModalOpen(true)}>
+                  <Users className="w-4 h-4 mr-2" />
+                  Evento p/ Turma
+                </Button>
+              </>
+            )}
           </div>
         </div>
 
