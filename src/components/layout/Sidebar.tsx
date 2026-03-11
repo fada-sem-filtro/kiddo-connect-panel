@@ -81,7 +81,7 @@ export function Sidebar() {
         
         <div className="flex items-center gap-2">
           <img src={logoFleur} alt="Fleur" className="w-6 h-6" />
-          <span className="font-bold text-foreground">Fleur</span>
+          <span className="font-bold text-foreground">Agenda Fleur</span>
         </div>
 
         <NotificationBell />
@@ -110,7 +110,7 @@ export function Sidebar() {
                 <img src={logoFleur} alt="Fleur" className="w-10 h-10" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-foreground">Fleur</h1>
+                <h1 className="text-xl font-bold text-foreground">Agenda Fleur</h1>
                 <p className="text-xs text-primary font-semibold">🌷 Escola Infantil</p>
               </div>
             </div>
