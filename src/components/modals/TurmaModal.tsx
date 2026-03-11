@@ -35,9 +35,9 @@ export function TurmaModal({ open, onOpenChange, editData, creches, defaultCrech
     } else {
       setNome('');
       setDescricao('');
-      setCrecheId(defaultCrecheId || '');
+      setCrecheId(defaultCrecheId || (creches.length === 1 ? creches[0].id : ''));
     }
-  }, [editData, open, defaultCrecheId]);
+  }, [editData, open, defaultCrecheId, creches]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
