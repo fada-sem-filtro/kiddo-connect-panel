@@ -127,6 +127,7 @@ export function CrecheMembrosModal({ open, onOpenChange, creche }: CrecheMembros
   const getRoleBadge = (role?: string) => {
     switch (role) {
       case 'admin': return <Badge className="bg-destructive/10 text-destructive">Admin</Badge>;
+      case 'diretor': return <Badge className="bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400">Diretor(a)</Badge>;
       case 'educador': return <Badge className="bg-primary/10 text-primary">Educador</Badge>;
       case 'responsavel': return <Badge className="bg-secondary text-secondary-foreground">Responsável</Badge>;
       default: return <Badge variant="outline">Sem papel</Badge>;
