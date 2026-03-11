@@ -100,17 +100,19 @@ export default function RecadosPage() {
             <p className="text-muted-foreground">Comunicação com os responsáveis</p>
           </div>
           <div className="flex flex-wrap gap-2">
-            <Select value={filterTurma} onValueChange={setFilterTurma}>
-              <SelectTrigger className="w-40">
-                <SelectValue placeholder="Todas as turmas" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todas as turmas</SelectItem>
-                {turmas.map(t => (
-                  <SelectItem key={t.id} value={t.id}>{t.nome}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            {canCreate && (
+              <Select value={filterTurma} onValueChange={setFilterTurma}>
+                <SelectTrigger className="w-40">
+                  <SelectValue placeholder="Todas as turmas" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todas as turmas</SelectItem>
+                  {turmas.map(t => (
+                    <SelectItem key={t.id} value={t.id}>{t.nome}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
             {canCreate && (
               <>
                 <Button onClick={() => setIsModalOpen(true)}>
