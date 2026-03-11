@@ -621,6 +621,10 @@ export type Database = {
         Args: { _turma_id: string; _user_id: string }
         Returns: boolean
       }
+      is_in_same_creche: {
+        Args: { _other_user_id: string; _user_id: string }
+        Returns: boolean
+      }
       is_member_of_turma_creche: {
         Args: { _turma_id: string; _user_id: string }
         Returns: boolean
