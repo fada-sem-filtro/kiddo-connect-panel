@@ -221,6 +221,7 @@ export function Sidebar() {
               </div>
             }
 
+            {adminNavigation.length > 0 &&
             <div className="space-y-2">
                 <p className="px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                   ⚙️ Administração
@@ -243,7 +244,6 @@ export function Sidebar() {
                       {item.name}
                       {isActive && <span className="ml-auto">🌸</span>}
                     </Link>);
-
               })}
               </div>
             }
