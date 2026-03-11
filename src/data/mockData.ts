@@ -49,7 +49,7 @@ export const educadoresData: Educador[] = [
     nome: 'Beatriz Costa',
     email: 'beatriz@fleur.com',
     telefone: '(11) 99999-5555',
-    turmaId: '3',
+    turmaIds: ['3', '1'],
     createdAt: '2024-01-01',
   },
   {
@@ -57,7 +57,7 @@ export const educadoresData: Educador[] = [
     nome: 'Carolina Mendes',
     email: 'carolina@fleur.com',
     telefone: '(11) 99999-6666',
-    turmaId: '4',
+    turmaIds: ['4', '2'],
     createdAt: '2024-01-01',
   },
 ];
