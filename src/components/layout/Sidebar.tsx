@@ -12,7 +12,8 @@ import {
   CalendarDays,
   BarChart3,
   PartyPopper,
-  ClipboardList
+  ClipboardList,
+  UserCog
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
