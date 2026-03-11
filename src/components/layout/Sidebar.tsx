@@ -8,7 +8,6 @@ import {
   Menu,
   X,
   LogOut,
-  Flower2,
   CalendarDays,
   BarChart3,
   PartyPopper,

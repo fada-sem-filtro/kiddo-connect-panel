@@ -51,8 +51,8 @@ export default function ResetPasswordPage() {
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="w-full max-w-md space-y-8">
         <div className="text-center space-y-2">
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-gradient-to-br from-primary/20 to-secondary/30 shadow-lg">
-            <Flower2 className="w-10 h-10 text-primary" />
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl shadow-lg">
+            <img src={logoFleur} alt="Fleur" className="w-16 h-16" />
           </div>
           <h1 className="text-3xl font-bold text-foreground">Nova Senha</h1>
         </div>
