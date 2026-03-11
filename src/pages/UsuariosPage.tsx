@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Plus, Search, Users, Shield, GraduationCap, UserCheck, Edit, KeyRound, AlertTriangle } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -41,6 +42,8 @@ const ROLE_ICONS: Record<string, React.ReactNode> = {
 };
 
 export default function UsuariosPage() {
+  const { role, userCreche } = useAuth();
+  const isDiretor = role === 'diretor';
   const [users, setUsers] = useState<UserWithRole[]>([]);
   const [search, setSearch] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -53,22 +56,65 @@ export default function UsuariosPage() {
   });
 
   const fetchUsers = async () => {
-    const { data: profiles } = await supabase.from('profiles').select('*');
-    const { data: roles } = await supabase.from('user_roles').select('*');
+    // If director, only fetch users that belong to their creche
+    if (isDiretor && userCreche) {
+      const { data: membros } = await supabase
+        .from('creche_membros')
+        .select('user_id')
+        .eq('creche_id', userCreche.id);
 
-    if (profiles && roles) {
-      const usersWithRoles: UserWithRole[] = profiles.map((p) => {
-        const userRole = roles.find((r) => r.user_id === p.user_id);
-        return {
-          user_id: p.user_id,
-          nome: p.nome,
-          email: p.email,
-          telefone: p.telefone,
-          role: (userRole?.role || 'responsavel') as UserWithRole['role'],
-          created_at: p.created_at,
-        };
-      });
-      setUsers(usersWithRoles);
+      if (!membros || membros.length === 0) {
+        setUsers([]);
+        return;
+      }
+
+      const memberUserIds = membros.map(m => m.user_id);
+
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('*')
+        .in('user_id', memberUserIds);
+
+      const { data: roles } = await supabase
+        .from('user_roles')
+        .select('*')
+        .in('user_id', memberUserIds);
+
+      if (profiles && roles) {
+        const usersWithRoles: UserWithRole[] = profiles
+          .map((p) => {
+            const userRole = roles.find((r) => r.user_id === p.user_id);
+            return {
+              user_id: p.user_id,
+              nome: p.nome,
+              email: p.email,
+              telefone: p.telefone,
+              role: (userRole?.role || 'responsavel') as UserWithRole['role'],
+              created_at: p.created_at,
+            };
+          })
+          .filter(u => u.role !== 'admin');
+        setUsers(usersWithRoles);
+      }
+    } else {
+      // Admin sees all
+      const { data: profiles } = await supabase.from('profiles').select('*');
+      const { data: roles } = await supabase.from('user_roles').select('*');
+
+      if (profiles && roles) {
+        const usersWithRoles: UserWithRole[] = profiles.map((p) => {
+          const userRole = roles.find((r) => r.user_id === p.user_id);
+          return {
+            user_id: p.user_id,
+            nome: p.nome,
+            email: p.email,
+            telefone: p.telefone,
+            role: (userRole?.role || 'responsavel') as UserWithRole['role'],
+            created_at: p.created_at,
+          };
+        });
+        setUsers(usersWithRoles);
+      }
     }
   };
 
@@ -311,8 +357,8 @@ export default function UsuariosPage() {
                   <SelectValue placeholder="Selecione o papel" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="admin">Administrador</SelectItem>
-                  <SelectItem value="diretor">Diretor(a)</SelectItem>
+                  {!isDiretor && <SelectItem value="admin">Administrador</SelectItem>}
+                  {!isDiretor && <SelectItem value="diretor">Diretor(a)</SelectItem>}
                   <SelectItem value="educador">Educador</SelectItem>
                   <SelectItem value="responsavel">Responsável</SelectItem>
                 </SelectContent>
