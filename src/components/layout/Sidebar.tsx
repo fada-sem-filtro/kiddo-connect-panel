@@ -111,7 +111,7 @@ export function Sidebar() {
               </div>
               <div>
                 <h1 className="text-xl font-bold text-foreground">Fleur</h1>
-                <p className="text-xs text-primary font-semibold">🌸 Escola Infantil</p>
+                <p className="text-xs text-primary font-semibold">🌷 Escola Infantil</p>
               </div>
             </div>
             <div className="hidden lg:block">
