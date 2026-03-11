@@ -106,7 +106,7 @@ export default function UsuariosPage() {
   };
 
   const handleCreateUser = async () => {
-    if (!form.nome || !form.email || !form.password || !form.role) {
+    if (!form.nome || !form.email || !form.role) {
       toast.error('Preencha todos os campos obrigatórios');
       return;
     }
@@ -115,7 +115,6 @@ export default function UsuariosPage() {
     const { data, error } = await supabase.functions.invoke('create-user', {
       body: {
         email: form.email,
-        password: form.password,
         nome: form.nome,
         telefone: form.telefone || null,
         role: form.role,
