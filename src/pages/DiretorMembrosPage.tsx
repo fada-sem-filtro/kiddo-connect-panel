@@ -71,14 +71,12 @@ export default function DiretorMembrosPage() {
         const memberList: MemberInfo[] = profiles
           .map((p) => {
             const userRole = roles?.find((r) => r.user_id === p.user_id);
-            const membro = membros.find((m) => m.user_id === p.user_id);
             return {
               user_id: p.user_id,
               nome: p.nome,
               email: p.email,
               telefone: p.telefone,
               role: userRole?.role || 'responsavel',
-              is_diretor: membro?.is_diretor || false,
             };
           })
           // Filter out admins
