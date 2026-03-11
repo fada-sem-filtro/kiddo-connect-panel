@@ -126,6 +126,10 @@ export default function LoginPage() {
             </Button>
           </div>
         </div>
+
+        <p className="text-center text-xs text-muted-foreground mt-6">
+          Copyright © 2026 - Desenvolvido por Raissa.
+        </p>
       </div>
     </div>
   );
