@@ -98,6 +98,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUser(session?.user ?? null);
 
         if (session?.user) {
+          // Check if first access
+          const meta = session.user.user_metadata;
+          if (meta?.must_change_password) {
+            setMustChangePassword(true);
+          }
           // Use setTimeout to avoid Supabase client deadlock
           setTimeout(() => fetchUserData(session.user.id), 0);
         } else {
