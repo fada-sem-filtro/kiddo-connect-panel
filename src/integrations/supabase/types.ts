@@ -149,6 +149,47 @@ export type Database = {
           },
         ]
       }
+      eventos: {
+        Row: {
+          created_at: string
+          crianca_id: string
+          data_fim: string | null
+          data_inicio: string
+          educador_user_id: string | null
+          id: string
+          observacao: string | null
+          tipo: string
+        }
+        Insert: {
+          created_at?: string
+          crianca_id: string
+          data_fim?: string | null
+          data_inicio?: string
+          educador_user_id?: string | null
+          id?: string
+          observacao?: string | null
+          tipo: string
+        }
+        Update: {
+          created_at?: string
+          crianca_id?: string
+          data_fim?: string | null
+          data_inicio?: string
+          educador_user_id?: string | null
+          id?: string
+          observacao?: string | null
+          tipo?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "eventos_crianca_id_fkey"
+            columns: ["crianca_id"]
+            isOneToOne: false
+            referencedRelation: "criancas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
