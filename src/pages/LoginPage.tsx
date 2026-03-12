@@ -1,16 +1,16 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
-import logoFleur from '@/assets/logo-fleur-2.webp';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { useAuth } from '@/contexts/AuthContext';
-import { toast } from 'sonner';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Mail, Lock, Eye, EyeOff } from "lucide-react";
+import logoFleur from "@/assets/logo-fleur-2.webp";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "sonner";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
@@ -24,19 +24,21 @@ export default function LoginPage() {
     setIsLoading(false);
 
     if (error) {
-      toast.error(error.message === 'Sua conta está desabilitada. Entre em contato com a direção.'
-        ? error.message
-        : 'Email ou senha incorretos');
+      toast.error(
+        error.message === "Sua conta está desabilitada. Entre em contato com a direção."
+          ? error.message
+          : "Email ou senha incorretos",
+      );
     } else {
-      toast.success('Bem-vindo ao Fleur! 🌸');
-      navigate('/');
+      toast.success("Bem-vindo ao Fleur! 🌸");
+      navigate("/");
     }
   };
 
   const handleForgotPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) {
-      toast.error('Digite seu email');
+      toast.error("Digite seu email");
       return;
     }
     setIsLoading(true);
@@ -44,9 +46,9 @@ export default function LoginPage() {
     setIsLoading(false);
 
     if (error) {
-      toast.error('Erro ao enviar email de recuperação');
+      toast.error("Erro ao enviar email de recuperação");
     } else {
-      toast.success('Email de recuperação enviado! Verifique sua caixa de entrada.');
+      toast.success("Email de recuperação enviado! Verifique sua caixa de entrada.");
       setIsForgotPassword(false);
     }
   };
@@ -60,14 +62,11 @@ export default function LoginPage() {
             <img src={logoFleur} alt="Fleur" className="w-16 h-16" />
           </div>
           <h1 className="text-3xl font-bold text-foreground">Agenda Fleur</h1>
-          
         </div>
 
         {/* Form */}
         <div className="bg-card rounded-3xl border-2 border-border p-8 shadow-xl">
-          <h2 className="text-xl font-bold text-foreground mb-6">
-            {isForgotPassword ? 'Recuperar Senha' : 'Entrar'}
-          </h2>
+          <h2 className="text-xl font-bold text-foreground mb-6">{isForgotPassword ? "Recuperar Senha" : "Entrar"}</h2>
 
           <form onSubmit={isForgotPassword ? handleForgotPassword : handleLogin} className="space-y-5">
             <div className="space-y-2">
@@ -93,7 +92,7 @@ export default function LoginPage() {
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <Input
                     id="password"
-                    type={showPassword ? 'text' : 'password'}
+                    type={showPassword ? "text" : "password"}
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -114,7 +113,7 @@ export default function LoginPage() {
             )}
 
             <Button type="submit" className="w-full rounded-2xl" disabled={isLoading}>
-              {isLoading ? 'Carregando...' : isForgotPassword ? 'Enviar Email' : 'Entrar'}
+              {isLoading ? "Carregando..." : isForgotPassword ? "Enviar Email" : "Entrar"}
             </Button>
           </form>
 
@@ -124,13 +123,15 @@ export default function LoginPage() {
               className="text-sm text-muted-foreground"
               onClick={() => setIsForgotPassword(!isForgotPassword)}
             >
-              {isForgotPassword ? 'Voltar ao login' : 'Esqueci minha senha'}
+              {isForgotPassword ? "Voltar ao login" : "Esqueci minha senha"}
             </Button>
           </div>
         </div>
 
         <p className="text-center text-xs text-muted-foreground mt-6">
           Copyright © 2026 - Desenvolvido por Raissa.
+          <br />
+          Versão 1.0.0
         </p>
       </div>
     </div>
