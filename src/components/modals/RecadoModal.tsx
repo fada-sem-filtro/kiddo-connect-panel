@@ -33,7 +33,7 @@ interface RecadoModalProps {
 }
 
 export function RecadoModal({ open, onOpenChange, mode, onSaved }: RecadoModalProps) {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const [loading, setLoading] = useState(false);
   const [criancas, setCriancas] = useState<{ id: string; nome: string }[]>([]);
   const [turmas, setTurmas] = useState<{ id: string; nome: string }[]>([]);
