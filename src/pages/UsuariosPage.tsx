@@ -277,13 +277,16 @@ export default function UsuariosPage() {
 
   const handleToggleAtivo = async (user: UserWithRole) => {
     const newAtivo = !user.ativo;
-    const { error } = await supabase
+
+    const { data, error } = await supabase
       .from('profiles')
       .update({ ativo: newAtivo } as any)
-      .eq('user_id', user.user_id);
+      .eq('user_id', user.user_id)
+      .select('user_id, ativo')
+      .single();
 
-    if (error) {
-      toast.error('Erro ao alterar status do usuário');
+    if (error || !data) {
+      toast.error('Não foi possível alterar o status deste usuário.');
       return;
     }
 
