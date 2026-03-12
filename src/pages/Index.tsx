@@ -15,6 +15,11 @@ import { useAuth } from '@/contexts/AuthContext';
 const Index = () => {
   const { role } = useAuth();
   const canCreate = role === 'admin' || role === 'educador' || role === 'diretor';
+
+  // Redirect diretor to their dashboard
+  if (role === 'diretor') {
+    return <Navigate to="/diretor/dashboard" replace />;
+  }
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedCriancaId, setSelectedCriancaId] = useState<string>('all');
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
