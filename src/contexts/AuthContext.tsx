@@ -129,8 +129,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    return { error: error as Error | null };
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) return { error: error as Error | null };
+
+    // Check if user is active
+    if (data.user) {
+      const { data: profileData } = await supabase
+        .from('profiles')
+        .select('ativo')
+        .eq('user_id', data.user.id)
+        .single();
+
+      if (profileData && (profileData as any).ativo === false) {
+        await supabase.auth.signOut();
+        return { error: new Error('Sua conta está desabilitada. Entre em contato com a direção.') };
+      }
+    }
+
+    return { error: null };
   };
 
   const signOut = async () => {

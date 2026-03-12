@@ -24,7 +24,9 @@ export default function LoginPage() {
     setIsLoading(false);
 
     if (error) {
-      toast.error('Email ou senha incorretos');
+      toast.error(error.message === 'Sua conta está desabilitada. Entre em contato com a direção.'
+        ? error.message
+        : 'Email ou senha incorretos');
     } else {
       toast.success('Bem-vindo ao Fleur! 🌸');
       navigate('/');
