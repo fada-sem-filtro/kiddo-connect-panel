@@ -117,6 +117,26 @@ export default function RelatoriosPage() {
     toast.success('Relatório exportado!');
   };
 
+  const exportarPDF = async () => {
+    if (relatorio.length === 0) return;
+    const rows: PresencaReportRow[] = relatorio.map(r => ({
+      crianca_nome: r.crianca_nome,
+      turma_nome: r.turma_nome,
+      data: r.data,
+      status: r.status,
+      hora_chegada: r.hora_chegada,
+      hora_saida: r.hora_saida,
+      tempo: formatTempo(r.hora_chegada, r.hora_saida),
+    }));
+    await exportPresencaPDF(rows, {
+      title: 'Relatório de Presença',
+      crecheNome: userCreche?.nome || 'Creche',
+      logoUrl: userCreche?.logo_url,
+      periodo: `${format(new Date(dataInicio + 'T00:00:00'), 'dd/MM/yyyy')} a ${format(new Date(dataFim + 'T00:00:00'), 'dd/MM/yyyy')}`,
+    });
+    toast.success('PDF exportado!');
+  };
+
   const criancasFiltradas = turmaId !== 'all' ? criancas.filter(c => c.turma_id === turmaId) : criancas;
 
   return (
