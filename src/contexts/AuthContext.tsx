@@ -17,6 +17,7 @@ interface Profile {
 interface UserCreche {
   id: string;
   nome: string;
+  logo_url?: string | null;
 }
 
 interface AuthContextType {
