@@ -24,7 +24,7 @@ interface RecadoThreadProps {
 }
 
 export function RecadoThread({ recado, onChanged }: RecadoThreadProps) {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const [isReplying, setIsReplying] = useState(false);
   const [replyText, setReplyText] = useState('');
   const [isEditing, setIsEditing] = useState(false);
@@ -43,6 +43,7 @@ export function RecadoThread({ recado, onChanged }: RecadoThreadProps) {
     const { error } = await supabase.from('recados').insert({
       conteudo: replyText,
       remetente_user_id: user.id,
+      remetente_nome: profile?.nome || 'Usuário',
       parent_id: recado.id,
       turma_id: recado.turma_id,
       crianca_id: recado.crianca_id,
