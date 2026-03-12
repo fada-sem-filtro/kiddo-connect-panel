@@ -144,7 +144,7 @@ export function CrecheModal({ open, onOpenChange, onSave, editData }: CrecheModa
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>{editData?.id ? 'Editar Creche' : 'Nova Creche'}</DialogTitle>
+          <DialogTitle>{editData?.id ? 'Editar Escola' : 'Nova Escola'}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Logo upload */}
