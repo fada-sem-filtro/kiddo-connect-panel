@@ -140,6 +140,40 @@ export default function RelatorioAlunoPage() {
     toast.success('Relatório exportado!');
   };
 
+  const exportarPDF = async () => {
+    if (!aluno) return;
+    await exportAlunoRelatorioPDF({
+      alunoNome: aluno.nome,
+      turmaNome,
+      dataNascimento: aluno.data_nascimento,
+      taxaPresenca,
+      diasPresente,
+      diasAusente,
+      totalDias,
+      totalEventos: eventos.length,
+      presencas: presencas.map(p => ({
+        data: p.data,
+        status: p.status,
+        hora_chegada: p.hora_chegada,
+        hora_saida: p.hora_saida,
+        tempo: formatTempo(p.hora_chegada, p.hora_saida),
+      })),
+      eventos: eventos.map(e => ({
+        data: format(new Date(e.data_inicio), 'dd/MM HH:mm'),
+        tipo: e.tipo,
+        tipoLabel: EVENT_TYPE_LABELS[e.tipo as EventType] || e.tipo,
+        observacao: e.observacao,
+      })),
+    }, {
+      title: 'Relatório Individual',
+      crecheNome: userCreche?.nome || 'Creche',
+      logoUrl: userCreche?.logo_url,
+      periodo: `${format(new Date(dataInicio + 'T00:00:00'), 'dd/MM/yyyy')} a ${format(new Date(dataFim + 'T00:00:00'), 'dd/MM/yyyy')}`,
+    });
+    toast.success('PDF exportado!');
+  };
+  };
+
   return (
     <MainLayout>
       <div className="space-y-6">
