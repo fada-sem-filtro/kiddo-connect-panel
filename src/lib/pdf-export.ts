@@ -207,6 +207,26 @@ export async function exportAlunoRelatorioPDF(
   doc.text(`Data de Nascimento: ${format(new Date(data.dataNascimento + 'T00:00:00'), 'dd/MM/yyyy')}`, 14, startY);
   startY += 6;
 
+  // Responsáveis
+  if (data.responsaveis && data.responsaveis.length > 0) {
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(60, 60, 60);
+    doc.text('Responsáveis:', 14, startY);
+    startY += 5;
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(80, 80, 80);
+    data.responsaveis.forEach(resp => {
+      const parts = [resp.nome, `(${resp.parentesco})`];
+      if (resp.telefone) parts.push(`Tel: ${resp.telefone}`);
+      if (resp.email) parts.push(resp.email);
+      doc.text(`• ${parts.join('  —  ')}`, 18, startY);
+      startY += 5;
+    });
+    startY += 2;
+  }
+
   // Summary boxes
   const boxW = 55;
   const boxH = 18;
