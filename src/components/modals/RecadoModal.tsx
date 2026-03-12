@@ -79,6 +79,7 @@ export function RecadoModal({ open, onOpenChange, mode, onSaved }: RecadoModalPr
         titulo: data.titulo,
         conteudo: data.conteudo,
         remetente_user_id: user.id,
+        remetente_nome: profile?.nome || 'Usuário',
       };
       if (mode === 'turma' && data.turmaId) {
         payload.turma_id = data.turmaId;
