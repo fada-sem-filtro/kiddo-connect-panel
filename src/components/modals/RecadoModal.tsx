@@ -44,16 +44,32 @@ export function RecadoModal({ open, onOpenChange, mode, onSaved }: RecadoModalPr
   });
 
   useEffect(() => {
-    if (open) {
+    if (open && user) {
       form.reset({ titulo: '', conteudo: '', criancaId: '', turmaId: '' });
-      supabase.from('criancas').select('id, nome').order('nome').then(({ data }) => {
-        if (data) setCriancas(data);
-      });
+      
+      if (mode === 'individual') {
+        // Responsáveis only see their linked children
+        const fetchCriancas = async () => {
+          const { data: roleData } = await supabase.rpc('get_user_role', { _user_id: user.id });
+          if (roleData === 'responsavel') {
+            const { data: ids } = await supabase.rpc('get_crianca_ids_for_responsavel', { _user_id: user.id });
+            if (ids && ids.length > 0) {
+              const { data } = await supabase.from('criancas').select('id, nome').in('id', ids).order('nome');
+              if (data) setCriancas(data);
+            }
+          } else {
+            const { data } = await supabase.from('criancas').select('id, nome').order('nome');
+            if (data) setCriancas(data);
+          }
+        };
+        fetchCriancas();
+      }
+      
       supabase.from('turmas').select('id, nome').order('nome').then(({ data }) => {
         if (data) setTurmas(data);
       });
     }
-  }, [open, form]);
+  }, [open, form, user, mode]);
 
   const onSubmit = async (data: RecadoFormData) => {
     if (!user) return;

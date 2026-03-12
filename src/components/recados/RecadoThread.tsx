@@ -92,15 +92,17 @@ export function RecadoThread({ recado, onChanged }: RecadoThreadProps) {
                 </div>
                 <p className="text-xs text-muted-foreground mt-0.5">{formatDate(recado.created_at)}</p>
               </div>
-              <div className="flex gap-1">
-                <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setIsEditing(!isEditing)}>
-                  <Edit className="w-4 h-4" />
-                </Button>
-                <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive"
-                  onClick={() => { setDeleteTargetId(recado.id); setIsDeleteDialogOpen(true); }}>
-                  <Trash2 className="w-4 h-4" />
-                </Button>
-              </div>
+              {user?.id === recado.remetente_user_id && (
+                <div className="flex gap-1">
+                  <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setIsEditing(!isEditing)}>
+                    <Edit className="w-4 h-4" />
+                  </Button>
+                  <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive"
+                    onClick={() => { setDeleteTargetId(recado.id); setIsDeleteDialogOpen(true); }}>
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                </div>
+              )}
             </div>
 
             {recado.titulo && <h3 className="font-semibold text-foreground mb-2">{recado.titulo}</h3>}
@@ -162,10 +164,12 @@ export function RecadoThread({ recado, onChanged }: RecadoThreadProps) {
                           </div>
                           <p className="text-sm text-foreground/80 mt-1">{resp.conteudo}</p>
                         </div>
-                        <Button variant="ghost" size="icon" className="h-6 w-6 text-destructive hover:text-destructive"
-                          onClick={() => { setDeleteTargetId(resp.id); setIsDeleteDialogOpen(true); }}>
-                          <Trash2 className="w-3 h-3" />
-                        </Button>
+                        {user?.id === resp.remetente_user_id && (
+                          <Button variant="ghost" size="icon" className="h-6 w-6 text-destructive hover:text-destructive"
+                            onClick={() => { setDeleteTargetId(resp.id); setIsDeleteDialogOpen(true); }}>
+                            <Trash2 className="w-3 h-3" />
+                          </Button>
+                        )}
                       </div>
                     </div>
                   ))}

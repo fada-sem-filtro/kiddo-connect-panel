@@ -34,6 +34,7 @@ export default function RecadosPage() {
   const [turmas, setTurmas] = useState<{ id: string; nome: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const canCreate = role === 'admin' || role === 'educador' || role === 'diretor';
+  const canCreateIndividual = canCreate || role === 'responsavel';
 
   const fetchRecados = useCallback(async () => {
     // Fetch all recados (parents + children)
@@ -113,17 +114,17 @@ export default function RecadosPage() {
                 </SelectContent>
               </Select>
             )}
+            {canCreateIndividual && (
+              <Button onClick={() => setIsModalOpen(true)}>
+                <Plus className="w-4 h-4 mr-2" />
+                Novo Recado
+              </Button>
+            )}
             {canCreate && (
-              <>
-                <Button onClick={() => setIsModalOpen(true)}>
-                  <Plus className="w-4 h-4 mr-2" />
-                  Novo Recado
-                </Button>
-                <Button variant="outline" onClick={() => setIsBulkModalOpen(true)}>
-                  <Users className="w-4 h-4 mr-2" />
-                  Recado p/ Turma
-                </Button>
-              </>
+              <Button variant="outline" onClick={() => setIsBulkModalOpen(true)}>
+                <Users className="w-4 h-4 mr-2" />
+                Recado p/ Turma
+              </Button>
             )}
           </div>
         </div>
