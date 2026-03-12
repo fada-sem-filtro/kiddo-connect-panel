@@ -22,6 +22,10 @@ import CrechesPage from "./pages/CrechesPage";
 import DiretorMembrosPage from "./pages/DiretorMembrosPage";
 import TurmasPage from "./pages/TurmasPage";
 import CriancasDbPage from "./pages/CriancasDbPage";
+import EducadorDashboardPage from "./pages/EducadorDashboardPage";
+import DiretorDashboardPage from "./pages/DiretorDashboardPage";
+import RelatoriosPage from "./pages/RelatoriosPage";
+import RelatorioAlunoPage from "./pages/RelatorioAlunoPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
