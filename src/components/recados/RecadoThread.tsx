@@ -24,7 +24,7 @@ interface RecadoThreadProps {
 }
 
 export function RecadoThread({ recado, onChanged }: RecadoThreadProps) {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const [isReplying, setIsReplying] = useState(false);
   const [replyText, setReplyText] = useState('');
   const [isEditing, setIsEditing] = useState(false);
