@@ -148,7 +148,7 @@ export default function AdminPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-lg">
                 <Users className="w-5 h-5 text-primary" />
-                Crianças por Turma 👶
+                Alunos por Turma 👶
               </CardTitle>
             </CardHeader>
             <CardContent>
