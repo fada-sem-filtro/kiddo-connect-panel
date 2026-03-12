@@ -134,7 +134,7 @@ export function CriancaDbModal({ open, onOpenChange, editData, turmas, onSaved }
         const { error } = await supabase.from('criancas').update(payload).eq('id', editData.id);
         if (error) throw error;
         criancaId = editData.id;
-        toast.success('Criança atualizada!');
+        toast.success('Aluno atualizado!');
       } else {
         const { data: newCrianca, error } = await supabase
           .from('criancas')
@@ -157,13 +157,13 @@ export function CriancaDbModal({ open, onOpenChange, editData, turmas, onSaved }
           }
         }
 
-        toast.success('Criança cadastrada com sucesso!');
+        toast.success('Aluno cadastrado com sucesso!');
       }
 
       onSaved();
       onOpenChange(false);
     } catch (err: any) {
-      toast.error(err.message || 'Erro ao salvar criança');
+      toast.error(err.message || 'Erro ao salvar aluno');
     } finally {
       setLoading(false);
     }
@@ -173,13 +173,13 @@ export function CriancaDbModal({ open, onOpenChange, editData, turmas, onSaved }
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-2xl max-h-[90vh]">
         <DialogHeader>
-          <DialogTitle>{editData ? 'Editar Criança' : 'Nova Criança'}</DialogTitle>
+          <DialogTitle>{editData ? 'Editar Aluno' : 'Novo Aluno'}</DialogTitle>
         </DialogHeader>
 
         <ScrollArea className="max-h-[70vh] pr-4">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-4">
-              <h3 className="font-semibold text-foreground">Dados da Criança</h3>
+              <h3 className="font-semibold text-foreground">Dados do Aluno</h3>
 
               <div className="space-y-2">
                 <Label>Nome *</Label>

@@ -95,7 +95,7 @@ export default function AdminPage() {
   }, []);
 
   const statCards = [
-    { title: 'Crianças', value: stats.totalCriancas, icon: Baby, color: 'from-kawaii-pink/30 to-kawaii-pink/10', emoji: '👶' },
+    { title: 'Alunos', value: stats.totalCriancas, icon: Baby, color: 'from-kawaii-pink/30 to-kawaii-pink/10', emoji: '👶' },
     { title: 'Educadores', value: stats.totalEducadores, icon: GraduationCap, color: 'from-kawaii-purple/30 to-kawaii-purple/10', emoji: '👩‍🏫' },
     { title: 'Eventos Hoje', value: stats.totalEventosHoje, icon: Calendar, color: 'from-kawaii-blue/30 to-kawaii-blue/10', emoji: '📅' },
     { title: 'Eventos do Mês', value: stats.totalEventosMes, icon: TrendingUp, color: 'from-kawaii-mint/30 to-kawaii-mint/10', emoji: '📊' },
@@ -148,7 +148,7 @@ export default function AdminPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-lg">
                 <Users className="w-5 h-5 text-primary" />
-                Crianças por Turma 👶
+                Alunos por Turma 👶
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -157,7 +157,7 @@ export default function AdminPage() {
                   <div key={item.turma} className="space-y-2">
                     <div className="flex justify-between text-sm">
                       <span className="font-medium">{item.turma}</span>
-                      <span className="text-muted-foreground">{item.quantidade} crianças</span>
+                      <span className="text-muted-foreground">{item.quantidade} alunos</span>
                     </div>
                     <div className="h-3 bg-muted rounded-full overflow-hidden">
                       <div 

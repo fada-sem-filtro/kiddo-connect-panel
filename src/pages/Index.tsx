@@ -63,10 +63,10 @@ const Index = () => {
           <div className="flex flex-wrap gap-2">
             <Select value={selectedCriancaId} onValueChange={setSelectedCriancaId}>
               <SelectTrigger className="w-48">
-                <SelectValue placeholder="Todas as crianças" />
+                <SelectValue placeholder="Todos os alunos" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Todas as crianças</SelectItem>
+                <SelectItem value="all">Todos os alunos</SelectItem>
                 {criancas.map(crianca => (
                   <SelectItem key={crianca.id} value={crianca.id}>
                     {crianca.nome}

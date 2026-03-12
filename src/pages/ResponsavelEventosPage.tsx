@@ -139,7 +139,7 @@ export default function ResponsavelEventosPage() {
         <div className="flex flex-col gap-4">
           <div>
             <h1 className="text-2xl lg:text-3xl font-bold text-foreground flex items-center gap-2">
-              <span className="text-2xl">📋</span> Eventos das Crianças
+              <span className="text-2xl">📋</span> Eventos dos Alunos
             </h1>
             <p className="text-muted-foreground mt-1">
               Acompanhe todos os eventos e atividades do dia
@@ -182,10 +182,10 @@ export default function ResponsavelEventosPage() {
             <Select value={selectedCrianca} onValueChange={setSelectedCrianca}>
               <SelectTrigger className="w-full sm:w-[200px] rounded-2xl border-2">
                 <Baby className="h-4 w-4 mr-2" />
-                <SelectValue placeholder="Todas as crianças" />
+                <SelectValue placeholder="Todos os alunos" />
               </SelectTrigger>
               <SelectContent className="rounded-2xl">
-                <SelectItem value="all">Todas as crianças</SelectItem>
+                <SelectItem value="all">Todos os alunos</SelectItem>
                 {criancas.map(c => (
                   <SelectItem key={c.id} value={c.id}>{c.nome}</SelectItem>
                 ))}
@@ -204,9 +204,9 @@ export default function ResponsavelEventosPage() {
           <Card className="rounded-3xl border-2 border-dashed">
             <CardContent className="flex flex-col items-center justify-center py-12">
               <div className="text-6xl mb-4">👶</div>
-              <h3 className="text-lg font-semibold text-muted-foreground">Nenhuma criança vinculada</h3>
+              <h3 className="text-lg font-semibold text-muted-foreground">Nenhum aluno vinculado</h3>
               <p className="text-sm text-muted-foreground text-center mt-1">
-                Solicite ao administrador que vincule suas crianças ao seu perfil
+                Solicite ao administrador que vincule seus alunos ao seu perfil
               </p>
             </CardContent>
           </Card>

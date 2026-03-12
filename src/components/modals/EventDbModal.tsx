@@ -113,7 +113,7 @@ export function EventDbModal({
           .eq('turma_id', data.turmaId);
 
         if (!criancasTurma || criancasTurma.length === 0) {
-          toast.error('Nenhuma criança na turma');
+          toast.error('Nenhum aluno na turma');
           setLoading(false);
           return;
         }
@@ -217,11 +217,11 @@ export function EventDbModal({
                 name="criancaId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Criança</FormLabel>
+                    <FormLabel>Aluno</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Selecione a criança" />
+                          <SelectValue placeholder="Selecione o aluno" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>

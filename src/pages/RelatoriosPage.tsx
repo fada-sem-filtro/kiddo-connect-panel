@@ -101,7 +101,7 @@ export default function RelatoriosPage() {
   const exportarCSV = () => {
     if (relatorio.length === 0) return;
     let csv = `Relatório de Presença\n`;
-    csv += `Creche: ${userCreche?.nome || ''}\n`;
+    csv += `Escola: ${userCreche?.nome || ''}\n`;
     if (userCreche?.endereco) csv += `Endereço: ${userCreche.endereco}\n`;
     if (userCreche?.telefone) csv += `Telefone: ${userCreche.telefone}\n`;
     if (userCreche?.email) csv += `Email: ${userCreche.email}\n`;
@@ -136,7 +136,7 @@ export default function RelatoriosPage() {
     }));
     await exportPresencaPDF(rows, {
       title: 'Relatório de Presença',
-      crecheNome: userCreche?.nome || 'Creche',
+      crecheNome: userCreche?.nome || 'Escola',
       logoUrl: userCreche?.logo_url,
       crecheEndereco: userCreche?.endereco,
       crecheTelefone: userCreche?.telefone,

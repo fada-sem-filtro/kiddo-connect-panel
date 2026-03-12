@@ -47,7 +47,6 @@ export default function CriancasDbPage() {
       .order('nome');
 
     if (data) {
-      // Fetch responsáveis
       const criancaIds = data.map(c => c.id);
       const { data: resps } = await supabase
         .from('crianca_responsaveis')
@@ -98,9 +97,9 @@ export default function CriancasDbPage() {
     if (!selected) return;
     const { error } = await supabase.from('criancas').delete().eq('id', selected.id);
     if (error) {
-      toast.error('Erro ao excluir criança');
+      toast.error('Erro ao excluir aluno');
     } else {
-      toast.success('Criança removida!');
+      toast.success('Aluno removido!');
       fetchCriancas();
     }
     setIsDeleteOpen(false);
@@ -119,20 +118,20 @@ export default function CriancasDbPage() {
           <div>
             <h1 className="text-2xl font-bold flex items-center gap-2">
               <Users className="w-6 h-6 text-primary" />
-              Crianças
+              Alunos
             </h1>
-            <p className="text-muted-foreground">Gerencie o cadastro das crianças</p>
+            <p className="text-muted-foreground">Gerencie o cadastro dos alunos</p>
           </div>
           <Button onClick={() => setIsModalOpen(true)}>
             <Plus className="w-4 h-4 mr-2" />
-            Nova Criança
+            Novo Aluno
           </Button>
         </div>
 
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
-            placeholder="Buscar criança..."
+            placeholder="Buscar aluno..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="pl-10"
@@ -160,7 +159,7 @@ export default function CriancasDbPage() {
               ) : filtered.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
-                    Nenhuma criança encontrada
+                    Nenhum aluno encontrado
                   </TableCell>
                 </TableRow>
               ) : (

@@ -114,7 +114,7 @@ export function CrecheModal({ open, onOpenChange, onSave, editData }: CrecheModa
       const { error } = await supabase.from('creches').update(payload as any).eq('id', editData.id);
       if (error) {
         setSaving(false);
-        toast.error('Erro ao salvar creche');
+        toast.error('Erro ao salvar escola');
         console.error(error);
         return;
       }
@@ -122,7 +122,7 @@ export function CrecheModal({ open, onOpenChange, onSave, editData }: CrecheModa
       const { data, error } = await supabase.from('creches').insert(payload as any).select('id').single();
       if (error || !data) {
         setSaving(false);
-        toast.error('Erro ao salvar creche');
+        toast.error('Erro ao salvar escola');
         console.error(error);
         return;
       }
@@ -136,7 +136,7 @@ export function CrecheModal({ open, onOpenChange, onSave, editData }: CrecheModa
     }
 
     setSaving(false);
-    toast.success(editData?.id ? 'Creche atualizada!' : 'Creche cadastrada!');
+    toast.success(editData?.id ? 'Escola atualizada!' : 'Escola cadastrada!');
     onSave();
   };
 
@@ -144,12 +144,12 @@ export function CrecheModal({ open, onOpenChange, onSave, editData }: CrecheModa
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>{editData?.id ? 'Editar Creche' : 'Nova Creche'}</DialogTitle>
+          <DialogTitle>{editData?.id ? 'Editar Escola' : 'Nova Escola'}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Logo upload */}
           <div className="space-y-2">
-            <Label>Logo da Creche</Label>
+            <Label>Logo da Escola</Label>
             <div className="flex items-center gap-4">
               <Avatar className="w-20 h-20 border-2 border-border rounded-xl">
                 <AvatarImage src={logoPreview || undefined} className="object-cover" />
@@ -176,7 +176,7 @@ export function CrecheModal({ open, onOpenChange, onSave, editData }: CrecheModa
 
           <div className="space-y-2">
             <Label htmlFor="nome">Nome *</Label>
-            <Input id="nome" value={nome} onChange={(e) => setNome(e.target.value)} placeholder="Nome da creche" required />
+            <Input id="nome" value={nome} onChange={(e) => setNome(e.target.value)} placeholder="Nome da escola" required />
           </div>
           <div className="space-y-2">
             <Label htmlFor="endereco">Endereço</Label>
@@ -189,7 +189,7 @@ export function CrecheModal({ open, onOpenChange, onSave, editData }: CrecheModa
             </div>
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="contato@creche.com" />
+              <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="contato@escola.com" />
             </div>
           </div>
           <DialogFooter>

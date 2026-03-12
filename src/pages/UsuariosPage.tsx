@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Plus, Search, Users, Shield, GraduationCap, UserCheck, Edit, KeyRound, AlertTriangle } from 'lucide-react';
+import { Plus, Search, Users, Shield, GraduationCap, UserCheck, Edit, KeyRound, AlertTriangle, Filter } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { Button } from '@/components/ui/button';
@@ -46,6 +46,7 @@ export default function UsuariosPage() {
   const isDiretor = role === 'diretor';
   const [users, setUsers] = useState<UserWithRole[]>([]);
   const [search, setSearch] = useState('');
+  const [roleFilter, setRoleFilter] = useState<string>('all');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [editingUser, setEditingUser] = useState<UserWithRole | null>(null);
@@ -56,7 +57,6 @@ export default function UsuariosPage() {
   });
 
   const fetchUsers = async () => {
-    // If director, only fetch users that belong to their creche
     if (isDiretor && userCreche) {
       const { data: membros } = await supabase
         .from('creche_membros')
@@ -97,7 +97,6 @@ export default function UsuariosPage() {
         setUsers(usersWithRoles);
       }
     } else {
-      // Admin sees all
       const { data: profiles } = await supabase.from('profiles').select('*');
       const { data: roles } = await supabase.from('user_roles').select('*');
 
@@ -122,10 +121,12 @@ export default function UsuariosPage() {
     fetchUsers();
   }, []);
 
-  const filteredUsers = users.filter((u) =>
-    u.nome.toLowerCase().includes(search.toLowerCase()) ||
-    u.email.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredUsers = users.filter((u) => {
+    const matchesSearch = u.nome.toLowerCase().includes(search.toLowerCase()) ||
+      u.email.toLowerCase().includes(search.toLowerCase());
+    const matchesRole = roleFilter === 'all' || u.role === roleFilter;
+    return matchesSearch && matchesRole;
+  });
 
   const openCreate = () => {
     setEditingUser(null);
@@ -191,7 +192,6 @@ export default function UsuariosPage() {
 
     setIsLoading(true);
 
-    // Update profile
     const { error: profileError } = await supabase
       .from('profiles')
       .update({
@@ -206,7 +206,6 @@ export default function UsuariosPage() {
       return;
     }
 
-    // Update role if changed
     if (form.role !== editingUser.role) {
       const { error: roleError } = await supabase
         .from('user_roles')
@@ -262,14 +261,29 @@ export default function UsuariosPage() {
           </Button>
         </div>
 
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input
-            placeholder="Buscar por nome ou email..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="pl-10"
-          />
+        <div className="flex flex-col sm:flex-row gap-3">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Input
+              placeholder="Buscar por nome ou email..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+          <Select value={roleFilter} onValueChange={setRoleFilter}>
+            <SelectTrigger className="w-full sm:w-[200px]">
+              <Filter className="w-4 h-4 mr-2" />
+              <SelectValue placeholder="Todos os tipos" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todos os tipos</SelectItem>
+              {!isDiretor && <SelectItem value="admin">Administrador</SelectItem>}
+              {!isDiretor && <SelectItem value="diretor">Diretor(a)</SelectItem>}
+              <SelectItem value="educador">Educador</SelectItem>
+              <SelectItem value="responsavel">Responsável</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
         <div className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden">

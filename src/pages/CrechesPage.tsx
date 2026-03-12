@@ -44,10 +44,9 @@ export default function CrechesPage() {
       .order('nome');
 
     if (error) {
-      toast.error('Erro ao carregar creches');
+      toast.error('Erro ao carregar escolas');
       console.error(error);
     } else {
-      // Fetch member counts
       const crechesWithCounts = await Promise.all(
         (data || []).map(async (creche) => {
           const { count } = await supabase
@@ -89,9 +88,9 @@ export default function CrechesPage() {
     if (selectedCreche) {
       const { error } = await supabase.from('creches').delete().eq('id', selectedCreche.id);
       if (error) {
-        toast.error('Erro ao excluir creche');
+        toast.error('Erro ao excluir escola');
       } else {
-        toast.success('Creche excluída com sucesso!');
+        toast.success('Escola excluída com sucesso!');
         fetchCreches();
       }
     }
@@ -116,20 +115,20 @@ export default function CrechesPage() {
           <div>
             <h1 className="text-2xl font-bold flex items-center gap-2">
               <Building2 className="w-6 h-6 text-primary" />
-              Creches
+              Escolas
             </h1>
             <p className="text-muted-foreground">Gerencie as unidades cadastradas</p>
           </div>
           <Button onClick={() => setIsModalOpen(true)}>
             <Plus className="w-4 h-4 mr-2" />
-            Nova Creche
+            Nova Escola
           </Button>
         </div>
 
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
-            placeholder="Buscar creche..."
+            placeholder="Buscar escola..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="pl-10"
@@ -158,7 +157,7 @@ export default function CrechesPage() {
               ) : filteredCreches.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
-                    Nenhuma creche encontrada
+                    Nenhuma escola encontrada
                   </TableCell>
                 </TableRow>
               ) : (
@@ -215,7 +214,7 @@ export default function CrechesPage() {
           <AlertDialogHeader>
             <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
             <AlertDialogDescription>
-              Tem certeza que deseja remover a creche "{selectedCreche?.nome}"? Todos os membros vinculados serão desvinculados. Esta ação não pode ser desfeita.
+              Tem certeza que deseja remover a escola "{selectedCreche?.nome}"? Todos os membros vinculados serão desvinculados. Esta ação não pode ser desfeita.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

@@ -58,9 +58,9 @@ export function Sidebar() {
     mainNavigation.push({ name: 'Minha Turma', href: '/educador/turma', icon: Users });
   }
 
-  // Only admin sees Crianças and Educadores
+  // Only admin sees Alunos and Educadores
   if (role === 'admin') {
-    mainNavigation.push({ name: 'Crianças', href: '/criancas', icon: Users });
+    mainNavigation.push({ name: 'Alunos', href: '/criancas', icon: Users });
     mainNavigation.push({ name: 'Educadores', href: '/educadores', icon: GraduationCap });
   }
 
@@ -82,7 +82,7 @@ export function Sidebar() {
 
     if (role === 'admin') {
       adminNavigation.push({ name: 'Dashboard', href: '/admin', icon: BarChart3 });
-      adminNavigation.push({ name: 'Creches', href: '/admin/creches', icon: Building2 });
+      adminNavigation.push({ name: 'Escolas', href: '/admin/creches', icon: Building2 });
     }
 
     if (isDiretor) {
@@ -91,7 +91,7 @@ export function Sidebar() {
 
     adminNavigation.push({ name: 'Membros', href: `${prefix}/membros`, icon: Users });
     adminNavigation.push({ name: 'Turmas', href: `${prefix}/turmas`, icon: GraduationCap });
-    adminNavigation.push({ name: 'Crianças', href: `${prefix}/criancas`, icon: Baby });
+    adminNavigation.push({ name: 'Alunos', href: `${prefix}/criancas`, icon: Baby });
     adminNavigation.push({ name: 'Usuários', href: `${prefix}/usuarios`, icon: UserCog });
     adminNavigation.push({ name: 'Feriados', href: `${prefix}/feriados`, icon: PartyPopper });
     adminNavigation.push({ name: 'Calendário', href: `${prefix}/calendario`, icon: CalendarDays });
