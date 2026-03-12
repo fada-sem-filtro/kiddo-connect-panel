@@ -43,6 +43,7 @@ export function RecadoThread({ recado, onChanged }: RecadoThreadProps) {
     const { error } = await supabase.from('recados').insert({
       conteudo: replyText,
       remetente_user_id: user.id,
+      remetente_nome: profile?.nome || 'Usuário',
       parent_id: recado.id,
       turma_id: recado.turma_id,
       crianca_id: recado.crianca_id,
