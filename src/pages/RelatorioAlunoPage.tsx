@@ -96,6 +96,19 @@ export default function RelatorioAlunoPage() {
       .order('data_inicio', { ascending: false });
     setEventos(eData || []);
 
+    // Fetch responsáveis
+    const { data: respData } = await supabase
+      .from('crianca_responsaveis')
+      .select('parentesco, responsavel_user_id, profiles:responsavel_user_id(nome, telefone, email)')
+      .eq('crianca_id', alunoId);
+    
+    setResponsaveis((respData || []).map(r => ({
+      nome: (r.profiles as any)?.nome || 'Desconhecido',
+      parentesco: r.parentesco,
+      telefone: (r.profiles as any)?.telefone,
+      email: (r.profiles as any)?.email,
+    })));
+
     setGerado(true);
     setLoading(false);
   };
