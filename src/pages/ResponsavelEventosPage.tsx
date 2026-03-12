@@ -139,7 +139,7 @@ export default function ResponsavelEventosPage() {
         <div className="flex flex-col gap-4">
           <div>
             <h1 className="text-2xl lg:text-3xl font-bold text-foreground flex items-center gap-2">
-              <span className="text-2xl">📋</span> Eventos das Crianças
+              <span className="text-2xl">📋</span> Eventos dos Alunos
             </h1>
             <p className="text-muted-foreground mt-1">
               Acompanhe todos os eventos e atividades do dia
