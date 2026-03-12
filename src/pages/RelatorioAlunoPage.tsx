@@ -13,6 +13,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { EVENT_TYPE_LABELS, EVENT_TYPE_ICONS, EventType } from '@/types';
 import { toast } from 'sonner';
+import { exportAlunoRelatorioPDF } from '@/lib/pdf-export';
 
 interface PresencaRow {
   data: string;
