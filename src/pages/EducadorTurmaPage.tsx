@@ -160,7 +160,7 @@ export default function EducadorTurmaPage() {
             <div>
               <h1 className="text-2xl font-bold text-foreground">Minhas Turmas</h1>
               <p className="text-sm text-muted-foreground">
-                Visualize e registre eventos das crianças ✨
+                Visualize e registre eventos dos alunos ✨
               </p>
             </div>
           </div>
