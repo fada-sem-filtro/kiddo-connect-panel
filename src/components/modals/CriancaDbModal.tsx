@@ -157,7 +157,7 @@ export function CriancaDbModal({ open, onOpenChange, editData, turmas, onSaved }
           }
         }
 
-        toast.success('Criança cadastrada com sucesso!');
+        toast.success('Aluno cadastrado com sucesso!');
       }
 
       onSaved();
