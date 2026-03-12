@@ -468,6 +468,7 @@ export type Database = {
           id: string
           lido: boolean
           parent_id: string | null
+          remetente_nome: string | null
           remetente_user_id: string
           titulo: string
           turma_id: string | null
@@ -480,6 +481,7 @@ export type Database = {
           id?: string
           lido?: boolean
           parent_id?: string | null
+          remetente_nome?: string | null
           remetente_user_id: string
           titulo?: string
           turma_id?: string | null
@@ -492,6 +494,7 @@ export type Database = {
           id?: string
           lido?: boolean
           parent_id?: string | null
+          remetente_nome?: string | null
           remetente_user_id?: string
           titulo?: string
           turma_id?: string | null
