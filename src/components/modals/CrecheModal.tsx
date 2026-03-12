@@ -114,7 +114,7 @@ export function CrecheModal({ open, onOpenChange, onSave, editData }: CrecheModa
       const { error } = await supabase.from('creches').update(payload as any).eq('id', editData.id);
       if (error) {
         setSaving(false);
-        toast.error('Erro ao salvar creche');
+        toast.error('Erro ao salvar escola');
         console.error(error);
         return;
       }
@@ -122,7 +122,7 @@ export function CrecheModal({ open, onOpenChange, onSave, editData }: CrecheModa
       const { data, error } = await supabase.from('creches').insert(payload as any).select('id').single();
       if (error || !data) {
         setSaving(false);
-        toast.error('Erro ao salvar creche');
+        toast.error('Erro ao salvar escola');
         console.error(error);
         return;
       }
