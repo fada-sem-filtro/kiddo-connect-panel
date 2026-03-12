@@ -62,7 +62,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         .eq('user_id', userId)
         .single();
       
-      if (profileData) setProfile(profileData);
+      if (profileData) {
+        // If user is inactive, sign them out immediately
+        if (profileData.ativo === false) {
+          await supabase.auth.signOut();
+          setProfile(null);
+          setRole(null);
+          setUserCreche(null);
+          return;
+        }
+        setProfile(profileData);
+      }
 
       // Fetch role using security definer function
       const { data: roleData } = await supabase
