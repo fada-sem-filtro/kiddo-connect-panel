@@ -22,15 +22,21 @@ const Index = () => {
   const [isBulkEventModalOpen, setIsBulkEventModalOpen] = useState(false);
   const [criancas, setCriancas] = useState<{ id: string; nome: string }[]>([]);
 
-  // Redirect diretor to their dashboard
-  if (role === 'diretor') {
-    return <Navigate to="/diretor/dashboard" replace />;
-  }
-
   const { eventos, loading, fetchEventos } = useEventos({
     date: selectedDate,
     criancaId: selectedCriancaId,
   });
+
+  useEffect(() => {
+    supabase.from('criancas').select('id, nome').order('nome').then(({ data }) => {
+      if (data) setCriancas(data);
+    });
+  }, []);
+
+  // Redirect diretor to their dashboard
+  if (role === 'diretor') {
+    return <Navigate to="/diretor/dashboard" replace />;
+  }
 
   useEffect(() => {
     supabase.from('criancas').select('id, nome').order('nome').then(({ data }) => {
