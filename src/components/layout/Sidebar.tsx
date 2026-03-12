@@ -44,8 +44,9 @@ export function Sidebar() {
   // Everyone sees Agenda
   mainNavigation.push({ name: 'Agenda', href: '/', icon: Calendar });
 
-  // Educador, diretor and admin see Minha Turma
+  // Educador, diretor and admin see Painel do Educador
   if (role === 'admin' || role === 'educador' || role === 'diretor') {
+    mainNavigation.push({ name: 'Painel Educador', href: '/educador/dashboard', icon: LayoutDashboard });
     mainNavigation.push({ name: 'Minha Turma', href: '/educador/turma', icon: Users });
   }
 
