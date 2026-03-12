@@ -100,14 +100,20 @@ export default function RelatoriosPage() {
 
   const exportarCSV = () => {
     if (relatorio.length === 0) return;
-    const header = 'Nome,Turma,Data,Status,Chegada,Saída,Tempo Total\n';
+    let csv = `Relatório de Presença\n`;
+    csv += `Creche: ${userCreche?.nome || ''}\n`;
+    if (userCreche?.endereco) csv += `Endereço: ${userCreche.endereco}\n`;
+    if (userCreche?.telefone) csv += `Telefone: ${userCreche.telefone}\n`;
+    if (userCreche?.email) csv += `Email: ${userCreche.email}\n`;
+    csv += `Período: ${format(new Date(dataInicio + 'T00:00:00'), 'dd/MM/yyyy')} a ${format(new Date(dataFim + 'T00:00:00'), 'dd/MM/yyyy')}\n\n`;
+    csv += 'Nome,Turma,Data,Status,Chegada,Saída,Tempo Total\n';
     const rows = relatorio.map(r => {
       const chegada = r.hora_chegada ? format(new Date(r.hora_chegada), 'HH:mm') : '';
       const saida = r.hora_saida ? format(new Date(r.hora_saida), 'HH:mm') : '';
       return `"${r.crianca_nome}","${r.turma_nome}","${format(new Date(r.data + 'T00:00:00'), 'dd/MM/yyyy')}","${r.status}","${chegada}","${saida}","${formatTempo(r.hora_chegada, r.hora_saida)}"`;
     }).join('\n');
     
-    const blob = new Blob([header + rows], { type: 'text/csv' });
+    const blob = new Blob([csv + rows], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
