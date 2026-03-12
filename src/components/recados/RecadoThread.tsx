@@ -164,10 +164,12 @@ export function RecadoThread({ recado, onChanged }: RecadoThreadProps) {
                           </div>
                           <p className="text-sm text-foreground/80 mt-1">{resp.conteudo}</p>
                         </div>
-                        <Button variant="ghost" size="icon" className="h-6 w-6 text-destructive hover:text-destructive"
-                          onClick={() => { setDeleteTargetId(resp.id); setIsDeleteDialogOpen(true); }}>
-                          <Trash2 className="w-3 h-3" />
-                        </Button>
+                        {user?.id === resp.remetente_user_id && (
+                          <Button variant="ghost" size="icon" className="h-6 w-6 text-destructive hover:text-destructive"
+                            onClick={() => { setDeleteTargetId(resp.id); setIsDeleteDialogOpen(true); }}>
+                            <Trash2 className="w-3 h-3" />
+                          </Button>
+                        )}
                       </div>
                     </div>
                   ))}
