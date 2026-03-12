@@ -267,10 +267,16 @@ export default function RelatorioAlunoPage() {
             <Card className="rounded-2xl border-2 border-border">
               <CardHeader className="pb-3 flex flex-row items-center justify-between">
                 <CardTitle className="text-lg">Histórico de Presença</CardTitle>
-                <Button variant="outline" size="sm" className="rounded-xl" onClick={exportarCSV}>
-                  <Download className="w-4 h-4 mr-2" />
-                  Exportar CSV
-                </Button>
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm" className="rounded-xl" onClick={exportarPDF}>
+                    <FileText className="w-4 h-4 mr-2" />
+                    Exportar PDF
+                  </Button>
+                  <Button variant="outline" size="sm" className="rounded-xl" onClick={exportarCSV}>
+                    <Download className="w-4 h-4 mr-2" />
+                    Exportar CSV
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent>
                 <div className="overflow-x-auto">
