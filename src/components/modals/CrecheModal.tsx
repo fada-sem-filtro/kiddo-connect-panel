@@ -149,7 +149,7 @@ export function CrecheModal({ open, onOpenChange, onSave, editData }: CrecheModa
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Logo upload */}
           <div className="space-y-2">
-            <Label>Logo da Creche</Label>
+            <Label>Logo da Escola</Label>
             <div className="flex items-center gap-4">
               <Avatar className="w-20 h-20 border-2 border-border rounded-xl">
                 <AvatarImage src={logoPreview || undefined} className="object-cover" />
