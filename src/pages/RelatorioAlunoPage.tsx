@@ -39,6 +39,7 @@ export default function RelatorioAlunoPage() {
   const [dataFim, setDataFim] = useState('');
   const [presencas, setPresencas] = useState<PresencaRow[]>([]);
   const [eventos, setEventos] = useState<EventoRow[]>([]);
+  const [responsaveis, setResponsaveis] = useState<{ nome: string; parentesco: string; telefone?: string | null; email?: string | null }[]>([]);
   const [loading, setLoading] = useState(false);
   const [gerado, setGerado] = useState(false);
 
