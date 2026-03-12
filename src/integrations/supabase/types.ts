@@ -113,6 +113,7 @@ export type Database = {
       }
       criancas: {
         Row: {
+          ativo: boolean
           created_at: string
           data_nascimento: string
           foto_url: string | null
@@ -123,6 +124,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          ativo?: boolean
           created_at?: string
           data_nascimento: string
           foto_url?: string | null
@@ -133,6 +135,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          ativo?: boolean
           created_at?: string
           data_nascimento?: string
           foto_url?: string | null
@@ -432,6 +435,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          ativo: boolean
           avatar_url: string | null
           created_at: string
           email: string
@@ -442,6 +446,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          ativo?: boolean
           avatar_url?: string | null
           created_at?: string
           email: string
@@ -452,6 +457,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          ativo?: boolean
           avatar_url?: string | null
           created_at?: string
           email?: string

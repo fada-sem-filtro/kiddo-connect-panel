@@ -1,17 +1,22 @@
 import { useState, useEffect } from 'react';
-import { Plus, Search, Users, Shield, GraduationCap, UserCheck, Edit, KeyRound, AlertTriangle, Filter } from 'lucide-react';
+import { Plus, Search, Users, Shield, GraduationCap, UserCheck, Edit, KeyRound, AlertTriangle, Filter, Trash2 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
+import { Switch } from '@/components/ui/switch';
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '@/components/ui/table';
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter,
 } from '@/components/ui/dialog';
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select';
@@ -25,6 +30,7 @@ interface UserWithRole {
   telefone: string | null;
   role: 'admin' | 'educador' | 'responsavel' | 'diretor';
   created_at: string;
+  ativo: boolean;
 }
 
 const ROLE_LABELS: Record<string, string> = {
@@ -43,6 +49,7 @@ const ROLE_ICONS: Record<string, React.ReactNode> = {
 
 export default function UsuariosPage() {
   const { role, userCreche } = useAuth();
+  const isAdmin = role === 'admin';
   const isDiretor = role === 'diretor';
   const [users, setUsers] = useState<UserWithRole[]>([]);
   const [search, setSearch] = useState('');
@@ -51,7 +58,9 @@ export default function UsuariosPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [editingUser, setEditingUser] = useState<UserWithRole | null>(null);
   const [resetTarget, setResetTarget] = useState<UserWithRole | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<UserWithRole | null>(null);
   const [isResetting, setIsResetting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [form, setForm] = useState({
     nome: '', email: '', password: '', telefone: '', role: '' as string,
   });
@@ -91,6 +100,7 @@ export default function UsuariosPage() {
               telefone: p.telefone,
               role: (userRole?.role || 'responsavel') as UserWithRole['role'],
               created_at: p.created_at,
+              ativo: (p as any).ativo ?? true,
             };
           })
           .filter(u => u.role !== 'admin');
@@ -110,6 +120,7 @@ export default function UsuariosPage() {
             telefone: p.telefone,
             role: (userRole?.role || 'responsavel') as UserWithRole['role'],
             created_at: p.created_at,
+            ativo: (p as any).ativo ?? true,
           };
         });
         setUsers(usersWithRoles);
@@ -244,6 +255,47 @@ export default function UsuariosPage() {
     setResetTarget(null);
   };
 
+  const handleDeleteUser = async () => {
+    if (!deleteTarget) return;
+    setIsDeleting(true);
+
+    const { data, error } = await supabase.functions.invoke('delete-user', {
+      body: { user_id: deleteTarget.user_id },
+    });
+
+    setIsDeleting(false);
+
+    if (error || data?.error) {
+      toast.error(data?.error || 'Erro ao excluir usuário');
+      return;
+    }
+
+    toast.success(`${deleteTarget.nome} foi removido do sistema.`);
+    setDeleteTarget(null);
+    fetchUsers();
+  };
+
+  const handleToggleAtivo = async (user: UserWithRole) => {
+    const newAtivo = !user.ativo;
+    const { error } = await supabase
+      .from('profiles')
+      .update({ ativo: newAtivo } as any)
+      .eq('user_id', user.user_id);
+
+    if (error) {
+      toast.error('Erro ao alterar status do usuário');
+      return;
+    }
+
+    toast.success(`${user.nome} foi ${newAtivo ? 'habilitado' : 'desabilitado'}.`);
+    setUsers(prev => prev.map(u => u.user_id === user.user_id ? { ...u, ativo: newAtivo } : u));
+  };
+
+  const canToggleUser = (user: UserWithRole) => {
+    if (isDiretor && ['educador', 'responsavel'].includes(user.role)) return true;
+    return false;
+  };
+
   return (
     <MainLayout>
       <div className="max-w-6xl mx-auto space-y-6">
@@ -294,19 +346,20 @@ export default function UsuariosPage() {
                 <TableHead>Email</TableHead>
                 <TableHead>Telefone</TableHead>
                 <TableHead>Papel</TableHead>
+                {(isAdmin || isDiretor) && <TableHead>Status</TableHead>}
                 <TableHead className="text-right">Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filteredUsers.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
+                  <TableCell colSpan={(isAdmin || isDiretor) ? 6 : 5} className="text-center py-8 text-muted-foreground">
                     Nenhum usuário encontrado
                   </TableCell>
                 </TableRow>
               ) : (
                 filteredUsers.map((user) => (
-                  <TableRow key={user.user_id}>
+                  <TableRow key={user.user_id} className={!user.ativo ? 'opacity-50' : ''}>
                     <TableCell className="font-medium">{user.nome}</TableCell>
                     <TableCell>{user.email}</TableCell>
                     <TableCell>{user.telefone || '—'}</TableCell>
@@ -316,6 +369,25 @@ export default function UsuariosPage() {
                         {ROLE_LABELS[user.role]}
                       </Badge>
                     </TableCell>
+                    {(isAdmin || isDiretor) && (
+                      <TableCell>
+                        {canToggleUser(user) ? (
+                          <div className="flex items-center gap-2">
+                            <Switch
+                              checked={user.ativo}
+                              onCheckedChange={() => handleToggleAtivo(user)}
+                            />
+                            <span className="text-xs text-muted-foreground">
+                              {user.ativo ? 'Ativo' : 'Inativo'}
+                            </span>
+                          </div>
+                        ) : (
+                          <Badge variant={user.ativo ? 'default' : 'outline'} className="text-xs">
+                            {user.ativo ? 'Ativo' : 'Inativo'}
+                          </Badge>
+                        )}
+                      </TableCell>
+                    )}
                     <TableCell className="text-right space-x-1">
                       <Button variant="ghost" size="icon" onClick={() => openEdit(user)} title="Editar">
                         <Edit className="w-4 h-4" />
@@ -323,6 +395,17 @@ export default function UsuariosPage() {
                       <Button variant="ghost" size="icon" onClick={() => setResetTarget(user)} title="Resetar senha">
                         <KeyRound className="w-4 h-4" />
                       </Button>
+                      {isAdmin && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="text-destructive hover:text-destructive"
+                          onClick={() => setDeleteTarget(user)}
+                          title="Excluir usuário"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))
@@ -410,6 +493,27 @@ export default function UsuariosPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <AlertDialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Excluir Usuário</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza que deseja excluir <strong>{deleteTarget?.nome}</strong> permanentemente? Todos os dados associados serão removidos. Esta ação não pode ser desfeita.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteUser}
+              disabled={isDeleting}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {isDeleting ? 'Excluindo...' : 'Excluir'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </MainLayout>
   );
 }

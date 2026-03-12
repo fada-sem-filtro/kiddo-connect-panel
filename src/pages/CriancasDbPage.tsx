@@ -3,6 +3,7 @@ import { Plus, Search, Edit, Trash2, Users, Link2 } from 'lucide-react';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Switch } from '@/components/ui/switch';
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '@/components/ui/table';
@@ -25,11 +26,14 @@ interface CriancaRow {
   turma_id: string;
   observacoes: string | null;
   turma_nome?: string;
+  ativo: boolean;
   responsaveis?: { nome: string; parentesco: string }[];
 }
 
 export default function CriancasDbPage() {
   const { role, userCreche } = useAuth();
+  const isDiretor = role === 'diretor';
+  const isAdmin = role === 'admin';
   const [criancas, setCriancas] = useState<CriancaRow[]>([]);
   const [turmas, setTurmas] = useState<{ id: string; nome: string; creche_id: string }[]>([]);
   const [search, setSearch] = useState('');
@@ -56,6 +60,7 @@ export default function CriancasDbPage() {
       const criancasWithData = data.map(c => ({
         ...c,
         turma_nome: (c.turmas as any)?.nome || 'Sem turma',
+        ativo: (c as any).ativo ?? true,
         responsaveis: resps
           ?.filter(r => r.crianca_id === c.id)
           .map(r => ({
@@ -106,6 +111,22 @@ export default function CriancasDbPage() {
     setSelected(null);
   };
 
+  const handleToggleAtivo = async (crianca: CriancaRow) => {
+    const newAtivo = !crianca.ativo;
+    const { error } = await supabase
+      .from('criancas')
+      .update({ ativo: newAtivo } as any)
+      .eq('id', crianca.id);
+
+    if (error) {
+      toast.error('Erro ao alterar status do aluno');
+      return;
+    }
+
+    toast.success(`${crianca.nome} foi ${newAtivo ? 'habilitado' : 'desabilitado'}.`);
+    setCriancas(prev => prev.map(c => c.id === crianca.id ? { ...c, ativo: newAtivo } : c));
+  };
+
   const handleModalClose = () => {
     setIsModalOpen(false);
     setSelected(null);
@@ -146,25 +167,26 @@ export default function CriancasDbPage() {
                 <TableHead>Data de Nascimento</TableHead>
                 <TableHead>Turma</TableHead>
                 <TableHead>Responsáveis</TableHead>
+                {(isDiretor || isAdmin) && <TableHead>Status</TableHead>}
                 <TableHead className="text-right">Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
+                  <TableCell colSpan={(isDiretor || isAdmin) ? 6 : 5} className="text-center py-8 text-muted-foreground">
                     Carregando...
                   </TableCell>
                 </TableRow>
               ) : filtered.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
+                  <TableCell colSpan={(isDiretor || isAdmin) ? 6 : 5} className="text-center py-8 text-muted-foreground">
                     Nenhum aluno encontrado
                   </TableCell>
                 </TableRow>
               ) : (
                 filtered.map((crianca) => (
-                  <TableRow key={crianca.id}>
+                  <TableRow key={crianca.id} className={!crianca.ativo ? 'opacity-50' : ''}>
                     <TableCell className="font-medium">{crianca.nome}</TableCell>
                     <TableCell>
                       {format(new Date(crianca.data_nascimento + 'T00:00:00'), 'dd/MM/yyyy')}
@@ -186,6 +208,19 @@ export default function CriancasDbPage() {
                         )}
                       </div>
                     </TableCell>
+                    {(isDiretor || isAdmin) && (
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <Switch
+                            checked={crianca.ativo}
+                            onCheckedChange={() => handleToggleAtivo(crianca)}
+                          />
+                          <span className="text-xs text-muted-foreground">
+                            {crianca.ativo ? 'Ativo' : 'Inativo'}
+                          </span>
+                        </div>
+                      </TableCell>
+                    )}
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-1">
                         <Button variant="ghost" size="icon" title="Responsáveis" onClick={() => setRespModalCrianca(crianca)}>
