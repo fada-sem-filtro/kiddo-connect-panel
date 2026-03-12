@@ -14,7 +14,10 @@ import {
   ClipboardList,
   UserCog,
   Building2,
-  Baby } from
+  Baby,
+  LayoutDashboard,
+  FileText,
+  UserCheck } from
 'lucide-react';
 import { cn } from '@/lib/utils';
 import logoFleur from '@/assets/logo-fleur-2.webp';
