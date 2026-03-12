@@ -18,6 +18,9 @@ interface UserCreche {
   id: string;
   nome: string;
   logo_url?: string | null;
+  endereco?: string | null;
+  telefone?: string | null;
+  email?: string | null;
 }
 
 interface AuthContextType {
@@ -70,17 +73,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // Fetch creche membership
       const { data: membroData } = await supabase
         .from('creche_membros')
-        .select('creche_id, creches(id, nome, logo_url)')
+        .select('creche_id, creches(id, nome, logo_url, endereco, telefone, email)')
         .eq('user_id', userId)
         .limit(1)
         .maybeSingle();
 
       if (membroData && membroData.creches) {
-        const creche = membroData.creches as unknown as { id: string; nome: string; logo_url: string | null };
+        const creche = membroData.creches as unknown as { id: string; nome: string; logo_url: string | null; endereco: string | null; telefone: string | null; email: string | null };
         setUserCreche({
           id: creche.id,
           nome: creche.nome,
           logo_url: creche.logo_url,
+          endereco: creche.endereco,
+          telefone: creche.telefone,
+          email: creche.email,
         });
       } else {
         setUserCreche(null);

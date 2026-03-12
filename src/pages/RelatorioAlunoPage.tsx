@@ -39,6 +39,7 @@ export default function RelatorioAlunoPage() {
   const [dataFim, setDataFim] = useState('');
   const [presencas, setPresencas] = useState<PresencaRow[]>([]);
   const [eventos, setEventos] = useState<EventoRow[]>([]);
+  const [responsaveis, setResponsaveis] = useState<{ nome: string; parentesco: string; telefone?: string | null; email?: string | null }[]>([]);
   const [loading, setLoading] = useState(false);
   const [gerado, setGerado] = useState(false);
 
@@ -95,6 +96,19 @@ export default function RelatorioAlunoPage() {
       .order('data_inicio', { ascending: false });
     setEventos(eData || []);
 
+    // Fetch responsáveis
+    const { data: respData } = await supabase
+      .from('crianca_responsaveis')
+      .select('parentesco, responsavel_user_id, profiles:responsavel_user_id(nome, telefone, email)')
+      .eq('crianca_id', alunoId);
+    
+    setResponsaveis((respData || []).map(r => ({
+      nome: (r.profiles as any)?.nome || 'Desconhecido',
+      parentesco: r.parentesco,
+      telefone: (r.profiles as any)?.telefone,
+      email: (r.profiles as any)?.email,
+    })));
+
     setGerado(true);
     setLoading(false);
   };
@@ -120,7 +134,18 @@ export default function RelatorioAlunoPage() {
   const exportarCSV = () => {
     if (!aluno) return;
     let csv = `Relatório Individual - ${aluno.nome}\n`;
-    csv += `Turma: ${turmaNome}\nPeríodo: ${format(new Date(dataInicio + 'T00:00:00'), 'dd/MM/yyyy')} a ${format(new Date(dataFim + 'T00:00:00'), 'dd/MM/yyyy')}\n\n`;
+    csv += `Creche: ${userCreche?.nome || ''}\n`;
+    if (userCreche?.endereco) csv += `Endereço: ${userCreche.endereco}\n`;
+    if (userCreche?.telefone) csv += `Telefone: ${userCreche.telefone}\n`;
+    if (userCreche?.email) csv += `Email: ${userCreche.email}\n`;
+    csv += `\nAluno: ${aluno.nome}\n`;
+    csv += `Turma: ${turmaNome}\n`;
+    csv += `Data de Nascimento: ${format(new Date(aluno.data_nascimento + 'T00:00:00'), 'dd/MM/yyyy')}\n`;
+    if (responsaveis.length > 0) {
+      csv += `Responsáveis: ${responsaveis.map(r => `${r.nome} (${r.parentesco})${r.telefone ? ' - Tel: ' + r.telefone : ''}${r.email ? ' - ' + r.email : ''}`).join('; ')}\n`;
+    }
+    csv += `Período: ${format(new Date(dataInicio + 'T00:00:00'), 'dd/MM/yyyy')} a ${format(new Date(dataFim + 'T00:00:00'), 'dd/MM/yyyy')}\n`;
+    csv += `Taxa de Presença: ${taxaPresenca}% (${diasPresente} de ${totalDias} dias)\n\n`;
     csv += 'Data,Status,Chegada,Saída,Tempo\n';
     presencas.forEach(p => {
       csv += `${format(new Date(p.data + 'T00:00:00'), 'dd/MM/yyyy')},${p.status},${p.hora_chegada ? format(new Date(p.hora_chegada), 'HH:mm') : ''},${p.hora_saida ? format(new Date(p.hora_saida), 'HH:mm') : ''},${formatTempo(p.hora_chegada, p.hora_saida)}\n`;
@@ -151,6 +176,7 @@ export default function RelatorioAlunoPage() {
       diasAusente,
       totalDias,
       totalEventos: eventos.length,
+      responsaveis,
       presencas: presencas.map(p => ({
         data: p.data,
         status: p.status,
@@ -168,6 +194,9 @@ export default function RelatorioAlunoPage() {
       title: 'Relatório Individual',
       crecheNome: userCreche?.nome || 'Creche',
       logoUrl: userCreche?.logo_url,
+      crecheEndereco: userCreche?.endereco,
+      crecheTelefone: userCreche?.telefone,
+      crecheEmail: userCreche?.email,
       periodo: `${format(new Date(dataInicio + 'T00:00:00'), 'dd/MM/yyyy')} a ${format(new Date(dataFim + 'T00:00:00'), 'dd/MM/yyyy')}`,
     });
     toast.success('PDF exportado!');
@@ -243,6 +272,15 @@ export default function RelatorioAlunoPage() {
                     <h2 className="text-xl font-bold text-foreground">{aluno.nome}</h2>
                     <p className="text-sm text-muted-foreground">{turmaNome}</p>
                     <p className="text-xs text-muted-foreground">Nasc: {format(new Date(aluno.data_nascimento + 'T00:00:00'), 'dd/MM/yyyy')}</p>
+                    {responsaveis.length > 0 && (
+                      <div className="mt-1">
+                        {responsaveis.map((r, i) => (
+                          <p key={i} className="text-xs text-muted-foreground">
+                            {r.nome} ({r.parentesco}){r.telefone ? ` • ${r.telefone}` : ''}
+                          </p>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>
