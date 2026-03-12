@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { addWeeks, subWeeks } from 'date-fns';
 import { Plus, Users } from 'lucide-react';
+import { Navigate } from 'react-router-dom';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { WeekCalendar } from '@/components/calendar/WeekCalendar';
 import { SummaryCards } from '@/components/calendar/SummaryCards';
@@ -15,16 +16,16 @@ import { useAuth } from '@/contexts/AuthContext';
 const Index = () => {
   const { role } = useAuth();
   const canCreate = role === 'admin' || role === 'educador' || role === 'diretor';
-
-  // Redirect diretor to their dashboard
-  if (role === 'diretor') {
-    return <Navigate to="/diretor/dashboard" replace />;
-  }
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedCriancaId, setSelectedCriancaId] = useState<string>('all');
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
   const [isBulkEventModalOpen, setIsBulkEventModalOpen] = useState(false);
   const [criancas, setCriancas] = useState<{ id: string; nome: string }[]>([]);
+
+  // Redirect diretor to their dashboard
+  if (role === 'diretor') {
+    return <Navigate to="/diretor/dashboard" replace />;
+  }
 
   const { eventos, loading, fetchEventos } = useEventos({
     date: selectedDate,
