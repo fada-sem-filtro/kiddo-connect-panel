@@ -8,6 +8,9 @@ interface PdfHeaderOptions {
   subtitle?: string;
   crecheNome: string;
   logoUrl?: string | null;
+  crecheEndereco?: string | null;
+  crecheTelefone?: string | null;
+  crecheEmail?: string | null;
   periodo?: string;
 }
 
