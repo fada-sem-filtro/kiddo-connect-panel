@@ -179,7 +179,7 @@ export function CriancaDbModal({ open, onOpenChange, editData, turmas, onSaved }
         <ScrollArea className="max-h-[70vh] pr-4">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-4">
-              <h3 className="font-semibold text-foreground">Dados da Criança</h3>
+              <h3 className="font-semibold text-foreground">Dados do Aluno</h3>
 
               <div className="space-y-2">
                 <Label>Nome *</Label>
