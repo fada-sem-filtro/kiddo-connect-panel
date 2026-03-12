@@ -189,7 +189,7 @@ export function CrecheModal({ open, onOpenChange, onSave, editData }: CrecheModa
             </div>
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="contato@creche.com" />
+              <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="contato@escola.com" />
             </div>
           </div>
           <DialogFooter>
