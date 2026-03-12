@@ -173,7 +173,7 @@ export function CriancaDbModal({ open, onOpenChange, editData, turmas, onSaved }
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-2xl max-h-[90vh]">
         <DialogHeader>
-          <DialogTitle>{editData ? 'Editar Criança' : 'Nova Criança'}</DialogTitle>
+          <DialogTitle>{editData ? 'Editar Aluno' : 'Novo Aluno'}</DialogTitle>
         </DialogHeader>
 
         <ScrollArea className="max-h-[70vh] pr-4">
