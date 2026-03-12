@@ -380,6 +380,53 @@ export type Database = {
           },
         ]
       }
+      presencas: {
+        Row: {
+          created_at: string
+          crianca_id: string
+          data: string
+          educador_user_id: string | null
+          hora_chegada: string | null
+          hora_saida: string | null
+          id: string
+          observacao: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          crianca_id: string
+          data?: string
+          educador_user_id?: string | null
+          hora_chegada?: string | null
+          hora_saida?: string | null
+          id?: string
+          observacao?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          crianca_id?: string
+          data?: string
+          educador_user_id?: string | null
+          hora_chegada?: string | null
+          hora_saida?: string | null
+          id?: string
+          observacao?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "presencas_crianca_id_fkey"
+            columns: ["crianca_id"]
+            isOneToOne: false
+            referencedRelation: "criancas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
