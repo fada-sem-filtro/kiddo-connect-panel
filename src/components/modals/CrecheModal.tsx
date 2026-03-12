@@ -111,7 +111,7 @@ export function CrecheModal({ open, onOpenChange, onSave, editData }: CrecheModa
     if (editData?.id) {
       const newLogoUrl = await uploadLogo(editData.id);
       payload.logo_url = newLogoUrl;
-      const { error } = await supabase.from('creches').update(payload).eq('id', editData.id);
+      const { error } = await supabase.from('creches').update(payload as any).eq('id', editData.id);
       if (error) {
         setSaving(false);
         toast.error('Erro ao salvar creche');
