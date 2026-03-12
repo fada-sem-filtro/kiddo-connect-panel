@@ -22,6 +22,7 @@ interface Creche {
   endereco: string | null;
   telefone: string | null;
   email: string | null;
+  logo_url?: string | null;
   created_at: string;
   membros_count?: number;
 }

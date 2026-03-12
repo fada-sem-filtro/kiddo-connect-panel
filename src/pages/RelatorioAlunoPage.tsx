@@ -13,6 +13,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { EVENT_TYPE_LABELS, EVENT_TYPE_ICONS, EventType } from '@/types';
 import { toast } from 'sonner';
+import { exportAlunoRelatorioPDF } from '@/lib/pdf-export';
 
 interface PresencaRow {
   data: string;
@@ -139,6 +140,39 @@ export default function RelatorioAlunoPage() {
     toast.success('Relatório exportado!');
   };
 
+  const exportarPDF = async () => {
+    if (!aluno) return;
+    await exportAlunoRelatorioPDF({
+      alunoNome: aluno.nome,
+      turmaNome,
+      dataNascimento: aluno.data_nascimento,
+      taxaPresenca,
+      diasPresente,
+      diasAusente,
+      totalDias,
+      totalEventos: eventos.length,
+      presencas: presencas.map(p => ({
+        data: p.data,
+        status: p.status,
+        hora_chegada: p.hora_chegada,
+        hora_saida: p.hora_saida,
+        tempo: formatTempo(p.hora_chegada, p.hora_saida),
+      })),
+      eventos: eventos.map(e => ({
+        data: format(new Date(e.data_inicio), 'dd/MM HH:mm'),
+        tipo: e.tipo,
+        tipoLabel: EVENT_TYPE_LABELS[e.tipo as EventType] || e.tipo,
+        observacao: e.observacao,
+      })),
+    }, {
+      title: 'Relatório Individual',
+      crecheNome: userCreche?.nome || 'Creche',
+      logoUrl: userCreche?.logo_url,
+      periodo: `${format(new Date(dataInicio + 'T00:00:00'), 'dd/MM/yyyy')} a ${format(new Date(dataFim + 'T00:00:00'), 'dd/MM/yyyy')}`,
+    });
+    toast.success('PDF exportado!');
+  };
+
   return (
     <MainLayout>
       <div className="space-y-6">
@@ -233,10 +267,16 @@ export default function RelatorioAlunoPage() {
             <Card className="rounded-2xl border-2 border-border">
               <CardHeader className="pb-3 flex flex-row items-center justify-between">
                 <CardTitle className="text-lg">Histórico de Presença</CardTitle>
-                <Button variant="outline" size="sm" className="rounded-xl" onClick={exportarCSV}>
-                  <Download className="w-4 h-4 mr-2" />
-                  Exportar CSV
-                </Button>
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm" className="rounded-xl" onClick={exportarPDF}>
+                    <FileText className="w-4 h-4 mr-2" />
+                    Exportar PDF
+                  </Button>
+                  <Button variant="outline" size="sm" className="rounded-xl" onClick={exportarCSV}>
+                    <Download className="w-4 h-4 mr-2" />
+                    Exportar CSV
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent>
                 <div className="overflow-x-auto">
