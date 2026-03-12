@@ -272,6 +272,15 @@ export default function RelatorioAlunoPage() {
                     <h2 className="text-xl font-bold text-foreground">{aluno.nome}</h2>
                     <p className="text-sm text-muted-foreground">{turmaNome}</p>
                     <p className="text-xs text-muted-foreground">Nasc: {format(new Date(aluno.data_nascimento + 'T00:00:00'), 'dd/MM/yyyy')}</p>
+                    {responsaveis.length > 0 && (
+                      <div className="mt-1">
+                        {responsaveis.map((r, i) => (
+                          <p key={i} className="text-xs text-muted-foreground">
+                            {r.nome} ({r.parentesco}){r.telefone ? ` • ${r.telefone}` : ''}
+                          </p>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>
