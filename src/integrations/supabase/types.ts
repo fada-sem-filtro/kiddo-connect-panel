@@ -52,6 +52,7 @@ export type Database = {
           email: string | null
           endereco: string | null
           id: string
+          logo_url: string | null
           nome: string
           telefone: string | null
           updated_at: string
@@ -61,6 +62,7 @@ export type Database = {
           email?: string | null
           endereco?: string | null
           id?: string
+          logo_url?: string | null
           nome: string
           telefone?: string | null
           updated_at?: string
@@ -70,6 +72,7 @@ export type Database = {
           email?: string | null
           endereco?: string | null
           id?: string
+          logo_url?: string | null
           nome?: string
           telefone?: string | null
           updated_at?: string
