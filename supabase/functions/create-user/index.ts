@@ -15,7 +15,6 @@ serve(async (req) => {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     
-    // Verify the calling user is an admin
     const authHeader = req.headers.get('Authorization')!;
     const userClient = createClient(supabaseUrl, Deno.env.get('SUPABASE_ANON_KEY')!, {
       global: { headers: { Authorization: authHeader } },
@@ -29,14 +28,19 @@ serve(async (req) => {
       });
     }
 
-    // Check admin role
+    // Check admin or diretor role
     const { data: hasAdmin } = await userClient.rpc('has_role', {
       _user_id: callingUser.id,
       _role: 'admin',
     });
 
-    if (!hasAdmin) {
-      return new Response(JSON.stringify({ error: 'Forbidden: admin role required' }), {
+    const { data: hasDiretor } = await userClient.rpc('has_role', {
+      _user_id: callingUser.id,
+      _role: 'diretor',
+    });
+
+    if (!hasAdmin && !hasDiretor) {
+      return new Response(JSON.stringify({ error: 'Forbidden: admin or diretor role required' }), {
         status: 403,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
@@ -51,9 +55,16 @@ serve(async (req) => {
       });
     }
 
+    // Directors can only create educador or responsavel roles
+    if (hasDiretor && !hasAdmin && !['educador', 'responsavel'].includes(role)) {
+      return new Response(JSON.stringify({ error: 'Directors can only create educador or responsavel users' }), {
+        status: 403,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
     const defaultPassword = 'fleur@2026';
 
-    // Use service role client to create user
     const adminClient = createClient(supabaseUrl, serviceRoleKey);
 
     const { data: newUser, error: createError } = await adminClient.auth.admin.createUser({
