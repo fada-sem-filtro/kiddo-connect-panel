@@ -182,10 +182,10 @@ export default function ResponsavelEventosPage() {
             <Select value={selectedCrianca} onValueChange={setSelectedCrianca}>
               <SelectTrigger className="w-full sm:w-[200px] rounded-2xl border-2">
                 <Baby className="h-4 w-4 mr-2" />
-                <SelectValue placeholder="Todas as crianças" />
+                <SelectValue placeholder="Todos os alunos" />
               </SelectTrigger>
               <SelectContent className="rounded-2xl">
-                <SelectItem value="all">Todas as crianças</SelectItem>
+                <SelectItem value="all">Todos os alunos</SelectItem>
                 {criancas.map(c => (
                   <SelectItem key={c.id} value={c.id}>{c.nome}</SelectItem>
                 ))}
