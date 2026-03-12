@@ -70,7 +70,7 @@ export default function DiretorMembrosPage() {
       if (profiles) {
         const userCrecheMap = new Map<string, string[]>();
         membros.forEach((m: any) => {
-          const crecheName = m.creches?.nome || 'Sem creche';
+          const crecheName = m.creches?.nome || 'Sem escola';
           const existing = userCrecheMap.get(m.user_id) || [];
           if (!existing.includes(crecheName)) existing.push(crecheName);
           userCrecheMap.set(m.user_id, existing);
@@ -88,7 +88,11 @@ export default function DiretorMembrosPage() {
               creche_nome: userCrecheMap.get(p.user_id)?.join(', '),
             };
           })
-          .filter((m) => isAdmin || m.role !== 'admin');
+          // Show only educadores and diretores (and admin for admin view)
+          .filter((m) => {
+            if (isAdmin) return m.role === 'admin' || m.role === 'diretor' || m.role === 'educador';
+            return m.role === 'diretor' || m.role === 'educador';
+          });
 
         setMembers(memberList);
       }
@@ -111,12 +115,12 @@ export default function DiretorMembrosPage() {
         <div>
           <h1 className="text-2xl font-bold flex items-center gap-2">
             <Users className="w-6 h-6 text-primary" />
-            {isAdmin ? 'Membros — Todas as Creches' : 'Membros da Creche'}
+            {isAdmin ? 'Membros — Todas as Escolas' : 'Membros da Escola'}
           </h1>
           <p className="text-muted-foreground">
             {isAdmin
-              ? 'Todos os membros vinculados às creches do sistema'
-              : `Educadores e responsáveis vinculados à ${userCreche?.nome || 'sua creche'}`}
+              ? 'Educadores e diretores vinculados às escolas do sistema'
+              : `Educadores e diretores vinculados à ${userCreche?.nome || 'sua escola'}`}
           </p>
         </div>
 
@@ -138,7 +142,7 @@ export default function DiretorMembrosPage() {
                 <TableHead>Email</TableHead>
                 <TableHead>Telefone</TableHead>
                 <TableHead>Papel</TableHead>
-                {isAdmin && <TableHead>Creche</TableHead>}
+                {isAdmin && <TableHead>Escola</TableHead>}
               </TableRow>
             </TableHeader>
             <TableBody>

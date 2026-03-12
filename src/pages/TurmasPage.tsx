@@ -45,7 +45,6 @@ export default function TurmasPage() {
       .select('*, creches(nome)')
       .order('nome');
 
-    // Directors only see their creche turmas (RLS handles this too)
     if (role !== 'admin' && userCreche) {
       query = query.eq('creche_id', userCreche.id);
     }
@@ -53,7 +52,6 @@ export default function TurmasPage() {
     const { data } = await query;
 
     if (data) {
-      // Get counts
       const turmaIds = data.map(t => t.id);
       
       const [{ data: criancasCounts }, { data: educadoresCounts }] = await Promise.all([
@@ -123,7 +121,7 @@ export default function TurmasPage() {
               <GraduationCap className="w-6 h-6 text-primary" />
               Turmas
             </h1>
-            <p className="text-muted-foreground">Gerencie as turmas da creche</p>
+            <p className="text-muted-foreground">Gerencie as turmas da escola</p>
           </div>
           <Button onClick={() => setIsModalOpen(true)}>
             <Plus className="w-4 h-4 mr-2" />
@@ -147,8 +145,8 @@ export default function TurmasPage() {
               <TableRow>
                 <TableHead>Nome</TableHead>
                 <TableHead>Descrição</TableHead>
-                {role === 'admin' && <TableHead>Creche</TableHead>}
-                <TableHead>Crianças</TableHead>
+                {role === 'admin' && <TableHead>Escola</TableHead>}
+                <TableHead>Alunos</TableHead>
                 <TableHead>Educadores</TableHead>
                 <TableHead className="text-right">Ações</TableHead>
               </TableRow>
@@ -228,7 +226,7 @@ export default function TurmasPage() {
           <AlertDialogHeader>
             <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
             <AlertDialogDescription>
-              Tem certeza que deseja excluir a turma "{selected?.nome}"? Todas as crianças vinculadas serão desvinculadas.
+              Tem certeza que deseja excluir a turma "{selected?.nome}"? Todos os alunos vinculados serão desvinculados.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
