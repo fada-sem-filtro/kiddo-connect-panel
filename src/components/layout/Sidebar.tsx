@@ -77,12 +77,18 @@ export function Sidebar() {
       adminNavigation.push({ name: 'Creches', href: '/admin/creches', icon: Building2 });
     }
 
+    if (isDiretor) {
+      adminNavigation.push({ name: 'Dashboard', href: '/diretor/dashboard', icon: BarChart3 });
+    }
+
     adminNavigation.push({ name: 'Membros', href: `${prefix}/membros`, icon: Users });
     adminNavigation.push({ name: 'Turmas', href: `${prefix}/turmas`, icon: GraduationCap });
     adminNavigation.push({ name: 'Crianças', href: `${prefix}/criancas`, icon: Baby });
     adminNavigation.push({ name: 'Usuários', href: `${prefix}/usuarios`, icon: UserCog });
     adminNavigation.push({ name: 'Feriados', href: `${prefix}/feriados`, icon: PartyPopper });
     adminNavigation.push({ name: 'Calendário', href: `${prefix}/calendario`, icon: CalendarDays });
+    adminNavigation.push({ name: 'Relatórios', href: '/relatorios', icon: FileText });
+    adminNavigation.push({ name: 'Relatório Aluno', href: '/relatorios/aluno', icon: UserCheck });
   }
 
   return (
