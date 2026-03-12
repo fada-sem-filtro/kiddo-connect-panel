@@ -41,12 +41,20 @@ export function Sidebar() {
   // Build navigation based on role
   const mainNavigation = [];
 
-  // Everyone sees Agenda
-  mainNavigation.push({ name: 'Agenda', href: '/', icon: Calendar });
+  // Diretor sees Dashboard as primary
+  if (isDiretor) {
+    mainNavigation.push({ name: 'Dashboard', href: '/diretor/dashboard', icon: BarChart3 });
+  } else {
+    mainNavigation.push({ name: 'Agenda', href: '/', icon: Calendar });
+  }
 
   // Educador, diretor and admin see Painel do Educador
   if (role === 'admin' || role === 'educador' || role === 'diretor') {
     mainNavigation.push({ name: 'Painel Educador', href: '/educador/dashboard', icon: LayoutDashboard });
+  }
+
+  // Educador and admin see Minha Turma (not diretor)
+  if (role === 'admin' || role === 'educador') {
     mainNavigation.push({ name: 'Minha Turma', href: '/educador/turma', icon: Users });
   }
 

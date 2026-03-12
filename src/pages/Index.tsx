@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { addWeeks, subWeeks } from 'date-fns';
 import { Plus, Users } from 'lucide-react';
+import { Navigate } from 'react-router-dom';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { WeekCalendar } from '@/components/calendar/WeekCalendar';
 import { SummaryCards } from '@/components/calendar/SummaryCards';
@@ -44,6 +45,11 @@ const Index = () => {
       return acc;
     }, {} as Record<string, number>);
   }, [eventos]);
+
+  // Redirect diretor to their dashboard
+  if (role === 'diretor') {
+    return <Navigate to="/diretor/dashboard" replace />;
+  }
 
   return (
     <MainLayout>
