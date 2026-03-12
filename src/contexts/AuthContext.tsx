@@ -18,6 +18,9 @@ interface UserCreche {
   id: string;
   nome: string;
   logo_url?: string | null;
+  endereco?: string | null;
+  telefone?: string | null;
+  email?: string | null;
 }
 
 interface AuthContextType {
