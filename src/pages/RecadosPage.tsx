@@ -45,13 +45,14 @@ export default function RecadosPage() {
 
     const allRecados = (data || []) as unknown as RecadoDb[];
 
-    // Get unique user ids, crianca ids, turma ids for enrichment
-    const userIds = [...new Set(allRecados.map(r => r.remetente_user_id))];
+    // Get unique crianca ids, turma ids for enrichment
     const criancaIds = [...new Set(allRecados.filter(r => r.crianca_id).map(r => r.crianca_id!))];
-    const turmaIds = [...new Set(allRecados.filter(r => r.turma_id).map(r => r.turma_id!))];
+
+    // Also try to resolve names from profiles for any recado missing remetente_nome
+    const missingNameUserIds = [...new Set(allRecados.filter(r => !r.remetente_nome).map(r => r.remetente_user_id))];
 
     const [profilesRes, criancasRes, turmasRes] = await Promise.all([
-      userIds.length > 0 ? supabase.from('profiles').select('user_id, nome').in('user_id', userIds) : { data: [] },
+      missingNameUserIds.length > 0 ? supabase.from('profiles').select('user_id, nome').in('user_id', missingNameUserIds) : { data: [] },
       criancaIds.length > 0 ? supabase.from('criancas').select('id, nome').in('id', criancaIds) : { data: [] },
       supabase.from('turmas').select('id, nome').order('nome'),
     ]);
@@ -61,10 +62,10 @@ export default function RecadosPage() {
     const turmaMap = Object.fromEntries((turmasRes.data || []).map(t => [t.id, t.nome]));
     setTurmas(turmasRes.data || []);
 
-    // Enrich and build tree
+    // Enrich and build tree — use denormalized remetente_nome first, fallback to profile lookup
     const enriched = allRecados.map(r => ({
       ...r,
-      remetente_nome: profileMap[r.remetente_user_id] || 'Usuário',
+      remetente_nome: (r as any).remetente_nome || profileMap[r.remetente_user_id] || 'Usuário',
       crianca_nome: r.crianca_id ? criancaMap[r.crianca_id] : undefined,
       turma_nome: r.turma_id ? turmaMap[r.turma_id] : undefined,
     }));
