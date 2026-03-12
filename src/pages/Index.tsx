@@ -33,17 +33,6 @@ const Index = () => {
     });
   }, []);
 
-  // Redirect diretor to their dashboard
-  if (role === 'diretor') {
-    return <Navigate to="/diretor/dashboard" replace />;
-  }
-
-  useEffect(() => {
-    supabase.from('criancas').select('id, nome').order('nome').then(({ data }) => {
-      if (data) setCriancas(data);
-    });
-  }, []);
-
   const handleWeekChange = (direction: 'prev' | 'next') => {
     setSelectedDate(prev => 
       direction === 'next' ? addWeeks(prev, 1) : subWeeks(prev, 1)
@@ -56,6 +45,11 @@ const Index = () => {
       return acc;
     }, {} as Record<string, number>);
   }, [eventos]);
+
+  // Redirect diretor to their dashboard
+  if (role === 'diretor') {
+    return <Navigate to="/diretor/dashboard" replace />;
+  }
 
   return (
     <MainLayout>
