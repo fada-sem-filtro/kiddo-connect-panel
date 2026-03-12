@@ -176,7 +176,7 @@ export function CrecheModal({ open, onOpenChange, onSave, editData }: CrecheModa
 
           <div className="space-y-2">
             <Label htmlFor="nome">Nome *</Label>
-            <Input id="nome" value={nome} onChange={(e) => setNome(e.target.value)} placeholder="Nome da creche" required />
+            <Input id="nome" value={nome} onChange={(e) => setNome(e.target.value)} placeholder="Nome da escola" required />
           </div>
           <div className="space-y-2">
             <Label htmlFor="endereco">Endereço</Label>
