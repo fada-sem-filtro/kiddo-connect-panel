@@ -52,18 +52,31 @@ async function addHeader(doc: jsPDF, options: PdfHeaderOptions): Promise<number>
   doc.setTextColor(43, 196, 232); // #2BC4E8
   doc.text(options.crecheNome, textX, y + 8);
 
+  // Creche details line
+  const detailParts: string[] = [];
+  if (options.crecheEndereco) detailParts.push(options.crecheEndereco);
+  if (options.crecheTelefone) detailParts.push(options.crecheTelefone);
+  if (options.crecheEmail) detailParts.push(options.crecheEmail);
+
+  if (detailParts.length > 0) {
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(130, 130, 130);
+    doc.text(detailParts.join('  |  '), textX, y + 14);
+  }
+
   doc.setFontSize(14);
   doc.setTextColor(60, 60, 60);
-  doc.text(options.title, textX, y + 18);
+  doc.text(options.title, textX, y + (detailParts.length > 0 ? 22 : 18));
 
   if (options.subtitle) {
     doc.setFontSize(10);
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(120, 120, 120);
-    doc.text(options.subtitle, textX, y + 25);
-    y += 30;
+    doc.text(options.subtitle, textX, y + (detailParts.length > 0 ? 29 : 25));
+    y += (detailParts.length > 0 ? 34 : 30);
   } else {
-    y += 24;
+    y += (detailParts.length > 0 ? 28 : 24);
   }
 
   if (options.periodo) {
