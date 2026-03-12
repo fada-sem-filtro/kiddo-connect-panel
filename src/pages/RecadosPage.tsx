@@ -34,6 +34,7 @@ export default function RecadosPage() {
   const [turmas, setTurmas] = useState<{ id: string; nome: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const canCreate = role === 'admin' || role === 'educador' || role === 'diretor';
+  const canCreateIndividual = canCreate || role === 'responsavel';
 
   const fetchRecados = useCallback(async () => {
     // Fetch all recados (parents + children)
