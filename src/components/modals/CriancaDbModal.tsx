@@ -134,7 +134,7 @@ export function CriancaDbModal({ open, onOpenChange, editData, turmas, onSaved }
         const { error } = await supabase.from('criancas').update(payload).eq('id', editData.id);
         if (error) throw error;
         criancaId = editData.id;
-        toast.success('Criança atualizada!');
+        toast.success('Aluno atualizado!');
       } else {
         const { data: newCrianca, error } = await supabase
           .from('criancas')
