@@ -174,6 +174,7 @@ export interface AlunoReportData {
   diasAusente: number;
   totalDias: number;
   totalEventos: number;
+  responsaveis?: { nome: string; parentesco: string; telefone?: string | null; email?: string | null }[];
   presencas: {
     data: string;
     status: string;
