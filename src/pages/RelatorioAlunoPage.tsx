@@ -134,7 +134,7 @@ export default function RelatorioAlunoPage() {
   const exportarCSV = () => {
     if (!aluno) return;
     let csv = `Relatório Individual - ${aluno.nome}\n`;
-    csv += `Creche: ${userCreche?.nome || ''}\n`;
+    csv += `Escola: ${userCreche?.nome || ''}\n`;
     if (userCreche?.endereco) csv += `Endereço: ${userCreche.endereco}\n`;
     if (userCreche?.telefone) csv += `Telefone: ${userCreche.telefone}\n`;
     if (userCreche?.email) csv += `Email: ${userCreche.email}\n`;
