@@ -113,7 +113,7 @@ export function EventDbModal({
           .eq('turma_id', data.turmaId);
 
         if (!criancasTurma || criancasTurma.length === 0) {
-          toast.error('Nenhuma criança na turma');
+          toast.error('Nenhum aluno na turma');
           setLoading(false);
           return;
         }
