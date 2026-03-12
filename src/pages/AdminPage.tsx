@@ -95,7 +95,7 @@ export default function AdminPage() {
   }, []);
 
   const statCards = [
-    { title: 'Crianças', value: stats.totalCriancas, icon: Baby, color: 'from-kawaii-pink/30 to-kawaii-pink/10', emoji: '👶' },
+    { title: 'Alunos', value: stats.totalCriancas, icon: Baby, color: 'from-kawaii-pink/30 to-kawaii-pink/10', emoji: '👶' },
     { title: 'Educadores', value: stats.totalEducadores, icon: GraduationCap, color: 'from-kawaii-purple/30 to-kawaii-purple/10', emoji: '👩‍🏫' },
     { title: 'Eventos Hoje', value: stats.totalEventosHoje, icon: Calendar, color: 'from-kawaii-blue/30 to-kawaii-blue/10', emoji: '📅' },
     { title: 'Eventos do Mês', value: stats.totalEventosMes, icon: TrendingUp, color: 'from-kawaii-mint/30 to-kawaii-mint/10', emoji: '📊' },
