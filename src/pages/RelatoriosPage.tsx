@@ -138,6 +138,9 @@ export default function RelatoriosPage() {
       title: 'Relatório de Presença',
       crecheNome: userCreche?.nome || 'Creche',
       logoUrl: userCreche?.logo_url,
+      crecheEndereco: userCreche?.endereco,
+      crecheTelefone: userCreche?.telefone,
+      crecheEmail: userCreche?.email,
       periodo: `${format(new Date(dataInicio + 'T00:00:00'), 'dd/MM/yyyy')} a ${format(new Date(dataFim + 'T00:00:00'), 'dd/MM/yyyy')}`,
     });
     toast.success('PDF exportado!');
