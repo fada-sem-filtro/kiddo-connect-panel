@@ -136,7 +136,7 @@ export default function RelatoriosPage() {
     }));
     await exportPresencaPDF(rows, {
       title: 'Relatório de Presença',
-      crecheNome: userCreche?.nome || 'Creche',
+      crecheNome: userCreche?.nome || 'Escola',
       logoUrl: userCreche?.logo_url,
       crecheEndereco: userCreche?.endereco,
       crecheTelefone: userCreche?.telefone,

@@ -130,10 +130,10 @@ export function RecadoModal({ open, onOpenChange, mode, onSaved }: RecadoModalPr
             ) : (
               <FormField control={form.control} name="criancaId" render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Criança</FormLabel>
+                  <FormLabel>Aluno</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
-                      <SelectTrigger><SelectValue placeholder="Selecione a criança" /></SelectTrigger>
+                      <SelectTrigger><SelectValue placeholder="Selecione o aluno" /></SelectTrigger>
                     </FormControl>
                     <SelectContent>
                       {criancas.map(c => (

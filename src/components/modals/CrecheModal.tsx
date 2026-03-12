@@ -136,7 +136,7 @@ export function CrecheModal({ open, onOpenChange, onSave, editData }: CrecheModa
     }
 
     setSaving(false);
-    toast.success(editData?.id ? 'Creche atualizada!' : 'Creche cadastrada!');
+    toast.success(editData?.id ? 'Escola atualizada!' : 'Escola cadastrada!');
     onSave();
   };
 

@@ -81,10 +81,10 @@ export function TurmaModal({ open, onOpenChange, editData, creches, defaultCrech
           </div>
           {creches.length > 0 && (
             <div className="space-y-2">
-              <Label>Creche *</Label>
+              <Label>Escola *</Label>
               <Select value={crecheId} onValueChange={setCrecheId}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Selecione a creche" />
+                  <SelectValue placeholder="Selecione a escola" />
                 </SelectTrigger>
                 <SelectContent>
                   {creches.map((c) => (

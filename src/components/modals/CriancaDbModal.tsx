@@ -163,7 +163,7 @@ export function CriancaDbModal({ open, onOpenChange, editData, turmas, onSaved }
       onSaved();
       onOpenChange(false);
     } catch (err: any) {
-      toast.error(err.message || 'Erro ao salvar criança');
+      toast.error(err.message || 'Erro ao salvar aluno');
     } finally {
       setLoading(false);
     }

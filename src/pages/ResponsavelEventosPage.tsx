@@ -204,9 +204,9 @@ export default function ResponsavelEventosPage() {
           <Card className="rounded-3xl border-2 border-dashed">
             <CardContent className="flex flex-col items-center justify-center py-12">
               <div className="text-6xl mb-4">👶</div>
-              <h3 className="text-lg font-semibold text-muted-foreground">Nenhuma criança vinculada</h3>
+              <h3 className="text-lg font-semibold text-muted-foreground">Nenhum aluno vinculado</h3>
               <p className="text-sm text-muted-foreground text-center mt-1">
-                Solicite ao administrador que vincule suas crianças ao seu perfil
+                Solicite ao administrador que vincule seus alunos ao seu perfil
               </p>
             </CardContent>
           </Card>

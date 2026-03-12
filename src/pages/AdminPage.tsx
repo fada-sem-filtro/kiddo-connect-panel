@@ -157,7 +157,7 @@ export default function AdminPage() {
                   <div key={item.turma} className="space-y-2">
                     <div className="flex justify-between text-sm">
                       <span className="font-medium">{item.turma}</span>
-                      <span className="text-muted-foreground">{item.quantidade} crianças</span>
+                      <span className="text-muted-foreground">{item.quantidade} alunos</span>
                     </div>
                     <div className="h-3 bg-muted rounded-full overflow-hidden">
                       <div 

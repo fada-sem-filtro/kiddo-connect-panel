@@ -217,11 +217,11 @@ export function EventDbModal({
                 name="criancaId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Criança</FormLabel>
+                    <FormLabel>Aluno</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Selecione a criança" />
+                          <SelectValue placeholder="Selecione o aluno" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>

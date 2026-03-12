@@ -243,7 +243,7 @@ export default function EducadorTurmaPage() {
             <CardContent className="flex flex-col items-center justify-center py-12">
               <Users className="w-16 h-16 text-muted-foreground/50 mb-4" />
               <p className="text-muted-foreground text-center">
-                Nenhuma criança encontrada nesta turma
+                Nenhum aluno encontrado nesta turma
               </p>
             </CardContent>
           </Card>
