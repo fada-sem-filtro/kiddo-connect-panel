@@ -172,7 +172,6 @@ export default function RelatorioAlunoPage() {
     });
     toast.success('PDF exportado!');
   };
-  };
 
   return (
     <MainLayout>
