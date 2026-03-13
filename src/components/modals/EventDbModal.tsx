@@ -336,7 +336,7 @@ export function EventDbModal({
                     <FormItem>
                       <FormLabel>Horário da Refeição</FormLabel>
                       <FormControl>
-                        <Input type="time" {...field} />
+                        <Input type="time" value={field.value || getCurrentTime()} onChange={field.onChange} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
