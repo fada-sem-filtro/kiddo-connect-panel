@@ -296,24 +296,47 @@ export function EventDbModal({
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Tipo de Refeição</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Selecione" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {Object.entries(TIPO_REFEICAO_LABELS).map(([v, l]) => (
-                            <SelectItem key={v} value={v}>
-                              {l}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+
+                      <div className="flex gap-2">
+                        <Button
+                          type="button"
+                          variant={field.value === "almoco" ? "default" : "outline"}
+                          className="flex-1"
+                          onClick={() => field.onChange("almoco")}
+                        >
+                          🍛 Almoço
+                        </Button>
+
+                        <Button
+                          type="button"
+                          variant={field.value === "lanche" ? "default" : "outline"}
+                          className="flex-1"
+                          onClick={() => field.onChange("lanche")}
+                        >
+                          🥪 Lanche
+                        </Button>
+                      </div>
+
                       <FormMessage />
                     </FormItem>
                   )}
                 />
+
+                {/* Meal time */}
+                <FormField
+                  control={form.control}
+                  name="dataInicio"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Horário da Refeição</FormLabel>
+                      <FormControl>
+                        <Input type="datetime-local" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
                 <FormField
                   control={form.control}
                   name="resultadoRefeicao"
