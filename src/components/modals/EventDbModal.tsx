@@ -152,6 +152,19 @@ export function EventDbModal({
     if (turmasProp) setTurmas(turmasProp);
   }, [turmasProp]);
 
+  const buildDateTime = (time: string) => {
+    if (!time) return null;
+
+    const today = new Date();
+    const [hours, minutes] = time.split(":");
+
+    today.setHours(Number(hours));
+    today.setMinutes(Number(minutes));
+    today.setSeconds(0);
+
+    return today.toISOString();
+  };
+
   const onSubmit = async (data: EventFormData) => {
     setLoading(true);
     try {
