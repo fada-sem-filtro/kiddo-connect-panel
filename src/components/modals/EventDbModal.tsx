@@ -138,22 +138,6 @@ export function EventDbModal({
     }
   }, [open, preSelectedCriancaId, preSelectedTurmaId]);
 
-  // Fetch authorized persons when SAIDA is selected and crianca is chosen
-  useEffect(() => {
-    if (selectedTipo === "SAIDA" && selectedCriancaId) {
-      supabase
-        .from("authorized_pickups")
-        .select("id, nome, parentesco, foto_url")
-        .eq("crianca_id", selectedCriancaId)
-        .order("nome")
-        .then(({ data }) => {
-          if (data) setAuthorizedPersons(data);
-        });
-    } else {
-      setAuthorizedPersons([]);
-    }
-  }, [selectedTipo, selectedCriancaId]);
-
   useEffect(() => {
     if (criancasProp) setCriancas(criancasProp);
   }, [criancasProp]);
@@ -178,7 +162,6 @@ export function EventDbModal({
         dosagem: data.tipo === "MEDICAMENTO" ? data.dosagem || null : null,
         horario_administracao:
           data.tipo === "MEDICAMENTO" && data.horarioAdministracao ? data.horarioAdministracao : null,
-        authorized_person_id: data.tipo === "SAIDA" ? data.authorizedPersonId || null : null,
       };
 
       if (mode === "turma" && data.turmaId) {
@@ -429,34 +412,6 @@ export function EventDbModal({
                 />
               </>
             )}
-
-            <FormField
-              control={form.control}
-              name="dataInicio"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Data/Hora Início</FormLabel>
-                  <FormControl>
-                    <Input type="datetime-local" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="dataFim"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Data/Hora Fim (opcional)</FormLabel>
-                  <FormControl>
-                    <Input type="datetime-local" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
 
             <FormField
               control={form.control}
