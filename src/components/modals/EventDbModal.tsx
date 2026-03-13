@@ -320,20 +320,30 @@ export function EventDbModal({
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Aceitação da Alimentação</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Selecione" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {Object.entries(RESULTADO_REFEICAO_LABELS).map(([v, l]) => (
-                            <SelectItem key={v} value={v}>
-                              {l}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+
+                      <div className="flex gap-2 flex-wrap">
+                        {Object.entries(RESULTADO_REFEICAO_LABELS).map(([v, l]) => (
+                          <Button
+                            key={v}
+                            type="button"
+                            variant={field.value === v ? "default" : "outline"}
+                            className="flex-1"
+                            onClick={() => field.onChange(v)}
+                          >
+                            {v === "comeu_bem"
+                              ? "😋"
+                              : v === "comeu_pouco"
+                                ? "😐"
+                                : v === "parcial"
+                                  ? "🙂"
+                                  : v === "experimentou"
+                                    ? "👅"
+                                    : "❌"}{" "}
+                            {l}
+                          </Button>
+                        ))}
+                      </div>
+
                       <FormMessage />
                     </FormItem>
                   )}
