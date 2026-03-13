@@ -171,8 +171,8 @@ export function EventDbModal({
       const baseRow = {
         tipo: data.tipo,
         observacao: data.observacao || null,
-        data_inicio: data.dataInicio,
-        data_fim: data.dataFim || null,
+        data_inicio: buildDateTime(data.dataInicio),
+        data_fim: data.dataFim ? buildDateTime(data.dataFim) : null,
         educador_user_id: user?.id || null,
         tipo_refeicao: data.tipo === "ALIMENTACAO" ? data.tipoRefeicao || null : null,
         resultado_refeicao: data.tipo === "ALIMENTACAO" ? data.resultadoRefeicao || null : null,
