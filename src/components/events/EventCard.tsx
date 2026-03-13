@@ -38,6 +38,7 @@ const eventIcons: Record<string, React.ComponentType<{ className?: string }>> = 
   ATIVIDADE: BookOpen,
   HIGIENE: Droplets,
   MEDICAMENTO: Pill,
+  SAIDA: DoorOpen,
   OUTRO: MoreHorizontal,
 };
 
@@ -48,6 +49,7 @@ const eventEmojis: Record<string, string> = {
   ATIVIDADE: "📚",
   HIGIENE: "🛁",
   MEDICAMENTO: "💊",
+  SAIDA: "🚪",
   OUTRO: "📝",
 };
 
