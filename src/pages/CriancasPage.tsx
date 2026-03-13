@@ -1,16 +1,9 @@
-import { useState, useEffect, useCallback } from 'react';
-import { Plus, Search, Edit, Trash2, Eye, Users } from 'lucide-react';
-import { MainLayout } from '@/components/layout/MainLayout';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
+import { useState, useEffect, useCallback } from "react";
+import { Plus, Search, Edit, Trash2, Eye, Users } from "lucide-react";
+import { MainLayout } from "@/components/layout/MainLayout";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -20,13 +13,13 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-import { Badge } from '@/components/ui/badge';
-import { CriancaModal } from '@/components/modals/CriancaModal';
-import { CriancaViewModal } from '@/components/modals/CriancaViewModal';
-import { toast } from 'sonner';
-import { format } from 'date-fns';
-import { supabase } from '@/integrations/supabase/client';
+} from "@/components/ui/alert-dialog";
+import { Badge } from "@/components/ui/badge";
+import { CriancaModal } from "@/components/modals/CriancaModal";
+import { CriancaViewModal } from "@/components/modals/CriancaViewModal";
+import { toast } from "sonner";
+import { format } from "date-fns";
+import { supabase } from "@/integrations/supabase/client";
 
 interface CriancaRow {
   id: string;
@@ -39,7 +32,7 @@ interface CriancaRow {
 }
 
 export default function CriancasPage() {
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -52,8 +45,8 @@ export default function CriancasPage() {
     setLoading(true);
 
     const [{ data: turmasData }, { data: criancasData }] = await Promise.all([
-      supabase.from('turmas').select('id, nome, descricao').order('nome'),
-      supabase.from('criancas').select('id, nome, data_nascimento, turma_id, observacoes, turmas(nome)').order('nome'),
+      supabase.from("turmas").select("id, nome, descricao").order("nome"),
+      supabase.from("criancas").select("id, nome, data_nascimento, turma_id, observacoes, turmas(nome)").order("nome"),
     ]);
 
     setTurmas((turmasData || []).map((t: any) => ({ id: t.id, nome: t.nome, descricao: t.descricao })));
@@ -64,52 +57,56 @@ export default function CriancasPage() {
     let responsaveisMap: Record<string, any[]> = {};
     if (criancaIds.length > 0) {
       const { data: respData } = await supabase
-        .from('crianca_responsaveis')
-        .select('id, crianca_id, parentesco, responsavel_user_id')
-        .in('crianca_id', criancaIds);
+        .from("crianca_responsaveis")
+        .select("id, crianca_id, parentesco, responsavel_user_id")
+        .in("crianca_id", criancaIds);
 
       if (respData && respData.length > 0) {
-        const respUserIds = [...new Set(respData.map(r => r.responsavel_user_id))];
+        const respUserIds = [...new Set(respData.map((r) => r.responsavel_user_id))];
         const { data: profiles } = await supabase
-          .from('profiles')
-          .select('user_id, nome, email, telefone')
-          .in('user_id', respUserIds);
+          .from("profiles")
+          .select("user_id, nome, email, telefone")
+          .in("user_id", respUserIds);
 
         const profileMap: Record<string, any> = {};
-        (profiles || []).forEach(p => { profileMap[p.user_id] = p; });
+        (profiles || []).forEach((p) => {
+          profileMap[p.user_id] = p;
+        });
 
         respData.forEach((r) => {
           if (!responsaveisMap[r.crianca_id]) responsaveisMap[r.crianca_id] = [];
           const profile = profileMap[r.responsavel_user_id];
           responsaveisMap[r.crianca_id].push({
             id: r.id,
-            nome: profile?.nome || '',
-            email: profile?.email || '',
-            telefone: profile?.telefone || '',
+            nome: profile?.nome || "",
+            email: profile?.email || "",
+            telefone: profile?.telefone || "",
             parentesco: r.parentesco,
           });
         });
       }
     }
 
-    setCriancas((criancasData || []).map((c: any) => ({
-      id: c.id,
-      nome: c.nome,
-      data_nascimento: c.data_nascimento,
-      turma_id: c.turma_id,
-      turma_nome: c.turmas?.nome || 'Sem turma',
-      observacoes: c.observacoes,
-      responsaveis: responsaveisMap[c.id] || [],
-    })));
+    setCriancas(
+      (criancasData || []).map((c: any) => ({
+        id: c.id,
+        nome: c.nome,
+        data_nascimento: c.data_nascimento,
+        turma_id: c.turma_id,
+        turma_nome: c.turmas?.nome || "Sem turma",
+        observacoes: c.observacoes,
+        responsaveis: responsaveisMap[c.id] || [],
+      })),
+    );
 
     setLoading(false);
   }, []);
 
-  useEffect(() => { fetchData(); }, [fetchData]);
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
-  const filteredCriancas = criancas.filter(crianca =>
-    crianca.nome.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredCriancas = criancas.filter((crianca) => crianca.nome.toLowerCase().includes(search.toLowerCase()));
 
   const handleEdit = (crianca: CriancaRow) => {
     setSelectedCrianca(crianca);
@@ -128,11 +125,11 @@ export default function CriancasPage() {
 
   const confirmDelete = async () => {
     if (selectedCrianca) {
-      const { error } = await supabase.from('criancas').delete().eq('id', selectedCrianca.id);
+      const { error } = await supabase.from("criancas").delete().eq("id", selectedCrianca.id);
       if (error) {
-        toast.error('Erro ao remover criança');
+        toast.error("Erro ao remover criança");
       } else {
-        toast.success('Criança removida com sucesso!');
+        toast.success("Criança removida com sucesso!");
         fetchData();
       }
     }
@@ -153,14 +150,14 @@ export default function CriancasPage() {
           <div>
             <h1 className="text-2xl font-bold flex items-center gap-2">
               <Users className="w-6 h-6 text-primary" />
-              Crianças
+              Alunos
             </h1>
             <p className="text-muted-foreground">Gerencie o cadastro das crianças</p>
           </div>
-          
+
           <Button onClick={() => setIsModalOpen(true)}>
             <Plus className="w-4 h-4 mr-2" />
-            Nova Criança
+            Novo Aluno
           </Button>
         </div>
 
@@ -204,9 +201,7 @@ export default function CriancasPage() {
                 filteredCriancas.map((crianca) => (
                   <TableRow key={crianca.id} className="animate-fade-in">
                     <TableCell className="font-medium">{crianca.nome}</TableCell>
-                    <TableCell>
-                      {format(new Date(crianca.data_nascimento + 'T00:00:00'), 'dd/MM/yyyy')}
-                    </TableCell>
+                    <TableCell>{format(new Date(crianca.data_nascimento + "T00:00:00"), "dd/MM/yyyy")}</TableCell>
                     <TableCell>
                       <Badge variant="secondary">{crianca.turma_nome}</Badge>
                     </TableCell>
@@ -232,9 +227,9 @@ export default function CriancasPage() {
                         <Button variant="ghost" size="icon" onClick={() => handleEdit(crianca)}>
                           <Edit className="w-4 h-4" />
                         </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="icon" 
+                        <Button
+                          variant="ghost"
+                          size="icon"
                           className="text-destructive hover:text-destructive"
                           onClick={() => handleDelete(crianca)}
                         >
@@ -250,26 +245,26 @@ export default function CriancasPage() {
         </div>
       </div>
 
-      <CriancaModal 
-        open={isModalOpen} 
+      <CriancaModal
+        open={isModalOpen}
         onOpenChange={handleModalClose}
-        editData={selectedCrianca ? {
-          id: selectedCrianca.id,
-          nome: selectedCrianca.nome,
-          data_nascimento: selectedCrianca.data_nascimento,
-          turma_id: selectedCrianca.turma_id,
-          observacoes: selectedCrianca.observacoes || '',
-          responsaveis: selectedCrianca.responsaveis,
-        } : null}
+        editData={
+          selectedCrianca
+            ? {
+                id: selectedCrianca.id,
+                nome: selectedCrianca.nome,
+                data_nascimento: selectedCrianca.data_nascimento,
+                turma_id: selectedCrianca.turma_id,
+                observacoes: selectedCrianca.observacoes || "",
+                responsaveis: selectedCrianca.responsaveis,
+              }
+            : null
+        }
         turmas={turmas}
         onSaved={fetchData}
       />
 
-      <CriancaViewModal
-        open={isViewModalOpen}
-        onOpenChange={setIsViewModalOpen}
-        crianca={selectedCrianca}
-      />
+      <CriancaViewModal open={isViewModalOpen} onOpenChange={setIsViewModalOpen} crianca={selectedCrianca} />
 
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <AlertDialogContent>
@@ -281,7 +276,10 @@ export default function CriancasPage() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+            <AlertDialogAction
+              onClick={confirmDelete}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
               Excluir
             </AlertDialogAction>
           </AlertDialogFooter>
