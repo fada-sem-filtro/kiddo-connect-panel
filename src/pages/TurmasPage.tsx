@@ -142,9 +142,10 @@ export default function TurmasPage() {
 
         <div className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden">
           <Table>
-            <TableHeader>
+             <TableHeader>
               <TableRow>
                 <TableHead>Nome</TableHead>
+                <TableHead>Faixa Etária</TableHead>
                 <TableHead>Descrição</TableHead>
                 {role === 'admin' && <TableHead>Escola</TableHead>}
                 <TableHead>Alunos</TableHead>
