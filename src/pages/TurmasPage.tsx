@@ -156,13 +156,13 @@ export default function TurmasPage() {
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={role === 'admin' ? 6 : 5} className="text-center py-8 text-muted-foreground">
+                  <TableCell colSpan={role === 'admin' ? 7 : 6} className="text-center py-8 text-muted-foreground">
                     Carregando...
                   </TableCell>
                 </TableRow>
               ) : filtered.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={role === 'admin' ? 6 : 5} className="text-center py-8 text-muted-foreground">
+                  <TableCell colSpan={role === 'admin' ? 7 : 6} className="text-center py-8 text-muted-foreground">
                     Nenhuma turma encontrada
                   </TableCell>
                 </TableRow>
