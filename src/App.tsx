@@ -26,6 +26,7 @@ import EducadorDashboardPage from "./pages/EducadorDashboardPage";
 import DiretorDashboardPage from "./pages/DiretorDashboardPage";
 import RelatoriosPage from "./pages/RelatoriosPage";
 import RelatorioAlunoPage from "./pages/RelatorioAlunoPage";
+import CalendarioEscolarPage from "./pages/CalendarioEscolarPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -50,6 +51,7 @@ const App = () => (
               <Route path="/admin/feriados" element={<ProtectedRoute allowedRoles={['admin']}><FeriadosPage /></ProtectedRoute>} />
               <Route path="/admin/calendario" element={<ProtectedRoute allowedRoles={['admin']}><CalendarioAdminPage /></ProtectedRoute>} />
               <Route path="/responsavel/eventos" element={<ProtectedRoute allowedRoles={['admin', 'responsavel']}><ResponsavelEventosPage /></ProtectedRoute>} />
+              <Route path="/responsavel/calendario" element={<ProtectedRoute allowedRoles={['admin', 'responsavel']}><CalendarioEscolarPage /></ProtectedRoute>} />
               <Route path="/admin/usuarios" element={<ProtectedRoute allowedRoles={['admin']}><UsuariosPage /></ProtectedRoute>} />
               <Route path="/admin/creches" element={<ProtectedRoute allowedRoles={['admin']}><CrechesPage /></ProtectedRoute>} />
               <Route path="/admin/turmas" element={<ProtectedRoute allowedRoles={['admin']}><TurmasPage /></ProtectedRoute>} />
