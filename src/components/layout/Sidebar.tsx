@@ -70,7 +70,8 @@ export function Sidebar() {
   }
 
   const responsavelNavigation = role === 'admin' || role === 'responsavel' ? [
-  { name: 'Meus Eventos', href: '/responsavel/eventos', icon: ClipboardList }] :
+  { name: 'Meus Eventos', href: '/responsavel/eventos', icon: ClipboardList },
+  { name: 'Calendário Escolar', href: '/responsavel/calendario', icon: CalendarDays }] :
   [];
 
   const diretorNavigation: typeof mainNavigation = [];
