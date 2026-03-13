@@ -20,7 +20,7 @@ const eventSchema = z.object({
   criancaId: z.string().optional(),
   turmaId: z.string().optional(),
   observacao: z.string().optional(),
-  dataInicio: z.string().min(1, "Informe a data/hora de início"),
+  dataInicio: z.string().min(1, "Informe a hora de início"),
   dataFim: z.string().optional(),
   tipoRefeicao: z.string().optional(),
   resultadoRefeicao: z.string().optional(),
