@@ -13,6 +13,17 @@ export interface EventoDb {
   created_at: string;
   crianca_nome?: string;
   turma_nome?: string;
+  // New fields
+  tipo_refeicao?: string | null;
+  resultado_refeicao?: string | null;
+  tipo_higiene?: string | null;
+  nome_medicamento?: string | null;
+  dosagem?: string | null;
+  horario_administracao?: string | null;
+  administrado?: boolean;
+  horario_administrado?: string | null;
+  authorized_person_id?: string | null;
+  authorized_person_name?: string | null;
 }
 
 interface CreateEventoInput {
@@ -32,7 +43,7 @@ export function useEventos(options?: { date?: Date; criancaId?: string }) {
     setLoading(true);
     let query = supabase
       .from('eventos')
-      .select('*, criancas(nome, turmas(nome))')
+      .select('*, criancas(nome, turmas(nome)), authorized_pickups(nome)')
       .order('data_inicio', { ascending: true });
 
     if (options?.date) {
@@ -54,6 +65,7 @@ export function useEventos(options?: { date?: Date; criancaId?: string }) {
         ...e,
         crianca_nome: e.criancas?.nome || 'Desconhecido',
         turma_nome: e.criancas?.turmas?.nome || '',
+        authorized_person_name: e.authorized_pickups?.nome || null,
       }));
       setEventos(mapped);
     }
@@ -79,7 +91,6 @@ export function useEventos(options?: { date?: Date; criancaId?: string }) {
   };
 
   const createEventoTurma = async (turmaId: string, input: Omit<CreateEventoInput, 'crianca_id'>) => {
-    // Get all crianças in the turma
     const { data: criancas } = await supabase
       .from('criancas')
       .select('id')
@@ -107,5 +118,14 @@ export function useEventos(options?: { date?: Date; criancaId?: string }) {
     await fetchEventos();
   };
 
-  return { eventos, loading, fetchEventos, createEvento, createEventoTurma, deleteEvento };
+  const confirmMedicamento = async (id: string) => {
+    const { error } = await supabase.from('eventos').update({
+      administrado: true,
+      horario_administrado: new Date().toISOString(),
+    }).eq('id', id);
+    if (error) throw error;
+    await fetchEventos();
+  };
+
+  return { eventos, loading, fetchEventos, createEvento, createEventoTurma, deleteEvento, confirmMedicamento };
 }

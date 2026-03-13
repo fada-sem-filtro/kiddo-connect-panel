@@ -98,6 +98,19 @@ export function TurmaModal({ open, onOpenChange, editData, creches, defaultCrech
               </Select>
             </div>
           )}
+          <div className="space-y-2">
+            <Label>Faixa Etária</Label>
+            <Select value={faixaEtaria} onValueChange={setFaixaEtaria}>
+              <SelectTrigger>
+                <SelectValue placeholder="Selecione a faixa etária" />
+              </SelectTrigger>
+              <SelectContent>
+                {FAIXA_ETARIA_OPTIONS.map((opt) => (
+                  <SelectItem key={opt} value={opt}>{opt}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
           <div className="flex justify-end gap-2 pt-2">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancelar</Button>
             <Button type="submit" disabled={loading}>

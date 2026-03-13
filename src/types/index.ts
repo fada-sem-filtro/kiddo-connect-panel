@@ -136,6 +136,8 @@ export const EVENT_TYPE_LABELS: Record<EventType, string> = {
   BRINCADEIRA: 'Brincadeira',
   ATIVIDADE: 'Atividade',
   HIGIENE: 'Higiene',
+  MEDICAMENTO: 'Medicamento',
+  SAIDA: 'Saída',
   OUTRO: 'Outro',
 };
 
@@ -145,5 +147,7 @@ export const EVENT_TYPE_ICONS: Record<EventType, string> = {
   BRINCADEIRA: '🎮',
   ATIVIDADE: '📚',
   HIGIENE: '🚿',
+  MEDICAMENTO: '💊',
+  SAIDA: '🚪',
   OUTRO: '📋',
 };
