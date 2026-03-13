@@ -170,6 +170,13 @@ export default function TurmasPage() {
                 filtered.map((turma) => (
                   <TableRow key={turma.id}>
                     <TableCell className="font-medium">{turma.nome}</TableCell>
+                    <TableCell>
+                      {turma.faixa_etaria ? (
+                        <Badge variant="outline">{turma.faixa_etaria}</Badge>
+                      ) : (
+                        <span className="text-muted-foreground">—</span>
+                      )}
+                    </TableCell>
                     <TableCell className="text-muted-foreground">{turma.descricao || '—'}</TableCell>
                     {role === 'admin' && (
                       <TableCell>
