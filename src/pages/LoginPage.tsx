@@ -8,6 +8,8 @@ import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 
+const APP_VERSION = "0.0.1"; // incrementar +1 a cada update
+
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -41,6 +43,7 @@ export default function LoginPage() {
       toast.error("Digite seu email");
       return;
     }
+
     setIsLoading(true);
     const { error } = await resetPassword(email);
     setIsLoading(false);
@@ -131,7 +134,7 @@ export default function LoginPage() {
         <p className="text-center text-xs text-muted-foreground mt-6">
           Copyright © 2026 - Desenvolvido por Raissa.
           <br />
-          Versão 1.0.0
+          Versão {APP_VERSION}
         </p>
       </div>
     </div>
