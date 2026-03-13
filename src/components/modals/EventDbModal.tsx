@@ -77,6 +77,12 @@ export function EventDbModal({
   const [authorizedPersons, setAuthorizedPersons] = useState<AuthorizedPerson[]>([]);
   const [loading, setLoading] = useState(false);
 
+  // função para pegar hora atual no formato HH:mm
+  const getCurrentTime = () => {
+    const now = new Date();
+    return now.toTimeString().slice(0, 5);
+  };
+
   const form = useForm<EventFormData>({
     resolver: zodResolver(eventSchema),
     defaultValues: {
@@ -84,7 +90,7 @@ export function EventDbModal({
       criancaId: preSelectedCriancaId || "",
       turmaId: preSelectedTurmaId || "",
       observacao: "",
-      dataInicio: new Date().toISOString().slice(0, 16),
+      dataInicio: getCurrentTime(),
       dataFim: "",
       tipoRefeicao: "",
       resultadoRefeicao: "",
