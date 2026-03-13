@@ -330,7 +330,7 @@ export function EventDbModal({
                     <FormItem>
                       <FormLabel>Horário da Refeição</FormLabel>
                       <FormControl>
-                        <Input type="datetime-local" {...field} />
+                        <Input type="time" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -384,7 +384,7 @@ export function EventDbModal({
                     <FormItem>
                       <FormLabel>Horário de Início</FormLabel>
                       <FormControl>
-                        <Input type="datetime-local" {...field} />
+                        <Input type="time" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -398,7 +398,7 @@ export function EventDbModal({
                     <FormItem>
                       <FormLabel>Horário Final</FormLabel>
                       <FormControl>
-                        <Input type="datetime-local" {...field} />
+                        <Input type="time" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -442,7 +442,7 @@ export function EventDbModal({
                     <FormItem>
                       <FormLabel>Horário da Higiene</FormLabel>
                       <FormControl>
-                        <Input type="datetime-local" {...field} />
+                        <Input type="time" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -487,7 +487,7 @@ export function EventDbModal({
                     <FormItem>
                       <FormLabel>Horário de Administração</FormLabel>
                       <FormControl>
-                        <Input type="datetime-local" {...field} />
+                        <Input type="time" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
