@@ -1,30 +1,26 @@
-import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import {
-  Dialog, DialogContent, DialogHeader, DialogTitle,
-} from '@/components/ui/dialog';
-import {
-  Form, FormControl, FormField, FormItem, FormLabel, FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { EVENT_TYPE_LABELS, TIPO_REFEICAO_LABELS, RESULTADO_REFEICAO_LABELS, TIPO_HIGIENE_LABELS } from '@/types';
-import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
-import { toast } from 'sonner';
-import { Check, User } from 'lucide-react';
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { EVENT_TYPE_LABELS, TIPO_REFEICAO_LABELS, RESULTADO_REFEICAO_LABELS, TIPO_HIGIENE_LABELS } from "@/types";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "sonner";
+import { Check, User } from "lucide-react";
 
 const eventSchema = z.object({
-  tipo: z.string().min(1, 'Selecione o tipo de evento'),
+  tipo: z.string().min(1, "Selecione o tipo de evento"),
   criancaId: z.string().optional(),
   turmaId: z.string().optional(),
   observacao: z.string().optional(),
-  dataInicio: z.string().min(1, 'Informe a data/hora de início'),
+  dataInicio: z.string().min(1, "Informe a data/hora de início"),
   dataFim: z.string().optional(),
   tipoRefeicao: z.string().optional(),
   resultadoRefeicao: z.string().optional(),
@@ -57,7 +53,7 @@ interface AuthorizedPerson {
 interface EventDbModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  mode: 'individual' | 'turma';
+  mode: "individual" | "turma";
   preSelectedCriancaId?: string;
   preSelectedTurmaId?: string;
   criancas?: CriancaOption[];
@@ -66,8 +62,14 @@ interface EventDbModalProps {
 }
 
 export function EventDbModal({
-  open, onOpenChange, mode, preSelectedCriancaId, preSelectedTurmaId,
-  criancas: criancasProp, turmas: turmasProp, onSaved,
+  open,
+  onOpenChange,
+  mode,
+  preSelectedCriancaId,
+  preSelectedTurmaId,
+  criancas: criancasProp,
+  turmas: turmasProp,
+  onSaved,
 }: EventDbModalProps) {
   const { user } = useAuth();
   const [criancas, setCriancas] = useState<CriancaOption[]>(criancasProp || []);
@@ -78,64 +80,72 @@ export function EventDbModal({
   const form = useForm<EventFormData>({
     resolver: zodResolver(eventSchema),
     defaultValues: {
-      tipo: '',
-      criancaId: preSelectedCriancaId || '',
-      turmaId: preSelectedTurmaId || '',
-      observacao: '',
+      tipo: "",
+      criancaId: preSelectedCriancaId || "",
+      turmaId: preSelectedTurmaId || "",
+      observacao: "",
       dataInicio: new Date().toISOString().slice(0, 16),
-      dataFim: '',
-      tipoRefeicao: '',
-      resultadoRefeicao: '',
-      tipoHigiene: '',
-      nomeMedicamento: '',
-      dosagem: '',
-      horarioAdministracao: '',
-      authorizedPersonId: '',
+      dataFim: "",
+      tipoRefeicao: "",
+      resultadoRefeicao: "",
+      tipoHigiene: "",
+      nomeMedicamento: "",
+      dosagem: "",
+      horarioAdministracao: "",
+      authorizedPersonId: "",
     },
   });
 
-  const selectedTipo = form.watch('tipo');
-  const selectedCriancaId = form.watch('criancaId');
+  const selectedTipo = form.watch("tipo");
+  const selectedCriancaId = form.watch("criancaId");
 
   useEffect(() => {
     if (open) {
       form.reset({
-        tipo: '',
-        criancaId: preSelectedCriancaId || '',
-        turmaId: preSelectedTurmaId || '',
-        observacao: '',
+        tipo: "",
+        criancaId: preSelectedCriancaId || "",
+        turmaId: preSelectedTurmaId || "",
+        observacao: "",
         dataInicio: new Date().toISOString().slice(0, 16),
-        dataFim: '',
-        tipoRefeicao: '',
-        resultadoRefeicao: '',
-        tipoHigiene: '',
-        nomeMedicamento: '',
-        dosagem: '',
-        horarioAdministracao: '',
-        authorizedPersonId: '',
+        dataFim: "",
+        tipoRefeicao: "",
+        resultadoRefeicao: "",
+        tipoHigiene: "",
+        nomeMedicamento: "",
+        dosagem: "",
+        horarioAdministracao: "",
+        authorizedPersonId: "",
       });
 
       if (!criancasProp) {
-        supabase.from('criancas').select('id, nome').order('nome').then(({ data }) => {
-          if (data) setCriancas(data);
-        });
+        supabase
+          .from("criancas")
+          .select("id, nome")
+          .order("nome")
+          .then(({ data }) => {
+            if (data) setCriancas(data);
+          });
       }
       if (!turmasProp) {
-        supabase.from('turmas').select('id, nome').order('nome').then(({ data }) => {
-          if (data) setTurmas(data);
-        });
+        supabase
+          .from("turmas")
+          .select("id, nome")
+          .order("nome")
+          .then(({ data }) => {
+            if (data) setTurmas(data);
+          });
       }
     }
   }, [open, preSelectedCriancaId, preSelectedTurmaId]);
 
   // Fetch authorized persons when SAIDA is selected and crianca is chosen
   useEffect(() => {
-    if (selectedTipo === 'SAIDA' && selectedCriancaId) {
+    if (selectedTipo === "SAIDA" && selectedCriancaId) {
       supabase
-        .from('authorized_pickups')
-        .select('id, nome, parentesco, foto_url')
-        .eq('crianca_id', selectedCriancaId)
-        .order('nome')
+        .from("authorized_pickups")
+        .select("id, nome, parentesco, foto_url")
+        .eq("crianca_id", selectedCriancaId)
+        .order("nome")
         .then(({ data }) => {
           if (data) setAuthorizedPersons(data);
         });
@@ -161,49 +171,47 @@ export function EventDbModal({
         data_inicio: data.dataInicio,
         data_fim: data.dataFim || null,
         educador_user_id: user?.id || null,
-        tipo_refeicao: data.tipo === 'ALIMENTACAO' ? data.tipoRefeicao || null : null,
-        resultado_refeicao: data.tipo === 'ALIMENTACAO' ? data.resultadoRefeicao || null : null,
-        tipo_higiene: data.tipo === 'HIGIENE' ? data.tipoHigiene || null : null,
-        nome_medicamento: data.tipo === 'MEDICAMENTO' ? data.nomeMedicamento || null : null,
-        dosagem: data.tipo === 'MEDICAMENTO' ? data.dosagem || null : null,
-        horario_administracao: data.tipo === 'MEDICAMENTO' && data.horarioAdministracao ? data.horarioAdministracao : null,
-        authorized_person_id: data.tipo === 'SAIDA' ? data.authorizedPersonId || null : null,
+        tipo_refeicao: data.tipo === "ALIMENTACAO" ? data.tipoRefeicao || null : null,
+        resultado_refeicao: data.tipo === "ALIMENTACAO" ? data.resultadoRefeicao || null : null,
+        tipo_higiene: data.tipo === "HIGIENE" ? data.tipoHigiene || null : null,
+        nome_medicamento: data.tipo === "MEDICAMENTO" ? data.nomeMedicamento || null : null,
+        dosagem: data.tipo === "MEDICAMENTO" ? data.dosagem || null : null,
+        horario_administracao:
+          data.tipo === "MEDICAMENTO" && data.horarioAdministracao ? data.horarioAdministracao : null,
+        authorized_person_id: data.tipo === "SAIDA" ? data.authorizedPersonId || null : null,
       };
 
-      if (mode === 'turma' && data.turmaId) {
-        const { data: criancasTurma } = await supabase
-          .from('criancas')
-          .select('id')
-          .eq('turma_id', data.turmaId);
+      if (mode === "turma" && data.turmaId) {
+        const { data: criancasTurma } = await supabase.from("criancas").select("id").eq("turma_id", data.turmaId);
 
         if (!criancasTurma || criancasTurma.length === 0) {
-          toast.error('Nenhum aluno na turma');
+          toast.error("Nenhum aluno na turma");
           setLoading(false);
           return;
         }
 
-        const rows = criancasTurma.map(c => ({
+        const rows = criancasTurma.map((c) => ({
           ...baseRow,
           crianca_id: c.id,
         }));
 
-        const { error } = await supabase.from('eventos').insert(rows);
+        const { error } = await supabase.from("eventos").insert(rows);
         if (error) throw error;
-        toast.success('Evento adicionado para toda a turma!');
+        toast.success("Evento adicionado para toda a turma!");
       } else if (data.criancaId) {
-        const { error } = await supabase.from('eventos').insert({
+        const { error } = await supabase.from("eventos").insert({
           ...baseRow,
           crianca_id: data.criancaId,
         });
         if (error) throw error;
-        toast.success('Evento adicionado!');
+        toast.success("Evento adicionado!");
       }
 
       form.reset();
       onOpenChange(false);
       onSaved?.();
     } catch (err: any) {
-      toast.error(err.message || 'Erro ao criar evento');
+      toast.error(err.message || "Erro ao criar evento");
     }
     setLoading(false);
   };
@@ -214,9 +222,7 @@ export function EventDbModal({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md rounded-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>
-            {mode === 'turma' ? 'Novo Evento para Turma' : 'Novo Evento'}
-          </DialogTitle>
+          <DialogTitle>{mode === "turma" ? "Novo Evento para Turma" : "Novo Evento"}</DialogTitle>
         </DialogHeader>
 
         <Form {...form}>
@@ -235,7 +241,9 @@ export function EventDbModal({
                     </FormControl>
                     <SelectContent>
                       {eventTypes.map(([value, label]) => (
-                        <SelectItem key={value} value={value}>{label}</SelectItem>
+                        <SelectItem key={value} value={value}>
+                          {label}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -244,7 +252,7 @@ export function EventDbModal({
               )}
             />
 
-            {mode === 'turma' ? (
+            {mode === "turma" ? (
               <FormField
                 control={form.control}
                 name="turmaId"
@@ -259,7 +267,9 @@ export function EventDbModal({
                       </FormControl>
                       <SelectContent>
                         {turmas.map((t) => (
-                          <SelectItem key={t.id} value={t.id}>{t.nome}</SelectItem>
+                          <SelectItem key={t.id} value={t.id}>
+                            {t.nome}
+                          </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
@@ -282,7 +292,9 @@ export function EventDbModal({
                       </FormControl>
                       <SelectContent>
                         {criancas.map((c) => (
-                          <SelectItem key={c.id} value={c.id}>{c.nome}</SelectItem>
+                          <SelectItem key={c.id} value={c.id}>
+                            {c.nome}
+                          </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
@@ -293,7 +305,7 @@ export function EventDbModal({
             )}
 
             {/* Alimentação fields */}
-            {selectedTipo === 'ALIMENTACAO' && (
+            {selectedTipo === "ALIMENTACAO" && (
               <>
                 <FormField
                   control={form.control}
@@ -309,7 +321,9 @@ export function EventDbModal({
                         </FormControl>
                         <SelectContent>
                           {Object.entries(TIPO_REFEICAO_LABELS).map(([v, l]) => (
-                            <SelectItem key={v} value={v}>{l}</SelectItem>
+                            <SelectItem key={v} value={v}>
+                              {l}
+                            </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
@@ -331,7 +345,9 @@ export function EventDbModal({
                         </FormControl>
                         <SelectContent>
                           {Object.entries(RESULTADO_REFEICAO_LABELS).map(([v, l]) => (
-                            <SelectItem key={v} value={v}>{l}</SelectItem>
+                            <SelectItem key={v} value={v}>
+                              {l}
+                            </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
@@ -343,7 +359,7 @@ export function EventDbModal({
             )}
 
             {/* Higiene fields */}
-            {selectedTipo === 'HIGIENE' && (
+            {selectedTipo === "HIGIENE" && (
               <FormField
                 control={form.control}
                 name="tipoHigiene"
@@ -355,11 +371,11 @@ export function EventDbModal({
                         <Button
                           key={v}
                           type="button"
-                          variant={field.value === v ? 'default' : 'outline'}
+                          variant={field.value === v ? "default" : "outline"}
                           className="flex-1"
                           onClick={() => field.onChange(v)}
                         >
-                          {v === 'banho' ? '🛁' : v === 'xixi' ? '💧' : '💩'} {l}
+                          {v === "banho" ? "🛁" : v === "xixi" ? "💧" : "💩"} {l}
                         </Button>
                       ))}
                     </div>
@@ -370,7 +386,7 @@ export function EventDbModal({
             )}
 
             {/* Medicamento fields */}
-            {selectedTipo === 'MEDICAMENTO' && (
+            {selectedTipo === "MEDICAMENTO" && (
               <>
                 <FormField
                   control={form.control}
@@ -412,50 +428,6 @@ export function EventDbModal({
                   )}
                 />
               </>
-            )}
-
-            {/* Saída fields */}
-            {selectedTipo === 'SAIDA' && selectedCriancaId && (
-              <FormField
-                control={form.control}
-                name="authorizedPersonId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Pessoa autorizada para retirada</FormLabel>
-                    {authorizedPersons.length === 0 ? (
-                      <p className="text-sm text-muted-foreground">Nenhuma pessoa autorizada cadastrada para esta criança.</p>
-                    ) : (
-                      <div className="space-y-2">
-                        {authorizedPersons.map((p) => (
-                          <button
-                            key={p.id}
-                            type="button"
-                            onClick={() => field.onChange(p.id)}
-                            className={`w-full flex items-center gap-3 p-3 rounded-xl border transition-colors ${
-                              field.value === p.id
-                                ? 'border-primary bg-primary/10'
-                                : 'border-border hover:bg-muted/50'
-                            }`}
-                          >
-                            <Avatar className="w-10 h-10">
-                              <AvatarImage src={p.foto_url || undefined} />
-                              <AvatarFallback><User className="w-4 h-4" /></AvatarFallback>
-                            </Avatar>
-                            <div className="flex-1 text-left">
-                              <p className="font-medium text-sm">{p.nome}</p>
-                              <p className="text-xs text-muted-foreground">{p.parentesco}</p>
-                            </div>
-                            {field.value === p.id && (
-                              <Check className="w-5 h-5 text-primary" />
-                            )}
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
             )}
 
             <FormField
@@ -501,9 +473,11 @@ export function EventDbModal({
             />
 
             <div className="flex gap-2 justify-end">
-              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancelar</Button>
+              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+                Cancelar
+              </Button>
               <Button type="submit" disabled={loading}>
-                {loading ? 'Salvando...' : 'Adicionar'}
+                {loading ? "Salvando..." : "Adicionar"}
               </Button>
             </div>
           </form>
