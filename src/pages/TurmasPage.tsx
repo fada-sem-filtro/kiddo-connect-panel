@@ -22,6 +22,7 @@ interface TurmaRow {
   nome: string;
   descricao: string | null;
   creche_id: string;
+  faixa_etaria: string | null;
   creches?: { nome: string } | null;
   criancas_count?: number;
   educadores_count?: number;
