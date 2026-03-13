@@ -351,8 +351,8 @@ export function EventDbModal({
               </>
             )}
 
-            {/* Time fields for events with duration (Nap, Playtime, Activity) */}
-            {["SONECA", "BRINCADEIRA", "ATIVIDADE"].includes(selectedTipo) && (
+            {/* Time fields for events with duration */}
+            {["ALIMENTAÇÃO", "SONECA", "BRINCADEIRA", "ATIVIDADE"].includes(selectedTipo) && (
               <>
                 <FormField
                   control={form.control}
