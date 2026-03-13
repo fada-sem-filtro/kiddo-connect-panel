@@ -199,7 +199,7 @@ export function EventDbModal({
     setLoading(false);
   };
 
-  const eventTypes = Object.entries(EVENT_TYPE_LABELS);
+  const eventTypes = Object.entries(EVENT_TYPE_LABELS).filter(([value]) => value !== "SAIDA");
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
