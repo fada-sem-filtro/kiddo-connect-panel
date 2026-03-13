@@ -319,7 +319,7 @@ export function EventDbModal({
                   name="resultadoRefeicao"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Resultado da Alimentação</FormLabel>
+                      <FormLabel>Aceitação da Alimentação</FormLabel>
                       <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger>
