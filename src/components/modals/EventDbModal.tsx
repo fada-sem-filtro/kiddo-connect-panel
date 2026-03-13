@@ -12,10 +12,12 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { EVENT_TYPE_LABELS } from '@/types';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { EVENT_TYPE_LABELS, TIPO_REFEICAO_LABELS, RESULTADO_REFEICAO_LABELS, TIPO_HIGIENE_LABELS } from '@/types';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
+import { Check, User } from 'lucide-react';
 
 const eventSchema = z.object({
   tipo: z.string().min(1, 'Selecione o tipo de evento'),
@@ -24,6 +26,13 @@ const eventSchema = z.object({
   observacao: z.string().optional(),
   dataInicio: z.string().min(1, 'Informe a data/hora de início'),
   dataFim: z.string().optional(),
+  tipoRefeicao: z.string().optional(),
+  resultadoRefeicao: z.string().optional(),
+  tipoHigiene: z.string().optional(),
+  nomeMedicamento: z.string().optional(),
+  dosagem: z.string().optional(),
+  horarioAdministracao: z.string().optional(),
+  authorizedPersonId: z.string().optional(),
 });
 
 type EventFormData = z.infer<typeof eventSchema>;
@@ -36,6 +45,13 @@ interface CriancaOption {
 interface TurmaOption {
   id: string;
   nome: string;
+}
+
+interface AuthorizedPerson {
+  id: string;
+  nome: string;
+  parentesco: string;
+  foto_url: string | null;
 }
 
 interface EventDbModalProps {
@@ -56,6 +72,7 @@ export function EventDbModal({
   const { user } = useAuth();
   const [criancas, setCriancas] = useState<CriancaOption[]>(criancasProp || []);
   const [turmas, setTurmas] = useState<TurmaOption[]>(turmasProp || []);
+  const [authorizedPersons, setAuthorizedPersons] = useState<AuthorizedPerson[]>([]);
   const [loading, setLoading] = useState(false);
 
   const form = useForm<EventFormData>({
@@ -67,8 +84,18 @@ export function EventDbModal({
       observacao: '',
       dataInicio: new Date().toISOString().slice(0, 16),
       dataFim: '',
+      tipoRefeicao: '',
+      resultadoRefeicao: '',
+      tipoHigiene: '',
+      nomeMedicamento: '',
+      dosagem: '',
+      horarioAdministracao: '',
+      authorizedPersonId: '',
     },
   });
+
+  const selectedTipo = form.watch('tipo');
+  const selectedCriancaId = form.watch('criancaId');
 
   useEffect(() => {
     if (open) {
@@ -79,9 +106,15 @@ export function EventDbModal({
         observacao: '',
         dataInicio: new Date().toISOString().slice(0, 16),
         dataFim: '',
+        tipoRefeicao: '',
+        resultadoRefeicao: '',
+        tipoHigiene: '',
+        nomeMedicamento: '',
+        dosagem: '',
+        horarioAdministracao: '',
+        authorizedPersonId: '',
       });
 
-      // Fetch criancas/turmas if not provided
       if (!criancasProp) {
         supabase.from('criancas').select('id, nome').order('nome').then(({ data }) => {
           if (data) setCriancas(data);
@@ -95,6 +128,22 @@ export function EventDbModal({
     }
   }, [open, preSelectedCriancaId, preSelectedTurmaId]);
 
+  // Fetch authorized persons when SAIDA is selected and crianca is chosen
+  useEffect(() => {
+    if (selectedTipo === 'SAIDA' && selectedCriancaId) {
+      supabase
+        .from('authorized_pickups')
+        .select('id, nome, parentesco, foto_url')
+        .eq('crianca_id', selectedCriancaId)
+        .order('nome')
+        .then(({ data }) => {
+          if (data) setAuthorizedPersons(data);
+        });
+    } else {
+      setAuthorizedPersons([]);
+    }
+  }, [selectedTipo, selectedCriancaId]);
+
   useEffect(() => {
     if (criancasProp) setCriancas(criancasProp);
   }, [criancasProp]);
@@ -106,6 +155,21 @@ export function EventDbModal({
   const onSubmit = async (data: EventFormData) => {
     setLoading(true);
     try {
+      const baseRow = {
+        tipo: data.tipo,
+        observacao: data.observacao || null,
+        data_inicio: data.dataInicio,
+        data_fim: data.dataFim || null,
+        educador_user_id: user?.id || null,
+        tipo_refeicao: data.tipo === 'ALIMENTACAO' ? data.tipoRefeicao || null : null,
+        resultado_refeicao: data.tipo === 'ALIMENTACAO' ? data.resultadoRefeicao || null : null,
+        tipo_higiene: data.tipo === 'HIGIENE' ? data.tipoHigiene || null : null,
+        nome_medicamento: data.tipo === 'MEDICAMENTO' ? data.nomeMedicamento || null : null,
+        dosagem: data.tipo === 'MEDICAMENTO' ? data.dosagem || null : null,
+        horario_administracao: data.tipo === 'MEDICAMENTO' && data.horarioAdministracao ? data.horarioAdministracao : null,
+        authorized_person_id: data.tipo === 'SAIDA' ? data.authorizedPersonId || null : null,
+      };
+
       if (mode === 'turma' && data.turmaId) {
         const { data: criancasTurma } = await supabase
           .from('criancas')
@@ -119,12 +183,8 @@ export function EventDbModal({
         }
 
         const rows = criancasTurma.map(c => ({
-          tipo: data.tipo,
+          ...baseRow,
           crianca_id: c.id,
-          observacao: data.observacao || null,
-          data_inicio: data.dataInicio,
-          data_fim: data.dataFim || null,
-          educador_user_id: user?.id || null,
         }));
 
         const { error } = await supabase.from('eventos').insert(rows);
@@ -132,12 +192,8 @@ export function EventDbModal({
         toast.success('Evento adicionado para toda a turma!');
       } else if (data.criancaId) {
         const { error } = await supabase.from('eventos').insert({
-          tipo: data.tipo,
+          ...baseRow,
           crianca_id: data.criancaId,
-          observacao: data.observacao || null,
-          data_inicio: data.dataInicio,
-          data_fim: data.dataFim || null,
-          educador_user_id: user?.id || null,
         });
         if (error) throw error;
         toast.success('Evento adicionado!');
@@ -156,7 +212,7 @@ export function EventDbModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md rounded-3xl">
+      <DialogContent className="sm:max-w-md rounded-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
             {mode === 'turma' ? 'Novo Evento para Turma' : 'Novo Evento'}
@@ -230,6 +286,172 @@ export function EventDbModal({
                         ))}
                       </SelectContent>
                     </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+
+            {/* Alimentação fields */}
+            {selectedTipo === 'ALIMENTACAO' && (
+              <>
+                <FormField
+                  control={form.control}
+                  name="tipoRefeicao"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Tipo de Refeição</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecione" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {Object.entries(TIPO_REFEICAO_LABELS).map(([v, l]) => (
+                            <SelectItem key={v} value={v}>{l}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="resultadoRefeicao"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Resultado da Alimentação</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecione" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {Object.entries(RESULTADO_REFEICAO_LABELS).map(([v, l]) => (
+                            <SelectItem key={v} value={v}>{l}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </>
+            )}
+
+            {/* Higiene fields */}
+            {selectedTipo === 'HIGIENE' && (
+              <FormField
+                control={form.control}
+                name="tipoHigiene"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Tipo de Higiene</FormLabel>
+                    <div className="flex gap-2">
+                      {Object.entries(TIPO_HIGIENE_LABELS).map(([v, l]) => (
+                        <Button
+                          key={v}
+                          type="button"
+                          variant={field.value === v ? 'default' : 'outline'}
+                          className="flex-1"
+                          onClick={() => field.onChange(v)}
+                        >
+                          {v === 'banho' ? '🛁' : v === 'xixi' ? '💧' : '💩'} {l}
+                        </Button>
+                      ))}
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+
+            {/* Medicamento fields */}
+            {selectedTipo === 'MEDICAMENTO' && (
+              <>
+                <FormField
+                  control={form.control}
+                  name="nomeMedicamento"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Nome do Medicamento</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Ex: Dipirona" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="dosagem"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Dosagem</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Ex: 5ml" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="horarioAdministracao"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Horário de Administração</FormLabel>
+                      <FormControl>
+                        <Input type="datetime-local" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </>
+            )}
+
+            {/* Saída fields */}
+            {selectedTipo === 'SAIDA' && selectedCriancaId && (
+              <FormField
+                control={form.control}
+                name="authorizedPersonId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Pessoa autorizada para retirada</FormLabel>
+                    {authorizedPersons.length === 0 ? (
+                      <p className="text-sm text-muted-foreground">Nenhuma pessoa autorizada cadastrada para esta criança.</p>
+                    ) : (
+                      <div className="space-y-2">
+                        {authorizedPersons.map((p) => (
+                          <button
+                            key={p.id}
+                            type="button"
+                            onClick={() => field.onChange(p.id)}
+                            className={`w-full flex items-center gap-3 p-3 rounded-xl border transition-colors ${
+                              field.value === p.id
+                                ? 'border-primary bg-primary/10'
+                                : 'border-border hover:bg-muted/50'
+                            }`}
+                          >
+                            <Avatar className="w-10 h-10">
+                              <AvatarImage src={p.foto_url || undefined} />
+                              <AvatarFallback><User className="w-4 h-4" /></AvatarFallback>
+                            </Avatar>
+                            <div className="flex-1 text-left">
+                              <p className="font-medium text-sm">{p.nome}</p>
+                              <p className="text-xs text-muted-foreground">{p.parentesco}</p>
+                            </div>
+                            {field.value === p.id && (
+                              <Check className="w-5 h-5 text-primary" />
+                            )}
+                          </button>
+                        ))}
+                      </div>
+                    )}
                     <FormMessage />
                   </FormItem>
                 )}

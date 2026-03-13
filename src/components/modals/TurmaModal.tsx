@@ -11,11 +11,12 @@ import {
 } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { FAIXA_ETARIA_OPTIONS } from '@/types';
 
 interface TurmaModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  editData?: { id: string; nome: string; descricao: string | null; creche_id: string } | null;
+  editData?: { id: string; nome: string; descricao: string | null; creche_id: string; faixa_etaria?: string | null } | null;
   creches: { id: string; nome: string }[];
   defaultCrecheId?: string;
   onSaved: () => void;
@@ -25,6 +26,7 @@ export function TurmaModal({ open, onOpenChange, editData, creches, defaultCrech
   const [nome, setNome] = useState('');
   const [descricao, setDescricao] = useState('');
   const [crecheId, setCrecheId] = useState('');
+  const [faixaEtaria, setFaixaEtaria] = useState('');
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -32,10 +34,12 @@ export function TurmaModal({ open, onOpenChange, editData, creches, defaultCrech
       setNome(editData.nome);
       setDescricao(editData.descricao || '');
       setCrecheId(editData.creche_id);
+      setFaixaEtaria(editData.faixa_etaria || '');
     } else {
       setNome('');
       setDescricao('');
       setCrecheId(defaultCrecheId || (creches.length === 1 ? creches[0].id : ''));
+      setFaixaEtaria('');
     }
   }, [editData, open, defaultCrecheId, creches]);
 
@@ -47,7 +51,7 @@ export function TurmaModal({ open, onOpenChange, editData, creches, defaultCrech
     }
 
     setLoading(true);
-    const payload = { nome, descricao: descricao || null, creche_id: crecheId };
+    const payload = { nome, descricao: descricao || null, creche_id: crecheId, faixa_etaria: faixaEtaria || null };
 
     if (editData) {
       const { error } = await supabase.from('turmas').update(payload).eq('id', editData.id);
@@ -94,6 +98,19 @@ export function TurmaModal({ open, onOpenChange, editData, creches, defaultCrech
               </Select>
             </div>
           )}
+          <div className="space-y-2">
+            <Label>Faixa Etária</Label>
+            <Select value={faixaEtaria} onValueChange={setFaixaEtaria}>
+              <SelectTrigger>
+                <SelectValue placeholder="Selecione a faixa etária" />
+              </SelectTrigger>
+              <SelectContent>
+                {FAIXA_ETARIA_OPTIONS.map((opt) => (
+                  <SelectItem key={opt} value={opt}>{opt}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
           <div className="flex justify-end gap-2 pt-2">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancelar</Button>
             <Button type="submit" disabled={loading}>

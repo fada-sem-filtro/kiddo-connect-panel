@@ -22,6 +22,7 @@ interface TurmaRow {
   nome: string;
   descricao: string | null;
   creche_id: string;
+  faixa_etaria: string | null;
   creches?: { nome: string } | null;
   criancas_count?: number;
   educadores_count?: number;
@@ -141,9 +142,10 @@ export default function TurmasPage() {
 
         <div className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden">
           <Table>
-            <TableHeader>
+             <TableHeader>
               <TableRow>
                 <TableHead>Nome</TableHead>
+                <TableHead>Faixa Etária</TableHead>
                 <TableHead>Descrição</TableHead>
                 {role === 'admin' && <TableHead>Escola</TableHead>}
                 <TableHead>Alunos</TableHead>
@@ -154,13 +156,13 @@ export default function TurmasPage() {
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={role === 'admin' ? 6 : 5} className="text-center py-8 text-muted-foreground">
+                  <TableCell colSpan={role === 'admin' ? 7 : 6} className="text-center py-8 text-muted-foreground">
                     Carregando...
                   </TableCell>
                 </TableRow>
               ) : filtered.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={role === 'admin' ? 6 : 5} className="text-center py-8 text-muted-foreground">
+                  <TableCell colSpan={role === 'admin' ? 7 : 6} className="text-center py-8 text-muted-foreground">
                     Nenhuma turma encontrada
                   </TableCell>
                 </TableRow>
@@ -168,6 +170,13 @@ export default function TurmasPage() {
                 filtered.map((turma) => (
                   <TableRow key={turma.id}>
                     <TableCell className="font-medium">{turma.nome}</TableCell>
+                    <TableCell>
+                      {turma.faixa_etaria ? (
+                        <Badge variant="outline">{turma.faixa_etaria}</Badge>
+                      ) : (
+                        <span className="text-muted-foreground">—</span>
+                      )}
+                    </TableCell>
                     <TableCell className="text-muted-foreground">{turma.descricao || '—'}</TableCell>
                     {role === 'admin' && (
                       <TableCell>
