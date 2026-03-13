@@ -14,6 +14,47 @@ export type Database = {
   }
   public: {
     Tables: {
+      authorized_pickups: {
+        Row: {
+          created_at: string
+          crianca_id: string
+          documento: string | null
+          foto_url: string | null
+          id: string
+          nome: string
+          parentesco: string
+          telefone: string | null
+        }
+        Insert: {
+          created_at?: string
+          crianca_id: string
+          documento?: string | null
+          foto_url?: string | null
+          id?: string
+          nome: string
+          parentesco?: string
+          telefone?: string | null
+        }
+        Update: {
+          created_at?: string
+          crianca_id?: string
+          documento?: string | null
+          foto_url?: string | null
+          id?: string
+          nome?: string
+          parentesco?: string
+          telefone?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "authorized_pickups_crianca_id_fkey"
+            columns: ["crianca_id"]
+            isOneToOne: false
+            referencedRelation: "criancas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       creche_membros: {
         Row: {
           created_at: string
@@ -244,36 +285,70 @@ export type Database = {
       }
       eventos: {
         Row: {
+          administrado: boolean | null
+          authorized_person_id: string | null
           created_at: string
           crianca_id: string
           data_fim: string | null
           data_inicio: string
+          dosagem: string | null
           educador_user_id: string | null
+          horario_administracao: string | null
+          horario_administrado: string | null
           id: string
+          nome_medicamento: string | null
           observacao: string | null
+          resultado_refeicao: string | null
           tipo: string
+          tipo_higiene: string | null
+          tipo_refeicao: string | null
         }
         Insert: {
+          administrado?: boolean | null
+          authorized_person_id?: string | null
           created_at?: string
           crianca_id: string
           data_fim?: string | null
           data_inicio?: string
+          dosagem?: string | null
           educador_user_id?: string | null
+          horario_administracao?: string | null
+          horario_administrado?: string | null
           id?: string
+          nome_medicamento?: string | null
           observacao?: string | null
+          resultado_refeicao?: string | null
           tipo: string
+          tipo_higiene?: string | null
+          tipo_refeicao?: string | null
         }
         Update: {
+          administrado?: boolean | null
+          authorized_person_id?: string | null
           created_at?: string
           crianca_id?: string
           data_fim?: string | null
           data_inicio?: string
+          dosagem?: string | null
           educador_user_id?: string | null
+          horario_administracao?: string | null
+          horario_administrado?: string | null
           id?: string
+          nome_medicamento?: string | null
           observacao?: string | null
+          resultado_refeicao?: string | null
           tipo?: string
+          tipo_higiene?: string | null
+          tipo_refeicao?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "eventos_authorized_person_id_fkey"
+            columns: ["authorized_person_id"]
+            isOneToOne: false
+            referencedRelation: "authorized_pickups"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "eventos_crianca_id_fkey"
             columns: ["crianca_id"]
@@ -591,6 +666,7 @@ export type Database = {
           created_at: string
           creche_id: string
           descricao: string | null
+          faixa_etaria: string | null
           id: string
           nome: string
           updated_at: string
@@ -599,6 +675,7 @@ export type Database = {
           created_at?: string
           creche_id: string
           descricao?: string | null
+          faixa_etaria?: string | null
           id?: string
           nome: string
           updated_at?: string
@@ -607,6 +684,7 @@ export type Database = {
           created_at?: string
           creche_id?: string
           descricao?: string | null
+          faixa_etaria?: string | null
           id?: string
           nome?: string
           updated_at?: string
