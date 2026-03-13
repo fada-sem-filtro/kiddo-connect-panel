@@ -351,31 +351,81 @@ export function EventDbModal({
               </>
             )}
 
+            {/* Time fields for events with duration (Nap, Playtime, Activity) */}
+            {["SONECA", "BRINCADEIRA", "ATIVIDADE"].includes(selectedTipo) && (
+              <>
+                <FormField
+                  control={form.control}
+                  name="dataInicio"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Horário de Início</FormLabel>
+                      <FormControl>
+                        <Input type="datetime-local" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="dataFim"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Horário Final</FormLabel>
+                      <FormControl>
+                        <Input type="datetime-local" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </>
+            )}
+
             {/* Higiene fields */}
             {selectedTipo === "HIGIENE" && (
-              <FormField
-                control={form.control}
-                name="tipoHigiene"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Tipo de Higiene</FormLabel>
-                    <div className="flex gap-2">
-                      {Object.entries(TIPO_HIGIENE_LABELS).map(([v, l]) => (
-                        <Button
-                          key={v}
-                          type="button"
-                          variant={field.value === v ? "default" : "outline"}
-                          className="flex-1"
-                          onClick={() => field.onChange(v)}
-                        >
-                          {v === "banho" ? "🛁" : v === "xixi" ? "💧" : "💩"} {l}
-                        </Button>
-                      ))}
-                    </div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <>
+                <FormField
+                  control={form.control}
+                  name="tipoHigiene"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Tipo de Higiene</FormLabel>
+                      <div className="flex gap-2">
+                        {Object.entries(TIPO_HIGIENE_LABELS).map(([v, l]) => (
+                          <Button
+                            key={v}
+                            type="button"
+                            variant={field.value === v ? "default" : "outline"}
+                            className="flex-1"
+                            onClick={() => field.onChange(v)}
+                          >
+                            {v === "banho" ? "🛁" : v === "xixi" ? "💧" : "💩"} {l}
+                          </Button>
+                        ))}
+                      </div>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Hygiene time */}
+                <FormField
+                  control={form.control}
+                  name="dataInicio"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Horário da Higiene</FormLabel>
+                      <FormControl>
+                        <Input type="datetime-local" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </>
             )}
 
             {/* Medicamento fields */}
