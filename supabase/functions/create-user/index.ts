@@ -63,16 +63,16 @@ serve(async (req) => {
       });
     }
 
-    const defaultPassword = 'fleur@2026';
-
     const adminClient = createClient(supabaseUrl, serviceRoleKey);
 
-    const { data: newUser, error: createError } = await adminClient.auth.admin.createUser({
+    // Use inviteUserByEmail to trigger the invite email template via auth-email-hook
+    const { data: newUser, error: createError } = await adminClient.auth.admin.inviteUserByEmail(
       email,
-      password: defaultPassword,
-      email_confirm: true,
-      user_metadata: { nome, telefone, must_change_password: true },
-    });
+      {
+        data: { nome, telefone },
+        redirectTo: 'https://agendafleur.app/reset-password',
+      }
+    );
 
     if (createError) {
       return new Response(JSON.stringify({ error: createError.message }), {
