@@ -65,22 +65,24 @@ serve(async (req) => {
 
     const adminClient = createClient(supabaseUrl, serviceRoleKey);
 
-    // Fetch school name if creche_id is provided
+    // Fetch school info if creche_id is provided
     let schoolName: string | undefined;
+    let schoolLogo: string | undefined;
     if (creche_id) {
       const { data: crecheData } = await adminClient
         .from('creches')
-        .select('nome')
+        .select('nome, logo_url')
         .eq('id', creche_id)
         .single();
       schoolName = crecheData?.nome || undefined;
+      schoolLogo = crecheData?.logo_url || undefined;
     }
 
     // Use inviteUserByEmail to trigger the invite email template via auth-email-hook
     const { data: newUser, error: createError } = await adminClient.auth.admin.inviteUserByEmail(
       email,
       {
-        data: { nome, telefone, schoolName, userRole: role },
+        data: { nome, telefone, schoolName, schoolLogo, userRole: role },
         redirectTo: 'https://agendafleur.app/reset-password',
       }
     );
