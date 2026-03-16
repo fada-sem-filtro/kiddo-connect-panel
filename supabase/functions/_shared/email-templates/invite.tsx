@@ -51,12 +51,21 @@ export const InviteEmail = ({
         <Heading style={h1}>Seu acesso à Agenda Fleur foi criado 🌸</Heading>
 
         <Text style={text}>
-          Olá! Você foi convidado(a) para utilizar a{" "}
+          Você recebeu um convite para acessar a plataforma{" "}
           <Link href={siteUrl} style={link}>
             <strong>Agenda Fleur</strong>
           </Link>
-          , a plataforma que facilita a comunicação entre escola e famílias, organizando rotinas,
-          eventos e informações importantes do dia a dia.
+          .
+        </Text>
+
+        <Text style={text}>
+          A Agenda Fleur é um sistema criado para facilitar a comunicação
+          entre escolas, professores e famílias, organizando rotinas,
+          eventos e informações importantes de forma simples e segura.
+        </Text>
+
+        <Text style={text}>
+          Seu acesso já foi criado com uma senha inicial.
         </Text>
 
         <Section style={accessBox}>
