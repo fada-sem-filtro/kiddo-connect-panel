@@ -218,6 +218,7 @@ async function handleWebhook(req: Request): Promise<Response> {
   }
 
   // Build template props from payload.data (HookData structure)
+  const userMeta = payload.data.user_metadata || {}
   const templateProps = {
     siteName: SITE_NAME,
     siteUrl: `https://${ROOT_DOMAIN}`,
@@ -226,6 +227,8 @@ async function handleWebhook(req: Request): Promise<Response> {
     token: payload.data.token,
     email: payload.data.email,
     newEmail: payload.data.new_email,
+    schoolName: userMeta.schoolName || undefined,
+    userRole: userMeta.userRole || undefined,
   }
 
   // Render React Email to HTML and plain text
