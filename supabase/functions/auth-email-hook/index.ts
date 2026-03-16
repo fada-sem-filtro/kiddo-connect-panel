@@ -230,7 +230,9 @@ async function handleWebhook(req: Request): Promise<Response> {
     token: payload.data.token,
     email: payload.data.email,
     newEmail: payload.data.new_email,
+    userName: userMeta.nome || undefined,
     schoolName: userMeta.schoolName || undefined,
+    schoolLogo: userMeta.schoolLogo || undefined,
     userRole: userMeta.userRole || undefined,
   }
 
