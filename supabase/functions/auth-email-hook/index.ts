@@ -68,7 +68,9 @@ const SAMPLE_DATA: Record<string, object> = {
     siteUrl: SAMPLE_PROJECT_URL,
     confirmationUrl: SAMPLE_PROJECT_URL,
     recipient: SAMPLE_EMAIL,
+    userName: "Maria Silva",
     schoolName: "Escola Exemplo",
+    schoolLogo: "",
     userRole: "educador",
   },
   email_change: {
@@ -230,7 +232,9 @@ async function handleWebhook(req: Request): Promise<Response> {
     token: payload.data.token,
     email: payload.data.email,
     newEmail: payload.data.new_email,
+    userName: userMeta.nome || undefined,
     schoolName: userMeta.schoolName || undefined,
+    schoolLogo: userMeta.schoolLogo || undefined,
     userRole: userMeta.userRole || undefined,
   }
 
