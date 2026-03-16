@@ -67,6 +67,9 @@ const SAMPLE_DATA: Record<string, object> = {
     siteName: SITE_NAME,
     siteUrl: SAMPLE_PROJECT_URL,
     confirmationUrl: SAMPLE_PROJECT_URL,
+    recipient: SAMPLE_EMAIL,
+    schoolName: "Escola Exemplo",
+    userRole: "educador",
   },
   email_change: {
     siteName: SITE_NAME,
