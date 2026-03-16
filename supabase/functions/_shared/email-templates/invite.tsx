@@ -22,7 +22,9 @@ interface InviteEmailProps {
   siteUrl: string;
   confirmationUrl: string;
   recipient: string;
+  userName?: string;
   schoolName?: string;
+  schoolLogo?: string;
   userRole?: string;
 }
 
@@ -38,7 +40,9 @@ export const InviteEmail = ({
   siteUrl,
   confirmationUrl,
   recipient,
+  userName,
   schoolName,
+  schoolLogo,
   userRole,
 }: InviteEmailProps) => (
   <Html lang="pt-BR" dir="ltr">
@@ -46,9 +50,16 @@ export const InviteEmail = ({
     <Preview>Seu acesso à Agenda Fleur foi criado! 🌸</Preview>
     <Body style={main}>
       <Container style={container}>
+        {/* Logo Agenda Fleur */}
         <Img src={logoUrl} width="60" height="60" alt="Agenda Fleur" style={logo} />
 
+        {/* Título */}
         <Heading style={h1}>Seu acesso à Agenda Fleur foi criado 🌸</Heading>
+
+        {/* Saudação */}
+        <Text style={text}>
+          Olá{userName ? ` ${userName}` : ""}!
+        </Text>
 
         <Text style={text}>
           Você recebeu um convite para acessar a plataforma{" "}
@@ -68,21 +79,44 @@ export const InviteEmail = ({
           Seu acesso já foi criado com uma senha inicial.
         </Text>
 
+        {/* Caixa de dados de acesso */}
         <Section style={accessBox}>
           <Heading as="h2" style={accessBoxTitle}>
             Dados de acesso
           </Heading>
+
+          {userName && (
+            <Text style={accessItem}>
+              <strong>Nome:</strong> {userName}
+            </Text>
+          )}
+
           <Text style={accessItem}>
             <strong>E-mail:</strong> {recipient || "—"}
           </Text>
+
           <Text style={accessItem}>
             <strong>Senha inicial:</strong> fleur@2026
           </Text>
+
           {schoolName && (
-            <Text style={accessItem}>
-              <strong>Escola:</strong> {schoolName}
-            </Text>
+            <Section style={schoolRow}>
+              <Text style={accessItem}>
+                <strong>Escola:</strong>{" "}
+                {schoolLogo && (
+                  <Img
+                    src={schoolLogo}
+                    width="20"
+                    height="20"
+                    alt={schoolName}
+                    style={schoolLogoStyle}
+                  />
+                )}
+                {schoolName}
+              </Text>
+            </Section>
           )}
+
           {userRole && (
             <Text style={accessItem}>
               <strong>Tipo de usuário:</strong> {ROLE_LABELS[userRole] || userRole}
@@ -90,18 +124,21 @@ export const InviteEmail = ({
           )}
         </Section>
 
+        {/* Botão */}
         <Section style={buttonContainer}>
           <Button style={button} href={confirmationUrl}>
             Acessar Agenda Fleur
           </Button>
         </Section>
 
+        {/* Aviso de segurança */}
         <Text style={securityNote}>
           🔒 Por segurança, recomendamos alterar sua senha após o primeiro acesso.
         </Text>
 
         <Hr style={divider} />
 
+        {/* Rodapé */}
         <Text style={footer}>
           Se você não esperava este convite, pode ignorar este e-mail com segurança.
         </Text>
@@ -111,6 +148,8 @@ export const InviteEmail = ({
 );
 
 export default InviteEmail;
+
+/* ─── Styles ─── */
 
 const logoUrl =
   "https://takzcbagxjydlkzenprr.supabase.co/storage/v1/object/public/email-assets/logo-fleur-2.webp";
@@ -143,10 +182,10 @@ const text = {
   fontSize: "14px",
   color: "hsl(195, 15%, 40%)",
   lineHeight: "1.7",
-  margin: "0 0 24px",
+  margin: "0 0 16px",
 };
 
-const link = { color: "hsl(191, 76%, 45%)", textDecoration: "underline" };
+const link = { color: "#2BC4E8", textDecoration: "underline" };
 
 const accessBox = {
   backgroundColor: "hsl(191, 60%, 96%)",
@@ -159,7 +198,7 @@ const accessBox = {
 const accessBoxTitle = {
   fontSize: "15px",
   fontWeight: "700" as const,
-  color: "hsl(191, 76%, 40%)",
+  color: "#2BC4E8",
   margin: "0 0 14px",
   letterSpacing: "0.3px",
 };
@@ -171,13 +210,25 @@ const accessItem = {
   margin: "0 0 8px",
 };
 
+const schoolRow = {
+  margin: "0",
+  padding: "0",
+};
+
+const schoolLogoStyle = {
+  verticalAlign: "middle" as const,
+  marginRight: "6px",
+  borderRadius: "4px",
+  display: "inline" as const,
+};
+
 const buttonContainer = {
   textAlign: "center" as const,
   margin: "0 0 24px",
 };
 
 const button = {
-  backgroundColor: "hsl(191, 76%, 53%)",
+  backgroundColor: "#2BC4E8",
   color: "#ffffff",
   fontSize: "15px",
   fontWeight: "600" as const,
