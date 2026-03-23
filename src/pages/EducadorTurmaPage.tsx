@@ -15,6 +15,7 @@ import { useAuth } from '@/contexts/AuthContext';
 interface TurmaInfo {
   id: string;
   nome: string;
+  faixa_etaria: string | null;
 }
 
 interface CriancaInfo {
