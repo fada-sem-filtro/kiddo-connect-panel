@@ -56,7 +56,7 @@ export default function RelatorioDesempenhoPage() {
       setLoading(false);
     };
     fetch();
-  }, [userCreche]);
+  }, [effectiveCrecheId]);
 
   useEffect(() => {
     if (!selectedTurma) { setCriancas([]); return; }
