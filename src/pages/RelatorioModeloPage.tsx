@@ -306,7 +306,11 @@ export default function RelatorioModeloPage() {
             <div><Label>Título do Campo</Label><Input value={formCampoTitulo} onChange={e => setFormCampoTitulo(e.target.value)} placeholder="Ex: Observações sobre leitura" className="rounded-xl mt-1" /></div>
             <div>
               <Label>Tipo de Campo</Label>
-              <Select value={formCampoTipo} onValueChange={setFormCampoTipo}>
+              <Select value={formCampoTipo} onValueChange={(v) => {
+                setFormCampoTipo(v);
+                if (v === 'escala' && !formCampoOpcoes) setFormCampoOpcoes(ESCALA_OPTIONS.join(', '));
+                if (v !== 'escala' && v !== 'selecao_simples') setFormCampoOpcoes('');
+              }}>
                 <SelectTrigger className="rounded-xl mt-1"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   {TIPOS_CAMPO.map(t => <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>)}
