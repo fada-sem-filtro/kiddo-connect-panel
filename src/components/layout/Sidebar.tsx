@@ -227,7 +227,7 @@ export function Sidebar() {
               </div>
             )}
 
-            {responsavelNavigation.length > 0 && (
+            {responsavelNavigation.length > 0 && role !== "admin" && (
               <div className="space-y-2">
                 <p className="px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                   👨‍👩‍👧 Responsável
