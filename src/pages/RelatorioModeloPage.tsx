@@ -120,10 +120,8 @@ export default function RelatorioModeloPage() {
     if (!formCampoTitulo || !targetSecaoId) return;
     const camposDaSecao = campos.filter(c => c.secao_id === targetSecaoId);
     let opcoes = null;
-    if (formCampoTipo === 'selecao_simples' && formCampoOpcoes) {
+    if ((formCampoTipo === 'selecao_simples' || formCampoTipo === 'escala') && formCampoOpcoes) {
       opcoes = formCampoOpcoes.split(',').map(o => o.trim()).filter(Boolean);
-    } else if (formCampoTipo === 'escala') {
-      opcoes = ESCALA_OPTIONS;
     }
     const { error } = await supabase.from('relatorio_campos').insert({
       secao_id: targetSecaoId, titulo: formCampoTitulo, tipo: formCampoTipo, opcoes, ordem: camposDaSecao.length, obrigatorio: formCampoObrigatorio,
