@@ -94,6 +94,7 @@ const App = () => (
               <Route path="/responsavel/relatorio" element={<ProtectedRoute allowedRoles={['responsavel']}><RelatorioDesempenhoPage /></ProtectedRoute>} />
               <Route path="/educador/grade-aulas" element={<ProtectedRoute allowedRoles={['educador']}><GradeAulasPage /></ProtectedRoute>} />
               <Route path="/educador/agenda" element={<ProtectedRoute allowedRoles={['educador']}><AgendaEducadorPage /></ProtectedRoute>} />
+              <Route path="/admin/permissoes" element={<ProtectedRoute allowedRoles={['admin']}><PermissoesPerfilPage /></ProtectedRoute>} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </NotificationProvider>
