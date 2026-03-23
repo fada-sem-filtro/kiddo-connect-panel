@@ -206,6 +206,17 @@ export function CrecheModal({ open, onOpenChange, onSave, editData }: CrecheModa
               <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="contato@escola.com" />
             </div>
           </div>
+          <div className="space-y-2">
+            <Label>Tipo de Período Letivo</Label>
+            <Select value={tipoPeriodo} onValueChange={setTipoPeriodo}>
+              <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {TIPOS_PERIODO.map(t => (
+                  <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancelar</Button>
             <Button type="submit" disabled={saving}>
