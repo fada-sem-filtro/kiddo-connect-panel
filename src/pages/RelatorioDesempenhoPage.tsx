@@ -45,11 +45,11 @@ export default function RelatorioDesempenhoPage() {
   const canEdit = role === 'admin' || role === 'educador' || role === 'diretor';
 
   useEffect(() => {
-    if (!userCreche) return;
+    if (!effectiveCrecheId) { setLoading(false); return; }
     const fetch = async () => {
       const [modelosRes, turmasRes] = await Promise.all([
-        supabase.from('relatorio_modelos').select('id, nome, descricao').eq('creche_id', userCreche.id).eq('ativo', true),
-        supabase.from('turmas').select('id, nome').eq('creche_id', userCreche.id).order('nome'),
+        supabase.from('relatorio_modelos').select('id, nome, descricao').eq('creche_id', effectiveCrecheId).eq('ativo', true),
+        supabase.from('turmas').select('id, nome').eq('creche_id', effectiveCrecheId).order('nome'),
       ]);
       setModelos((modelosRes.data as Modelo[]) || []);
       setTurmas((turmasRes.data as Turma[]) || []);
