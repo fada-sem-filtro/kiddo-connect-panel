@@ -12,6 +12,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { FAIXA_ETARIA_OPTIONS } from '@/types';
+import { useAdminSchoolSelector, AdminSchoolSelector } from '@/components/admin/AdminSchoolSelector';
 
 interface Turma { id: string; nome: string; faixa_etaria: string | null; }
 interface Materia { id: string; nome: string; }
