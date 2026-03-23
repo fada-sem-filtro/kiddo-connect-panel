@@ -131,6 +131,10 @@ export function Sidebar() {
     if (pedSettings?.grade_aulas_ativo) {
       adminNavigation.push({ name: 'Grade de Aulas', href: `${prefix}/grade-aulas`, icon: CalendarClock });
     }
+    if (pedSettings?.relatorio_desempenho_ativo) {
+      adminNavigation.push({ name: 'Modelo Relatório', href: `${prefix}/relatorio-modelo`, icon: FileText });
+      adminNavigation.push({ name: 'Relatórios Desempenho', href: `${prefix}/relatorio-desempenho`, icon: FileText });
+    }
   }
 
   return (
