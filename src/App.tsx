@@ -35,6 +35,7 @@ import GradeAulasPage from "./pages/GradeAulasPage";
 import AgendaEducadorPage from "./pages/AgendaEducadorPage";
 import RelatorioModeloPage from "./pages/RelatorioModeloPage";
 import RelatorioDesempenhoPage from "./pages/RelatorioDesempenhoPage";
+import PermissoesPerfilPage from "./pages/PermissoesPerfilPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
