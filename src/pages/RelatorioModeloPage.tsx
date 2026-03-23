@@ -13,6 +13,7 @@ import { FileText, Plus, Trash2, GripVertical, Edit, ChevronDown, ChevronUp } fr
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
+import { useAdminSchoolSelector, AdminSchoolSelector } from '@/components/admin/AdminSchoolSelector';
 
 interface Modelo { id: string; nome: string; descricao: string | null; ativo: boolean; creche_id: string; }
 interface Secao { id: string; modelo_id: string; titulo: string; descricao: string | null; ordem: number; }
