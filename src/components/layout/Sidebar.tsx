@@ -124,6 +124,9 @@ export function Sidebar() {
     if (pedSettings?.boletim_ativo) {
       adminNavigation.push({ name: 'Boletim', href: `${prefix}/boletim`, icon: BookOpen });
     }
+    if (pedSettings?.grade_aulas_ativo) {
+      adminNavigation.push({ name: 'Grade de Aulas', href: `${prefix}/grade-aulas`, icon: CalendarClock });
+    }
   }
 
   return (
