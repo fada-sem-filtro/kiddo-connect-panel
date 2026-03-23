@@ -67,11 +67,14 @@ export default function UsuariosPage() {
   });
 
   const fetchUsers = async () => {
-    if (isDiretor && userCreche) {
+    const crecheId = isDiretor ? userCreche?.id : effectiveCrecheId;
+
+    if (crecheId) {
+      // Filter by school membership
       const { data: membros } = await supabase
         .from('creche_membros')
         .select('user_id')
-        .eq('creche_id', userCreche.id);
+        .eq('creche_id', crecheId);
 
       if (!membros || membros.length === 0) {
         setUsers([]);
@@ -104,10 +107,11 @@ export default function UsuariosPage() {
               ativo: (p as any).ativo ?? true,
             };
           })
-          .filter(u => u.role !== 'admin');
+          .filter(u => isDiretor ? u.role !== 'admin' : true);
         setUsers(usersWithRoles);
       }
-    } else {
+    } else if (isAdmin) {
+      // Admin without school selected: show all
       const { data: profiles } = await supabase.from('profiles').select('*');
       const { data: roles } = await supabase.from('user_roles').select('*');
 
@@ -131,7 +135,7 @@ export default function UsuariosPage() {
 
   useEffect(() => {
     fetchUsers();
-  }, []);
+  }, [effectiveCrecheId]);
 
   const filteredUsers = users.filter((u) => {
     const matchesSearch = u.nome.toLowerCase().includes(search.toLowerCase()) ||
