@@ -5,6 +5,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -17,7 +18,16 @@ interface CrecheData {
   telefone: string | null;
   email: string | null;
   logo_url?: string | null;
+  tipo_periodo?: string | null;
 }
+
+const TIPOS_PERIODO = [
+  { value: 'mensal', label: 'Mensal' },
+  { value: 'bimestral', label: 'Bimestral' },
+  { value: 'trimestral', label: 'Trimestral' },
+  { value: 'semestral', label: 'Semestral' },
+  { value: 'anual', label: 'Anual' },
+];
 
 interface CrecheModalProps {
   open: boolean;
@@ -31,6 +41,7 @@ export function CrecheModal({ open, onOpenChange, onSave, editData }: CrecheModa
   const [endereco, setEndereco] = useState('');
   const [telefone, setTelefone] = useState('');
   const [email, setEmail] = useState('');
+  const [tipoPeriodo, setTipoPeriodo] = useState('bimestral');
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
@@ -43,6 +54,7 @@ export function CrecheModal({ open, onOpenChange, onSave, editData }: CrecheModa
       setEndereco(editData.endereco || '');
       setTelefone(editData.telefone || '');
       setEmail(editData.email || '');
+      setTipoPeriodo(editData.tipo_periodo || 'bimestral');
       setLogoUrl(editData.logo_url || null);
       setLogoPreview(editData.logo_url || null);
     } else {
@@ -50,6 +62,7 @@ export function CrecheModal({ open, onOpenChange, onSave, editData }: CrecheModa
       setEndereco('');
       setTelefone('');
       setEmail('');
+      setTipoPeriodo('bimestral');
       setLogoUrl(null);
       setLogoPreview(null);
     }
@@ -104,6 +117,7 @@ export function CrecheModal({ open, onOpenChange, onSave, editData }: CrecheModa
       endereco: endereco.trim() || null,
       telefone: telefone.trim() || null,
       email: email.trim() || null,
+      tipo_periodo: tipoPeriodo,
     };
 
     let crecheId = editData?.id;
@@ -191,6 +205,17 @@ export function CrecheModal({ open, onOpenChange, onSave, editData }: CrecheModa
               <Label htmlFor="email">Email</Label>
               <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="contato@escola.com" />
             </div>
+          </div>
+          <div className="space-y-2">
+            <Label>Tipo de Período Letivo</Label>
+            <Select value={tipoPeriodo} onValueChange={setTipoPeriodo}>
+              <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {TIPOS_PERIODO.map(t => (
+                  <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancelar</Button>

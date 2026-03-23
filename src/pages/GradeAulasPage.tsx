@@ -12,6 +12,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { FAIXA_ETARIA_OPTIONS } from '@/types';
+import { useAdminSchoolSelector, AdminSchoolSelector } from '@/components/admin/AdminSchoolSelector';
 
 interface Turma { id: string; nome: string; faixa_etaria: string | null; }
 interface Materia { id: string; nome: string; }
@@ -37,7 +38,8 @@ const DIAS_SEMANA = [
 const FAIXAS_FUNDAMENTAL = FAIXA_ETARIA_OPTIONS.filter(f => f.includes('Ano'));
 
 export default function GradeAulasPage() {
-  const { userCreche, role } = useAuth();
+  const { role } = useAuth();
+  const { effectiveCrecheId, selectedCrecheId, setSelectedCrecheId, creches, isAdmin } = useAdminSchoolSelector();
   const [turmas, setTurmas] = useState<Turma[]>([]);
   const [materias, setMaterias] = useState<Materia[]>([]);
   const [educadores, setEducadores] = useState<Educador[]>([]);
@@ -56,11 +58,12 @@ export default function GradeAulasPage() {
   const canEdit = role === 'admin' || role === 'diretor';
 
   useEffect(() => {
-    if (!userCreche) return;
+    if (!effectiveCrecheId) { setTurmas([]); setMaterias([]); setEducadores([]); setLoading(false); return; }
     const fetch = async () => {
+      setLoading(true);
       const [turmasRes, materiasRes] = await Promise.all([
-        supabase.from('turmas').select('id, nome, faixa_etaria').eq('creche_id', userCreche.id).order('nome'),
-        supabase.from('materias').select('id, nome').eq('creche_id', userCreche.id).eq('ativo', true).order('nome'),
+        supabase.from('turmas').select('id, nome, faixa_etaria').eq('creche_id', effectiveCrecheId).order('nome'),
+        supabase.from('materias').select('id, nome').eq('creche_id', effectiveCrecheId).eq('ativo', true).order('nome'),
       ]);
 
       const turmasElegiveis = (turmasRes.data || []).filter(
@@ -69,38 +72,24 @@ export default function GradeAulasPage() {
       setTurmas(turmasElegiveis);
       setMaterias((materiasRes.data as Materia[]) || []);
 
-      // Get educadores from creche
       const { data: membros } = await supabase
-        .from('creche_membros')
-        .select('user_id')
-        .eq('creche_id', userCreche.id);
+        .from('creche_membros').select('user_id').eq('creche_id', effectiveCrecheId);
       
       if (membros && membros.length > 0) {
         const userIds = membros.map(m => m.user_id);
-        const { data: profiles } = await supabase
-          .from('profiles')
-          .select('user_id, nome')
-          .in('user_id', userIds);
-        
-        // Filter to educadores only
-        const { data: roles } = await supabase
-          .from('user_roles')
-          .select('user_id, role')
-          .in('user_id', userIds)
-          .in('role', ['educador', 'diretor']);
-        
+        const { data: profiles } = await supabase.from('profiles').select('user_id, nome').in('user_id', userIds);
+        const { data: roles } = await supabase.from('user_roles').select('user_id, role').in('user_id', userIds).in('role', ['educador', 'diretor']);
         const educadorIds = new Set((roles || []).map(r => r.user_id));
         setEducadores(
-          (profiles || [])
-            .filter(p => educadorIds.has(p.user_id))
-            .map(p => ({ user_id: p.user_id, nome: p.nome }))
+          (profiles || []).filter(p => educadorIds.has(p.user_id)).map(p => ({ user_id: p.user_id, nome: p.nome }))
         );
       }
 
+      setSelectedTurma('');
       setLoading(false);
     };
     fetch();
-  }, [userCreche]);
+  }, [effectiveCrecheId]);
 
   const fetchGrade = async () => {
     if (!selectedTurma) { setGrade([]); return; }
@@ -165,6 +154,17 @@ export default function GradeAulasPage() {
           <p className="text-sm text-muted-foreground mt-1">Calendário semanal de aulas por turma</p>
         </div>
 
+        {isAdmin && <AdminSchoolSelector selectedCrecheId={selectedCrecheId} setSelectedCrecheId={setSelectedCrecheId} creches={creches} />}
+
+        {!effectiveCrecheId ? (
+          <Card className="border-2 border-dashed border-muted-foreground/30 rounded-3xl">
+            <CardContent className="flex flex-col items-center justify-center py-12">
+              <CalendarClock className="w-16 h-16 text-muted-foreground/50 mb-4" />
+              <p className="text-muted-foreground">Selecione uma escola para gerenciar a grade</p>
+            </CardContent>
+          </Card>
+        ) : (
+        <>
         {/* Turma selector */}
         <Card className="rounded-2xl border-2 border-border">
           <CardContent className="p-4">
@@ -241,6 +241,8 @@ export default function GradeAulasPage() {
               <p className="text-muted-foreground">Selecione uma turma para visualizar a grade</p>
             </CardContent>
           </Card>
+        )}
+        </>
         )}
       </div>
 

@@ -13,6 +13,7 @@ import { FileText, Plus, Trash2, GripVertical, Edit, ChevronDown, ChevronUp } fr
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
+import { useAdminSchoolSelector, AdminSchoolSelector } from '@/components/admin/AdminSchoolSelector';
 
 interface Modelo { id: string; nome: string; descricao: string | null; ativo: boolean; creche_id: string; }
 interface Secao { id: string; modelo_id: string; titulo: string; descricao: string | null; ordem: number; }
@@ -28,7 +29,8 @@ const TIPOS_CAMPO = [
 const ESCALA_OPTIONS = ['Em desenvolvimento', 'Desenvolvido', 'Avançado', 'Não avaliado'];
 
 export default function RelatorioModeloPage() {
-  const { userCreche, role } = useAuth();
+  const { role } = useAuth();
+  const { effectiveCrecheId, selectedCrecheId, setSelectedCrecheId, creches, isAdmin } = useAdminSchoolSelector();
   const [modelos, setModelos] = useState<Modelo[]>([]);
   const [selectedModelo, setSelectedModelo] = useState<Modelo | null>(null);
   const [secoes, setSecoes] = useState<Secao[]>([]);
@@ -52,10 +54,10 @@ export default function RelatorioModeloPage() {
   const [formCampoObrigatorio, setFormCampoObrigatorio] = useState(false);
   const [targetSecaoId, setTargetSecaoId] = useState('');
 
-  const crecheId = userCreche?.id;
+  const crecheId = effectiveCrecheId;
 
   const fetchModelos = async () => {
-    if (!crecheId) return;
+    if (!crecheId) { setModelos([]); setLoading(false); return; }
     const { data } = await supabase.from('relatorio_modelos').select('*').eq('creche_id', crecheId).order('created_at', { ascending: false });
     setModelos((data as any[]) || []);
     setLoading(false);
@@ -151,7 +153,16 @@ export default function RelatorioModeloPage() {
           <p className="text-sm text-muted-foreground mt-1">Crie e personalize os modelos de relatório da escola</p>
         </div>
 
-        {!selectedModelo ? (
+        {isAdmin && <AdminSchoolSelector selectedCrecheId={selectedCrecheId} setSelectedCrecheId={setSelectedCrecheId} creches={creches} />}
+
+        {!effectiveCrecheId ? (
+          <Card className="border-2 border-dashed border-muted-foreground/30 rounded-3xl">
+            <CardContent className="flex flex-col items-center justify-center py-12">
+              <FileText className="w-16 h-16 text-muted-foreground/50 mb-4" />
+              <p className="text-muted-foreground">Selecione uma escola para gerenciar modelos</p>
+            </CardContent>
+          </Card>
+        ) : !selectedModelo ? (
           <>
             <div className="flex justify-end">
               <Button className="rounded-2xl" onClick={() => setModeloModal(true)}>

@@ -12,6 +12,7 @@ import { FileText, Save, CheckCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
+import { useAdminSchoolSelector, AdminSchoolSelector } from '@/components/admin/AdminSchoolSelector';
 
 interface Modelo { id: string; nome: string; descricao: string | null; }
 interface Secao { id: string; titulo: string; descricao: string | null; ordem: number; }
@@ -24,7 +25,8 @@ const PERIODOS = ['1º Bimestre', '2º Bimestre', '3º Bimestre', '4º Bimestre'
 const ESCALA_OPTIONS = ['Em desenvolvimento', 'Desenvolvido', 'Avançado', 'Não avaliado'];
 
 export default function RelatorioDesempenhoPage() {
-  const { user, userCreche, role } = useAuth();
+  const { user, role } = useAuth();
+  const { effectiveCrecheId, selectedCrecheId, setSelectedCrecheId, creches, isAdmin } = useAdminSchoolSelector();
   const [modelos, setModelos] = useState<Modelo[]>([]);
   const [turmas, setTurmas] = useState<Turma[]>([]);
   const [criancas, setCriancas] = useState<Crianca[]>([]);
@@ -43,18 +45,18 @@ export default function RelatorioDesempenhoPage() {
   const canEdit = role === 'admin' || role === 'educador' || role === 'diretor';
 
   useEffect(() => {
-    if (!userCreche) return;
+    if (!effectiveCrecheId) { setLoading(false); return; }
     const fetch = async () => {
       const [modelosRes, turmasRes] = await Promise.all([
-        supabase.from('relatorio_modelos').select('id, nome, descricao').eq('creche_id', userCreche.id).eq('ativo', true),
-        supabase.from('turmas').select('id, nome').eq('creche_id', userCreche.id).order('nome'),
+        supabase.from('relatorio_modelos').select('id, nome, descricao').eq('creche_id', effectiveCrecheId).eq('ativo', true),
+        supabase.from('turmas').select('id, nome').eq('creche_id', effectiveCrecheId).order('nome'),
       ]);
       setModelos((modelosRes.data as Modelo[]) || []);
       setTurmas((turmasRes.data as Turma[]) || []);
       setLoading(false);
     };
     fetch();
-  }, [userCreche]);
+  }, [effectiveCrecheId]);
 
   useEffect(() => {
     if (!selectedTurma) { setCriancas([]); return; }
@@ -183,6 +185,8 @@ export default function RelatorioDesempenhoPage() {
           </h1>
           <p className="text-sm text-muted-foreground mt-1">Preencha o relatório pedagógico qualitativo do aluno</p>
         </div>
+
+        {isAdmin && <AdminSchoolSelector selectedCrecheId={selectedCrecheId} setSelectedCrecheId={setSelectedCrecheId} creches={creches} />}
 
         {/* Filters */}
         <Card className="rounded-2xl border-2 border-border">

@@ -1,0 +1,1 @@
+ALTER TABLE public.creches ADD COLUMN tipo_periodo text NOT NULL DEFAULT 'bimestral';
