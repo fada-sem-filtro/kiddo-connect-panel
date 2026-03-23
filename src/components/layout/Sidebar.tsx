@@ -35,6 +35,7 @@ export function Sidebar() {
   const location = useLocation();
   const navigate = useNavigate();
   const { role, profile, signOut, userCreche, isDiretor } = useAuth();
+  const { settings: pedSettings } = usePedagogicalSettings();
 
   const handleSignOut = async () => {
     await signOut();
