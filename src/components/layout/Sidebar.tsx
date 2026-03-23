@@ -70,6 +70,7 @@ export function Sidebar() {
   }
   // Educador sees Agenda if enabled
   if (role === 'educador' && pedSettings?.grade_aulas_ativo) {
+    mainNavigation.push({ name: 'Grade de Aulas', href: '/educador/grade-aulas', icon: CalendarClock });
     mainNavigation.push({ name: 'Minha Agenda', href: '/educador/agenda', icon: CalendarClock });
   }
 
