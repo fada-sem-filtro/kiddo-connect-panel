@@ -111,6 +111,13 @@ export default function EducadorDashboardPage() {
   const getTurmaNome = (turmaId: string) =>
     turmas.find(t => t.id === turmaId)?.nome || '';
 
+  const isCriancaFundamental = (criancaId: string) => {
+    const crianca = criancas.find(c => c.id === criancaId);
+    if (!crianca) return false;
+    const turma = turmas.find(t => t.id === crianca.turma_id);
+    return isTurmaFundamental(turma?.faixa_etaria);
+  };
+
   const getEventosCount = (criancaId: string) =>
     eventosHoje.filter(e => e.crianca_id === criancaId).length;
 
