@@ -1,13 +1,34 @@
+import { useState, useEffect } from 'react';
 import { MainLayout } from '@/components/layout/MainLayout';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Settings, BookOpen, FileText, Library, CalendarClock } from 'lucide-react';
 import { usePedagogicalSettings } from '@/hooks/usePedagogicalSettings';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
+interface Creche { id: string; nome: string; }
+
 export default function ConfiguracoesPedagogicasPage() {
-  const { settings, loading, updateSettings } = usePedagogicalSettings();
+  const { role, userCreche } = useAuth();
+  const [adminSelectedCreche, setAdminSelectedCreche] = useState<string>('');
+  const [creches, setCreches] = useState<Creche[]>([]);
+  const { settings, loading, updateSettings } = usePedagogicalSettings(
+    role === 'admin' ? adminSelectedCreche : undefined
+  );
+
+  // Admin: load all schools
+  useEffect(() => {
+    if (role !== 'admin') return;
+    const fetch = async () => {
+      const { data } = await supabase.from('creches').select('id, nome').order('nome');
+      setCreches((data as Creche[]) || []);
+    };
+    fetch();
+  }, [role]);
 
   const handleToggle = async (field: string, value: boolean) => {
     const { error } = await updateSettings({ [field]: value } as any);
@@ -15,7 +36,7 @@ export default function ConfiguracoesPedagogicasPage() {
     else toast.success('Configuração atualizada');
   };
 
-  if (loading) {
+  if (loading && role !== 'admin') {
     return (
       <MainLayout>
         <div className="flex items-center justify-center py-20">
@@ -32,6 +53,8 @@ export default function ConfiguracoesPedagogicasPage() {
     { key: 'grade_aulas_ativo', label: 'Grade de Aulas', desc: 'Calendário semanal de aulas por turma', icon: CalendarClock },
   ];
 
+  const effectiveCreche = role === 'admin' ? adminSelectedCreche : userCreche?.id;
+
   return (
     <MainLayout>
       <div className="space-y-6 max-w-2xl">
@@ -41,33 +64,59 @@ export default function ConfiguracoesPedagogicasPage() {
             Configurações Pedagógicas
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Ative ou desative as funcionalidades pedagógicas da sua escola
+            Ative ou desative as funcionalidades pedagógicas da escola
           </p>
         </div>
 
-        <div className="space-y-4">
-          {features.map((feat) => (
-            <Card key={feat.key} className="rounded-2xl border-2 border-border">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between gap-4">
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                      <feat.icon className="w-5 h-5 text-primary" />
+        {/* Admin: school selector */}
+        {role === 'admin' && (
+          <Card className="rounded-2xl border-2 border-border">
+            <CardContent className="p-4">
+              <Label className="text-xs text-muted-foreground">Escola</Label>
+              <Select value={adminSelectedCreche} onValueChange={setAdminSelectedCreche}>
+                <SelectTrigger className="rounded-xl mt-1"><SelectValue placeholder="Selecione a escola" /></SelectTrigger>
+                <SelectContent>
+                  {creches.map(c => (
+                    <SelectItem key={c.id} value={c.id}>{c.nome}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </CardContent>
+          </Card>
+        )}
+
+        {!effectiveCreche ? (
+          <Card className="border-2 border-dashed border-muted-foreground/30 rounded-3xl">
+            <CardContent className="flex flex-col items-center justify-center py-12">
+              <Settings className="w-16 h-16 text-muted-foreground/50 mb-4" />
+              <p className="text-muted-foreground">Selecione uma escola para configurar</p>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="space-y-4">
+            {features.map((feat) => (
+              <Card key={feat.key} className="rounded-2xl border-2 border-border">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                        <feat.icon className="w-5 h-5 text-primary" />
+                      </div>
+                      <div>
+                        <Label className="text-base font-semibold text-foreground">{feat.label}</Label>
+                        <p className="text-sm text-muted-foreground">{feat.desc}</p>
+                      </div>
                     </div>
-                    <div>
-                      <Label className="text-base font-semibold text-foreground">{feat.label}</Label>
-                      <p className="text-sm text-muted-foreground">{feat.desc}</p>
-                    </div>
+                    <Switch
+                      checked={(settings as any)?.[feat.key] ?? false}
+                      onCheckedChange={(v) => handleToggle(feat.key, v)}
+                    />
                   </div>
-                  <Switch
-                    checked={(settings as any)?.[feat.key] ?? false}
-                    onCheckedChange={(v) => handleToggle(feat.key, v)}
-                  />
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
       </div>
     </MainLayout>
   );
