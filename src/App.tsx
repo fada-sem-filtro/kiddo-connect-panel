@@ -27,6 +27,10 @@ import DiretorDashboardPage from "./pages/DiretorDashboardPage";
 import RelatoriosPage from "./pages/RelatoriosPage";
 import RelatorioAlunoPage from "./pages/RelatorioAlunoPage";
 import CalendarioEscolarPage from "./pages/CalendarioEscolarPage";
+import ConfiguracoesPedagogicasPage from "./pages/ConfiguracoesPedagogicasPage";
+import MateriasPage from "./pages/MateriasPage";
+import BoletimPage from "./pages/BoletimPage";
+import ResponsavelDesempenhoPage from "./pages/ResponsavelDesempenhoPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
