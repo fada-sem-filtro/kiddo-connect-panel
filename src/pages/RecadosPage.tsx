@@ -22,8 +22,6 @@ export interface RecadoDb {
   remetente_nome?: string;
   crianca_nome?: string;
   turma_nome?: string;
-  anexo_url?: string | null;
-  anexo_tipo?: string | null;
   respostas?: RecadoDb[];
 }
 
