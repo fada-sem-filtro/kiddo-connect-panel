@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { EventDbModal } from '@/components/modals/EventDbModal';
 import { Users, Plus, Calendar, Sparkles, Baby } from 'lucide-react';
-import { EVENT_TYPE_LABELS, EVENT_TYPE_ICONS, EventType } from '@/types';
+import { EVENT_TYPE_LABELS, EVENT_TYPE_ICONS, EventType, isTurmaFundamental } from '@/types';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { supabase } from '@/integrations/supabase/client';
@@ -15,6 +15,7 @@ import { useAuth } from '@/contexts/AuthContext';
 interface TurmaInfo {
   id: string;
   nome: string;
+  faixa_etaria: string | null;
 }
 
 interface CriancaInfo {
@@ -52,12 +53,13 @@ export default function EducadorTurmaPage() {
     // Get turmas assigned to this educador
     const { data: assignments } = await supabase
       .from('turma_educadores')
-      .select('turma_id, turmas(id, nome)')
+      .select('turma_id, turmas(id, nome, faixa_etaria)')
       .eq('educador_user_id', user.id);
 
     const turmasList: TurmaInfo[] = assignments?.map((a: any) => ({
       id: a.turmas.id,
       nome: a.turmas.nome,
+      faixa_etaria: a.turmas.faixa_etaria,
     })) || [];
     setTurmas(turmasList);
 
@@ -212,7 +214,9 @@ export default function EducadorTurmaPage() {
                   </div>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  {(selectedTurmaId === 'all' ? turmas : turmas.filter(t => t.id === selectedTurmaId)).map(turma => (
+                  {(selectedTurmaId === 'all' ? turmas : turmas.filter(t => t.id === selectedTurmaId))
+                    .filter(turma => !isTurmaFundamental(turma.faixa_etaria))
+                    .map(turma => (
                     <Button
                       key={turma.id}
                       onClick={() => handleAddEventoTurma(turma.id)}
@@ -311,13 +315,15 @@ export default function EducadorTurmaPage() {
                       )}
                     </div>
 
-                    <Button 
-                      onClick={() => handleAddEventoIndividual(crianca.id)}
-                      className="w-full rounded-2xl bg-gradient-to-r from-kawaii-mint to-kawaii-blue hover:opacity-90 text-foreground font-semibold shadow-md"
-                    >
-                      <Plus className="w-4 h-4 mr-2" />
-                      Adicionar Evento
-                    </Button>
+                    {!isTurmaFundamental(turmas.find(t => t.id === crianca.turma_id)?.faixa_etaria) && (
+                      <Button 
+                        onClick={() => handleAddEventoIndividual(crianca.id)}
+                        className="w-full rounded-2xl bg-gradient-to-r from-kawaii-mint to-kawaii-blue hover:opacity-90 text-foreground font-semibold shadow-md"
+                      >
+                        <Plus className="w-4 h-4 mr-2" />
+                        Adicionar Evento
+                      </Button>
+                    )}
                   </CardContent>
                 </Card>
               );

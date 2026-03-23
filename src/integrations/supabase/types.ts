@@ -525,6 +525,57 @@ export type Database = {
         }
         Relationships: []
       }
+      grade_aulas: {
+        Row: {
+          created_at: string
+          dia_semana: number
+          educador_user_id: string
+          horario_fim: string
+          horario_inicio: string
+          id: string
+          materia_id: string
+          turma_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          dia_semana: number
+          educador_user_id: string
+          horario_fim: string
+          horario_inicio: string
+          id?: string
+          materia_id: string
+          turma_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          dia_semana?: number
+          educador_user_id?: string
+          horario_fim?: string
+          horario_inicio?: string
+          id?: string
+          materia_id?: string
+          turma_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "grade_aulas_materia_id_fkey"
+            columns: ["materia_id"]
+            isOneToOne: false
+            referencedRelation: "materias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "grade_aulas_turma_id_fkey"
+            columns: ["turma_id"]
+            isOneToOne: false
+            referencedRelation: "turmas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       materias: {
         Row: {
           ativo: boolean

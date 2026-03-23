@@ -11,28 +11,30 @@ export interface PedagogicalSettings {
   grade_aulas_ativo: boolean;
 }
 
-export function usePedagogicalSettings() {
+export function usePedagogicalSettings(overrideCrecheId?: string) {
   const { userCreche } = useAuth();
   const [settings, setSettings] = useState<PedagogicalSettings | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const effectiveCrecheId = overrideCrecheId || userCreche?.id;
+
   const fetchSettings = async () => {
-    if (!userCreche) { setLoading(false); return; }
+    if (!effectiveCrecheId) { setSettings(null); setLoading(false); return; }
     
     const { data } = await supabase
       .from('configuracoes_pedagogicas')
       .select('*')
-      .eq('creche_id', userCreche.id)
+      .eq('creche_id', effectiveCrecheId)
       .maybeSingle();
     
     setSettings(data as PedagogicalSettings | null);
     setLoading(false);
   };
 
-  useEffect(() => { fetchSettings(); }, [userCreche]);
+  useEffect(() => { fetchSettings(); }, [effectiveCrecheId]);
 
   const updateSettings = async (updates: Partial<PedagogicalSettings>) => {
-    if (!userCreche) return;
+    if (!effectiveCrecheId) return { error: new Error('No creche') };
 
     if (settings) {
       const { error } = await supabase
@@ -44,7 +46,7 @@ export function usePedagogicalSettings() {
     } else {
       const { error } = await supabase
         .from('configuracoes_pedagogicas')
-        .insert({ creche_id: userCreche.id, ...updates });
+        .insert({ creche_id: effectiveCrecheId, ...updates });
       if (!error) await fetchSettings();
       return { error };
     }

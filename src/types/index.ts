@@ -39,6 +39,13 @@ export const FAIXA_ETARIA_OPTIONS = [
   '5º Ano (10 anos)',
 ];
 
+export const FAIXAS_FUNDAMENTAL = FAIXA_ETARIA_OPTIONS.filter(f => f.includes('Ano'));
+
+export function isTurmaFundamental(faixaEtaria: string | null | undefined): boolean {
+  if (!faixaEtaria) return false;
+  return FAIXAS_FUNDAMENTAL.includes(faixaEtaria);
+}
+
 export interface Responsavel {
   id: string;
   nome: string;

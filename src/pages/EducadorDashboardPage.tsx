@@ -7,14 +7,14 @@ import { Badge } from '@/components/ui/badge';
 import { EventDbModal } from '@/components/modals/EventDbModal';
 import { usePresencas } from '@/hooks/usePresencas';
 import { Users, Plus, LogIn, LogOut, Clock, CheckCircle2, XCircle, UserCheck } from 'lucide-react';
-import { EVENT_TYPE_LABELS, EVENT_TYPE_ICONS, EventType } from '@/types';
+import { EVENT_TYPE_LABELS, EVENT_TYPE_ICONS, EventType, isTurmaFundamental } from '@/types';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 
-interface TurmaInfo { id: string; nome: string; }
+interface TurmaInfo { id: string; nome: string; faixa_etaria: string | null; }
 interface CriancaInfo { id: string; nome: string; data_nascimento: string; turma_id: string; observacoes: string | null; }
 interface EventoInfo { id: string; tipo: string; crianca_id: string; }
 
@@ -39,12 +39,13 @@ export default function EducadorDashboardPage() {
 
     const { data: assignments } = await supabase
       .from('turma_educadores')
-      .select('turma_id, turmas(id, nome)')
+      .select('turma_id, turmas(id, nome, faixa_etaria)')
       .eq('educador_user_id', user.id);
 
     const turmasList: TurmaInfo[] = assignments?.map((a: any) => ({
       id: a.turmas.id,
       nome: a.turmas.nome,
+      faixa_etaria: a.turmas.faixa_etaria,
     })) || [];
     setTurmas(turmasList);
 
@@ -109,6 +110,13 @@ export default function EducadorDashboardPage() {
 
   const getTurmaNome = (turmaId: string) =>
     turmas.find(t => t.id === turmaId)?.nome || '';
+
+  const isCriancaFundamental = (criancaId: string) => {
+    const crianca = criancas.find(c => c.id === criancaId);
+    if (!crianca) return false;
+    const turma = turmas.find(t => t.id === crianca.turma_id);
+    return isTurmaFundamental(turma?.faixa_etaria);
+  };
 
   const getEventosCount = (criancaId: string) =>
     eventosHoje.filter(e => e.crianca_id === criancaId).length;
@@ -252,7 +260,7 @@ export default function EducadorDashboardPage() {
 
                       {/* Action Buttons - Large for tablet */}
                       <div className="flex gap-2 shrink-0">
-                        {status === 'ausente' && (
+                        {status === 'ausente' && !isCriancaFundamental(crianca.id) && (
                           <Button
                             size="lg"
                             className="rounded-2xl bg-[hsl(var(--success))] hover:bg-[hsl(var(--success))]/90 text-[hsl(var(--success-foreground))] font-bold min-w-[120px] h-12"
@@ -262,7 +270,7 @@ export default function EducadorDashboardPage() {
                             Presente
                           </Button>
                         )}
-                        {status === 'presente' && (
+                        {status === 'presente' && !isCriancaFundamental(crianca.id) && (
                           <>
                             <Button
                               size="lg"
@@ -283,7 +291,7 @@ export default function EducadorDashboardPage() {
                             </Button>
                           </>
                         )}
-                        {status === 'saiu' && (
+                        {status === 'saiu' && !isCriancaFundamental(crianca.id) && (
                           <Button
                             size="lg"
                             variant="ghost"

@@ -20,7 +20,8 @@ import {
   UserCheck,
   Settings,
   Library,
-  BookOpen } from
+  BookOpen,
+  CalendarClock } from
 'lucide-react';
 import { cn } from '@/lib/utils';
 import logoFleur from '@/assets/logo-fleur-2.webp';
@@ -66,6 +67,10 @@ export function Sidebar() {
   // Educador sees Boletim if enabled
   if (role === 'educador' && pedSettings?.boletim_ativo) {
     mainNavigation.push({ name: 'Boletim', href: '/educador/boletim', icon: BookOpen });
+  }
+  // Educador sees Agenda if enabled
+  if (role === 'educador' && pedSettings?.grade_aulas_ativo) {
+    mainNavigation.push({ name: 'Minha Agenda', href: '/educador/agenda', icon: CalendarClock });
   }
 
   // Only admin sees Alunos and Educadores
@@ -118,6 +123,9 @@ export function Sidebar() {
     }
     if (pedSettings?.boletim_ativo) {
       adminNavigation.push({ name: 'Boletim', href: `${prefix}/boletim`, icon: BookOpen });
+    }
+    if (pedSettings?.grade_aulas_ativo) {
+      adminNavigation.push({ name: 'Grade de Aulas', href: `${prefix}/grade-aulas`, icon: CalendarClock });
     }
   }
 
