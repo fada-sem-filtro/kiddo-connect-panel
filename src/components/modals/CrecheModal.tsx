@@ -117,6 +117,7 @@ export function CrecheModal({ open, onOpenChange, onSave, editData }: CrecheModa
       endereco: endereco.trim() || null,
       telefone: telefone.trim() || null,
       email: email.trim() || null,
+      tipo_periodo: tipoPeriodo,
     };
 
     let crecheId = editData?.id;
