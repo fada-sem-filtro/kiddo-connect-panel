@@ -17,7 +17,16 @@ interface CrecheData {
   telefone: string | null;
   email: string | null;
   logo_url?: string | null;
+  tipo_periodo?: string | null;
 }
+
+const TIPOS_PERIODO = [
+  { value: 'mensal', label: 'Mensal' },
+  { value: 'bimestral', label: 'Bimestral' },
+  { value: 'trimestral', label: 'Trimestral' },
+  { value: 'semestral', label: 'Semestral' },
+  { value: 'anual', label: 'Anual' },
+];
 
 interface CrecheModalProps {
   open: boolean;
