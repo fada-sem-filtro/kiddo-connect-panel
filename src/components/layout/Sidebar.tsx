@@ -92,6 +92,9 @@ export function Sidebar() {
     if (pedSettings?.boletim_ativo) {
       responsavelNavigation.push({ name: 'Desempenho', href: '/responsavel/desempenho', icon: BookOpen });
     }
+    if (pedSettings?.relatorio_desempenho_ativo) {
+      responsavelNavigation.push({ name: 'Relatório Pedagógico', href: '/responsavel/relatorio', icon: FileText });
+    }
   }
 
   const diretorNavigation: typeof mainNavigation = [];
