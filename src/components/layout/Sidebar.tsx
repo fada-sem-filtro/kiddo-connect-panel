@@ -113,11 +113,18 @@ export function Sidebar() {
     adminNavigation.push({ name: "Relatórios", href: "/relatorios", icon: FileText });
     adminNavigation.push({ name: "Relatório Aluno", href: "/relatorios/aluno", icon: UserCheck });
     adminNavigation.push({ name: "Config. Pedagógicas", href: `${prefix}/pedagogico`, icon: Settings });
-    if (pedSettings?.gestao_materias_ativo) {
+    if (role === 'admin' || pedSettings?.gestao_materias_ativo) {
       adminNavigation.push({ name: "Matérias", href: `${prefix}/materias`, icon: Library });
     }
-    if (pedSettings?.boletim_ativo) {
+    if (role === 'admin' || pedSettings?.boletim_ativo) {
       adminNavigation.push({ name: "Boletim", href: `${prefix}/boletim`, icon: BookOpen });
+    }
+    if (role === 'admin' || pedSettings?.grade_aulas_ativo) {
+      adminNavigation.push({ name: "Grade de Aulas", href: `${prefix}/grade-aulas`, icon: CalendarDays });
+    }
+    if (role === 'admin' || pedSettings?.relatorio_desempenho_ativo) {
+      adminNavigation.push({ name: "Modelo Relatório", href: `${prefix}/relatorio-modelo`, icon: FileText });
+      adminNavigation.push({ name: "Relatórios Desempenho", href: `${prefix}/relatorio-desempenho`, icon: ClipboardList });
     }
   }
 
