@@ -63,6 +63,11 @@ export function Sidebar() {
     mainNavigation.push({ name: 'Minha Turma', href: '/educador/turma', icon: Users });
   }
 
+  // Educador sees Boletim if enabled
+  if (role === 'educador' && pedSettings?.boletim_ativo) {
+    mainNavigation.push({ name: 'Boletim', href: '/educador/boletim', icon: BookOpen });
+  }
+
   // Only admin sees Alunos and Educadores
   if (role === 'admin') {
     mainNavigation.push({ name: 'Alunos', href: '/criancas', icon: Users });
