@@ -1,34 +1,20 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { Card, CardContent } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Settings, BookOpen, FileText, Library, CalendarClock } from 'lucide-react';
 import { usePedagogicalSettings } from '@/hooks/usePedagogicalSettings';
 import { useAuth } from '@/contexts/AuthContext';
-import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-
-interface Creche { id: string; nome: string; }
+import { useAdminSchoolSelector, AdminSchoolSelector } from '@/components/admin/AdminSchoolSelector';
 
 export default function ConfiguracoesPedagogicasPage() {
   const { role, userCreche } = useAuth();
-  const [adminSelectedCreche, setAdminSelectedCreche] = useState<string>('');
-  const [creches, setCreches] = useState<Creche[]>([]);
+  const { effectiveCrecheId, selectedCrecheId, setSelectedCrecheId, creches, isAdmin } = useAdminSchoolSelector();
   const { settings, loading, updateSettings } = usePedagogicalSettings(
-    role === 'admin' ? adminSelectedCreche : undefined
+    isAdmin ? selectedCrecheId : undefined
   );
-
-  // Admin: load all schools
-  useEffect(() => {
-    if (role !== 'admin') return;
-    const fetch = async () => {
-      const { data } = await supabase.from('creches').select('id, nome').order('nome');
-      setCreches((data as Creche[]) || []);
-    };
-    fetch();
-  }, [role]);
 
   const handleToggle = async (field: string, value: boolean) => {
     const { error } = await updateSettings({ [field]: value } as any);
@@ -36,7 +22,7 @@ export default function ConfiguracoesPedagogicasPage() {
     else toast.success('Configuração atualizada');
   };
 
-  if (loading && role !== 'admin') {
+  if (loading && !isAdmin) {
     return (
       <MainLayout>
         <div className="flex items-center justify-center py-20">
@@ -53,8 +39,6 @@ export default function ConfiguracoesPedagogicasPage() {
     { key: 'grade_aulas_ativo', label: 'Grade de Aulas', desc: 'Calendário semanal de aulas por turma', icon: CalendarClock },
   ];
 
-  const effectiveCreche = role === 'admin' ? adminSelectedCreche : userCreche?.id;
-
   return (
     <MainLayout>
       <div className="space-y-6 max-w-2xl">
@@ -68,24 +52,15 @@ export default function ConfiguracoesPedagogicasPage() {
           </p>
         </div>
 
-        {/* Admin: school selector */}
-        {role === 'admin' && (
-          <Card className="rounded-2xl border-2 border-border">
-            <CardContent className="p-4">
-              <Label className="text-xs text-muted-foreground">Escola</Label>
-              <Select value={adminSelectedCreche} onValueChange={setAdminSelectedCreche}>
-                <SelectTrigger className="rounded-xl mt-1"><SelectValue placeholder="Selecione a escola" /></SelectTrigger>
-                <SelectContent>
-                  {creches.map(c => (
-                    <SelectItem key={c.id} value={c.id}>{c.nome}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </CardContent>
-          </Card>
+        {isAdmin && (
+          <AdminSchoolSelector
+            selectedCrecheId={selectedCrecheId}
+            setSelectedCrecheId={setSelectedCrecheId}
+            creches={creches}
+          />
         )}
 
-        {!effectiveCreche ? (
+        {!effectiveCrecheId ? (
           <Card className="border-2 border-dashed border-muted-foreground/30 rounded-3xl">
             <CardContent className="flex flex-col items-center justify-center py-12">
               <Settings className="w-16 h-16 text-muted-foreground/50 mb-4" />

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Plus, Search, Users, Shield, GraduationCap, UserCheck, Edit, KeyRound, AlertTriangle, Filter, Trash2 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useAdminSchoolSelector, AdminSchoolSelector } from '@/components/admin/AdminSchoolSelector';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -49,7 +50,7 @@ const ROLE_ICONS: Record<string, React.ReactNode> = {
 
 export default function UsuariosPage() {
   const { role, userCreche } = useAuth();
-  const isAdmin = role === 'admin';
+  const { effectiveCrecheId, selectedCrecheId, setSelectedCrecheId, creches, isAdmin } = useAdminSchoolSelector();
   const isDiretor = role === 'diretor';
   const [users, setUsers] = useState<UserWithRole[]>([]);
   const [search, setSearch] = useState('');
@@ -66,11 +67,14 @@ export default function UsuariosPage() {
   });
 
   const fetchUsers = async () => {
-    if (isDiretor && userCreche) {
+    const crecheId = isDiretor ? userCreche?.id : effectiveCrecheId;
+
+    if (crecheId) {
+      // Filter by school membership
       const { data: membros } = await supabase
         .from('creche_membros')
         .select('user_id')
-        .eq('creche_id', userCreche.id);
+        .eq('creche_id', crecheId);
 
       if (!membros || membros.length === 0) {
         setUsers([]);
@@ -103,10 +107,11 @@ export default function UsuariosPage() {
               ativo: (p as any).ativo ?? true,
             };
           })
-          .filter(u => u.role !== 'admin');
+          .filter(u => isDiretor ? u.role !== 'admin' : true);
         setUsers(usersWithRoles);
       }
-    } else {
+    } else if (isAdmin) {
+      // Admin without school selected: show all
       const { data: profiles } = await supabase.from('profiles').select('*');
       const { data: roles } = await supabase.from('user_roles').select('*');
 
@@ -130,7 +135,7 @@ export default function UsuariosPage() {
 
   useEffect(() => {
     fetchUsers();
-  }, []);
+  }, [effectiveCrecheId]);
 
   const filteredUsers = users.filter((u) => {
     const matchesSearch = u.nome.toLowerCase().includes(search.toLowerCase()) ||
@@ -315,6 +320,14 @@ export default function UsuariosPage() {
             Novo Usuário
           </Button>
         </div>
+
+        {isAdmin && (
+          <AdminSchoolSelector
+            selectedCrecheId={selectedCrecheId}
+            setSelectedCrecheId={setSelectedCrecheId}
+            creches={creches}
+          />
+        )}
 
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">

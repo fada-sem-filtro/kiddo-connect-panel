@@ -8,6 +8,7 @@ import {
 } from '@/components/ui/table';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { useAdminSchoolSelector, AdminSchoolSelector } from '@/components/admin/AdminSchoolSelector';
 
 interface MemberInfo {
   user_id: string;
@@ -33,23 +34,30 @@ const ROLE_ICONS: Record<string, React.ReactNode> = {
 
 export default function DiretorMembrosPage() {
   const { userCreche, role } = useAuth();
-  const isAdmin = role === 'admin';
+  const { effectiveCrecheId, selectedCrecheId, setSelectedCrecheId, creches, isAdmin } = useAdminSchoolSelector();
   const [members, setMembers] = useState<MemberInfo[]>([]);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (isAdmin && !effectiveCrecheId) {
+      setMembers([]);
+      setLoading(false);
+      return;
+    }
     if (!isAdmin && !userCreche) return;
 
     const fetchMembers = async () => {
       setLoading(true);
 
+      const crecheId = effectiveCrecheId || userCreche?.id;
+
       let membrosQuery = supabase
         .from('creche_membros')
         .select('user_id, creches(nome)');
 
-      if (!isAdmin && userCreche) {
-        membrosQuery = membrosQuery.eq('creche_id', userCreche.id);
+      if (crecheId) {
+        membrosQuery = membrosQuery.eq('creche_id', crecheId);
       }
 
       const { data: membros } = await membrosQuery;
@@ -88,7 +96,6 @@ export default function DiretorMembrosPage() {
               creche_nome: userCrecheMap.get(p.user_id)?.join(', '),
             };
           })
-          // Show only educadores and diretores (and admin for admin view)
           .filter((m) => {
             if (isAdmin) return m.role === 'admin' || m.role === 'diretor' || m.role === 'educador';
             return m.role === 'diretor' || m.role === 'educador';
@@ -101,7 +108,7 @@ export default function DiretorMembrosPage() {
     };
 
     fetchMembers();
-  }, [userCreche, isAdmin]);
+  }, [effectiveCrecheId, userCreche, isAdmin]);
 
   const filteredMembers = members.filter(
     (m) =>
@@ -115,7 +122,7 @@ export default function DiretorMembrosPage() {
         <div>
           <h1 className="text-2xl font-bold flex items-center gap-2">
             <Users className="w-6 h-6 text-primary" />
-            {isAdmin ? 'Membros — Todas as Escolas' : 'Membros da Escola'}
+            {isAdmin ? 'Membros' : 'Membros da Escola'}
           </h1>
           <p className="text-muted-foreground">
             {isAdmin
@@ -124,63 +131,74 @@ export default function DiretorMembrosPage() {
           </p>
         </div>
 
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input
-            placeholder="Buscar por nome ou email..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="pl-10"
+        {isAdmin && (
+          <AdminSchoolSelector
+            selectedCrecheId={selectedCrecheId}
+            setSelectedCrecheId={setSelectedCrecheId}
+            creches={creches}
           />
-        </div>
+        )}
 
-        <div className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Nome</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Telefone</TableHead>
-                <TableHead>Papel</TableHead>
-                {isAdmin && <TableHead>Escola</TableHead>}
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {loading ? (
-                <TableRow>
-                  <TableCell colSpan={isAdmin ? 5 : 4} className="text-center py-8 text-muted-foreground">
-                    Carregando...
-                  </TableCell>
-                </TableRow>
-              ) : filteredMembers.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={isAdmin ? 5 : 4} className="text-center py-8 text-muted-foreground">
-                    Nenhum membro encontrado
-                  </TableCell>
-                </TableRow>
-              ) : (
-                filteredMembers.map((member) => (
-                  <TableRow key={member.user_id}>
-                    <TableCell className="font-medium">{member.nome}</TableCell>
-                    <TableCell>{member.email}</TableCell>
-                    <TableCell>{member.telefone || '—'}</TableCell>
-                    <TableCell>
-                      <Badge variant="secondary" className="gap-1">
-                        {ROLE_ICONS[member.role]}
-                        {ROLE_LABELS[member.role] || member.role}
-                      </Badge>
-                    </TableCell>
-                    {isAdmin && (
-                      <TableCell>
-                        <Badge variant="outline">{member.creche_nome}</Badge>
-                      </TableCell>
-                    )}
+        {!effectiveCrecheId && isAdmin ? (
+          <div className="text-center py-12 text-muted-foreground">
+            <Users className="w-16 h-16 mx-auto mb-4 opacity-30" />
+            <p>Selecione uma escola para visualizar os membros</p>
+          </div>
+        ) : (
+          <>
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                placeholder="Buscar por nome ou email..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+
+            <div className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Nome</TableHead>
+                    <TableHead>Email</TableHead>
+                    <TableHead>Telefone</TableHead>
+                    <TableHead>Papel</TableHead>
                   </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </div>
+                </TableHeader>
+                <TableBody>
+                  {loading ? (
+                    <TableRow>
+                      <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
+                        Carregando...
+                      </TableCell>
+                    </TableRow>
+                  ) : filteredMembers.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
+                        Nenhum membro encontrado
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    filteredMembers.map((member) => (
+                      <TableRow key={member.user_id}>
+                        <TableCell className="font-medium">{member.nome}</TableCell>
+                        <TableCell>{member.email}</TableCell>
+                        <TableCell>{member.telefone || '—'}</TableCell>
+                        <TableCell>
+                          <Badge variant="secondary" className="gap-1">
+                            {ROLE_ICONS[member.role]}
+                            {ROLE_LABELS[member.role] || member.role}
+                          </Badge>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+          </>
+        )}
       </div>
     </MainLayout>
   );
