@@ -58,7 +58,7 @@ export default function ResponsavelDesempenhoPage() {
     const fetchBoletins = async () => {
       if (!selectedCrianca) { setBoletins([]); return; }
       let query = supabase.from('boletins').select('id, materia_id, periodo_letivo, avaliacao, observacoes').eq('crianca_id', selectedCrianca);
-      if (selectedPeriodo) query = query.eq('periodo_letivo', selectedPeriodo);
+      if (selectedPeriodo && selectedPeriodo !== 'all') query = query.eq('periodo_letivo', selectedPeriodo);
       const { data } = await query.order('periodo_letivo');
       setBoletins((data as Boletim[]) || []);
     };

@@ -107,7 +107,7 @@ export default function BoletimPage() {
       .from('boletins')
       .select('*')
       .eq('crianca_id', selectedCrianca);
-    if (selectedPeriodo) query = query.eq('periodo_letivo', selectedPeriodo);
+    if (selectedPeriodo && selectedPeriodo !== 'all') query = query.eq('periodo_letivo', selectedPeriodo);
     const { data } = await query.order('periodo_letivo');
     setBoletins((data as Boletim[]) || []);
   };
