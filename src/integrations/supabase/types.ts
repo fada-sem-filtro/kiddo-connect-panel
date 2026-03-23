@@ -658,6 +658,53 @@ export type Database = {
           },
         ]
       }
+      permissoes_perfil: {
+        Row: {
+          created_at: string
+          creche_id: string
+          id: string
+          modulo: string
+          perfil: string
+          pode_criar: boolean
+          pode_editar: boolean
+          pode_excluir: boolean
+          pode_visualizar: boolean
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          creche_id: string
+          id?: string
+          modulo: string
+          perfil: string
+          pode_criar?: boolean
+          pode_editar?: boolean
+          pode_excluir?: boolean
+          pode_visualizar?: boolean
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          creche_id?: string
+          id?: string
+          modulo?: string
+          perfil?: string
+          pode_criar?: boolean
+          pode_editar?: boolean
+          pode_excluir?: boolean
+          pode_visualizar?: boolean
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "permissoes_perfil_creche_id_fkey"
+            columns: ["creche_id"]
+            isOneToOne: false
+            referencedRelation: "creches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       presencas: {
         Row: {
           created_at: string

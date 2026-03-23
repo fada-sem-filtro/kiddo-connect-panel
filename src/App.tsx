@@ -35,6 +35,7 @@ import GradeAulasPage from "./pages/GradeAulasPage";
 import AgendaEducadorPage from "./pages/AgendaEducadorPage";
 import RelatorioModeloPage from "./pages/RelatorioModeloPage";
 import RelatorioDesempenhoPage from "./pages/RelatorioDesempenhoPage";
+import PermissoesPerfilPage from "./pages/PermissoesPerfilPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -93,6 +94,7 @@ const App = () => (
               <Route path="/responsavel/relatorio" element={<ProtectedRoute allowedRoles={['responsavel']}><RelatorioDesempenhoPage /></ProtectedRoute>} />
               <Route path="/educador/grade-aulas" element={<ProtectedRoute allowedRoles={['educador']}><GradeAulasPage /></ProtectedRoute>} />
               <Route path="/educador/agenda" element={<ProtectedRoute allowedRoles={['educador']}><AgendaEducadorPage /></ProtectedRoute>} />
+              <Route path="/admin/permissoes" element={<ProtectedRoute allowedRoles={['admin']}><PermissoesPerfilPage /></ProtectedRoute>} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </NotificationProvider>
