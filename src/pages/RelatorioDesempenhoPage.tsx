@@ -25,7 +25,8 @@ const PERIODOS = ['1º Bimestre', '2º Bimestre', '3º Bimestre', '4º Bimestre'
 const ESCALA_OPTIONS = ['Em desenvolvimento', 'Desenvolvido', 'Avançado', 'Não avaliado'];
 
 export default function RelatorioDesempenhoPage() {
-  const { user, userCreche, role } = useAuth();
+  const { user, role } = useAuth();
+  const { effectiveCrecheId, selectedCrecheId, setSelectedCrecheId, creches, isAdmin } = useAdminSchoolSelector();
   const [modelos, setModelos] = useState<Modelo[]>([]);
   const [turmas, setTurmas] = useState<Turma[]>([]);
   const [criancas, setCriancas] = useState<Crianca[]>([]);
