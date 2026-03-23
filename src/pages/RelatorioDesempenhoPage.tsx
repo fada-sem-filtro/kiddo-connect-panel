@@ -12,6 +12,7 @@ import { FileText, Save, CheckCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
+import { useAdminSchoolSelector, AdminSchoolSelector } from '@/components/admin/AdminSchoolSelector';
 
 interface Modelo { id: string; nome: string; descricao: string | null; }
 interface Secao { id: string; titulo: string; descricao: string | null; ordem: number; }
