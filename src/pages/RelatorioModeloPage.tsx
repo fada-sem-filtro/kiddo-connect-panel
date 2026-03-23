@@ -54,10 +54,10 @@ export default function RelatorioModeloPage() {
   const [formCampoObrigatorio, setFormCampoObrigatorio] = useState(false);
   const [targetSecaoId, setTargetSecaoId] = useState('');
 
-  const crecheId = userCreche?.id;
+  const crecheId = effectiveCrecheId;
 
   const fetchModelos = async () => {
-    if (!crecheId) return;
+    if (!crecheId) { setModelos([]); setLoading(false); return; }
     const { data } = await supabase.from('relatorio_modelos').select('*').eq('creche_id', crecheId).order('created_at', { ascending: false });
     setModelos((data as any[]) || []);
     setLoading(false);
