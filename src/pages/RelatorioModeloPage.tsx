@@ -316,6 +316,9 @@ export default function RelatorioModeloPage() {
             {formCampoTipo === 'selecao_simples' && (
               <div><Label>Opções (separadas por vírgula)</Label><Input value={formCampoOpcoes} onChange={e => setFormCampoOpcoes(e.target.value)} placeholder="Opção 1, Opção 2, Opção 3" className="rounded-xl mt-1" /></div>
             )}
+            {formCampoTipo === 'escala' && (
+              <div><Label>Opções da escala (separadas por vírgula)</Label><Input value={formCampoOpcoes} onChange={e => setFormCampoOpcoes(e.target.value)} placeholder="Em desenvolvimento, Desenvolvido, Avançado, Não avaliado" className="rounded-xl mt-1" /></div>
+            )}
             <div className="flex items-center gap-3">
               <Switch checked={formCampoObrigatorio} onCheckedChange={setFormCampoObrigatorio} />
               <Label>Campo obrigatório</Label>
