@@ -214,7 +214,9 @@ export default function EducadorTurmaPage() {
                   </div>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  {(selectedTurmaId === 'all' ? turmas : turmas.filter(t => t.id === selectedTurmaId)).map(turma => (
+                  {(selectedTurmaId === 'all' ? turmas : turmas.filter(t => t.id === selectedTurmaId))
+                    .filter(turma => !isTurmaFundamental(turma.faixa_etaria))
+                    .map(turma => (
                     <Button
                       key={turma.id}
                       onClick={() => handleAddEventoTurma(turma.id)}
