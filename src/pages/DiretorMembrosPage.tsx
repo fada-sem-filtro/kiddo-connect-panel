@@ -149,7 +149,7 @@ export default function DiretorMembrosPage() {
               ) : filteredMembers.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={isAdmin ? 5 : 4} className="text-center py-8 text-muted-foreground">
-                    Nenhum membro encontrado
+                    Nenhum usuário encontrado
                   </TableCell>
                 </TableRow>
               ) : (
