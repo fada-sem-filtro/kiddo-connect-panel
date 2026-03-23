@@ -41,6 +41,7 @@ export function CrecheModal({ open, onOpenChange, onSave, editData }: CrecheModa
   const [endereco, setEndereco] = useState('');
   const [telefone, setTelefone] = useState('');
   const [email, setEmail] = useState('');
+  const [tipoPeriodo, setTipoPeriodo] = useState('bimestral');
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
@@ -53,6 +54,7 @@ export function CrecheModal({ open, onOpenChange, onSave, editData }: CrecheModa
       setEndereco(editData.endereco || '');
       setTelefone(editData.telefone || '');
       setEmail(editData.email || '');
+      setTipoPeriodo(editData.tipo_periodo || 'bimestral');
       setLogoUrl(editData.logo_url || null);
       setLogoPreview(editData.logo_url || null);
     } else {
@@ -60,6 +62,7 @@ export function CrecheModal({ open, onOpenChange, onSave, editData }: CrecheModa
       setEndereco('');
       setTelefone('');
       setEmail('');
+      setTipoPeriodo('bimestral');
       setLogoUrl(null);
       setLogoPreview(null);
     }
