@@ -53,12 +53,13 @@ export default function EducadorTurmaPage() {
     // Get turmas assigned to this educador
     const { data: assignments } = await supabase
       .from('turma_educadores')
-      .select('turma_id, turmas(id, nome)')
+      .select('turma_id, turmas(id, nome, faixa_etaria)')
       .eq('educador_user_id', user.id);
 
     const turmasList: TurmaInfo[] = assignments?.map((a: any) => ({
       id: a.turmas.id,
       nome: a.turmas.nome,
+      faixa_etaria: a.turmas.faixa_etaria,
     })) || [];
     setTurmas(turmasList);
 
