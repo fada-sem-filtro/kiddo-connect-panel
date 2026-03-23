@@ -68,6 +68,9 @@ export function Sidebar() {
   if (role === 'educador' && pedSettings?.boletim_ativo) {
     mainNavigation.push({ name: 'Boletim', href: '/educador/boletim', icon: BookOpen });
   }
+  if (role === 'educador' && pedSettings?.relatorio_desempenho_ativo) {
+    mainNavigation.push({ name: 'Relatório Desempenho', href: '/educador/relatorio-desempenho', icon: FileText });
+  }
   // Educador sees Agenda if enabled
   if (role === 'educador' && pedSettings?.grade_aulas_ativo) {
     mainNavigation.push({ name: 'Grade de Aulas', href: '/educador/grade-aulas', icon: CalendarClock });
