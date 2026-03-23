@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { Edit, Trash2, Reply, User } from 'lucide-react';
+import { Edit, Trash2, Reply, User, FileText, Image, Paperclip, X, Download } from 'lucide-react';
 import {
   Accordion, AccordionContent, AccordionItem, AccordionTrigger,
 } from '@/components/ui/accordion';
@@ -18,19 +18,59 @@ import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import type { RecadoDb } from '@/pages/RecadosPage';
 
+const ALLOWED_TYPES = [
+  'application/pdf',
+  'image/jpeg',
+  'image/png',
+  'image/webp',
+  'image/gif',
+];
+const MAX_FILE_SIZE = 10 * 1024 * 1024;
+
 interface RecadoThreadProps {
   recado: RecadoDb;
   onChanged?: () => void;
+}
+
+function AttachmentDisplay({ url, tipo }: { url: string; tipo: string }) {
+  if (tipo === 'imagem') {
+    return (
+      <div className="mt-3">
+        <a href={url} target="_blank" rel="noopener noreferrer" className="block max-w-xs">
+          <img
+            src={url}
+            alt="Anexo"
+            className="rounded-xl border border-border max-h-48 object-cover hover:opacity-90 transition-opacity"
+          />
+        </a>
+      </div>
+    );
+  }
+  return (
+    <a
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="mt-3 inline-flex items-center gap-2 px-3 py-2 bg-muted/50 rounded-xl border border-border hover:bg-muted transition-colors text-sm"
+    >
+      <FileText className="w-4 h-4 text-destructive" />
+      <span className="text-foreground">Documento PDF</span>
+      <Download className="w-4 h-4 text-muted-foreground" />
+    </a>
+  );
 }
 
 export function RecadoThread({ recado, onChanged }: RecadoThreadProps) {
   const { user, profile } = useAuth();
   const [isReplying, setIsReplying] = useState(false);
   const [replyText, setReplyText] = useState('');
+  const [replyFile, setReplyFile] = useState<File | null>(null);
+  const replyFileRef = useRef<HTMLInputElement>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editText, setEditText] = useState(recado.conteudo);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
+  const [replySending, setReplySending] = useState(false);
 
   const formatDate = (dateStr: string) =>
     format(new Date(dateStr), "dd 'de' MMMM 'às' HH:mm", { locale: ptBR });
@@ -38,19 +78,64 @@ export function RecadoThread({ recado, onChanged }: RecadoThreadProps) {
   const getInitials = (name: string) =>
     name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
 
+  const handleReplyFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      toast.error('Tipo não permitido. Use PDF, JPG, PNG, WebP ou GIF.');
+      return;
+    }
+    if (file.size > MAX_FILE_SIZE) {
+      toast.error('Arquivo muito grande. Máximo 10MB.');
+      return;
+    }
+    setReplyFile(file);
+  };
+
+  const uploadFile = async (file: File): Promise<{ url: string; tipo: string } | null> => {
+    if (!user) return null;
+    const ext = file.name.split('.').pop() || 'bin';
+    const path = `${user.id}/${Date.now()}.${ext}`;
+    const { error } = await supabase.storage
+      .from('recado-anexos')
+      .upload(path, file, { contentType: file.type });
+    if (error) {
+      toast.error('Erro ao enviar anexo');
+      return null;
+    }
+    const { data: urlData } = supabase.storage.from('recado-anexos').getPublicUrl(path);
+    return { url: urlData.publicUrl, tipo: file.type === 'application/pdf' ? 'pdf' : 'imagem' };
+  };
+
   const handleReply = async () => {
-    if (!replyText.trim() || !user) return;
+    if ((!replyText.trim() && !replyFile) || !user) return;
+    setReplySending(true);
+
+    let anexo_url: string | null = null;
+    let anexo_tipo: string | null = null;
+    if (replyFile) {
+      const result = await uploadFile(replyFile);
+      if (result) {
+        anexo_url = result.url;
+        anexo_tipo = result.tipo;
+      }
+    }
+
     const { error } = await supabase.from('recados').insert({
-      conteudo: replyText,
+      conteudo: replyText || (anexo_tipo === 'pdf' ? '📎 Documento anexado' : '📷 Foto anexada'),
       remetente_user_id: user.id,
       remetente_nome: profile?.nome || 'Usuário',
       parent_id: recado.id,
       turma_id: recado.turma_id,
       crianca_id: recado.crianca_id,
+      anexo_url,
+      anexo_tipo,
     } as any);
-    if (error) { toast.error('Erro ao enviar resposta'); return; }
+    if (error) { toast.error('Erro ao enviar resposta'); setReplySending(false); return; }
     setReplyText('');
+    setReplyFile(null);
     setIsReplying(false);
+    setReplySending(false);
     toast.success('Resposta enviada!');
     onChanged?.();
   };
@@ -120,6 +205,10 @@ export function RecadoThread({ recado, onChanged }: RecadoThreadProps) {
               <p className="text-foreground/80 whitespace-pre-wrap">{recado.conteudo}</p>
             )}
 
+            {recado.anexo_url && recado.anexo_tipo && (
+              <AttachmentDisplay url={recado.anexo_url} tipo={recado.anexo_tipo} />
+            )}
+
             <div className="flex items-center gap-2 mt-4">
               <Button variant="ghost" size="sm" onClick={() => setIsReplying(!isReplying)}>
                 <Reply className="w-4 h-4 mr-2" />
@@ -138,9 +227,40 @@ export function RecadoThread({ recado, onChanged }: RecadoThreadProps) {
               <div className="mt-4 pl-10 space-y-2">
                 <Textarea placeholder="Escreva sua resposta..." value={replyText}
                   onChange={(e) => setReplyText(e.target.value)} className="resize-none" />
+                
+                <input
+                  ref={replyFileRef}
+                  type="file"
+                  accept=".pdf,.jpg,.jpeg,.png,.webp,.gif"
+                  onChange={handleReplyFileSelect}
+                  className="hidden"
+                />
+
+                {replyFile ? (
+                  <div className="flex items-center gap-2 p-2 bg-muted/50 rounded-lg border border-border text-sm">
+                    {replyFile.type.startsWith('image/') ? (
+                      <Image className="w-4 h-4 text-primary shrink-0" />
+                    ) : (
+                      <FileText className="w-4 h-4 text-destructive shrink-0" />
+                    )}
+                    <span className="truncate flex-1">{replyFile.name}</span>
+                    <Button type="button" variant="ghost" size="icon" className="h-5 w-5"
+                      onClick={() => { setReplyFile(null); if (replyFileRef.current) replyFileRef.current.value = ''; }}>
+                      <X className="w-3 h-3" />
+                    </Button>
+                  </div>
+                ) : (
+                  <Button type="button" variant="ghost" size="sm" onClick={() => replyFileRef.current?.click()}>
+                    <Paperclip className="w-4 h-4 mr-1" />
+                    Anexar
+                  </Button>
+                )}
+
                 <div className="flex gap-2">
-                  <Button size="sm" onClick={handleReply}>Enviar</Button>
-                  <Button size="sm" variant="outline" onClick={() => setIsReplying(false)}>Cancelar</Button>
+                  <Button size="sm" onClick={handleReply} disabled={replySending}>
+                    {replySending ? 'Enviando...' : 'Enviar'}
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={() => { setIsReplying(false); setReplyFile(null); }}>Cancelar</Button>
                 </div>
               </div>
             )}
@@ -164,6 +284,9 @@ export function RecadoThread({ recado, onChanged }: RecadoThreadProps) {
                             <span className="text-xs text-muted-foreground">{formatDate(resp.created_at)}</span>
                           </div>
                           <p className="text-sm text-foreground/80 mt-1">{resp.conteudo}</p>
+                          {resp.anexo_url && resp.anexo_tipo && (
+                            <AttachmentDisplay url={resp.anexo_url} tipo={resp.anexo_tipo} />
+                          )}
                         </div>
                         {user?.id === resp.remetente_user_id && (
                           <Button variant="ghost" size="icon" className="h-6 w-6 text-destructive hover:text-destructive"
