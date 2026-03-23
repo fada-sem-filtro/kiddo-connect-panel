@@ -74,10 +74,14 @@ export function Sidebar() {
     mainNavigation.push({ name: 'Recados', href: '/recados', icon: MessageSquare });
   }
 
-  const responsavelNavigation = role === 'admin' || role === 'responsavel' ? [
-  { name: 'Meus Eventos', href: '/responsavel/eventos', icon: ClipboardList },
-  { name: 'Calendário Escolar', href: '/responsavel/calendario', icon: CalendarDays }] :
-  [];
+  const responsavelNavigation: typeof mainNavigation = [];
+  if (role === 'admin' || role === 'responsavel') {
+    responsavelNavigation.push({ name: 'Meus Eventos', href: '/responsavel/eventos', icon: ClipboardList });
+    responsavelNavigation.push({ name: 'Calendário Escolar', href: '/responsavel/calendario', icon: CalendarDays });
+    if (pedSettings?.boletim_ativo) {
+      responsavelNavigation.push({ name: 'Desempenho', href: '/responsavel/desempenho', icon: BookOpen });
+    }
+  }
 
   const diretorNavigation: typeof mainNavigation = [];
 
