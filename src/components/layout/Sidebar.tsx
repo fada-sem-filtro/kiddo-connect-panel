@@ -17,13 +17,17 @@ import {
   Baby,
   LayoutDashboard,
   FileText,
-  UserCheck } from
+  UserCheck,
+  Settings,
+  Library,
+  BookOpen } from
 'lucide-react';
 import { cn } from '@/lib/utils';
 import logoFleur from '@/assets/logo-fleur-2.webp';
 import { Button } from '@/components/ui/button';
 import { NotificationBell } from '@/components/notifications/NotificationBell';
 import { useAuth } from '@/contexts/AuthContext';
+import { usePedagogicalSettings } from '@/hooks/usePedagogicalSettings';
 import { toast } from 'sonner';
 
 export function Sidebar() {
@@ -31,6 +35,7 @@ export function Sidebar() {
   const location = useLocation();
   const navigate = useNavigate();
   const { role, profile, signOut, userCreche, isDiretor } = useAuth();
+  const { settings: pedSettings } = usePedagogicalSettings();
 
   const handleSignOut = async () => {
     await signOut();
@@ -58,6 +63,11 @@ export function Sidebar() {
     mainNavigation.push({ name: 'Minha Turma', href: '/educador/turma', icon: Users });
   }
 
+  // Educador sees Boletim if enabled
+  if (role === 'educador' && pedSettings?.boletim_ativo) {
+    mainNavigation.push({ name: 'Boletim', href: '/educador/boletim', icon: BookOpen });
+  }
+
   // Only admin sees Alunos and Educadores
   if (role === 'admin') {
     mainNavigation.push({ name: 'Alunos', href: '/criancas', icon: Users });
@@ -69,10 +79,14 @@ export function Sidebar() {
     mainNavigation.push({ name: 'Recados', href: '/recados', icon: MessageSquare });
   }
 
-  const responsavelNavigation = role === 'admin' || role === 'responsavel' ? [
-  { name: 'Meus Eventos', href: '/responsavel/eventos', icon: ClipboardList },
-  { name: 'Calendário Escolar', href: '/responsavel/calendario', icon: CalendarDays }] :
-  [];
+  const responsavelNavigation: typeof mainNavigation = [];
+  if (role === 'admin' || role === 'responsavel') {
+    responsavelNavigation.push({ name: 'Meus Eventos', href: '/responsavel/eventos', icon: ClipboardList });
+    responsavelNavigation.push({ name: 'Calendário Escolar', href: '/responsavel/calendario', icon: CalendarDays });
+    if (pedSettings?.boletim_ativo) {
+      responsavelNavigation.push({ name: 'Desempenho', href: '/responsavel/desempenho', icon: BookOpen });
+    }
+  }
 
   const diretorNavigation: typeof mainNavigation = [];
 
@@ -98,6 +112,13 @@ export function Sidebar() {
     adminNavigation.push({ name: 'Calendário', href: `${prefix}/calendario`, icon: CalendarDays });
     adminNavigation.push({ name: 'Relatórios', href: '/relatorios', icon: FileText });
     adminNavigation.push({ name: 'Relatório Aluno', href: '/relatorios/aluno', icon: UserCheck });
+    adminNavigation.push({ name: 'Config. Pedagógicas', href: `${prefix}/pedagogico`, icon: Settings });
+    if (pedSettings?.gestao_materias_ativo) {
+      adminNavigation.push({ name: 'Matérias', href: `${prefix}/materias`, icon: Library });
+    }
+    if (pedSettings?.boletim_ativo) {
+      adminNavigation.push({ name: 'Boletim', href: `${prefix}/boletim`, icon: BookOpen });
+    }
   }
 
   return (

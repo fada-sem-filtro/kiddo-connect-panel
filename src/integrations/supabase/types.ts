@@ -55,6 +55,111 @@ export type Database = {
           },
         ]
       }
+      boletins: {
+        Row: {
+          avaliacao: number | null
+          created_at: string
+          crianca_id: string
+          data_registro: string
+          educador_user_id: string
+          id: string
+          materia_id: string
+          observacoes: string | null
+          periodo_letivo: string
+          turma_id: string
+          updated_at: string
+        }
+        Insert: {
+          avaliacao?: number | null
+          created_at?: string
+          crianca_id: string
+          data_registro?: string
+          educador_user_id: string
+          id?: string
+          materia_id: string
+          observacoes?: string | null
+          periodo_letivo: string
+          turma_id: string
+          updated_at?: string
+        }
+        Update: {
+          avaliacao?: number | null
+          created_at?: string
+          crianca_id?: string
+          data_registro?: string
+          educador_user_id?: string
+          id?: string
+          materia_id?: string
+          observacoes?: string | null
+          periodo_letivo?: string
+          turma_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "boletins_crianca_id_fkey"
+            columns: ["crianca_id"]
+            isOneToOne: false
+            referencedRelation: "criancas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "boletins_materia_id_fkey"
+            columns: ["materia_id"]
+            isOneToOne: false
+            referencedRelation: "materias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "boletins_turma_id_fkey"
+            columns: ["turma_id"]
+            isOneToOne: false
+            referencedRelation: "turmas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      configuracoes_pedagogicas: {
+        Row: {
+          boletim_ativo: boolean
+          created_at: string
+          creche_id: string
+          gestao_materias_ativo: boolean
+          grade_aulas_ativo: boolean
+          id: string
+          relatorio_desempenho_ativo: boolean
+          updated_at: string
+        }
+        Insert: {
+          boletim_ativo?: boolean
+          created_at?: string
+          creche_id: string
+          gestao_materias_ativo?: boolean
+          grade_aulas_ativo?: boolean
+          id?: string
+          relatorio_desempenho_ativo?: boolean
+          updated_at?: string
+        }
+        Update: {
+          boletim_ativo?: boolean
+          created_at?: string
+          creche_id?: string
+          gestao_materias_ativo?: boolean
+          grade_aulas_ativo?: boolean
+          id?: string
+          relatorio_desempenho_ativo?: boolean
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "configuracoes_pedagogicas_creche_id_fkey"
+            columns: ["creche_id"]
+            isOneToOne: true
+            referencedRelation: "creches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       creche_membros: {
         Row: {
           created_at: string
@@ -419,6 +524,44 @@ export type Database = {
           recorrente?: boolean
         }
         Relationships: []
+      }
+      materias: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          creche_id: string
+          descricao: string | null
+          id: string
+          nome: string
+          updated_at: string
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          creche_id: string
+          descricao?: string | null
+          id?: string
+          nome: string
+          updated_at?: string
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          creche_id?: string
+          descricao?: string | null
+          id?: string
+          nome?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "materias_creche_id_fkey"
+            columns: ["creche_id"]
+            isOneToOne: false
+            referencedRelation: "creches"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       notificacoes: {
         Row: {
