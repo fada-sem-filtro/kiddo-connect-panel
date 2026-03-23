@@ -87,7 +87,7 @@ export default function GradeAulasPage() {
           .from('user_roles')
           .select('user_id, role')
           .in('user_id', userIds)
-          .in('role', ['educador']);
+          .in('role', ['educador', 'diretor']);
         
         const educadorIds = new Set((roles || []).map(r => r.user_id));
         setEducadores(
