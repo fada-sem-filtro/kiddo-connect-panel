@@ -68,6 +68,10 @@ export function Sidebar() {
   if (role === 'educador' && pedSettings?.boletim_ativo) {
     mainNavigation.push({ name: 'Boletim', href: '/educador/boletim', icon: BookOpen });
   }
+  // Educador sees Agenda if enabled
+  if (role === 'educador' && pedSettings?.grade_aulas_ativo) {
+    mainNavigation.push({ name: 'Minha Agenda', href: '/educador/agenda', icon: CalendarClock });
+  }
 
   // Only admin sees Alunos and Educadores
   if (role === 'admin') {
