@@ -260,7 +260,7 @@ export default function EducadorDashboardPage() {
 
                       {/* Action Buttons - Large for tablet */}
                       <div className="flex gap-2 shrink-0">
-                        {status === 'ausente' && (
+                        {status === 'ausente' && !isCriancaFundamental(crianca.id) && (
                           <Button
                             size="lg"
                             className="rounded-2xl bg-[hsl(var(--success))] hover:bg-[hsl(var(--success))]/90 text-[hsl(var(--success-foreground))] font-bold min-w-[120px] h-12"
@@ -270,7 +270,7 @@ export default function EducadorDashboardPage() {
                             Presente
                           </Button>
                         )}
-                        {status === 'presente' && (
+                        {status === 'presente' && !isCriancaFundamental(crianca.id) && (
                           <>
                             <Button
                               size="lg"
@@ -291,7 +291,7 @@ export default function EducadorDashboardPage() {
                             </Button>
                           </>
                         )}
-                        {status === 'saiu' && (
+                        {status === 'saiu' && !isCriancaFundamental(crianca.id) && (
                           <Button
                             size="lg"
                             variant="ghost"
