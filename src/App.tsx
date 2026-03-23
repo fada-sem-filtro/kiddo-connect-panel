@@ -33,6 +33,8 @@ import BoletimPage from "./pages/BoletimPage";
 import ResponsavelDesempenhoPage from "./pages/ResponsavelDesempenhoPage";
 import GradeAulasPage from "./pages/GradeAulasPage";
 import AgendaEducadorPage from "./pages/AgendaEducadorPage";
+import RelatorioModeloPage from "./pages/RelatorioModeloPage";
+import RelatorioDesempenhoPage from "./pages/RelatorioDesempenhoPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
