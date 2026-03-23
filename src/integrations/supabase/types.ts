@@ -802,6 +802,220 @@ export type Database = {
           },
         ]
       }
+      relatorio_alunos: {
+        Row: {
+          created_at: string
+          crianca_id: string
+          educador_user_id: string
+          id: string
+          modelo_id: string
+          periodo_letivo: string
+          status: string
+          turma_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          crianca_id: string
+          educador_user_id: string
+          id?: string
+          modelo_id: string
+          periodo_letivo: string
+          status?: string
+          turma_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          crianca_id?: string
+          educador_user_id?: string
+          id?: string
+          modelo_id?: string
+          periodo_letivo?: string
+          status?: string
+          turma_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "relatorio_alunos_crianca_id_fkey"
+            columns: ["crianca_id"]
+            isOneToOne: false
+            referencedRelation: "criancas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "relatorio_alunos_modelo_id_fkey"
+            columns: ["modelo_id"]
+            isOneToOne: false
+            referencedRelation: "relatorio_modelos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "relatorio_alunos_turma_id_fkey"
+            columns: ["turma_id"]
+            isOneToOne: false
+            referencedRelation: "turmas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      relatorio_campos: {
+        Row: {
+          created_at: string
+          id: string
+          obrigatorio: boolean
+          opcoes: Json | null
+          ordem: number
+          secao_id: string
+          tipo: string
+          titulo: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          obrigatorio?: boolean
+          opcoes?: Json | null
+          ordem?: number
+          secao_id: string
+          tipo?: string
+          titulo: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          obrigatorio?: boolean
+          opcoes?: Json | null
+          ordem?: number
+          secao_id?: string
+          tipo?: string
+          titulo?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "relatorio_campos_secao_id_fkey"
+            columns: ["secao_id"]
+            isOneToOne: false
+            referencedRelation: "relatorio_secoes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      relatorio_modelos: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          creche_id: string
+          descricao: string | null
+          id: string
+          nome: string
+          updated_at: string
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          creche_id: string
+          descricao?: string | null
+          id?: string
+          nome: string
+          updated_at?: string
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          creche_id?: string
+          descricao?: string | null
+          id?: string
+          nome?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "relatorio_modelos_creche_id_fkey"
+            columns: ["creche_id"]
+            isOneToOne: false
+            referencedRelation: "creches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      relatorio_respostas: {
+        Row: {
+          campo_id: string
+          created_at: string
+          id: string
+          relatorio_aluno_id: string
+          updated_at: string
+          valor: string | null
+        }
+        Insert: {
+          campo_id: string
+          created_at?: string
+          id?: string
+          relatorio_aluno_id: string
+          updated_at?: string
+          valor?: string | null
+        }
+        Update: {
+          campo_id?: string
+          created_at?: string
+          id?: string
+          relatorio_aluno_id?: string
+          updated_at?: string
+          valor?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "relatorio_respostas_campo_id_fkey"
+            columns: ["campo_id"]
+            isOneToOne: false
+            referencedRelation: "relatorio_campos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "relatorio_respostas_relatorio_aluno_id_fkey"
+            columns: ["relatorio_aluno_id"]
+            isOneToOne: false
+            referencedRelation: "relatorio_alunos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      relatorio_secoes: {
+        Row: {
+          created_at: string
+          descricao: string | null
+          id: string
+          modelo_id: string
+          ordem: number
+          titulo: string
+        }
+        Insert: {
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          modelo_id: string
+          ordem?: number
+          titulo: string
+        }
+        Update: {
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          modelo_id?: string
+          ordem?: number
+          titulo?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "relatorio_secoes_modelo_id_fkey"
+            columns: ["modelo_id"]
+            isOneToOne: false
+            referencedRelation: "relatorio_modelos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       suppressed_emails: {
         Row: {
           created_at: string

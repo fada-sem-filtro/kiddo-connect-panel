@@ -33,6 +33,8 @@ import BoletimPage from "./pages/BoletimPage";
 import ResponsavelDesempenhoPage from "./pages/ResponsavelDesempenhoPage";
 import GradeAulasPage from "./pages/GradeAulasPage";
 import AgendaEducadorPage from "./pages/AgendaEducadorPage";
+import RelatorioModeloPage from "./pages/RelatorioModeloPage";
+import RelatorioDesempenhoPage from "./pages/RelatorioDesempenhoPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -83,6 +85,12 @@ const App = () => (
               <Route path="/responsavel/desempenho" element={<ProtectedRoute allowedRoles={['responsavel']}><ResponsavelDesempenhoPage /></ProtectedRoute>} />
               <Route path="/admin/grade-aulas" element={<ProtectedRoute allowedRoles={['admin']}><GradeAulasPage /></ProtectedRoute>} />
               <Route path="/diretor/grade-aulas" element={<ProtectedRoute allowedRoles={['diretor']}><GradeAulasPage /></ProtectedRoute>} />
+              <Route path="/admin/relatorio-modelo" element={<ProtectedRoute allowedRoles={['admin']}><RelatorioModeloPage /></ProtectedRoute>} />
+              <Route path="/admin/relatorio-desempenho" element={<ProtectedRoute allowedRoles={['admin']}><RelatorioDesempenhoPage /></ProtectedRoute>} />
+              <Route path="/diretor/relatorio-modelo" element={<ProtectedRoute allowedRoles={['diretor']}><RelatorioModeloPage /></ProtectedRoute>} />
+              <Route path="/diretor/relatorio-desempenho" element={<ProtectedRoute allowedRoles={['diretor']}><RelatorioDesempenhoPage /></ProtectedRoute>} />
+              <Route path="/educador/relatorio-desempenho" element={<ProtectedRoute allowedRoles={['educador']}><RelatorioDesempenhoPage /></ProtectedRoute>} />
+              <Route path="/responsavel/relatorio" element={<ProtectedRoute allowedRoles={['responsavel']}><RelatorioDesempenhoPage /></ProtectedRoute>} />
               <Route path="/educador/grade-aulas" element={<ProtectedRoute allowedRoles={['educador']}><GradeAulasPage /></ProtectedRoute>} />
               <Route path="/educador/agenda" element={<ProtectedRoute allowedRoles={['educador']}><AgendaEducadorPage /></ProtectedRoute>} />
               <Route path="*" element={<NotFound />} />

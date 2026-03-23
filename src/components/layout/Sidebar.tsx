@@ -68,6 +68,9 @@ export function Sidebar() {
   if (role === 'educador' && pedSettings?.boletim_ativo) {
     mainNavigation.push({ name: 'Boletim', href: '/educador/boletim', icon: BookOpen });
   }
+  if (role === 'educador' && pedSettings?.relatorio_desempenho_ativo) {
+    mainNavigation.push({ name: 'Relatório Desempenho', href: '/educador/relatorio-desempenho', icon: FileText });
+  }
   // Educador sees Agenda if enabled
   if (role === 'educador' && pedSettings?.grade_aulas_ativo) {
     mainNavigation.push({ name: 'Grade de Aulas', href: '/educador/grade-aulas', icon: CalendarClock });
@@ -91,6 +94,9 @@ export function Sidebar() {
     responsavelNavigation.push({ name: 'Calendário Escolar', href: '/responsavel/calendario', icon: CalendarDays });
     if (pedSettings?.boletim_ativo) {
       responsavelNavigation.push({ name: 'Desempenho', href: '/responsavel/desempenho', icon: BookOpen });
+    }
+    if (pedSettings?.relatorio_desempenho_ativo) {
+      responsavelNavigation.push({ name: 'Relatório Pedagógico', href: '/responsavel/relatorio', icon: FileText });
     }
   }
 
@@ -127,6 +133,10 @@ export function Sidebar() {
     }
     if (pedSettings?.grade_aulas_ativo) {
       adminNavigation.push({ name: 'Grade de Aulas', href: `${prefix}/grade-aulas`, icon: CalendarClock });
+    }
+    if (pedSettings?.relatorio_desempenho_ativo) {
+      adminNavigation.push({ name: 'Modelo Relatório', href: `${prefix}/relatorio-modelo`, icon: FileText });
+      adminNavigation.push({ name: 'Relatórios Desempenho', href: `${prefix}/relatorio-desempenho`, icon: FileText });
     }
   }
 
