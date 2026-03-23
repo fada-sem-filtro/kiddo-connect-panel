@@ -36,6 +36,7 @@ import AgendaEducadorPage from "./pages/AgendaEducadorPage";
 import RelatorioModeloPage from "./pages/RelatorioModeloPage";
 import RelatorioDesempenhoPage from "./pages/RelatorioDesempenhoPage";
 import PermissoesPerfilPage from "./pages/PermissoesPerfilPage";
+import ResponsavelGradePage from "./pages/ResponsavelGradePage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -84,6 +85,7 @@ const App = () => (
               <Route path="/diretor/boletim" element={<ProtectedRoute allowedRoles={['diretor']}><BoletimPage /></ProtectedRoute>} />
               <Route path="/educador/boletim" element={<ProtectedRoute allowedRoles={['educador']}><BoletimPage /></ProtectedRoute>} />
               <Route path="/responsavel/desempenho" element={<ProtectedRoute allowedRoles={['responsavel']}><ResponsavelDesempenhoPage /></ProtectedRoute>} />
+              <Route path="/responsavel/grade-aulas" element={<ProtectedRoute allowedRoles={['responsavel']}><ResponsavelGradePage /></ProtectedRoute>} />
               <Route path="/admin/grade-aulas" element={<ProtectedRoute allowedRoles={['admin']}><GradeAulasPage /></ProtectedRoute>} />
               <Route path="/diretor/grade-aulas" element={<ProtectedRoute allowedRoles={['diretor']}><GradeAulasPage /></ProtectedRoute>} />
               <Route path="/admin/relatorio-modelo" element={<ProtectedRoute allowedRoles={['admin']}><RelatorioModeloPage /></ProtectedRoute>} />
