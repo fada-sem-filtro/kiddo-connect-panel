@@ -36,6 +36,7 @@ import AgendaEducadorPage from "./pages/AgendaEducadorPage";
 import RelatorioModeloPage from "./pages/RelatorioModeloPage";
 import RelatorioDesempenhoPage from "./pages/RelatorioDesempenhoPage";
 import PermissoesPerfilPage from "./pages/PermissoesPerfilPage";
+import ResponsavelGradePage from "./pages/ResponsavelGradePage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
