@@ -81,6 +81,9 @@ const App = () => (
               <Route path="/diretor/boletim" element={<ProtectedRoute allowedRoles={['diretor']}><BoletimPage /></ProtectedRoute>} />
               <Route path="/educador/boletim" element={<ProtectedRoute allowedRoles={['educador']}><BoletimPage /></ProtectedRoute>} />
               <Route path="/responsavel/desempenho" element={<ProtectedRoute allowedRoles={['responsavel']}><ResponsavelDesempenhoPage /></ProtectedRoute>} />
+              <Route path="/admin/grade-aulas" element={<ProtectedRoute allowedRoles={['admin']}><GradeAulasPage /></ProtectedRoute>} />
+              <Route path="/diretor/grade-aulas" element={<ProtectedRoute allowedRoles={['diretor']}><GradeAulasPage /></ProtectedRoute>} />
+              <Route path="/educador/agenda" element={<ProtectedRoute allowedRoles={['educador']}><AgendaEducadorPage /></ProtectedRoute>} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </NotificationProvider>
