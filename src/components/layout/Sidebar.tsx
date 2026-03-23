@@ -199,7 +199,7 @@ export function Sidebar() {
 
           {/* Navigation */}
           <nav className="flex-1 px-4 py-6 space-y-6 overflow-y-auto scrollbar-thin">
-            {mainNavigation.length > 0 && (
+            {mainNavigation.length > 0 && role !== "admin" && (
               <div className="space-y-2">
                 <p className="px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                   📚 Principal
