@@ -315,13 +315,15 @@ export default function EducadorTurmaPage() {
                       )}
                     </div>
 
-                    <Button 
-                      onClick={() => handleAddEventoIndividual(crianca.id)}
-                      className="w-full rounded-2xl bg-gradient-to-r from-kawaii-mint to-kawaii-blue hover:opacity-90 text-foreground font-semibold shadow-md"
-                    >
-                      <Plus className="w-4 h-4 mr-2" />
-                      Adicionar Evento
-                    </Button>
+                    {!isTurmaFundamental(turmas.find(t => t.id === crianca.turma_id)?.faixa_etaria) && (
+                      <Button 
+                        onClick={() => handleAddEventoIndividual(crianca.id)}
+                        className="w-full rounded-2xl bg-gradient-to-r from-kawaii-mint to-kawaii-blue hover:opacity-90 text-foreground font-semibold shadow-md"
+                      >
+                        <Plus className="w-4 h-4 mr-2" />
+                        Adicionar Evento
+                      </Button>
+                    )}
                   </CardContent>
                 </Card>
               );
