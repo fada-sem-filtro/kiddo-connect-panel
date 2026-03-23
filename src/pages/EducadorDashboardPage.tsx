@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { EventDbModal } from '@/components/modals/EventDbModal';
 import { usePresencas } from '@/hooks/usePresencas';
 import { Users, Plus, LogIn, LogOut, Clock, CheckCircle2, XCircle, UserCheck } from 'lucide-react';
-import { EVENT_TYPE_LABELS, EVENT_TYPE_ICONS, EventType } from '@/types';
+import { EVENT_TYPE_LABELS, EVENT_TYPE_ICONS, EventType, isTurmaFundamental } from '@/types';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { supabase } from '@/integrations/supabase/client';
