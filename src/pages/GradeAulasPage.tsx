@@ -154,6 +154,17 @@ export default function GradeAulasPage() {
           <p className="text-sm text-muted-foreground mt-1">Calendário semanal de aulas por turma</p>
         </div>
 
+        {isAdmin && <AdminSchoolSelector selectedCrecheId={selectedCrecheId} setSelectedCrecheId={setSelectedCrecheId} creches={creches} />}
+
+        {!effectiveCrecheId ? (
+          <Card className="border-2 border-dashed border-muted-foreground/30 rounded-3xl">
+            <CardContent className="flex flex-col items-center justify-center py-12">
+              <CalendarClock className="w-16 h-16 text-muted-foreground/50 mb-4" />
+              <p className="text-muted-foreground">Selecione uma escola para gerenciar a grade</p>
+            </CardContent>
+          </Card>
+        ) : (
+        <>
         {/* Turma selector */}
         <Card className="rounded-2xl border-2 border-border">
           <CardContent className="p-4">
