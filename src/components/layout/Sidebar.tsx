@@ -17,13 +17,17 @@ import {
   Baby,
   LayoutDashboard,
   FileText,
-  UserCheck } from
+  UserCheck,
+  Settings,
+  Library,
+  BookOpen } from
 'lucide-react';
 import { cn } from '@/lib/utils';
 import logoFleur from '@/assets/logo-fleur-2.webp';
 import { Button } from '@/components/ui/button';
 import { NotificationBell } from '@/components/notifications/NotificationBell';
 import { useAuth } from '@/contexts/AuthContext';
+import { usePedagogicalSettings } from '@/hooks/usePedagogicalSettings';
 import { toast } from 'sonner';
 
 export function Sidebar() {
