@@ -242,6 +242,8 @@ export default function GradeAulasPage() {
             </CardContent>
           </Card>
         )}
+        </>
+        )}
       </div>
 
       {/* Add modal */}
