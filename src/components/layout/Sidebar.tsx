@@ -116,7 +116,7 @@ export function Sidebar() {
       adminNavigation.push({ name: 'Dashboard', href: '/diretor/dashboard', icon: BarChart3 });
     }
 
-    adminNavigation.push({ name: 'Membros', href: `${prefix}/membros`, icon: Users });
+    adminNavigation.push({ name: 'Corpo Docente', href: `${prefix}/membros`, icon: Users });
     adminNavigation.push({ name: 'Turmas', href: `${prefix}/turmas`, icon: GraduationCap });
     adminNavigation.push({ name: 'Alunos', href: `${prefix}/criancas`, icon: Baby });
     adminNavigation.push({ name: 'Usuários', href: `${prefix}/usuarios`, icon: UserCog });
