@@ -120,10 +120,8 @@ export default function RelatorioModeloPage() {
     if (!formCampoTitulo || !targetSecaoId) return;
     const camposDaSecao = campos.filter(c => c.secao_id === targetSecaoId);
     let opcoes = null;
-    if (formCampoTipo === 'selecao_simples' && formCampoOpcoes) {
+    if ((formCampoTipo === 'selecao_simples' || formCampoTipo === 'escala') && formCampoOpcoes) {
       opcoes = formCampoOpcoes.split(',').map(o => o.trim()).filter(Boolean);
-    } else if (formCampoTipo === 'escala') {
-      opcoes = ESCALA_OPTIONS;
     }
     const { error } = await supabase.from('relatorio_campos').insert({
       secao_id: targetSecaoId, titulo: formCampoTitulo, tipo: formCampoTipo, opcoes, ordem: camposDaSecao.length, obrigatorio: formCampoObrigatorio,
@@ -308,7 +306,11 @@ export default function RelatorioModeloPage() {
             <div><Label>Título do Campo</Label><Input value={formCampoTitulo} onChange={e => setFormCampoTitulo(e.target.value)} placeholder="Ex: Observações sobre leitura" className="rounded-xl mt-1" /></div>
             <div>
               <Label>Tipo de Campo</Label>
-              <Select value={formCampoTipo} onValueChange={setFormCampoTipo}>
+              <Select value={formCampoTipo} onValueChange={(v) => {
+                setFormCampoTipo(v);
+                if (v === 'escala' && !formCampoOpcoes) setFormCampoOpcoes(ESCALA_OPTIONS.join(', '));
+                if (v !== 'escala' && v !== 'selecao_simples') setFormCampoOpcoes('');
+              }}>
                 <SelectTrigger className="rounded-xl mt-1"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   {TIPOS_CAMPO.map(t => <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>)}
@@ -317,6 +319,9 @@ export default function RelatorioModeloPage() {
             </div>
             {formCampoTipo === 'selecao_simples' && (
               <div><Label>Opções (separadas por vírgula)</Label><Input value={formCampoOpcoes} onChange={e => setFormCampoOpcoes(e.target.value)} placeholder="Opção 1, Opção 2, Opção 3" className="rounded-xl mt-1" /></div>
+            )}
+            {formCampoTipo === 'escala' && (
+              <div><Label>Opções da escala (separadas por vírgula)</Label><Input value={formCampoOpcoes} onChange={e => setFormCampoOpcoes(e.target.value)} placeholder="Em desenvolvimento, Desenvolvido, Avançado, Não avaliado" className="rounded-xl mt-1" /></div>
             )}
             <div className="flex items-center gap-3">
               <Switch checked={formCampoObrigatorio} onCheckedChange={setFormCampoObrigatorio} />
