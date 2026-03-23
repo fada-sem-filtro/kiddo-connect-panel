@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Plus, Search, Users, Shield, GraduationCap, UserCheck, Edit, KeyRound, AlertTriangle, Filter, Trash2 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useAdminSchoolSelector, AdminSchoolSelector } from '@/components/admin/AdminSchoolSelector';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
