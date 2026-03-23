@@ -38,7 +38,7 @@ export default function PermissoesPerfilPage() {
   const currentModulos = MODULOS.filter(m => {
     // Filter which modules are relevant per profile
     if (activePerfil === 'responsavel') {
-      return ['recados', 'eventos', 'calendario', 'boletim', 'relatorio_desempenho'].includes(m.key);
+      return ['recados', 'eventos', 'calendario', 'boletim', 'relatorio_desempenho', 'grade_aulas'].includes(m.key);
     }
     if (activePerfil === 'educador') {
       return ['painel_educador', 'minha_turma', 'recados', 'presencas', 'eventos', 'boletim', 'grade_aulas', 'relatorio_desempenho', 'agenda_educador'].includes(m.key);
