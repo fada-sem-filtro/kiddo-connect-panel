@@ -21,7 +21,6 @@ import {
   Settings,
   Library,
   BookOpen,
-  Shield,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import logoFleur from "@/assets/logo-fleur-2.webp";
@@ -87,9 +86,6 @@ export function Sidebar() {
     if (pedSettings?.boletim_ativo) {
       responsavelNavigation.push({ name: "Desempenho", href: "/responsavel/desempenho", icon: BookOpen });
     }
-    if (pedSettings?.grade_aulas_ativo) {
-      responsavelNavigation.push({ name: "Grade de Aulas", href: "/responsavel/grade-aulas", icon: CalendarDays });
-    }
   }
 
   const diretorNavigation: typeof mainNavigation = [];
@@ -116,22 +112,12 @@ export function Sidebar() {
     adminNavigation.push({ name: "Calendário", href: `${prefix}/calendario`, icon: CalendarDays });
     adminNavigation.push({ name: "Relatórios", href: "/relatorios", icon: FileText });
     adminNavigation.push({ name: "Relatório Aluno", href: "/relatorios/aluno", icon: UserCheck });
-    adminNavigation.push({ name: "Config. Pedagógicas", href: `${prefix}/pedagogico`, icon: Settings });
-    if (role === 'admin') {
-      adminNavigation.push({ name: "Permissões", href: "/admin/permissoes", icon: Shield });
-    }
-    if (role === 'admin' || pedSettings?.gestao_materias_ativo) {
+    // adminNavigation.push({ name: "Config. Pedagógicas", href: `${prefix}/pedagogico`, icon: Settings });
+    if (pedSettings?.gestao_materias_ativo) {
       adminNavigation.push({ name: "Matérias", href: `${prefix}/materias`, icon: Library });
     }
-    if (role === 'admin' || pedSettings?.boletim_ativo) {
+    if (pedSettings?.boletim_ativo) {
       adminNavigation.push({ name: "Boletim", href: `${prefix}/boletim`, icon: BookOpen });
-    }
-    if (role === 'admin' || pedSettings?.grade_aulas_ativo) {
-      adminNavigation.push({ name: "Grade de Aulas", href: `${prefix}/grade-aulas`, icon: CalendarDays });
-    }
-    if (role === 'admin' || pedSettings?.relatorio_desempenho_ativo) {
-      adminNavigation.push({ name: "Modelo Relatório", href: `${prefix}/relatorio-modelo`, icon: FileText });
-      adminNavigation.push({ name: "Relatórios Desempenho", href: `${prefix}/relatorio-desempenho`, icon: ClipboardList });
     }
   }
 
@@ -199,7 +185,7 @@ export function Sidebar() {
 
           {/* Navigation */}
           <nav className="flex-1 px-4 py-6 space-y-6 overflow-y-auto scrollbar-thin">
-            {mainNavigation.length > 0 && role !== "admin" && (
+            {mainNavigation.length > 0 && (
               <div className="space-y-2">
                 <p className="px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                   📚 Principal
@@ -227,7 +213,7 @@ export function Sidebar() {
               </div>
             )}
 
-            {responsavelNavigation.length > 0 && role !== "admin" && (
+            {responsavelNavigation.length > 0 && (
               <div className="space-y-2">
                 <p className="px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                   👨‍👩‍👧 Responsável
