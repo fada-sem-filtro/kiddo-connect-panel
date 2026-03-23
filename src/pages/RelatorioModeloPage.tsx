@@ -29,7 +29,8 @@ const TIPOS_CAMPO = [
 const ESCALA_OPTIONS = ['Em desenvolvimento', 'Desenvolvido', 'Avançado', 'Não avaliado'];
 
 export default function RelatorioModeloPage() {
-  const { userCreche, role } = useAuth();
+  const { role } = useAuth();
+  const { effectiveCrecheId, selectedCrecheId, setSelectedCrecheId, creches, isAdmin } = useAdminSchoolSelector();
   const [modelos, setModelos] = useState<Modelo[]>([]);
   const [selectedModelo, setSelectedModelo] = useState<Modelo | null>(null);
   const [secoes, setSecoes] = useState<Secao[]>([]);
