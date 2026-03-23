@@ -87,6 +87,9 @@ export function Sidebar() {
     if (pedSettings?.boletim_ativo) {
       responsavelNavigation.push({ name: "Desempenho", href: "/responsavel/desempenho", icon: BookOpen });
     }
+    if (pedSettings?.grade_aulas_ativo) {
+      responsavelNavigation.push({ name: "Grade de Aulas", href: "/responsavel/grade-aulas", icon: CalendarDays });
+    }
   }
 
   const diretorNavigation: typeof mainNavigation = [];
