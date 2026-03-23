@@ -186,6 +186,8 @@ export default function RelatorioDesempenhoPage() {
           <p className="text-sm text-muted-foreground mt-1">Preencha o relatório pedagógico qualitativo do aluno</p>
         </div>
 
+        {isAdmin && <AdminSchoolSelector selectedCrecheId={selectedCrecheId} setSelectedCrecheId={setSelectedCrecheId} creches={creches} />}
+
         {/* Filters */}
         <Card className="rounded-2xl border-2 border-border">
           <CardContent className="p-4">
