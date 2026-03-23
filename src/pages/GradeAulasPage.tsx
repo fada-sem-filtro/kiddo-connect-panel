@@ -38,7 +38,8 @@ const DIAS_SEMANA = [
 const FAIXAS_FUNDAMENTAL = FAIXA_ETARIA_OPTIONS.filter(f => f.includes('Ano'));
 
 export default function GradeAulasPage() {
-  const { userCreche, role } = useAuth();
+  const { role } = useAuth();
+  const { effectiveCrecheId, selectedCrecheId, setSelectedCrecheId, creches, isAdmin } = useAdminSchoolSelector();
   const [turmas, setTurmas] = useState<Turma[]>([]);
   const [materias, setMaterias] = useState<Materia[]>([]);
   const [educadores, setEducadores] = useState<Educador[]>([]);
