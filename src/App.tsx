@@ -31,6 +31,8 @@ import ConfiguracoesPedagogicasPage from "./pages/ConfiguracoesPedagogicasPage";
 import MateriasPage from "./pages/MateriasPage";
 import BoletimPage from "./pages/BoletimPage";
 import ResponsavelDesempenhoPage from "./pages/ResponsavelDesempenhoPage";
+import GradeAulasPage from "./pages/GradeAulasPage";
+import AgendaEducadorPage from "./pages/AgendaEducadorPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
