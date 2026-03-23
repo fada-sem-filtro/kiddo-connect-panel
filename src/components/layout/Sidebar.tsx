@@ -114,6 +114,9 @@ export function Sidebar() {
     adminNavigation.push({ name: "Relatórios", href: "/relatorios", icon: FileText });
     adminNavigation.push({ name: "Relatório Aluno", href: "/relatorios/aluno", icon: UserCheck });
     adminNavigation.push({ name: "Config. Pedagógicas", href: `${prefix}/pedagogico`, icon: Settings });
+    if (role === 'admin') {
+      adminNavigation.push({ name: "Permissões", href: "/admin/permissoes", icon: Shield });
+    }
     if (role === 'admin' || pedSettings?.gestao_materias_ativo) {
       adminNavigation.push({ name: "Matérias", href: `${prefix}/materias`, icon: Library });
     }
