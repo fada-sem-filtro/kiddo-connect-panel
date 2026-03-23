@@ -50,7 +50,7 @@ const ROLE_ICONS: Record<string, React.ReactNode> = {
 
 export default function UsuariosPage() {
   const { role, userCreche } = useAuth();
-  const isAdmin = role === 'admin';
+  const { effectiveCrecheId, selectedCrecheId, setSelectedCrecheId, creches, isAdmin } = useAdminSchoolSelector();
   const isDiretor = role === 'diretor';
   const [users, setUsers] = useState<UserWithRole[]>([]);
   const [search, setSearch] = useState('');
