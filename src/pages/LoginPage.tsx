@@ -132,7 +132,7 @@ export default function LoginPage() {
         </div>
 
         <p className="text-center text-xs text-muted-foreground mt-6">
-          Copyright © 2026 - Desenvolvido por Raissa.
+          Copyright © 2026 - Desenvolvido por Fleur Tech Solutions.
           <br />
           Versão {APP_VERSION}
         </p>
