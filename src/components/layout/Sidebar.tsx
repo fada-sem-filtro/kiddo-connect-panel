@@ -29,6 +29,7 @@ import { Button } from "@/components/ui/button";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { useAuth } from "@/contexts/AuthContext";
 import { usePedagogicalSettings } from "@/hooks/usePedagogicalSettings";
+import { useUserPermissions } from "@/hooks/useUserPermissions";
 import { toast } from "sonner";
 
 export function Sidebar() {
@@ -37,6 +38,7 @@ export function Sidebar() {
   const navigate = useNavigate();
   const { role, profile, signOut, userCreche, isDiretor } = useAuth();
   const { settings: pedSettings } = usePedagogicalSettings();
+  const { canView } = useUserPermissions();
 
   const handleSignOut = async () => {
     await signOut();
@@ -44,50 +46,59 @@ export function Sidebar() {
     navigate("/login");
   };
 
-  // Build navigation based on role
+  // Build navigation based on role + permissions
   const mainNavigation = [];
 
   // Diretor sees Dashboard as primary
   if (isDiretor) {
-    mainNavigation.push({ name: "Dashboard", href: "/diretor/dashboard", icon: BarChart3 });
+    if (canView('dashboard')) mainNavigation.push({ name: "Dashboard", href: "/diretor/dashboard", icon: BarChart3 });
   } else {
     mainNavigation.push({ name: "Agenda", href: "/", icon: Calendar });
   }
 
   // Educador, diretor and admin see Painel do Educador
-  if (role === "admin" || role === "educador" || role === "diretor") {
+  if (role === "admin" || ((role === "educador" || role === "diretor") && canView('painel_educador'))) {
     mainNavigation.push({ name: "Painel Educador", href: "/educador/dashboard", icon: LayoutDashboard });
   }
 
-  // Educador and admin see Minha Turma (not diretor)
-  if (role === "admin" || role === "educador") {
+  // Educador and admin see Minha Turma
+  if (role === "admin" || (role === "educador" && canView('minha_turma'))) {
     mainNavigation.push({ name: "Minha Turma", href: "/educador/turma", icon: Users });
   }
 
   // Educador sees Boletim if enabled
-  if (role === "educador" && pedSettings?.boletim_ativo) {
+  if (role === "educador" && pedSettings?.boletim_ativo && canView('boletim')) {
     mainNavigation.push({ name: "Boletim", href: "/educador/boletim", icon: BookOpen });
   }
 
-  // Only admin sees Alunos and Educadores
+  // Only admin sees Alunos and Educadores in main nav
   if (role === "admin") {
     mainNavigation.push({ name: "Alunos", href: "/criancas", icon: Users });
     mainNavigation.push({ name: "Educadores", href: "/educadores", icon: GraduationCap });
   }
 
-  // Everyone except pure responsavel sees Recados
-  if (role === "admin" || role === "educador" || role === "responsavel" || role === "diretor") {
+  // Recados
+  if (role === "admin" || ((role === "educador" || role === "responsavel" || role === "diretor") && canView('recados'))) {
     mainNavigation.push({ name: "Recados", href: "/recados", icon: MessageSquare });
+  }
+
+  // Educador sees Minha Agenda
+  if (role === "educador" && canView('agenda_educador')) {
+    mainNavigation.push({ name: "Minha Agenda", href: "/educador/agenda", icon: ClipboardList });
   }
 
   const responsavelNavigation: typeof mainNavigation = [];
   if (role === "admin" || role === "responsavel") {
-    responsavelNavigation.push({ name: "Meus Eventos", href: "/responsavel/eventos", icon: ClipboardList });
-    responsavelNavigation.push({ name: "Calendário Escolar", href: "/responsavel/calendario", icon: CalendarDays });
-    if (pedSettings?.boletim_ativo) {
+    if (role === "admin" || canView('eventos')) {
+      responsavelNavigation.push({ name: "Meus Eventos", href: "/responsavel/eventos", icon: ClipboardList });
+    }
+    if (role === "admin" || canView('calendario')) {
+      responsavelNavigation.push({ name: "Calendário Escolar", href: "/responsavel/calendario", icon: CalendarDays });
+    }
+    if (pedSettings?.boletim_ativo && (role === "admin" || canView('boletim'))) {
       responsavelNavigation.push({ name: "Desempenho", href: "/responsavel/desempenho", icon: BookOpen });
     }
-    if (pedSettings?.grade_aulas_ativo) {
+    if (pedSettings?.grade_aulas_ativo && (role === "admin" || canView('grade_aulas'))) {
       responsavelNavigation.push({ name: "Grade de Aulas", href: "/responsavel/grade-aulas", icon: CalendarDays });
     }
   }
@@ -108,13 +119,27 @@ export function Sidebar() {
       adminNavigation.push({ name: "Dashboard", href: "/diretor/dashboard", icon: BarChart3 });
     }
 
-    adminNavigation.push({ name: "Corpo Docente", href: `${prefix}/membros`, icon: Users });
-    adminNavigation.push({ name: "Turmas", href: `${prefix}/turmas`, icon: GraduationCap });
-    adminNavigation.push({ name: "Alunos", href: `${prefix}/criancas`, icon: Baby });
-    adminNavigation.push({ name: "Usuários", href: `${prefix}/usuarios`, icon: UserCog });
-    adminNavigation.push({ name: "Feriados", href: `${prefix}/feriados`, icon: PartyPopper });
-    adminNavigation.push({ name: "Calendário", href: `${prefix}/calendario`, icon: CalendarDays });
-    adminNavigation.push({ name: "Relatórios", href: "/relatorios", icon: FileText });
+    if (role === "admin" || canView('membros')) {
+      adminNavigation.push({ name: "Corpo Docente", href: `${prefix}/membros`, icon: Users });
+    }
+    if (role === "admin" || canView('turmas')) {
+      adminNavigation.push({ name: "Turmas", href: `${prefix}/turmas`, icon: GraduationCap });
+    }
+    if (role === "admin" || canView('alunos')) {
+      adminNavigation.push({ name: "Alunos", href: `${prefix}/criancas`, icon: Baby });
+    }
+    if (role === "admin" || canView('usuarios')) {
+      adminNavigation.push({ name: "Usuários", href: `${prefix}/usuarios`, icon: UserCog });
+    }
+    if (role === "admin" || canView('feriados')) {
+      adminNavigation.push({ name: "Feriados", href: `${prefix}/feriados`, icon: PartyPopper });
+    }
+    if (role === "admin" || canView('calendario')) {
+      adminNavigation.push({ name: "Calendário", href: `${prefix}/calendario`, icon: CalendarDays });
+    }
+    if (role === "admin" || canView('relatorios')) {
+      adminNavigation.push({ name: "Relatórios", href: "/relatorios", icon: FileText });
+    }
     adminNavigation.push({ name: "Relatório Aluno", href: "/relatorios/aluno", icon: UserCheck });
     if (role === "admin") {
       adminNavigation.push({ name: "Config. Pedagógicas", href: `${prefix}/pedagogico`, icon: Settings });
@@ -122,16 +147,16 @@ export function Sidebar() {
     if (role === "admin") {
       adminNavigation.push({ name: "Permissões", href: "/admin/permissoes", icon: Shield });
     }
-    if (role === "admin" || pedSettings?.gestao_materias_ativo) {
+    if (role === "admin" || (pedSettings?.gestao_materias_ativo && canView('materias'))) {
       adminNavigation.push({ name: "Matérias", href: `${prefix}/materias`, icon: Library });
     }
-    if (role === "admin" || pedSettings?.boletim_ativo) {
+    if (role === "admin" || (pedSettings?.boletim_ativo && canView('boletim'))) {
       adminNavigation.push({ name: "Boletim", href: `${prefix}/boletim`, icon: BookOpen });
     }
-    if (role === "admin" || pedSettings?.grade_aulas_ativo) {
+    if (role === "admin" || (pedSettings?.grade_aulas_ativo && canView('grade_aulas'))) {
       adminNavigation.push({ name: "Grade de Aulas", href: `${prefix}/grade-aulas`, icon: CalendarDays });
     }
-    if (role === "admin" || pedSettings?.relatorio_desempenho_ativo) {
+    if (role === "admin" || (pedSettings?.relatorio_desempenho_ativo && canView('relatorio_desempenho'))) {
       adminNavigation.push({ name: "Modelo Relatório", href: `${prefix}/relatorio-modelo`, icon: FileText });
       adminNavigation.push({
         name: "Relatórios Desempenho",
