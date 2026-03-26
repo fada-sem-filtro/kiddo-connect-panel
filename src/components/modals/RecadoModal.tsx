@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -12,9 +12,13 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { ImagePlus, X } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
+
+const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+const MAX_SIZE = 10 * 1024 * 1024; // 10MB
 
 const recadoSchema = z.object({
   titulo: z.string().min(1, 'Título obrigatório'),
@@ -32,11 +36,23 @@ interface RecadoModalProps {
   onSaved?: () => void;
 }
 
+async function uploadAnexo(file: File, userId: string): Promise<{ url: string; tipo: string }> {
+  const ext = file.name.split('.').pop() || 'jpg';
+  const path = `${userId}/${Date.now()}.${ext}`;
+  const { error } = await supabase.storage.from('recado-anexos').upload(path, file);
+  if (error) throw error;
+  const { data: { publicUrl } } = supabase.storage.from('recado-anexos').getPublicUrl(path);
+  return { url: publicUrl, tipo: file.type };
+}
+
 export function RecadoModal({ open, onOpenChange, mode, onSaved }: RecadoModalProps) {
   const { user, profile } = useAuth();
   const [loading, setLoading] = useState(false);
   const [criancas, setCriancas] = useState<{ id: string; nome: string }[]>([]);
   const [turmas, setTurmas] = useState<{ id: string; nome: string }[]>([]);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [filePreview, setFilePreview] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const form = useForm<RecadoFormData>({
     resolver: zodResolver(recadoSchema),
@@ -46,9 +62,10 @@ export function RecadoModal({ open, onOpenChange, mode, onSaved }: RecadoModalPr
   useEffect(() => {
     if (open && user) {
       form.reset({ titulo: '', conteudo: '', criancaId: '', turmaId: '' });
+      setSelectedFile(null);
+      setFilePreview(null);
       
       if (mode === 'individual') {
-        // Responsáveis only see their linked children
         const fetchCriancas = async () => {
           const { data: roleData } = await supabase.rpc('get_user_role', { _user_id: user.id });
           if (roleData === 'responsavel') {
@@ -71,6 +88,28 @@ export function RecadoModal({ open, onOpenChange, mode, onSaved }: RecadoModalPr
     }
   }, [open, form, user, mode]);
 
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      toast.error('Formato não suportado. Use JPG, PNG, WebP ou GIF.');
+      return;
+    }
+    if (file.size > MAX_SIZE) {
+      toast.error('Arquivo muito grande. Máximo 10MB.');
+      return;
+    }
+    setSelectedFile(file);
+    setFilePreview(URL.createObjectURL(file));
+  };
+
+  const removeFile = () => {
+    setSelectedFile(null);
+    if (filePreview) URL.revokeObjectURL(filePreview);
+    setFilePreview(null);
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
   const onSubmit = async (data: RecadoFormData) => {
     if (!user) return;
     setLoading(true);
@@ -87,11 +126,18 @@ export function RecadoModal({ open, onOpenChange, mode, onSaved }: RecadoModalPr
         payload.crianca_id = data.criancaId;
       }
 
+      if (selectedFile) {
+        const { url, tipo } = await uploadAnexo(selectedFile, user.id);
+        payload.anexo_url = url;
+        payload.anexo_tipo = tipo;
+      }
+
       const { error } = await supabase.from('recados').insert(payload);
       if (error) throw error;
       toast.success(mode === 'turma' ? 'Recado enviado para a turma!' : 'Recado enviado!');
       onOpenChange(false);
       form.reset();
+      removeFile();
       onSaved?.();
     } catch (err: any) {
       toast.error(err.message || 'Erro ao enviar recado');
@@ -163,6 +209,46 @@ export function RecadoModal({ open, onOpenChange, mode, onSaved }: RecadoModalPr
                 <FormMessage />
               </FormItem>
             )} />
+
+            {/* Photo attachment */}
+            <div className="space-y-2">
+              <FormLabel>Foto (opcional)</FormLabel>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/gif"
+                className="hidden"
+                onChange={handleFileSelect}
+              />
+              {filePreview ? (
+                <div className="relative inline-block">
+                  <img
+                    src={filePreview}
+                    alt="Preview"
+                    className="w-32 h-32 object-cover rounded-xl border-2 border-border"
+                  />
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="icon"
+                    className="absolute -top-2 -right-2 h-6 w-6 rounded-full"
+                    onClick={removeFile}
+                  >
+                    <X className="w-3 h-3" />
+                  </Button>
+                </div>
+              ) : (
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="gap-2"
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <ImagePlus className="w-4 h-4" />
+                  Anexar foto
+                </Button>
+              )}
+            </div>
 
             <div className="flex gap-2 justify-end pt-4">
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancelar</Button>
