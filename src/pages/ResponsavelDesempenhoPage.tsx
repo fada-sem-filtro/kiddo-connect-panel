@@ -37,6 +37,7 @@ export default function ResponsavelDesempenhoPage() {
   const [campos, setCampos] = useState<Campo[]>([]);
   const [respostas, setRespostas] = useState<Resposta[]>([]);
   const [loading, setLoading] = useState(true);
+  const PERIODOS = getPeriodos(tipoPeriodo);
 
   useEffect(() => {
     const fetchCriancas = async () => {
