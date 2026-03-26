@@ -53,9 +53,13 @@ export default function ResponsavelDesempenhoPage() {
         const turmaId = list[0].turma_id;
         const { data: turmaData } = await supabase.from('turmas').select('creche_id').eq('id', turmaId).single();
         if (turmaData) {
-          const { data: materiasData } = await supabase
-            .from('materias').select('id, nome').eq('creche_id', (turmaData as any).creche_id).eq('ativo', true).order('nome');
-          setMaterias((materiasData as Materia[]) || []);
+          const crecheId = (turmaData as any).creche_id;
+          const [materiasRes, crecheRes] = await Promise.all([
+            supabase.from('materias').select('id, nome').eq('creche_id', crecheId).eq('ativo', true).order('nome'),
+            supabase.from('creches').select('tipo_periodo').eq('id', crecheId).single(),
+          ]);
+          setMaterias((materiasRes.data as Materia[]) || []);
+          setTipoPeriodo((crecheRes.data as any)?.tipo_periodo || 'bimestral');
         }
       }
       setLoading(false);

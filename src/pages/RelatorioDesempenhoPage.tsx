@@ -42,8 +42,20 @@ export default function RelatorioDesempenhoPage() {
   const [selectedPeriodo, setSelectedPeriodo] = useState('');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [tipoPeriodo, setTipoPeriodo] = useState('bimestral');
 
   const canEdit = role === 'admin' || role === 'educador' || role === 'diretor';
+  const PERIODOS = getPeriodos(tipoPeriodo);
+
+  useEffect(() => {
+    if (!effectiveCrecheId) return;
+    if (isAdmin && selectedCreche) {
+      setTipoPeriodo((selectedCreche as any).tipo_periodo || 'bimestral');
+    } else {
+      supabase.from('creches').select('tipo_periodo').eq('id', effectiveCrecheId).single()
+        .then(({ data }) => setTipoPeriodo((data as any)?.tipo_periodo || 'bimestral'));
+    }
+  }, [effectiveCrecheId, isAdmin, selectedCreche]);
 
   useEffect(() => {
     if (!effectiveCrecheId) { setLoading(false); return; }
