@@ -1,27 +1,85 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
+
+    <!-- RESPONSIVIDADE -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- TODO: Set the document title to the name of your application -->
-    <title>Agenda Fleur</title>
-    <meta name="description" content="Agenda Fleur Project" />
-    <meta name="author" content="Raissa" />
 
-    <!-- TODO: Update og:title to match your application name -->
-    <meta property="og:title" content="Agenda Fleur" />
-    <meta property="og:description" content="Agenda Fleur Project" />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+    <!-- SEO PRINCIPAL -->
+    <title>Agenda Fleur | Gestão Escolar Completa</title>
 
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@Lovable" />
-    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+    <meta
+      name="description"
+      content="Agenda Fleur é uma plataforma completa de gestão escolar com controle de alunos, professores, turmas, presença, boletim escolar, agenda e permissões por perfil."
+    />
+
+    <meta
+      name="keywords"
+      content="sistema escolar, gestão escolar, agenda escolar, controle de alunos, boletim escolar online, diário de classe digital, software para escola"
+    />
+
+    <meta name="author" content="Raissa Ferrer" />
+
+    <meta name="robots" content="index, follow" />
+
+    <link rel="canonical" href="https://agendafleur.app" />
+
+    <!-- FAVICON -->
     <link rel="icon" href="/favicon.webp" type="image/webp" />
+
+    <!-- OPEN GRAPH (FACEBOOK / WHATSAPP / LINKEDIN) -->
+    <meta property="og:title" content="Agenda Fleur" />
+
+    <meta
+      property="og:description"
+      content="Gerencie alunos, professores, turmas, presença, boletins e agenda escolar com o Agenda Fleur."
+    />
+
+    <meta property="og:type" content="website" />
+
+    <meta property="og:url" content="https://agendafleur.app" />
+
+    <meta property="og:image" content="https://agendafleur.app/preview.png" />
+
+    <!-- TWITTER CARD -->
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <meta name="twitter:title" content="Agenda Fleur" />
+
+    <meta
+      name="twitter:description"
+      content="Sistema completo de gestão escolar com agenda, boletim, presença e controle de usuários."
+    />
+
+    <meta name="twitter:image" content="https://agendafleur.app/preview.png" />
+
+    <!-- SCHEMA STRUCTURED DATA -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Agenda Fleur",
+        "applicationCategory": "EducationalApplication",
+        "operatingSystem": "Web",
+        "description": "Sistema completo de gestão escolar com controle de alunos, professores, agenda, presença e boletins.",
+        "creator": {
+          "@type": "Person",
+          "name": "Raissa Ferrer"
+        },
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "BRL"
+        }
+      }
+    </script>
   </head>
 
   <body>
     <div id="root"></div>
+
+    <!-- REACT APP -->
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
