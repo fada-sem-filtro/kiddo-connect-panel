@@ -790,6 +790,8 @@ export type Database = {
       }
       recados: {
         Row: {
+          anexo_tipo: string | null
+          anexo_url: string | null
           conteudo: string
           created_at: string
           crianca_id: string | null
@@ -803,6 +805,8 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          anexo_tipo?: string | null
+          anexo_url?: string | null
           conteudo: string
           created_at?: string
           crianca_id?: string | null
@@ -816,6 +820,8 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          anexo_tipo?: string | null
+          anexo_url?: string | null
           conteudo?: string
           created_at?: string
           crianca_id?: string | null
