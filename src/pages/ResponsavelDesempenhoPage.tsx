@@ -20,12 +20,13 @@ interface Secao { id: string; titulo: string; ordem: number; }
 interface Campo { id: string; secao_id: string; titulo: string; tipo: string; ordem: number; }
 interface Resposta { campo_id: string; valor: string; }
 
-const PERIODOS = ['1º Bimestre', '2º Bimestre', '3º Bimestre', '4º Bimestre'];
+import { getPeriodos } from '@/lib/periodos';
 
 export default function ResponsavelDesempenhoPage() {
   const { user } = useAuth();
   const { settings } = usePedagogicalSettings();
   const [criancas, setCriancas] = useState<Crianca[]>([]);
+  const [tipoPeriodo, setTipoPeriodo] = useState('bimestral');
   const [materias, setMaterias] = useState<Materia[]>([]);
   const [boletins, setBoletins] = useState<Boletim[]>([]);
   const [relatorios, setRelatorios] = useState<RelatorioAluno[]>([]);

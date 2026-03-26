@@ -27,13 +27,7 @@ interface Boletim {
 
 const FAIXAS_FUNDAMENTAL = FAIXA_ETARIA_OPTIONS.filter(f => f.includes('Ano'));
 
-const PERIODOS_MAP: Record<string, string[]> = {
-  mensal: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
-  bimestral: ['1º Bimestre', '2º Bimestre', '3º Bimestre', '4º Bimestre'],
-  trimestral: ['1º Trimestre', '2º Trimestre', '3º Trimestre'],
-  semestral: ['1º Semestre', '2º Semestre'],
-  anual: ['Anual'],
-};
+import { getPeriodos, PERIODOS_MAP } from '@/lib/periodos';
 
 export default function BoletimPage() {
   const { user, role } = useAuth();
