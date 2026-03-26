@@ -20,12 +20,13 @@ interface Secao { id: string; titulo: string; ordem: number; }
 interface Campo { id: string; secao_id: string; titulo: string; tipo: string; ordem: number; }
 interface Resposta { campo_id: string; valor: string; }
 
-const PERIODOS = ['1º Bimestre', '2º Bimestre', '3º Bimestre', '4º Bimestre'];
+import { getPeriodos } from '@/lib/periodos';
 
 export default function ResponsavelDesempenhoPage() {
   const { user } = useAuth();
   const { settings } = usePedagogicalSettings();
   const [criancas, setCriancas] = useState<Crianca[]>([]);
+  const [tipoPeriodo, setTipoPeriodo] = useState('bimestral');
   const [materias, setMaterias] = useState<Materia[]>([]);
   const [boletins, setBoletins] = useState<Boletim[]>([]);
   const [relatorios, setRelatorios] = useState<RelatorioAluno[]>([]);
@@ -36,6 +37,7 @@ export default function ResponsavelDesempenhoPage() {
   const [campos, setCampos] = useState<Campo[]>([]);
   const [respostas, setRespostas] = useState<Resposta[]>([]);
   const [loading, setLoading] = useState(true);
+  const PERIODOS = getPeriodos(tipoPeriodo);
 
   useEffect(() => {
     const fetchCriancas = async () => {
@@ -52,9 +54,13 @@ export default function ResponsavelDesempenhoPage() {
         const turmaId = list[0].turma_id;
         const { data: turmaData } = await supabase.from('turmas').select('creche_id').eq('id', turmaId).single();
         if (turmaData) {
-          const { data: materiasData } = await supabase
-            .from('materias').select('id, nome').eq('creche_id', (turmaData as any).creche_id).eq('ativo', true).order('nome');
-          setMaterias((materiasData as Materia[]) || []);
+          const crecheId = (turmaData as any).creche_id;
+          const [materiasRes, crecheRes] = await Promise.all([
+            supabase.from('materias').select('id, nome').eq('creche_id', crecheId).eq('ativo', true).order('nome'),
+            supabase.from('creches').select('tipo_periodo').eq('id', crecheId).single(),
+          ]);
+          setMaterias((materiasRes.data as Materia[]) || []);
+          setTipoPeriodo((crecheRes.data as any)?.tipo_periodo || 'bimestral');
         }
       }
       setLoading(false);

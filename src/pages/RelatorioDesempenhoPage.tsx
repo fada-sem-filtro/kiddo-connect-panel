@@ -21,12 +21,13 @@ interface Turma { id: string; nome: string; }
 interface Crianca { id: string; nome: string; turma_id: string; }
 interface RelatorioAluno { id: string; status: string; }
 
-const PERIODOS = ['1º Bimestre', '2º Bimestre', '3º Bimestre', '4º Bimestre', '1º Semestre', '2º Semestre', 'Anual'];
+import { getPeriodos } from '@/lib/periodos';
+
 const ESCALA_OPTIONS = ['Em desenvolvimento', 'Desenvolvido', 'Avançado', 'Não avaliado'];
 
 export default function RelatorioDesempenhoPage() {
   const { user, role } = useAuth();
-  const { effectiveCrecheId, selectedCrecheId, setSelectedCrecheId, creches, isAdmin } = useAdminSchoolSelector();
+  const { effectiveCrecheId, selectedCrecheId, setSelectedCrecheId, creches, isAdmin, selectedCreche } = useAdminSchoolSelector();
   const [modelos, setModelos] = useState<Modelo[]>([]);
   const [turmas, setTurmas] = useState<Turma[]>([]);
   const [criancas, setCriancas] = useState<Crianca[]>([]);
@@ -41,8 +42,20 @@ export default function RelatorioDesempenhoPage() {
   const [selectedPeriodo, setSelectedPeriodo] = useState('');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [tipoPeriodo, setTipoPeriodo] = useState('bimestral');
 
   const canEdit = role === 'admin' || role === 'educador' || role === 'diretor';
+  const PERIODOS = getPeriodos(tipoPeriodo);
+
+  useEffect(() => {
+    if (!effectiveCrecheId) return;
+    if (isAdmin && selectedCreche) {
+      setTipoPeriodo((selectedCreche as any).tipo_periodo || 'bimestral');
+    } else {
+      supabase.from('creches').select('tipo_periodo').eq('id', effectiveCrecheId).single()
+        .then(({ data }) => setTipoPeriodo((data as any)?.tipo_periodo || 'bimestral'));
+    }
+  }, [effectiveCrecheId, isAdmin, selectedCreche]);
 
   useEffect(() => {
     if (!effectiveCrecheId) { setLoading(false); return; }
