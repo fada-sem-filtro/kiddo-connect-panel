@@ -1,5 +1,4 @@
 import { useState, useRef } from "react";
-import SystemScreenshots from "@/components/landing/SystemScreenshots";
 import { Link } from "react-router-dom";
 import { motion, useInView } from "framer-motion";
 import {
@@ -314,6 +313,18 @@ const steps = [
   { n: "5", text: "Responsável acompanha o desempenho acadêmico do aluno" },
 ];
 
+const screenshots = [
+  "Dashboard do Diretor",
+  "Dashboard do Educador",
+  "Dashboard do Responsável",
+  "Cadastro de Alunos",
+  "Cadastro de Professores",
+  "Gestão de Turmas",
+  "Calendário Semanal",
+  "Horário das Aulas",
+  "Recados com Fotos",
+  "Boletim Escolar",
+];
 
 const comparison = [
   { item: "Organização", old: false, new_: true },
@@ -357,7 +368,7 @@ export default function LandingPage() {
               </Button>
             </Link>
             <Button size="sm" onClick={() => setContactOpen(true)}>
-              Solicite um orçamento
+              Solicite sua Demonstração
             </Button>
           </div>
         </div>
@@ -401,7 +412,7 @@ export default function LandingPage() {
             className="flex flex-col sm:flex-row gap-3 justify-center pt-4"
           >
             <Button size="lg" className="text-base px-8" onClick={() => setContactOpen(true)}>
-              Solicite seu orçamento <ArrowRight className="ml-2 w-5 h-5" />
+              Solicite sua Demonstração <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
             <Button size="lg" variant="outline" className="text-base px-8" asChild>
               <a href="#funcionalidades">
@@ -552,12 +563,20 @@ export default function LandingPage() {
 
       {/* PRINTS */}
       <section className="py-16 md:py-24 px-4">
-        <div className="max-w-7xl mx-auto space-y-10">
+        <div className="max-w-6xl mx-auto space-y-10">
           <AnimSection className="text-center">
             <h2 className="text-3xl md:text-4xl font-bold text-foreground">Veja o Sistema em Ação</h2>
-            <p className="text-muted-foreground mt-2">Conheça as principais telas da plataforma</p>
           </AnimSection>
-          <SystemScreenshots />
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            {screenshots.map((s, i) => (
+              <AnimCard key={s} i={i}>
+                <div className="aspect-video bg-muted rounded-xl border border-border flex items-center justify-center p-3 hover:shadow-md transition-shadow">
+                  <p className="text-xs text-muted-foreground text-center font-medium">{s}</p>
+                </div>
+              </AnimCard>
+            ))}
+          </div>
+          <p className="text-center text-sm text-muted-foreground">* Imagens ilustrativas. Prints reais em breve.</p>
         </div>
       </section>
 
@@ -625,7 +644,7 @@ export default function LandingPage() {
           </p>
           <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
             <Button size="lg" className="text-lg px-10 py-6" onClick={() => setContactOpen(true)}>
-              Solicite sua demonstração <ArrowRight className="ml-2 w-5 h-5" />
+              Solicite sua Demonstração <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
           </motion.div>
         </AnimSection>
