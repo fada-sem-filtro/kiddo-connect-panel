@@ -54,11 +54,28 @@ function AnimCard({ children, className = "", i = 0 }: { children: React.ReactNo
 /* ── Contact Modal ── */
 function ContactModal({ open, onOpenChange }: { open: boolean; onOpenChange: (v: boolean) => void }) {
   const [form, setForm] = useState({ nome: "", escola: "", cidade: "", telefone: "", email: "", alunos: "" });
-  const handleSubmit = (e: React.FormEvent) => {
+  const [submitting, setSubmitting] = useState(false);
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success("Solicitação enviada com sucesso! Entraremos em contato em breve.");
-    onOpenChange(false);
-    setForm({ nome: "", escola: "", cidade: "", telefone: "", email: "", alunos: "" });
+    setSubmitting(true);
+    try {
+      const { error } = await supabase.from('orcamentos').insert({
+        nome: form.nome,
+        escola: form.escola,
+        cidade: form.cidade,
+        telefone: form.telefone || null,
+        email: form.email,
+        num_alunos: form.alunos || null,
+      });
+      if (error) throw error;
+      toast.success("Solicitação enviada com sucesso! Entraremos em contato em breve.");
+      onOpenChange(false);
+      setForm({ nome: "", escola: "", cidade: "", telefone: "", email: "", alunos: "" });
+    } catch (err: any) {
+      toast.error("Erro ao enviar solicitação. Tente novamente.");
+    } finally {
+      setSubmitting(false);
+    }
   };
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
