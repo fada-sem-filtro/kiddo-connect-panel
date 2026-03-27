@@ -37,6 +37,7 @@ import RelatorioModeloPage from "./pages/RelatorioModeloPage";
 import RelatorioDesempenhoPage from "./pages/RelatorioDesempenhoPage";
 import PermissoesPerfilPage from "./pages/PermissoesPerfilPage";
 import ResponsavelGradePage from "./pages/ResponsavelGradePage";
+import LandingPage from "./pages/LandingPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -50,6 +51,7 @@ const App = () => (
             <Toaster />
             <Sonner />
             <Routes>
+              <Route path="/conheca" element={<LandingPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/reset-password" element={<ResetPasswordPage />} />
               <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />

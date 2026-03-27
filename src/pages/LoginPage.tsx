@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import logoFleur from "@/assets/logo-fleur-2.webp";
 import { Button } from "@/components/ui/button";
@@ -120,7 +120,7 @@ export default function LoginPage() {
             </Button>
           </form>
 
-          <div className="mt-4 text-center">
+          <div className="mt-4 text-center space-y-2">
             <Button
               variant="link"
               className="text-sm text-muted-foreground"
@@ -128,6 +128,11 @@ export default function LoginPage() {
             >
               {isForgotPassword ? "Voltar ao login" : "Esqueci minha senha"}
             </Button>
+            <div>
+              <Button variant="link" className="text-sm text-primary" asChild>
+                <Link to="/conheca">Conheça a Agenda Fleur 🌸</Link>
+              </Button>
+            </div>
           </div>
         </div>
 
