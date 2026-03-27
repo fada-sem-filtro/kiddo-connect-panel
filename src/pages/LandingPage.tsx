@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import SystemScreenshots from "@/components/landing/SystemScreenshots";
 import { Link } from "react-router-dom";
 import { motion, useInView } from "framer-motion";
 import {
