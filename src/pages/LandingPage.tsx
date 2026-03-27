@@ -394,7 +394,8 @@ export default function LandingPage() {
             transition={{ duration: 0.5, delay: 0.4 }}
             className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto"
           >
-            Uma plataforma moderna que organiza a gestão pedagógica e administrativa da sua escola em um único lugar.
+            Uma plataforma moderna, totalmente responsiva, que organiza a gestão pedagógica e administrativa da sua
+            escola em um único lugar.
           </motion.p>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -420,14 +421,6 @@ export default function LandingPage() {
               </a>
             </Button>
           </motion.div>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-            className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto"
-          >
-            Totalmente responsivo.
-          </motion.p>
         </div>
       </section>
 
