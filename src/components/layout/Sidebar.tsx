@@ -146,6 +146,7 @@ export function Sidebar() {
     }
     if (role === "admin") {
       adminNavigation.push({ name: "Permissões", href: "/admin/permissoes", icon: Shield });
+      adminNavigation.push({ name: "Orçamentos", href: "/admin/orcamentos", icon: MessageSquare });
     }
     if (role === "admin" || (pedSettings?.gestao_materias_ativo && canView('materias'))) {
       adminNavigation.push({ name: "Matérias", href: `${prefix}/materias`, icon: Library });
