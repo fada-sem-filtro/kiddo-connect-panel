@@ -140,7 +140,7 @@ async function sendViaResend(to: string, subject: string, html: string): Promise
       Authorization: `Bearer ${RESEND_API_KEY}`,
     },
     body: JSON.stringify({
-      from: `${SITE_NAME} <noreply@${FROM_DOMAIN}>`,
+      from: `${SITE_NAME} <contato@${FROM_DOMAIN}>`,
       to: [to],
       subject,
       html,
