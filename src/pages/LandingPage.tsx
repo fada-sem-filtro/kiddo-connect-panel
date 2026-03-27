@@ -133,9 +133,43 @@ const features = [
 ];
 
 const profiles = [
-  { icon: UserCog, title: "Diretor", items: ["Gestão pedagógica completa", "Turmas e professores", "Matérias e grade de aulas", "Boletim e relatórios", "Calendário escolar"] },
-  { icon: GraduationCap, title: "Educador", items: ["Acesso às turmas que leciona", "Registro de avaliações", "Grade de aulas", "Agenda infantil", "Recados com fotos"] },
-  { icon: Eye, title: "Responsável", items: ["Informações pedagógicas do aluno", "Boletim escolar", "Grade de aulas", "Recados e notificações", "Eventos e calendário"] },
+  { icon: UserCog, title: "Diretor", items: [
+    "Dashboard com visão geral da escola",
+    "Gestão de turmas e professores",
+    "Cadastro e configuração de matérias",
+    "Grade de aulas semanal",
+    "Boletim escolar por período",
+    "Relatório de desempenho qualitativo",
+    "Calendário escolar e feriados",
+    "Gestão de alunos e responsáveis",
+    "Recados com anexo de fotos",
+    "Controle de presença",
+    "Configurações pedagógicas",
+    "Permissões por perfil",
+  ]},
+  { icon: GraduationCap, title: "Educador", items: [
+    "Dashboard personalizado",
+    "Visualização das turmas que leciona",
+    "Grade de aulas semanal",
+    "Registro de notas no boletim",
+    "Preenchimento de relatório de desempenho",
+    "Agenda infantil (alimentação, sono, higiene)",
+    "Controle de presença diária",
+    "Recados com anexo de fotos",
+    "Registro de eventos diários",
+    "Notificações em tempo real",
+  ]},
+  { icon: Eye, title: "Responsável", items: [
+    "Dashboard com informações do aluno",
+    "Boletim escolar do filho",
+    "Relatório de desempenho qualitativo",
+    "Grade de aulas semanal",
+    "Agenda infantil diária",
+    "Eventos e calendário escolar",
+    "Recados com anexo de fotos",
+    "Notificações em tempo real",
+    "Pessoas autorizadas para busca",
+  ]},
 ];
 
 const steps = [
