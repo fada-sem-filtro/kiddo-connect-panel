@@ -45,7 +45,7 @@ serve(async (req) => {
           Authorization: `Bearer ${RESEND_API_KEY}`,
         },
         body: JSON.stringify({
-          from: "Agenda Fleur <noreply@agendafleur.app>",
+          from: "Agenda Fleur <onboarding@resend.dev>",
           to: [to],
           subject: subject || "Resposta ao seu orçamento - Agenda Fleur",
           html: htmlBody,
