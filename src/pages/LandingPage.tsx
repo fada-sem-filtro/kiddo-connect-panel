@@ -105,7 +105,7 @@ function ContactModal({ open, onOpenChange }: { open: boolean; onOpenChange: (v:
               </div>
             </div>
           ))}
-          <Button type="submit" className="w-full">Enviar solicitação</Button>
+          <Button type="submit" className="w-full" disabled={submitting}>{submitting ? 'Enviando...' : 'Enviar solicitação'}</Button>
         </form>
       </DialogContent>
     </Dialog>

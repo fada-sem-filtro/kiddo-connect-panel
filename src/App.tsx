@@ -100,6 +100,7 @@ const App = () => (
               <Route path="/educador/grade-aulas" element={<ProtectedRoute allowedRoles={['educador']}><GradeAulasPage /></ProtectedRoute>} />
               <Route path="/educador/agenda" element={<ProtectedRoute allowedRoles={['educador']}><AgendaEducadorPage /></ProtectedRoute>} />
               <Route path="/admin/permissoes" element={<ProtectedRoute allowedRoles={['admin']}><PermissoesPerfilPage /></ProtectedRoute>} />
+              <Route path="/admin/orcamentos" element={<ProtectedRoute allowedRoles={['admin']}><OrcamentosPage /></ProtectedRoute>} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </NotificationProvider>
