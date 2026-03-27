@@ -1,20 +1,56 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
+import { motion, useInView } from "framer-motion";
 import { 
   ArrowRight, CheckCircle2, XCircle, Users, GraduationCap, BookOpen, 
   Calendar, ClipboardList, Shield, School, ChevronRight, Star,
   FileSpreadsheet, Clock, BarChart3, BookMarked, UserCog, Eye,
-  Mail, Phone, Building2, MapPin, Hash, User
+  Mail, Phone, MapPin, Hash, User, MessageSquare, Image, Bell,
+  CalendarDays, ListChecks, Settings, Lock, Megaphone, Baby,
+  FileText, Clipboard, UserCheck, PieChart
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import logoFleur from "@/assets/logo-fleur-2.webp";
 
+/* ── Reusable animated wrapper ── */
+function AnimSection({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-60px" });
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 40 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.5, delay, ease: "easeOut" }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+function AnimCard({ children, className = "", i = 0 }: { children: React.ReactNode; className?: string; i?: number }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-40px" });
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 30, scale: 0.97 }}
+      animate={inView ? { opacity: 1, y: 0, scale: 1 } : {}}
+      transition={{ duration: 0.4, delay: i * 0.08, ease: "easeOut" }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+/* ── Contact Modal ── */
 function ContactModal({ open, onOpenChange }: { open: boolean; onOpenChange: (v: boolean) => void }) {
   const [form, setForm] = useState({ nome: "", escola: "", cidade: "", telefone: "", email: "", alunos: "" });
   const handleSubmit = (e: React.FormEvent) => {
@@ -43,7 +79,7 @@ function ContactModal({ open, onOpenChange }: { open: boolean; onOpenChange: (v:
               <Label htmlFor={f.id}>{f.label}</Label>
               <div className="relative">
                 <f.icon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Input 
+                <Input
                   id={f.id} type={f.type} required className="pl-10"
                   value={(form as any)[f.id]}
                   onChange={e => setForm(p => ({ ...p, [f.id]: e.target.value }))}
@@ -58,6 +94,7 @@ function ContactModal({ open, onOpenChange }: { open: boolean; onOpenChange: (v:
   );
 }
 
+/* ── Data ── */
 const problems = [
   { icon: FileSpreadsheet, title: "Planilhas desorganizadas", desc: "Dados espalhados em múltiplos arquivos sem integração" },
   { icon: Clock, title: "Horários confusos", desc: "Dificuldade em organizar grades e calendários" },
@@ -78,16 +115,27 @@ const features = [
   { icon: Users, title: "Gestão de alunos", desc: "Cadastro completo de alunos com vínculo às turmas e organização das informações acadêmicas." },
   { icon: GraduationCap, title: "Gestão de professores", desc: "Cadastro e gestão de educadores com associação às matérias e turmas." },
   { icon: School, title: "Gestão de turmas", desc: "Organização das turmas da escola com controle de alunos e professores." },
-  { icon: BookOpen, title: "Matérias personalizadas", desc: "O diretor pode cadastrar e configurar as matérias da escola." },
-  { icon: Calendar, title: "Calendário semanal", desc: "Definição dos horários das aulas por turma. Cada matéria é vinculada ao professor responsável." },
-  { icon: ClipboardList, title: "Boletim escolar", desc: "Registro e acompanhamento do desempenho dos alunos." },
-  { icon: Shield, title: "Controle por perfil", desc: "O sistema possui níveis de acesso diferentes para cada perfil." },
+  { icon: BookOpen, title: "Matérias personalizadas", desc: "O diretor pode cadastrar e configurar as matérias da escola de forma flexível." },
+  { icon: Calendar, title: "Grade de aulas semanal", desc: "Definição dos horários das aulas por turma com vínculo ao professor responsável." },
+  { icon: ClipboardList, title: "Boletim escolar", desc: "Registro e acompanhamento do desempenho dos alunos por período letivo." },
+  { icon: FileText, title: "Relatório de desempenho", desc: "Relatórios qualitativos com modelo personalizável por escola." },
+  { icon: MessageSquare, title: "Recados e comunicação", desc: "Envio de recados entre educadores e responsáveis com suporte a fotos." },
+  { icon: Image, title: "Anexo de fotos", desc: "Anexe imagens nos recados para uma comunicação visual e eficiente." },
+  { icon: Bell, title: "Notificações", desc: "Sistema de notificações em tempo real para manter todos informados." },
+  { icon: CalendarDays, title: "Calendário escolar", desc: "Gestão de feriados e eventos do calendário acadêmico." },
+  { icon: Baby, title: "Agenda infantil", desc: "Registro diário de alimentação, sono, higiene e atividades para creches." },
+  { icon: Clipboard, title: "Controle de presença", desc: "Registro de presença diária com horário de chegada e saída." },
+  { icon: UserCheck, title: "Pessoas autorizadas", desc: "Cadastro de pessoas autorizadas para buscar cada criança." },
+  { icon: Settings, title: "Config. pedagógicas", desc: "Ative ou desative módulos pedagógicos por escola: boletim, relatório, grade." },
+  { icon: Lock, title: "Permissões por perfil", desc: "Configure o que cada perfil pode visualizar e fazer no sistema." },
+  { icon: PieChart, title: "Dashboards por perfil", desc: "Painéis personalizados para diretor, educador e responsável." },
+  { icon: Shield, title: "Multi-tenant SaaS", desc: "Cada escola possui suas configurações, dados e identidade visual." },
 ];
 
 const profiles = [
-  { icon: UserCog, title: "Diretor", items: ["Gestão pedagógica da escola", "Turmas", "Professores", "Matérias", "Organização escolar"] },
-  { icon: GraduationCap, title: "Educador", items: ["Acesso às turmas e matérias que leciona", "Registro de avaliações", "Visualização da grade de aulas"] },
-  { icon: Eye, title: "Responsável", items: ["Acesso às informações pedagógicas do aluno", "Boletim escolar", "Grade de aulas"] },
+  { icon: UserCog, title: "Diretor", items: ["Gestão pedagógica completa", "Turmas e professores", "Matérias e grade de aulas", "Boletim e relatórios", "Calendário escolar"] },
+  { icon: GraduationCap, title: "Educador", items: ["Acesso às turmas que leciona", "Registro de avaliações", "Grade de aulas", "Agenda infantil", "Recados com fotos"] },
+  { icon: Eye, title: "Responsável", items: ["Informações pedagógicas do aluno", "Boletim escolar", "Grade de aulas", "Recados e notificações", "Eventos e calendário"] },
 ];
 
 const steps = [
@@ -119,15 +167,21 @@ const audiences = [
   "Instituições que desejam modernizar sua gestão",
 ];
 
+/* ── Page ── */
 export default function LandingPage() {
   const [contactOpen, setContactOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-background font-[Quicksand]">
+    <div className="min-h-screen bg-background font-[Quicksand] overflow-x-hidden">
       <ContactModal open={contactOpen} onOpenChange={setContactOpen} />
 
       {/* NAV */}
-      <nav className="sticky top-0 z-50 bg-card/80 backdrop-blur-md border-b border-border">
+      <motion.nav
+        initial={{ y: -60, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="sticky top-0 z-50 bg-card/80 backdrop-blur-md border-b border-border"
+      >
         <div className="max-w-7xl mx-auto flex items-center justify-between px-4 py-3">
           <div className="flex items-center gap-2">
             <img src={logoFleur} alt="Agenda Fleur" className="w-8 h-8" />
@@ -140,51 +194,73 @@ export default function LandingPage() {
             <Button size="sm" onClick={() => setContactOpen(true)}>Solicite um orçamento</Button>
           </div>
         </div>
-      </nav>
+      </motion.nav>
 
       {/* HERO */}
       <section className="relative overflow-hidden py-20 md:py-32 px-4">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-accent/10" />
         <div className="relative max-w-4xl mx-auto text-center space-y-6">
-          <h1 className="text-4xl md:text-6xl font-extrabold text-foreground leading-tight">
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-4xl md:text-6xl font-extrabold text-foreground leading-tight"
+          >
             Sistema Completo de<br />
             <span className="text-primary">Gestão Escolar</span>
-          </h1>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto"
+          >
             Uma plataforma moderna que organiza a gestão pedagógica e administrativa da sua escola em um único lugar.
-          </p>
-          <p className="text-base text-muted-foreground max-w-xl mx-auto">
+          </motion.p>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.5 }}
+            className="text-base text-muted-foreground max-w-xl mx-auto"
+          >
             Controle turmas, professores, matérias, calendário escolar e desempenho acadêmico com uma plataforma simples, rápida e segura.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4">
+          </motion.p>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.6 }}
+            className="flex flex-col sm:flex-row gap-3 justify-center pt-4"
+          >
             <Button size="lg" className="text-base px-8" onClick={() => setContactOpen(true)}>
               Solicite seu orçamento <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
             <Button size="lg" variant="outline" className="text-base px-8" asChild>
               <a href="#funcionalidades">Ver funcionalidades <ChevronRight className="ml-1 w-4 h-4" /></a>
             </Button>
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* PROBLEMA */}
       <section className="py-16 md:py-24 px-4 bg-muted/40">
         <div className="max-w-6xl mx-auto space-y-10">
-          <div className="text-center max-w-2xl mx-auto space-y-3">
+          <AnimSection className="text-center max-w-2xl mx-auto space-y-3">
             <h2 className="text-3xl md:text-4xl font-bold text-foreground">Os desafios da gestão escolar</h2>
             <p className="text-muted-foreground">
               Muitas escolas ainda utilizam planilhas, processos manuais ou sistemas limitados para organizar suas atividades pedagógicas.
             </p>
-          </div>
+          </AnimSection>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {problems.map(p => (
-              <Card key={p.title} className="border-destructive/20 bg-destructive/5">
-                <CardContent className="p-6 text-center space-y-3">
-                  <p.icon className="w-10 h-10 mx-auto text-destructive" />
-                  <h3 className="font-bold text-foreground">{p.title}</h3>
-                  <p className="text-sm text-muted-foreground">{p.desc}</p>
-                </CardContent>
-              </Card>
+            {problems.map((p, i) => (
+              <AnimCard key={p.title} i={i}>
+                <Card className="border-destructive/20 bg-destructive/5 h-full">
+                  <CardContent className="p-6 text-center space-y-3">
+                    <p.icon className="w-10 h-10 mx-auto text-destructive" />
+                    <h3 className="font-bold text-foreground">{p.title}</h3>
+                    <p className="text-sm text-muted-foreground">{p.desc}</p>
+                  </CardContent>
+                </Card>
+              </AnimCard>
             ))}
           </div>
         </div>
@@ -193,23 +269,25 @@ export default function LandingPage() {
       {/* SOLUÇÃO */}
       <section className="py-16 md:py-24 px-4">
         <div className="max-w-6xl mx-auto space-y-10">
-          <div className="text-center max-w-2xl mx-auto space-y-3">
+          <AnimSection className="text-center max-w-2xl mx-auto space-y-3">
             <h2 className="text-3xl md:text-4xl font-bold text-foreground">Uma plataforma pensada para escolas modernas</h2>
             <p className="text-muted-foreground">
               Nosso sistema centraliza todas as informações acadêmicas e administrativas da escola, permitindo uma gestão mais organizada, eficiente e profissional.
             </p>
-          </div>
+          </AnimSection>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {benefits.map(b => (
-              <Card key={b.title} className="border-primary/20 hover:border-primary/40 transition-colors">
-                <CardContent className="p-6 space-y-3">
-                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                    <b.icon className="w-6 h-6 text-primary" />
-                  </div>
-                  <h3 className="font-bold text-foreground">{b.title}</h3>
-                  <p className="text-sm text-muted-foreground">{b.desc}</p>
-                </CardContent>
-              </Card>
+            {benefits.map((b, i) => (
+              <AnimCard key={b.title} i={i}>
+                <Card className="border-primary/20 hover:border-primary/40 transition-colors h-full hover:shadow-md">
+                  <CardContent className="p-6 space-y-3">
+                    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                      <b.icon className="w-6 h-6 text-primary" />
+                    </div>
+                    <h3 className="font-bold text-foreground">{b.title}</h3>
+                    <p className="text-sm text-muted-foreground">{b.desc}</p>
+                  </CardContent>
+                </Card>
+              </AnimCard>
             ))}
           </div>
         </div>
@@ -218,20 +296,23 @@ export default function LandingPage() {
       {/* FUNCIONALIDADES */}
       <section id="funcionalidades" className="py-16 md:py-24 px-4 bg-muted/40">
         <div className="max-w-6xl mx-auto space-y-10">
-          <div className="text-center">
+          <AnimSection className="text-center space-y-3">
             <h2 className="text-3xl md:text-4xl font-bold text-foreground">Funcionalidades do Sistema</h2>
-          </div>
+            <p className="text-muted-foreground">Tudo o que sua escola precisa em uma única plataforma</p>
+          </AnimSection>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {features.map(f => (
-              <Card key={f.title} className="hover:shadow-lg transition-shadow">
-                <CardContent className="p-6 space-y-3">
-                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                    <f.icon className="w-6 h-6 text-primary" />
-                  </div>
-                  <h3 className="font-bold text-lg text-foreground">{f.title}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{f.desc}</p>
-                </CardContent>
-              </Card>
+            {features.map((f, i) => (
+              <AnimCard key={f.title} i={i}>
+                <Card className="hover:shadow-lg transition-shadow h-full">
+                  <CardContent className="p-6 space-y-3">
+                    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                      <f.icon className="w-6 h-6 text-primary" />
+                    </div>
+                    <h3 className="font-bold text-lg text-foreground">{f.title}</h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{f.desc}</p>
+                  </CardContent>
+                </Card>
+              </AnimCard>
             ))}
           </div>
         </div>
@@ -240,29 +321,31 @@ export default function LandingPage() {
       {/* PERFIS */}
       <section className="py-16 md:py-24 px-4">
         <div className="max-w-6xl mx-auto space-y-10">
-          <div className="text-center">
+          <AnimSection className="text-center">
             <h2 className="text-3xl md:text-4xl font-bold text-foreground">Perfis de Usuário</h2>
-          </div>
+          </AnimSection>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {profiles.map(p => (
-              <Card key={p.title} className="border-primary/20">
-                <CardContent className="p-6 space-y-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                      <p.icon className="w-6 h-6 text-primary" />
+            {profiles.map((p, i) => (
+              <AnimCard key={p.title} i={i}>
+                <Card className="border-primary/20 h-full">
+                  <CardContent className="p-6 space-y-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                        <p.icon className="w-6 h-6 text-primary" />
+                      </div>
+                      <h3 className="text-xl font-bold text-foreground">{p.title}</h3>
                     </div>
-                    <h3 className="text-xl font-bold text-foreground">{p.title}</h3>
-                  </div>
-                  <ul className="space-y-2">
-                    {p.items.map(item => (
-                      <li key={item} className="flex items-start gap-2 text-sm text-muted-foreground">
-                        <CheckCircle2 className="w-4 h-4 text-primary mt-0.5 shrink-0" />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
+                    <ul className="space-y-2">
+                      {p.items.map(item => (
+                        <li key={item} className="flex items-start gap-2 text-sm text-muted-foreground">
+                          <CheckCircle2 className="w-4 h-4 text-primary mt-0.5 shrink-0" />
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
+              </AnimCard>
             ))}
           </div>
         </div>
@@ -271,18 +354,20 @@ export default function LandingPage() {
       {/* COMO FUNCIONA */}
       <section className="py-16 md:py-24 px-4 bg-muted/40">
         <div className="max-w-4xl mx-auto space-y-10">
-          <div className="text-center">
+          <AnimSection className="text-center">
             <h2 className="text-3xl md:text-4xl font-bold text-foreground">Como o Sistema Funciona</h2>
-          </div>
+          </AnimSection>
           <div className="space-y-4">
             {steps.map((s, i) => (
-              <div key={s.n} className="flex items-center gap-4 bg-card rounded-2xl p-5 border border-border shadow-sm">
-                <div className="w-12 h-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-lg shrink-0">
-                  {s.n}
+              <AnimCard key={s.n} i={i}>
+                <div className="flex items-center gap-4 bg-card rounded-2xl p-5 border border-border shadow-sm">
+                  <div className="w-12 h-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-lg shrink-0">
+                    {s.n}
+                  </div>
+                  <p className="text-foreground font-medium">{s.text}</p>
+                  {i < steps.length - 1 && <ArrowRight className="w-5 h-5 text-muted-foreground ml-auto hidden md:block" />}
                 </div>
-                <p className="text-foreground font-medium">{s.text}</p>
-                {i < steps.length - 1 && <ArrowRight className="w-5 h-5 text-muted-foreground ml-auto hidden md:block" />}
-              </div>
+              </AnimCard>
             ))}
           </div>
         </div>
@@ -291,14 +376,16 @@ export default function LandingPage() {
       {/* PRINTS */}
       <section className="py-16 md:py-24 px-4">
         <div className="max-w-6xl mx-auto space-y-10">
-          <div className="text-center">
+          <AnimSection className="text-center">
             <h2 className="text-3xl md:text-4xl font-bold text-foreground">Veja o Sistema em Ação</h2>
-          </div>
+          </AnimSection>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            {screenshots.map(s => (
-              <div key={s} className="aspect-video bg-muted rounded-xl border border-border flex items-center justify-center p-3">
-                <p className="text-xs text-muted-foreground text-center font-medium">{s}</p>
-              </div>
+            {screenshots.map((s, i) => (
+              <AnimCard key={s} i={i}>
+                <div className="aspect-video bg-muted rounded-xl border border-border flex items-center justify-center p-3 hover:shadow-md transition-shadow">
+                  <p className="text-xs text-muted-foreground text-center font-medium">{s}</p>
+                </div>
+              </AnimCard>
             ))}
           </div>
           <p className="text-center text-sm text-muted-foreground">* Imagens ilustrativas. Prints reais em breve.</p>
@@ -308,39 +395,43 @@ export default function LandingPage() {
       {/* COMPARAÇÃO */}
       <section className="py-16 md:py-24 px-4 bg-muted/40">
         <div className="max-w-3xl mx-auto space-y-10">
-          <div className="text-center">
+          <AnimSection className="text-center">
             <h2 className="text-3xl md:text-4xl font-bold text-foreground">Comparação</h2>
-          </div>
-          <div className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm">
-            <div className="grid grid-cols-3 bg-muted/60 p-4 font-bold text-sm text-foreground">
-              <span>Recurso</span>
-              <span className="text-center">Métodos antigos</span>
-              <span className="text-center">Agenda Fleur</span>
-            </div>
-            {comparison.map((c, i) => (
-              <div key={c.item} className={`grid grid-cols-3 p-4 text-sm items-center ${i % 2 === 0 ? "" : "bg-muted/20"}`}>
-                <span className="text-foreground font-medium">{c.item}</span>
-                <span className="flex justify-center"><XCircle className="w-5 h-5 text-destructive" /></span>
-                <span className="flex justify-center"><CheckCircle2 className="w-5 h-5 text-primary" /></span>
+          </AnimSection>
+          <AnimSection delay={0.15}>
+            <div className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm">
+              <div className="grid grid-cols-3 bg-muted/60 p-4 font-bold text-sm text-foreground">
+                <span>Recurso</span>
+                <span className="text-center">Métodos antigos</span>
+                <span className="text-center">Agenda Fleur</span>
               </div>
-            ))}
-          </div>
+              {comparison.map((c, i) => (
+                <div key={c.item} className={`grid grid-cols-3 p-4 text-sm items-center ${i % 2 === 0 ? "" : "bg-muted/20"}`}>
+                  <span className="text-foreground font-medium">{c.item}</span>
+                  <span className="flex justify-center"><XCircle className="w-5 h-5 text-destructive" /></span>
+                  <span className="flex justify-center"><CheckCircle2 className="w-5 h-5 text-primary" /></span>
+                </div>
+              ))}
+            </div>
+          </AnimSection>
         </div>
       </section>
 
       {/* PARA QUEM */}
       <section className="py-16 md:py-24 px-4">
         <div className="max-w-4xl mx-auto space-y-8">
-          <div className="text-center space-y-3">
+          <AnimSection className="text-center space-y-3">
             <h2 className="text-3xl md:text-4xl font-bold text-foreground">Para quem é o sistema?</h2>
             <p className="text-muted-foreground">Nossa plataforma foi desenvolvida especialmente para:</p>
-          </div>
+          </AnimSection>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto">
-            {audiences.map(a => (
-              <div key={a} className="flex items-center gap-3 bg-card rounded-xl border border-border p-4 shadow-sm">
-                <Star className="w-5 h-5 text-primary shrink-0" />
-                <span className="text-foreground font-medium">{a}</span>
-              </div>
+            {audiences.map((a, i) => (
+              <AnimCard key={a} i={i}>
+                <div className="flex items-center gap-3 bg-card rounded-xl border border-border p-4 shadow-sm hover:shadow-md transition-shadow">
+                  <Star className="w-5 h-5 text-primary shrink-0" />
+                  <span className="text-foreground font-medium">{a}</span>
+                </div>
+              </AnimCard>
             ))}
           </div>
         </div>
@@ -348,17 +439,19 @@ export default function LandingPage() {
 
       {/* CTA CONVERSÃO */}
       <section className="py-20 md:py-28 px-4 bg-gradient-to-br from-primary/10 via-primary/5 to-accent/10">
-        <div className="max-w-3xl mx-auto text-center space-y-6">
+        <AnimSection className="max-w-3xl mx-auto text-center space-y-6">
           <h2 className="text-3xl md:text-5xl font-extrabold text-foreground">
             Leve sua escola para o<br /><span className="text-primary">próximo nível</span>
           </h2>
           <p className="text-lg text-muted-foreground max-w-xl mx-auto">
             Solicite uma demonstração e descubra como nossa plataforma pode transformar a gestão da sua escola.
           </p>
-          <Button size="lg" className="text-lg px-10 py-6" onClick={() => setContactOpen(true)}>
-            Solicite sua demonstração <ArrowRight className="ml-2 w-5 h-5" />
-          </Button>
-        </div>
+          <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
+            <Button size="lg" className="text-lg px-10 py-6" onClick={() => setContactOpen(true)}>
+              Solicite sua demonstração <ArrowRight className="ml-2 w-5 h-5" />
+            </Button>
+          </motion.div>
+        </AnimSection>
       </section>
 
       {/* CONTATO */}
