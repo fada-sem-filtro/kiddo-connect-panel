@@ -314,18 +314,6 @@ const steps = [
   { n: "5", text: "Responsável acompanha o desempenho acadêmico do aluno" },
 ];
 
-const screenshots = [
-  "Dashboard do Diretor",
-  "Dashboard do Educador",
-  "Dashboard do Responsável",
-  "Cadastro de Alunos",
-  "Cadastro de Professores",
-  "Gestão de Turmas",
-  "Calendário Semanal",
-  "Horário das Aulas",
-  "Recados com Fotos",
-  "Boletim Escolar",
-];
 
 const comparison = [
   { item: "Organização", old: false, new_: true },
