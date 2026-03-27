@@ -658,6 +658,77 @@ export type Database = {
           },
         ]
       }
+      orcamento_respostas: {
+        Row: {
+          admin_user_id: string
+          conteudo: string
+          created_at: string
+          id: string
+          orcamento_id: string
+        }
+        Insert: {
+          admin_user_id: string
+          conteudo: string
+          created_at?: string
+          id?: string
+          orcamento_id: string
+        }
+        Update: {
+          admin_user_id?: string
+          conteudo?: string
+          created_at?: string
+          id?: string
+          orcamento_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orcamento_respostas_orcamento_id_fkey"
+            columns: ["orcamento_id"]
+            isOneToOne: false
+            referencedRelation: "orcamentos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orcamentos: {
+        Row: {
+          cidade: string
+          created_at: string
+          email: string
+          escola: string
+          id: string
+          nome: string
+          num_alunos: string | null
+          status: string
+          telefone: string | null
+          updated_at: string
+        }
+        Insert: {
+          cidade: string
+          created_at?: string
+          email: string
+          escola: string
+          id?: string
+          nome: string
+          num_alunos?: string | null
+          status?: string
+          telefone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          cidade?: string
+          created_at?: string
+          email?: string
+          escola?: string
+          id?: string
+          nome?: string
+          num_alunos?: string | null
+          status?: string
+          telefone?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       permissoes_perfil: {
         Row: {
           created_at: string
