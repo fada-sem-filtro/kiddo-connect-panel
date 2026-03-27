@@ -51,6 +51,7 @@ const App = () => (
             <Toaster />
             <Sonner />
             <Routes>
+              <Route path="/conheca" element={<LandingPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/reset-password" element={<ResetPasswordPage />} />
               <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
