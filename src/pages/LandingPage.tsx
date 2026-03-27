@@ -368,7 +368,7 @@ export default function LandingPage() {
               </Button>
             </Link>
             <Button size="sm" onClick={() => setContactOpen(true)}>
-              Solicite sua Demonstração
+              Solicite seu Orçamento
             </Button>
           </div>
         </div>
@@ -412,7 +412,7 @@ export default function LandingPage() {
             className="flex flex-col sm:flex-row gap-3 justify-center pt-4"
           >
             <Button size="lg" className="text-base px-8" onClick={() => setContactOpen(true)}>
-              Solicite sua Demonstração <ArrowRight className="ml-2 w-5 h-5" />
+              Solicite seu Orçamento <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
             <Button size="lg" variant="outline" className="text-base px-8" asChild>
               <a href="#funcionalidades">
