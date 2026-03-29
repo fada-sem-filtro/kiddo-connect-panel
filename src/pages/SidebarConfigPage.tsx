@@ -42,7 +42,7 @@ const PERFIS = [
 
 export default function SidebarConfigPage() {
   const { effectiveCrecheId, selectedCrecheId, setSelectedCrecheId, creches, isAdmin } = useAdminSchoolSelector();
-  const [selectedPerfil, setSelectedPerfil] = useState('admin');
+  const [selectedPerfil, setSelectedPerfil] = useState('diretor');
 
   return (
     <MainLayout>
