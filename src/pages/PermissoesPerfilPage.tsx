@@ -125,7 +125,15 @@ export default function PermissoesPerfilPage() {
           </Card>
         ) : (
           <div className="space-y-4">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 flex-wrap">
+              <Button variant="outline" className="rounded-xl" onClick={handleLoadFromDefault} disabled={settingDefault}>
+                <Star className={`w-4 h-4 mr-2`} />
+                Carregar Padrão
+              </Button>
+              <Button variant="outline" className="rounded-xl border-primary text-primary hover:bg-primary/10" onClick={handleSetAsDefault} disabled={settingDefault}>
+                <Star className={`w-4 h-4 mr-2`} />
+                Definir Padrão
+              </Button>
               <Button variant="outline" className="rounded-xl" onClick={handleInitDefaults} disabled={initializing}>
                 <RefreshCw className={`w-4 h-4 mr-2 ${initializing ? 'animate-spin' : ''}`} />
                 Inicializar Padrões
