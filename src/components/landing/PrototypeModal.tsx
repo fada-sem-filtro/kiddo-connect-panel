@@ -1,11 +1,34 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  X, Calendar, Users, MessageSquare, GraduationCap, BarChart3,
-  CalendarDays, ClipboardList, UserCog, Building2, Baby, LayoutDashboard,
-  FileText, UserCheck, Settings, Library, BookOpen, PartyPopper,
-  Shield, Clock, Bell, ChevronRight, Star, CheckCircle2,
-  Image as ImageIcon, TrendingUp, AlertTriangle, Eye,
+  X,
+  Calendar,
+  Users,
+  MessageSquare,
+  GraduationCap,
+  BarChart3,
+  CalendarDays,
+  ClipboardList,
+  UserCog,
+  Building2,
+  Baby,
+  LayoutDashboard,
+  FileText,
+  UserCheck,
+  Settings,
+  Library,
+  BookOpen,
+  PartyPopper,
+  Shield,
+  Clock,
+  Bell,
+  ChevronRight,
+  Star,
+  CheckCircle2,
+  Image as ImageIcon,
+  TrendingUp,
+  AlertTriangle,
+  Eye,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -44,10 +67,34 @@ const mockEducadores = [
 ];
 
 const mockRecados = [
-  { de: "Prof. Ana Silva", titulo: "Atividade de pintura", msg: "As crianças fizeram uma atividade de pintura hoje! 🎨", hora: "10:30", foto: true },
-  { de: "Coord. Pedagógica", titulo: "Reunião de pais", msg: "Reunião de pais dia 20/06 às 19h no auditório.", hora: "08:15", foto: false },
-  { de: "Prof. Carlos", titulo: "Lição de casa", msg: "Lembrem de trazer o material de matemática amanhã.", hora: "14:00", foto: false },
-  { de: "Direção", titulo: "Festa junina", msg: "A festa junina será no dia 25/06. Confirmem presença!", hora: "09:00", foto: true },
+  {
+    de: "Prof. Ana Silva",
+    titulo: "Atividade de pintura",
+    msg: "As crianças fizeram uma atividade de pintura hoje! 🎨",
+    hora: "10:30",
+    foto: true,
+  },
+  {
+    de: "Coord. Pedagógica",
+    titulo: "Reunião de pais",
+    msg: "Reunião de pais dia 20/06 às 19h no auditório.",
+    hora: "08:15",
+    foto: false,
+  },
+  {
+    de: "Prof. Carlos",
+    titulo: "Lição de casa",
+    msg: "Lembrem de trazer o material de matemática amanhã.",
+    hora: "14:00",
+    foto: false,
+  },
+  {
+    de: "Direção",
+    titulo: "Festa junina",
+    msg: "A festa junina será no dia 25/06. Confirmem presença!",
+    hora: "09:00",
+    foto: true,
+  },
 ];
 
 const mockEventos = [
@@ -187,7 +234,10 @@ function PageDashboardDiretor() {
               { msg: "Reunião pedagógica amanhã às 14h", type: "info" },
               { msg: "2 recados não lidos pelos responsáveis", type: "warning" },
             ].map((a, i) => (
-              <div key={i} className={`flex items-center gap-2 text-xs p-2 rounded-lg ${a.type === "warning" ? "bg-orange-50 text-orange-700" : "bg-blue-50 text-blue-700"}`}>
+              <div
+                key={i}
+                className={`flex items-center gap-2 text-xs p-2 rounded-lg ${a.type === "warning" ? "bg-orange-50 text-orange-700" : "bg-blue-50 text-blue-700"}`}
+              >
                 <AlertTriangle className="w-3 h-3 flex-shrink-0" />
                 <span>{a.msg}</span>
               </div>
@@ -204,7 +254,9 @@ function PageMembros() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-bold text-foreground">Corpo Docente</h2>
-        <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">{mockEducadores.length} educadores</span>
+        <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">
+          {mockEducadores.length} educadores
+        </span>
       </div>
       <div className="rounded-xl border border-border overflow-hidden">
         <table className="w-full text-xs">
@@ -223,7 +275,9 @@ function PageMembros() {
                 <td className="p-2 text-muted-foreground hidden sm:table-cell">{e.turmas}</td>
                 <td className="p-2 text-muted-foreground hidden md:table-cell">{e.email}</td>
                 <td className="p-2 text-center">
-                  <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-medium ${e.ativo ? "bg-green-100 text-green-700" : "bg-red-100 text-red-600"}`}>
+                  <span
+                    className={`px-1.5 py-0.5 rounded-full text-[10px] font-medium ${e.ativo ? "bg-green-100 text-green-700" : "bg-red-100 text-red-600"}`}
+                  >
                     {e.ativo ? "Ativo" : "Inativo"}
                   </span>
                 </td>
@@ -294,11 +348,16 @@ function PageAlunos() {
                 </td>
                 <td className="p-2 text-muted-foreground">{a.turma}</td>
                 <td className="p-2 text-center">
-                  <span className={cn("px-1.5 py-0.5 rounded-full text-[10px] font-medium",
-                    a.status === "presente" ? "bg-green-100 text-green-700" :
-                    a.status === "atrasado" ? "bg-yellow-100 text-yellow-700" :
-                    "bg-red-100 text-red-600"
-                  )}>
+                  <span
+                    className={cn(
+                      "px-1.5 py-0.5 rounded-full text-[10px] font-medium",
+                      a.status === "presente"
+                        ? "bg-green-100 text-green-700"
+                        : a.status === "atrasado"
+                          ? "bg-yellow-100 text-yellow-700"
+                          : "bg-red-100 text-red-600",
+                    )}
+                  >
                     {a.status === "presente" ? "Presente" : a.status === "atrasado" ? "Atrasado" : "Ausente"}
                   </span>
                 </td>
@@ -350,20 +409,38 @@ function PageCalendario() {
       <div className="rounded-xl border border-border bg-card p-4">
         <p className="text-sm font-semibold text-center mb-3">Junho 2026</p>
         <div className="grid grid-cols-7 gap-1 text-center">
-          {dias.map((d) => <p key={d} className="text-[10px] font-bold text-muted-foreground py-1">{d}</p>)}
+          {dias.map((d) => (
+            <p key={d} className="text-[10px] font-bold text-muted-foreground py-1">
+              {d}
+            </p>
+          ))}
           {Array.from({ length: 30 }, (_, i) => i + 1).map((d) => {
             const isEvent = [5, 12, 15, 20, 25].includes(d);
             const isFeriado = [24].includes(d);
             return (
-              <div key={d} className={cn("p-1 rounded text-xs", isEvent ? "bg-primary/10 text-primary font-bold" : isFeriado ? "bg-red-100 text-red-600 font-bold" : "text-foreground")}>
+              <div
+                key={d}
+                className={cn(
+                  "p-1 rounded text-xs",
+                  isEvent
+                    ? "bg-primary/10 text-primary font-bold"
+                    : isFeriado
+                      ? "bg-red-100 text-red-600 font-bold"
+                      : "text-foreground",
+                )}
+              >
                 {d}
               </div>
             );
           })}
         </div>
         <div className="mt-3 flex gap-3 text-[10px] text-muted-foreground">
-          <span className="flex items-center gap-1"><span className="w-2 h-2 rounded bg-primary/40" /> Evento</span>
-          <span className="flex items-center gap-1"><span className="w-2 h-2 rounded bg-red-300" /> Feriado</span>
+          <span className="flex items-center gap-1">
+            <span className="w-2 h-2 rounded bg-primary/40" /> Evento
+          </span>
+          <span className="flex items-center gap-1">
+            <span className="w-2 h-2 rounded bg-red-300" /> Feriado
+          </span>
         </div>
       </div>
     </div>
@@ -384,7 +461,9 @@ function PageFeriados() {
               <p className="text-xs font-bold text-foreground">{f.nome}</p>
               <p className="text-[10px] text-muted-foreground">{f.data}</p>
             </div>
-            <span className="ml-auto text-[10px] bg-muted px-2 py-0.5 rounded-full text-muted-foreground">Recorrente</span>
+            <span className="ml-auto text-[10px] bg-muted px-2 py-0.5 rounded-full text-muted-foreground">
+              Recorrente
+            </span>
           </div>
         ))}
       </div>
@@ -442,7 +521,11 @@ function PageGrade() {
           <thead className="bg-muted/60">
             <tr>
               <th className="text-left p-2 font-semibold">Horário</th>
-              {diasSemana.map((d) => <th key={d} className="text-center p-2 font-semibold">{d}</th>)}
+              {diasSemana.map((d) => (
+                <th key={d} className="text-center p-2 font-semibold">
+                  {d}
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody>
@@ -469,12 +552,19 @@ function PageRelatorios() {
       <h2 className="text-lg font-bold text-foreground">Relatórios</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {[
-          { title: "Relatório de Presença", desc: "Acompanhe a frequência dos alunos por turma e período", icon: UserCheck },
+          {
+            title: "Relatório de Presença",
+            desc: "Acompanhe a frequência dos alunos por turma e período",
+            icon: UserCheck,
+          },
           { title: "Relatório por Aluno", desc: "Visão detalhada do desempenho individual", icon: Baby },
           { title: "Relatório de Turma", desc: "Análise comparativa entre turmas", icon: Users },
           { title: "Relatório Pedagógico", desc: "Progresso nas competências e habilidades", icon: BookOpen },
         ].map((r, i) => (
-          <div key={i} className="rounded-xl border border-border bg-card p-4 hover:shadow-sm transition-shadow cursor-pointer">
+          <div
+            key={i}
+            className="rounded-xl border border-border bg-card p-4 hover:shadow-sm transition-shadow cursor-pointer"
+          >
             <r.icon className="w-6 h-6 text-primary mb-2" />
             <h3 className="text-xs font-bold text-foreground">{r.title}</h3>
             <p className="text-[10px] text-muted-foreground mt-1">{r.desc}</p>
@@ -495,9 +585,27 @@ function PageDesempenho() {
       </div>
       <div className="space-y-3">
         {[
-          { secao: "Desenvolvimento Social", itens: [{ nome: "Interação com colegas", nivel: "Consolidado" }, { nome: "Respeito às regras", nivel: "Em desenvolvimento" }] },
-          { secao: "Linguagem", itens: [{ nome: "Expressão oral", nivel: "Consolidado" }, { nome: "Vocabulário", nivel: "Consolidado" }] },
-          { secao: "Coordenação Motora", itens: [{ nome: "Motricidade fina", nivel: "Em desenvolvimento" }, { nome: "Motricidade grossa", nivel: "Consolidado" }] },
+          {
+            secao: "Desenvolvimento Social",
+            itens: [
+              { nome: "Interação com colegas", nivel: "Consolidado" },
+              { nome: "Respeito às regras", nivel: "Em desenvolvimento" },
+            ],
+          },
+          {
+            secao: "Linguagem",
+            itens: [
+              { nome: "Expressão oral", nivel: "Consolidado" },
+              { nome: "Vocabulário", nivel: "Consolidado" },
+            ],
+          },
+          {
+            secao: "Coordenação Motora",
+            itens: [
+              { nome: "Motricidade fina", nivel: "Em desenvolvimento" },
+              { nome: "Motricidade grossa", nivel: "Consolidado" },
+            ],
+          },
         ].map((s, i) => (
           <div key={i} className="rounded-xl border border-border bg-card p-3">
             <h3 className="text-xs font-bold text-foreground mb-2">{s.secao}</h3>
@@ -505,9 +613,14 @@ function PageDesempenho() {
               {s.itens.map((it, j) => (
                 <div key={j} className="flex items-center justify-between text-xs">
                   <span className="text-muted-foreground">{it.nome}</span>
-                  <span className={cn("px-2 py-0.5 rounded-full text-[10px] font-medium",
-                    it.nivel === "Consolidado" ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700"
-                  )}>{it.nivel}</span>
+                  <span
+                    className={cn(
+                      "px-2 py-0.5 rounded-full text-[10px] font-medium",
+                      it.nivel === "Consolidado" ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700",
+                    )}
+                  >
+                    {it.nivel}
+                  </span>
                 </div>
               ))}
             </div>
@@ -552,9 +665,12 @@ function PagePedagogico() {
               <p className="text-xs font-bold text-foreground">{c.label}</p>
               <p className="text-[10px] text-muted-foreground">{c.desc}</p>
             </div>
-            <div className={cn("w-9 h-5 rounded-full flex items-center transition-colors px-0.5",
-              c.ativo ? "bg-primary justify-end" : "bg-muted justify-start"
-            )}>
+            <div
+              className={cn(
+                "w-9 h-5 rounded-full flex items-center transition-colors px-0.5",
+                c.ativo ? "bg-primary justify-end" : "bg-muted justify-start",
+              )}
+            >
               <div className="w-4 h-4 rounded-full bg-white shadow-sm" />
             </div>
           </div>
@@ -590,7 +706,9 @@ function PageUsuarios() {
                 <td className="p-2 font-medium text-foreground">{u.nome}</td>
                 <td className="p-2 text-muted-foreground hidden sm:table-cell">{u.email}</td>
                 <td className="p-2 text-center">
-                  <span className="px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-primary/10 text-primary">{u.perfil}</span>
+                  <span className="px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-primary/10 text-primary">
+                    {u.perfil}
+                  </span>
                 </td>
                 <td className="p-2 text-center">
                   <span className={`w-2 h-2 rounded-full inline-block ${u.ativo ? "bg-green-500" : "bg-red-400"}`} />
@@ -638,9 +756,12 @@ function PagePainelEducador() {
               <span className="text-foreground">{p.nome}</span>
               <div className="flex items-center gap-2">
                 <span className="text-muted-foreground text-[10px]">{p.hora}</span>
-                <span className={cn("w-2 h-2 rounded-full",
-                  p.status === "presente" ? "bg-green-500" : p.status === "atrasado" ? "bg-yellow-500" : "bg-red-400"
-                )} />
+                <span
+                  className={cn(
+                    "w-2 h-2 rounded-full",
+                    p.status === "presente" ? "bg-green-500" : p.status === "atrasado" ? "bg-yellow-500" : "bg-red-400",
+                  )}
+                />
               </div>
             </div>
           ))}
@@ -665,19 +786,24 @@ function PageMinhaTurma() {
         </div>
       </div>
       <div className="space-y-2">
-        {mockAlunos.filter(a => a.turma === "Infantil III").map((a, i) => (
-          <div key={i} className="flex items-center gap-2 rounded-xl border border-border bg-card p-3">
-            <div className="w-7 h-7 rounded-full bg-primary/20 flex items-center justify-center">
-              <Baby className="w-3.5 h-3.5 text-primary" />
+        {mockAlunos
+          .filter((a) => a.turma === "Infantil III")
+          .map((a, i) => (
+            <div key={i} className="flex items-center gap-2 rounded-xl border border-border bg-card p-3">
+              <div className="w-7 h-7 rounded-full bg-primary/20 flex items-center justify-center">
+                <Baby className="w-3.5 h-3.5 text-primary" />
+              </div>
+              <span className="text-xs font-medium text-foreground flex-1">{a.nome}</span>
+              <span
+                className={cn(
+                  "px-1.5 py-0.5 rounded-full text-[10px] font-medium",
+                  a.status === "presente" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-600",
+                )}
+              >
+                {a.status === "presente" ? "Presente" : "Ausente"}
+              </span>
             </div>
-            <span className="text-xs font-medium text-foreground flex-1">{a.nome}</span>
-            <span className={cn("px-1.5 py-0.5 rounded-full text-[10px] font-medium",
-              a.status === "presente" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-600"
-            )}>
-              {a.status === "presente" ? "Presente" : "Ausente"}
-            </span>
-          </div>
-        ))}
+          ))}
       </div>
     </div>
   );
@@ -700,9 +826,20 @@ function PageAgendaEducador() {
         ].map((e, i) => (
           <div key={i} className="flex items-center gap-3 rounded-xl border border-border bg-card p-3">
             <span className="text-xs font-mono text-primary font-medium w-10">{e.hora}</span>
-            <div className={cn("w-1 h-8 rounded-full",
-              e.tipo === "rotina" ? "bg-blue-400" : e.tipo === "atividade" ? "bg-purple-400" : e.tipo === "refeicao" ? "bg-orange-400" : e.tipo === "sono" ? "bg-indigo-400" : "bg-green-400"
-            )} />
+            <div
+              className={cn(
+                "w-1 h-8 rounded-full",
+                e.tipo === "rotina"
+                  ? "bg-blue-400"
+                  : e.tipo === "atividade"
+                    ? "bg-purple-400"
+                    : e.tipo === "refeicao"
+                      ? "bg-orange-400"
+                      : e.tipo === "sono"
+                        ? "bg-indigo-400"
+                        : "bg-green-400",
+              )}
+            />
             <span className="text-xs text-foreground">{e.evento}</span>
           </div>
         ))}
@@ -736,9 +873,18 @@ function PageEventosResponsavel() {
         {mockEventos.map((e, i) => (
           <div key={i} className="flex items-center gap-3 rounded-xl border border-border bg-card p-3">
             <span className="text-xs font-mono text-primary font-medium w-10">{e.hora}</span>
-            <div className={cn("w-6 h-6 rounded-lg flex items-center justify-center",
-              e.tipo === "refeicao" ? "bg-orange-100" : e.tipo === "higiene" ? "bg-blue-100" : e.tipo === "sono" ? "bg-indigo-100" : "bg-purple-100"
-            )}>
+            <div
+              className={cn(
+                "w-6 h-6 rounded-lg flex items-center justify-center",
+                e.tipo === "refeicao"
+                  ? "bg-orange-100"
+                  : e.tipo === "higiene"
+                    ? "bg-blue-100"
+                    : e.tipo === "sono"
+                      ? "bg-indigo-100"
+                      : "bg-purple-100",
+              )}
+            >
               {e.tipo === "refeicao" ? "🍽️" : e.tipo === "higiene" ? "🧼" : e.tipo === "sono" ? "😴" : "🎨"}
             </div>
             <span className="text-xs text-foreground">{e.desc}</span>
@@ -756,9 +902,13 @@ function PageAgenda() {
       <h2 className="text-lg font-bold text-foreground">Agenda</h2>
       <div className="flex gap-1 overflow-x-auto pb-1">
         {dias.map((d, i) => (
-          <div key={d} className={cn("flex-shrink-0 px-3 py-2 rounded-xl text-xs text-center cursor-pointer transition-colors",
-            i === 1 ? "bg-primary text-primary-foreground font-bold" : "bg-muted text-foreground hover:bg-muted/80"
-          )}>
+          <div
+            key={d}
+            className={cn(
+              "flex-shrink-0 px-3 py-2 rounded-xl text-xs text-center cursor-pointer transition-colors",
+              i === 1 ? "bg-primary text-primary-foreground font-bold" : "bg-muted text-foreground hover:bg-muted/80",
+            )}
+          >
             {d}
           </div>
         ))}
@@ -781,30 +931,53 @@ function PageAgenda() {
 // ============ PAGE ROUTER ============
 function renderPage(pageId: string, role: RoleType) {
   switch (pageId) {
-    case "dashboard": return <PageDashboardDiretor />;
-    case "membros": return <PageMembros />;
-    case "turmas": return <PageTurmas />;
-    case "alunos": return <PageAlunos />;
-    case "usuarios": return <PageUsuarios />;
-    case "recados": return <PageRecados />;
-    case "calendario": return <PageCalendario />;
-    case "feriados": return <PageFeriados />;
-    case "boletim": return <PageBoletim />;
-    case "grade": return <PageGrade />;
-    case "relatorios": return <PageRelatorios />;
-    case "desempenho": return <PageDesempenho />;
-    case "materias": return <PageMaterias />;
-    case "pedagogico": return <PagePedagogico />;
-    case "agenda": return <PageAgenda />;
-    case "painel": return <PagePainelEducador />;
-    case "turma": return <PageMinhaTurma />;
-    case "minha-agenda": return <PageAgendaEducador />;
-    case "eventos": return <PageEventosResponsavel />;
-    default: return <PageDashboardDiretor />;
+    case "dashboard":
+      return <PageDashboardDiretor />;
+    case "membros":
+      return <PageMembros />;
+    case "turmas":
+      return <PageTurmas />;
+    case "alunos":
+      return <PageAlunos />;
+    case "usuarios":
+      return <PageUsuarios />;
+    case "recados":
+      return <PageRecados />;
+    case "calendario":
+      return <PageCalendario />;
+    case "feriados":
+      return <PageFeriados />;
+    case "boletim":
+      return <PageBoletim />;
+    case "grade":
+      return <PageGrade />;
+    case "relatorios":
+      return <PageRelatorios />;
+    case "desempenho":
+      return <PageDesempenho />;
+    case "materias":
+      return <PageMaterias />;
+    case "pedagogico":
+      return <PagePedagogico />;
+    case "agenda":
+      return <PageAgenda />;
+    case "painel":
+      return <PagePainelEducador />;
+    case "turma":
+      return <PageMinhaTurma />;
+    case "minha-agenda":
+      return <PageAgendaEducador />;
+    case "eventos":
+      return <PageEventosResponsavel />;
+    default:
+      return <PageDashboardDiretor />;
   }
 }
 
-const roleConfig: Record<RoleType, { label: string; items: MenuItem[]; defaultPage: string; userName: string; userRole: string; school: string }> = {
+const roleConfig: Record<
+  RoleType,
+  { label: string; items: MenuItem[]; defaultPage: string; userName: string; userRole: string; school: string }
+> = {
   diretor: {
     label: "Diretor",
     items: diretorMenuItems,
@@ -837,12 +1010,15 @@ export function PrototypeModal({ open, onClose, role }: PrototypeModalProps) {
   const [activePage, setActivePage] = useState(config.defaultPage);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const sections = config.items.reduce((acc, item) => {
-    const section = item.section || "Geral";
-    if (!acc[section]) acc[section] = [];
-    acc[section].push(item);
-    return acc;
-  }, {} as Record<string, MenuItem[]>);
+  const sections = config.items.reduce(
+    (acc, item) => {
+      const section = item.section || "Geral";
+      if (!acc[section]) acc[section] = [];
+      acc[section].push(item);
+      return acc;
+    },
+    {} as Record<string, MenuItem[]>,
+  );
 
   if (!open) return null;
 
@@ -876,7 +1052,7 @@ export function PrototypeModal({ open, onClose, role }: PrototypeModalProps) {
                   Agenda Fleur – Visão {config.label}
                 </span>
                 <span className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium">
-                  Protótipo Interativo
+                  Demonstração Interativa
                 </span>
               </div>
               <button onClick={onClose} className="p-1 rounded-lg hover:bg-muted transition-colors">
@@ -895,12 +1071,14 @@ export function PrototypeModal({ open, onClose, role }: PrototypeModalProps) {
               </button>
 
               {/* Sidebar */}
-              <div className={cn(
-                "bg-card border-r border-border flex flex-col transition-all duration-300 overflow-y-auto",
-                "w-48 flex-shrink-0",
-                "max-md:absolute max-md:inset-y-0 max-md:left-0 max-md:z-[102] max-md:top-10 max-md:shadow-xl",
-                sidebarOpen ? "max-md:translate-x-0" : "max-md:-translate-x-full"
-              )}>
+              <div
+                className={cn(
+                  "bg-card border-r border-border flex flex-col transition-all duration-300 overflow-y-auto",
+                  "w-48 flex-shrink-0",
+                  "max-md:absolute max-md:inset-y-0 max-md:left-0 max-md:z-[102] max-md:top-10 max-md:shadow-xl",
+                  sidebarOpen ? "max-md:translate-x-0" : "max-md:-translate-x-full",
+                )}
+              >
                 {/* User */}
                 <div className="px-3 py-3 border-b border-border">
                   <p className="text-xs font-bold text-foreground truncate">{config.userName}</p>
@@ -919,12 +1097,15 @@ export function PrototypeModal({ open, onClose, role }: PrototypeModalProps) {
                         {items.map((item) => (
                           <button
                             key={item.id}
-                            onClick={() => { setActivePage(item.id); setSidebarOpen(false); }}
+                            onClick={() => {
+                              setActivePage(item.id);
+                              setSidebarOpen(false);
+                            }}
                             className={cn(
                               "w-full flex items-center gap-2 px-2 py-1.5 rounded-lg text-[11px] font-medium transition-all text-left",
                               activePage === item.id
                                 ? "bg-primary text-primary-foreground shadow-sm"
-                                : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                                : "text-muted-foreground hover:bg-muted hover:text-foreground",
                             )}
                           >
                             <item.icon className="w-3.5 h-3.5 flex-shrink-0" />
