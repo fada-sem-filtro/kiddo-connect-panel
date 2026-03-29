@@ -95,10 +95,30 @@ export default function EducadorDashboardPage() {
     else toast.success('Presença registrada! ✅');
   };
 
-  const handleRegistrarSaida = async (criancaId: string) => {
-    const { error } = await registrarSaida(criancaId);
+  const handleRegistrarSaida = (criancaId: string) => {
+    const crianca = criancas.find(c => c.id === criancaId);
+    if (!crianca) return;
+    setPickupCrianca({
+      id: crianca.id,
+      nome: crianca.nome,
+      turma_nome: getTurmaNome(crianca.turma_id),
+    });
+  };
+
+  const handlePickupConfirm = async (person: { id: string; nome: string; tipo: 'responsável' | 'autorizado' }) => {
+    if (!pickupCrianca || !profile) return;
+    setPickupLoading(true);
+    const realId = person.id.replace(/^(resp_|aut_)/, '');
+    const { error } = await registrarSaida(pickupCrianca.id, {
+      pickup_person_id: realId,
+      pickup_person_name: person.nome,
+      pickup_person_type: person.tipo,
+      pickup_registered_by: profile.nome,
+    });
+    setPickupLoading(false);
     if (error) toast.error('Erro ao registrar saída');
-    else toast.success('Saída registrada! 👋');
+    else toast.success(`Saída registrada! Buscado por: ${person.nome} 👋`);
+    setPickupCrianca(null);
   };
 
   const handleAddEvento = (criancaId: string) => {
