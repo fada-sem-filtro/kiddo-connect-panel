@@ -289,6 +289,11 @@ export default function EducadorDashboardPage() {
                         </div>
                         <div className="flex items-center gap-3 text-xs text-muted-foreground mt-1 flex-wrap">
                           <span>{getTurmaNome(crianca.turma_id)}</span>
+                          {getResponsaveis(crianca.id).length > 0 && (
+                            <span className="flex items-center gap-1">
+                              👨‍👩‍👧 {getResponsaveis(crianca.id).map(r => r.nome).join(', ')}
+                            </span>
+                          )}
                           {p?.hora_chegada && (
                             <span className="flex items-center gap-1">
                               <LogIn className="w-3 h-3" />
