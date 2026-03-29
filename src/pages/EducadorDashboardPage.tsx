@@ -355,7 +355,3 @@ export default function EducadorDashboardPage() {
     </MainLayout>
   );
 }
-      />
-    </MainLayout>
-  );
-}
