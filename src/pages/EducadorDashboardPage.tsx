@@ -18,7 +18,7 @@ import { toast } from 'sonner';
 interface TurmaInfo { id: string; nome: string; faixa_etaria: string | null; }
 interface CriancaInfo { id: string; nome: string; data_nascimento: string; turma_id: string; observacoes: string | null; }
 interface EventoInfo { id: string; tipo: string; crianca_id: string; }
-interface ResponsavelInfo { crianca_id: string; nome: string; }
+interface ResponsavelInfo { crianca_id: string; nome: string; telefone: string | null; }
 
 export default function EducadorDashboardPage() {
   const { user, profile } = useAuth();
@@ -92,13 +92,14 @@ export default function EducadorDashboardPage() {
         const userIds = [...new Set(vinculos.map(v => v.responsavel_user_id))];
         const { data: profiles } = await supabase
           .from('profiles')
-          .select('user_id, nome')
+          .select('user_id, nome, telefone')
           .in('user_id', userIds);
 
-        const profileMap = new Map((profiles || []).map(p => [p.user_id, p.nome]));
+        const profileMap = new Map((profiles || []).map(p => [p.user_id, { nome: p.nome, telefone: p.telefone }]));
         setResponsaveis(vinculos.map(v => ({
           crianca_id: v.crianca_id,
-          nome: profileMap.get(v.responsavel_user_id) || 'Responsável',
+          nome: profileMap.get(v.responsavel_user_id)?.nome || 'Responsável',
+          telefone: profileMap.get(v.responsavel_user_id)?.telefone || null,
         })));
       } else {
         setResponsaveis([]);
@@ -291,7 +292,9 @@ export default function EducadorDashboardPage() {
                           <span>{getTurmaNome(crianca.turma_id)}</span>
                           {getResponsaveis(crianca.id).length > 0 && (
                             <span className="flex items-center gap-1">
-                              👨‍👩‍👧 {getResponsaveis(crianca.id).map(r => r.nome).join(', ')}
+                              👨‍👩‍👧 {getResponsaveis(crianca.id).map(r => 
+                                r.telefone ? `${r.nome} (📞 ${r.telefone})` : r.nome
+                              ).join(' • ')}
                             </span>
                           )}
                           {p?.hora_chegada && (
