@@ -29,11 +29,11 @@ export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) 
 
   if (allowedRoles) {
     if (!role) {
-      return <Navigate to="/" replace />;
+      return <Navigate to="/agenda" replace />;
     }
 
     if (!allowedRoles.includes(role)) {
-      return <Navigate to="/" replace />;
+      return <Navigate to="/agenda" replace />;
     }
   }
 

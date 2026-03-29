@@ -52,10 +52,11 @@ const App = () => (
             <Toaster />
             <Sonner />
             <Routes>
+              <Route path="/" element={<LandingPage />} />
               <Route path="/conheca" element={<LandingPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/reset-password" element={<ResetPasswordPage />} />
-              <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
+              <Route path="/agenda" element={<ProtectedRoute><Index /></ProtectedRoute>} />
               <Route path="/educador/turma" element={<ProtectedRoute allowedRoles={['admin', 'educador', 'diretor']}><EducadorTurmaPage /></ProtectedRoute>} />
               <Route path="/criancas" element={<ProtectedRoute allowedRoles={['admin']}><CriancasPage /></ProtectedRoute>} />
               <Route path="/educadores" element={<ProtectedRoute allowedRoles={['admin']}><EducadoresPage /></ProtectedRoute>} />

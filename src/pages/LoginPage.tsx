@@ -33,7 +33,7 @@ export default function LoginPage() {
       );
     } else {
       toast.success("Bem-vindo ao Fleur! 🌸");
-      navigate("/");
+      navigate("/agenda");
     }
   };
 
