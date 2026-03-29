@@ -92,13 +92,14 @@ export default function EducadorDashboardPage() {
         const userIds = [...new Set(vinculos.map(v => v.responsavel_user_id))];
         const { data: profiles } = await supabase
           .from('profiles')
-          .select('user_id, nome')
+          .select('user_id, nome, telefone')
           .in('user_id', userIds);
 
-        const profileMap = new Map((profiles || []).map(p => [p.user_id, p.nome]));
+        const profileMap = new Map((profiles || []).map(p => [p.user_id, { nome: p.nome, telefone: p.telefone }]));
         setResponsaveis(vinculos.map(v => ({
           crianca_id: v.crianca_id,
-          nome: profileMap.get(v.responsavel_user_id) || 'Responsável',
+          nome: profileMap.get(v.responsavel_user_id)?.nome || 'Responsável',
+          telefone: profileMap.get(v.responsavel_user_id)?.telefone || null,
         })));
       } else {
         setResponsaveis([]);
