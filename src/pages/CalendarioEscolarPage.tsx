@@ -44,6 +44,7 @@ export default function CalendarioEscolarPage() {
   const [feriados, setFeriados] = useState<Feriado[]>([]);
   const [eventos, setEventos] = useState<EventoFuturo[]>([]);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [expandedMonth, setExpandedMonth] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
