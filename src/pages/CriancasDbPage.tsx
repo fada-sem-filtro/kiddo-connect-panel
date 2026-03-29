@@ -321,6 +321,12 @@ export default function CriancasDbPage() {
         criancaNome={respModalCrianca?.nome || ''}
         onChanged={fetchCriancas}
       />
+      <AuthorizedPickupsModal
+        open={!!pickupsCrianca}
+        onOpenChange={(open) => !open && setPickupsCrianca(null)}
+        criancaId={pickupsCrianca?.id || ''}
+        criancaNome={pickupsCrianca?.nome || ''}
+      />
     </MainLayout>
   );
 }
