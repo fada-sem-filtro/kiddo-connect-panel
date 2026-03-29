@@ -82,6 +82,35 @@ export function usePermissoesPerfil(crecheId?: string) {
 
   const initializeDefaults = async () => {
     if (!crecheId) return;
+    const TEMPLATE_CRECHE_ID = '00000000-0000-0000-0000-000000000001';
+
+    // Try loading from stored template first
+    const { data: templatePerms } = await supabase
+      .from('permissoes_perfil')
+      .select('*')
+      .eq('creche_id', TEMPLATE_CRECHE_ID);
+
+    if (templatePerms && templatePerms.length > 0) {
+      // Use stored template defaults
+      const defaults = templatePerms
+        .filter(tp => !getPermissao(tp.perfil, tp.modulo))
+        .map(tp => ({
+          creche_id: crecheId,
+          perfil: tp.perfil,
+          modulo: tp.modulo,
+          pode_visualizar: tp.pode_visualizar,
+          pode_criar: tp.pode_criar,
+          pode_editar: tp.pode_editar,
+          pode_excluir: tp.pode_excluir,
+        }));
+      if (defaults.length > 0) {
+        await supabase.from('permissoes_perfil').insert(defaults);
+        await fetchPermissoes();
+      }
+      return;
+    }
+
+    // Fallback to hardcoded defaults
     const defaults: { perfil: string; modulo: string; pode_visualizar: boolean; pode_criar: boolean; pode_editar: boolean; pode_excluir: boolean }[] = [];
 
     const diretorModulos = ['dashboard', 'painel_educador', 'minha_turma', 'recados', 'presencas', 'eventos', 'calendario', 'boletim', 'materias', 'grade_aulas', 'relatorio_desempenho', 'turmas', 'alunos', 'membros', 'usuarios', 'feriados', 'relatorios'];
