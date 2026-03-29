@@ -166,6 +166,25 @@ export default function AdminSettingsPage() {
             </form>
           </CardContent>
         </Card>
+
+        {/* Admin Sidebar Customization */}
+        <Card className="rounded-2xl">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <Menu className="w-5 h-5 text-primary" />
+              Personalizar Meu Menu Lateral
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground mb-4">
+              Configure as seções e itens do seu menu lateral. Essa configuração é global para o administrador.
+            </p>
+            <SidebarConfigEditor
+              crecheId="00000000-0000-0000-0000-000000000000"
+              perfil="admin"
+            />
+          </CardContent>
+        </Card>
       </div>
     </MainLayout>
   );
