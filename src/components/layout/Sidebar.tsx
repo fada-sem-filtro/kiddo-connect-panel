@@ -114,7 +114,7 @@ export function Sidebar() {
   const responsavelNavigation: NavItem[] = [];
   const adminNavigation: NavItem[] = [];
 
-  if (!useCustomConfig) {
+  if (!useCustomConfig && !isConfigPending) {
     // Diretor sees Dashboard as primary
     if (isDiretor) {
       if (canView('dashboard')) mainNavigation.push({ name: "Dashboard", href: "/diretor/dashboard", icon: BarChart3 });
