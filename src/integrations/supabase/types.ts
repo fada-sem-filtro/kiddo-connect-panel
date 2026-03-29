@@ -1155,6 +1155,41 @@ export type Database = {
           },
         ]
       }
+      sidebar_config: {
+        Row: {
+          config: Json
+          created_at: string
+          creche_id: string
+          id: string
+          perfil: string
+          updated_at: string
+        }
+        Insert: {
+          config?: Json
+          created_at?: string
+          creche_id: string
+          id?: string
+          perfil: string
+          updated_at?: string
+        }
+        Update: {
+          config?: Json
+          created_at?: string
+          creche_id?: string
+          id?: string
+          perfil?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sidebar_config_creche_id_fkey"
+            columns: ["creche_id"]
+            isOneToOne: false
+            referencedRelation: "creches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       suppressed_emails: {
         Row: {
           created_at: string
