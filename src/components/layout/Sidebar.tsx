@@ -157,15 +157,12 @@ export function Sidebar() {
     }
   }
 
-  if (role === "admin" || isDiretor) {
+  if (role === "admin" || (isDiretor && !useCustomConfig)) {
     const prefix = isDiretor ? "/diretor" : "/admin";
 
     if (role === "admin") {
       adminNavigation.push({ name: "Dashboard", href: "/admin", icon: BarChart3 });
       adminNavigation.push({ name: "Escolas", href: "/admin/creches", icon: Building2 });
-    }
-    if (isDiretor && !useCustomConfig) {
-      adminNavigation.push({ name: "Dashboard", href: "/diretor/dashboard", icon: BarChart3 });
     }
     if (role === "admin" || canView('membros')) {
       adminNavigation.push({ name: "Corpo Docente", href: `${prefix}/membros`, icon: Users });
