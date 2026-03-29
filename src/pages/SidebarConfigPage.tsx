@@ -35,7 +35,6 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 
 const PERFIS = [
-  { value: 'admin', label: 'Administrador' },
   { value: 'diretor', label: 'Diretor' },
   { value: 'educador', label: 'Educador' },
   { value: 'responsavel', label: 'Responsável' },
@@ -43,7 +42,7 @@ const PERFIS = [
 
 export default function SidebarConfigPage() {
   const { effectiveCrecheId, selectedCrecheId, setSelectedCrecheId, creches, isAdmin } = useAdminSchoolSelector();
-  const [selectedPerfil, setSelectedPerfil] = useState('admin');
+  const [selectedPerfil, setSelectedPerfil] = useState('diretor');
 
   return (
     <MainLayout>
@@ -63,9 +62,9 @@ export default function SidebarConfigPage() {
           />
         )}
 
-        {effectiveCrecheId || selectedPerfil === 'admin' ? (
+        {effectiveCrecheId ? (
           <Tabs value={selectedPerfil} onValueChange={setSelectedPerfil}>
-            <TabsList className="grid w-full grid-cols-4 max-w-lg">
+            <TabsList className="grid w-full grid-cols-3 max-w-lg">
               {PERFIS.map(p => (
                 <TabsTrigger key={p.value} value={p.value}>{p.label}</TabsTrigger>
               ))}
@@ -73,7 +72,7 @@ export default function SidebarConfigPage() {
             {PERFIS.map(p => (
               <TabsContent key={p.value} value={p.value}>
                 <SidebarConfigEditor
-                  crecheId={p.value === 'admin' ? '00000000-0000-0000-0000-000000000000' : effectiveCrecheId!}
+                  crecheId={effectiveCrecheId!}
                   perfil={p.value}
                 />
               </TabsContent>
@@ -82,7 +81,7 @@ export default function SidebarConfigPage() {
         ) : (
           <Card className="rounded-2xl">
             <CardContent className="p-8 text-center text-muted-foreground">
-              Selecione uma escola para configurar o menu lateral dos perfis (exceto Administrador)
+              Selecione uma escola para configurar o menu lateral dos perfis
             </CardContent>
           </Card>
         )}
@@ -231,7 +230,7 @@ function DroppableSection({
   );
 }
 
-function SidebarConfigEditor({ crecheId, perfil }: { crecheId: string; perfil: string }) {
+export function SidebarConfigEditor({ crecheId, perfil }: { crecheId: string; perfil: string }) {
   const { config, setConfig, loading, saving, saveConfig } = useAdminSidebarConfig(crecheId, perfil);
   const [editingSectionId, setEditingSectionId] = useState<string | null>(null);
   const [activeId, setActiveId] = useState<string | null>(null);

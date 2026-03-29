@@ -4,10 +4,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Settings, Lock, Eye, EyeOff, Mail, Save } from 'lucide-react';
+import { Settings, Lock, Eye, EyeOff, Mail, Save, Menu } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { SidebarConfigEditor } from '@/pages/SidebarConfigPage';
 
 export default function AdminSettingsPage() {
   const { profile, user } = useAuth();
@@ -163,6 +164,25 @@ export default function AdminSettingsPage() {
                 {savingEmail ? 'Salvando...' : 'Atualizar E-mail'}
               </Button>
             </form>
+          </CardContent>
+        </Card>
+
+        {/* Admin Sidebar Customization */}
+        <Card className="rounded-2xl">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <Menu className="w-5 h-5 text-primary" />
+              Personalizar Meu Menu Lateral
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground mb-4">
+              Configure as seções e itens do seu menu lateral. Essa configuração é global para o administrador.
+            </p>
+            <SidebarConfigEditor
+              crecheId="00000000-0000-0000-0000-000000000000"
+              perfil="admin"
+            />
           </CardContent>
         </Card>
       </div>
