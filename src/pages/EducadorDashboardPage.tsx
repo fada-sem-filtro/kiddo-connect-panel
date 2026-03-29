@@ -344,6 +344,18 @@ export default function EducadorDashboardPage() {
         turmas={turmas}
         onSaved={fetchData}
       />
+
+      <PickupModal
+        open={!!pickupCrianca}
+        onOpenChange={(open) => !open && setPickupCrianca(null)}
+        crianca={pickupCrianca}
+        onConfirm={handlePickupConfirm}
+        loading={pickupLoading}
+      />
+    </MainLayout>
+  );
+}
+      />
     </MainLayout>
   );
 }
