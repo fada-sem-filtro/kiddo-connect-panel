@@ -16,6 +16,8 @@ export default function PermissoesPerfilPage() {
   const { permissoes, loading, getPermissao, upsertPermissao, initializeDefaults } = usePermissoesPerfil(effectiveCrecheId);
   const [activePerfil, setActivePerfil] = useState('diretor');
   const [initializing, setInitializing] = useState(false);
+  const [settingDefault, setSettingDefault] = useState(false);
+  const TEMPLATE_CRECHE_ID = '00000000-0000-0000-0000-000000000001';
 
   const handleToggle = async (modulo: string, field: 'pode_visualizar' | 'pode_criar' | 'pode_editar' | 'pode_excluir', value: boolean) => {
     const updates: Record<string, boolean> = { [field]: value };
