@@ -276,7 +276,36 @@ export function Sidebar() {
 
           {/* Navigation */}
           <nav className="flex-1 px-4 py-6 space-y-6 overflow-y-auto scrollbar-thin">
-            {mainNavigation.length > 0 && role !== "admin" && (
+            {/* Custom config sections for non-admin roles */}
+            {useCustomConfig && customSections.map((section, sIdx) => (
+              <div key={sIdx} className="space-y-2">
+                <p className="px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  {section.label}
+                </p>
+                {section.items.map((item) => {
+                  const isActive = location.pathname === item.href;
+                  return (
+                    <Link
+                      key={item.href}
+                      to={item.href}
+                      onClick={() => setIsOpen(false)}
+                      className={cn(
+                        "flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold transition-all duration-300",
+                        isActive
+                          ? "bg-gradient-to-r from-primary to-primary/80 text-primary-foreground shadow-lg scale-[1.02]"
+                          : "text-muted-foreground hover:bg-muted hover:text-foreground hover:scale-[1.01]",
+                      )}
+                    >
+                      <item.icon className="w-5 h-5" />
+                      {item.name}
+                    </Link>
+                  );
+                })}
+              </div>
+            ))}
+
+            {/* Default sections when no custom config */}
+            {!useCustomConfig && mainNavigation.length > 0 && role !== "admin" && (
               <div className="space-y-2">
                 <p className="px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                   📚 Principal
@@ -297,14 +326,13 @@ export function Sidebar() {
                     >
                       <item.icon className="w-5 h-5" />
                       {item.name}
-                      {isActive}
                     </Link>
                   );
                 })}
               </div>
             )}
 
-            {responsavelNavigation.length > 0 && role !== "admin" && (
+            {!useCustomConfig && responsavelNavigation.length > 0 && role !== "admin" && (
               <div className="space-y-2">
                 <p className="px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                   👨‍👩‍👧 Responsável
