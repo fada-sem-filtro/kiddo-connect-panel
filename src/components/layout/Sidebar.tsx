@@ -60,6 +60,15 @@ const ICON_MAP: Record<string, typeof Calendar> = {
   pedagogico: Settings,
   materias: Library,
   relatorio_modelo: FileText,
+  escolas: Building2,
+  alunos_global: Baby,
+  educadores_global: GraduationCap,
+  permissoes: Shield,
+  orcamentos: MessageSquare,
+  sidebar_config: SlidersHorizontal,
+  configuracoes: Cog,
+  eventos_resp: ClipboardList,
+  calendario_resp: CalendarDays,
 };
 
 export function Sidebar() {

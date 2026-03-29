@@ -9,7 +9,27 @@ export function useSidebarConfig() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!role || role === 'admin' || !userCreche?.id) {
+    if (!role || !userCreche?.id) {
+      // Admin without a creche uses a global config (creche_id = 'admin_global')
+      if (role === 'admin') {
+        const fetchAdminConfig = async () => {
+          const { data } = await supabase
+            .from('sidebar_config')
+            .select('config')
+            .eq('creche_id', '00000000-0000-0000-0000-000000000000')
+            .eq('perfil', 'admin')
+            .maybeSingle();
+
+          if (data?.config) {
+            setConfig(data.config as unknown as SidebarConfig);
+          } else {
+            setConfig(null);
+          }
+          setLoading(false);
+        };
+        fetchAdminConfig();
+        return;
+      }
       setConfig(null);
       setLoading(false);
       return;
