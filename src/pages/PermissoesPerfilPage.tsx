@@ -13,7 +13,7 @@ import { usePermissoesPerfil, MODULOS, PERFIS } from '@/hooks/usePermissoesPerfi
 
 export default function PermissoesPerfilPage() {
   const { effectiveCrecheId, selectedCrecheId, setSelectedCrecheId, creches, isAdmin } = useAdminSchoolSelector();
-  const { permissoes, loading, getPermissao, upsertPermissao, initializeDefaults } = usePermissoesPerfil(effectiveCrecheId);
+  const { permissoes, loading, getPermissao, upsertPermissao, initializeDefaults, refetch } = usePermissoesPerfil(effectiveCrecheId);
   const [activePerfil, setActivePerfil] = useState('diretor');
   const [initializing, setInitializing] = useState(false);
   const [settingDefault, setSettingDefault] = useState(false);
