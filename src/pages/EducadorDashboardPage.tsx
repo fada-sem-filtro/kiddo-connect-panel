@@ -279,7 +279,6 @@ export default function EducadorDashboardPage() {
                               👤 {(p as any).pickup_person_name} ({(p as any).pickup_person_type === 'responsável' ? 'Responsável' : 'Autorizado'})
                             </span>
                           )}
-                          )}
                           {getEventosCount(crianca.id) > 0 && (
                             <span>📋 {getEventosCount(crianca.id)} eventos</span>
                           )}
