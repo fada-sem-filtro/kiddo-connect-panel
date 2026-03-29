@@ -18,7 +18,7 @@ import { toast } from 'sonner';
 interface TurmaInfo { id: string; nome: string; faixa_etaria: string | null; }
 interface CriancaInfo { id: string; nome: string; data_nascimento: string; turma_id: string; observacoes: string | null; }
 interface EventoInfo { id: string; tipo: string; crianca_id: string; }
-interface ResponsavelInfo { crianca_id: string; nome: string; }
+interface ResponsavelInfo { crianca_id: string; nome: string; telefone: string | null; }
 
 export default function EducadorDashboardPage() {
   const { user, profile } = useAuth();
