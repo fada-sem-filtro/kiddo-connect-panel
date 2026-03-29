@@ -76,7 +76,7 @@ export function useAdminSidebarConfig(crecheId: string, perfil: string) {
     const { error } = await supabase
       .from('sidebar_config')
       .upsert(
-        { creche_id: crecheId, perfil, config: config as unknown as Record<string, unknown> },
+        [{ creche_id: crecheId, perfil, config: config as unknown as Record<string, unknown> }],
         { onConflict: 'creche_id,perfil' }
       );
 
