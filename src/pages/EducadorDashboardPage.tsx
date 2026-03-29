@@ -30,7 +30,8 @@ export default function EducadorDashboardPage() {
   const [eventMode, setEventMode] = useState<'individual' | 'turma'>('individual');
   const [selectedCriancaId, setSelectedCriancaId] = useState<string | undefined>();
   const [selectedTurmaForEvent, setSelectedTurmaForEvent] = useState<string | undefined>();
-
+  const [pickupCrianca, setPickupCrianca] = useState<{ id: string; nome: string; turma_nome: string } | null>(null);
+  const [pickupLoading, setPickupLoading] = useState(false);
   const today = new Date();
   const { presencas, marcarPresenca, registrarSaida, getPresenca } = usePresencas(today);
 
