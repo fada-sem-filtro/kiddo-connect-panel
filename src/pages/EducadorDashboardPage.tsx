@@ -18,12 +18,14 @@ import { toast } from 'sonner';
 interface TurmaInfo { id: string; nome: string; faixa_etaria: string | null; }
 interface CriancaInfo { id: string; nome: string; data_nascimento: string; turma_id: string; observacoes: string | null; }
 interface EventoInfo { id: string; tipo: string; crianca_id: string; }
+interface ResponsavelInfo { crianca_id: string; nome: string; }
 
 export default function EducadorDashboardPage() {
   const { user, profile } = useAuth();
   const [turmas, setTurmas] = useState<TurmaInfo[]>([]);
   const [criancas, setCriancas] = useState<CriancaInfo[]>([]);
   const [eventosHoje, setEventosHoje] = useState<EventoInfo[]>([]);
+  const [responsaveis, setResponsaveis] = useState<ResponsavelInfo[]>([]);
   const [selectedTurmaId, setSelectedTurmaId] = useState<string>('all');
   const [loading, setLoading] = useState(true);
   const [eventModalOpen, setEventModalOpen] = useState(false);
@@ -79,6 +81,28 @@ export default function EducadorDashboardPage() {
         .gte('data_inicio', start.toISOString())
         .lte('data_inicio', end.toISOString());
       setEventosHoje(eventosData || []);
+
+      // Fetch responsáveis vinculados
+      const { data: vinculos } = await supabase
+        .from('crianca_responsaveis')
+        .select('crianca_id, responsavel_user_id')
+        .in('crianca_id', criancaIds);
+
+      if (vinculos && vinculos.length > 0) {
+        const userIds = [...new Set(vinculos.map(v => v.responsavel_user_id))];
+        const { data: profiles } = await supabase
+          .from('profiles')
+          .select('user_id, nome')
+          .in('user_id', userIds);
+
+        const profileMap = new Map((profiles || []).map(p => [p.user_id, p.nome]));
+        setResponsaveis(vinculos.map(v => ({
+          crianca_id: v.crianca_id,
+          nome: profileMap.get(v.responsavel_user_id) || 'Responsável',
+        })));
+      } else {
+        setResponsaveis([]);
+      }
     }
     setLoading(false);
   };
@@ -142,6 +166,9 @@ export default function EducadorDashboardPage() {
 
   const getEventosCount = (criancaId: string) =>
     eventosHoje.filter(e => e.crianca_id === criancaId).length;
+
+  const getResponsaveis = (criancaId: string) =>
+    responsaveis.filter(r => r.crianca_id === criancaId);
 
   // Summary counts
   const totalAlunos = criancasFiltradas.length;
@@ -262,6 +289,11 @@ export default function EducadorDashboardPage() {
                         </div>
                         <div className="flex items-center gap-3 text-xs text-muted-foreground mt-1 flex-wrap">
                           <span>{getTurmaNome(crianca.turma_id)}</span>
+                          {getResponsaveis(crianca.id).length > 0 && (
+                            <span className="flex items-center gap-1">
+                              👨‍👩‍👧 {getResponsaveis(crianca.id).map(r => r.nome).join(', ')}
+                            </span>
+                          )}
                           {p?.hora_chegada && (
                             <span className="flex items-center gap-1">
                               <LogIn className="w-3 h-3" />
