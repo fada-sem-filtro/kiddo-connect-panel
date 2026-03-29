@@ -98,8 +98,8 @@ export function Sidebar() {
   type NavItem = { name: string; href: string; icon: typeof Calendar };
   type NavSection = { label: string; items: NavItem[] };
 
-  const useCustomConfig = role !== 'admin' && customConfig;
-  const isConfigPending = role !== 'admin' && sidebarConfigLoading;
+  const useCustomConfig = customConfig != null;
+  const isConfigPending = sidebarConfigLoading;
 
   let customSections: NavSection[] = [];
   if (useCustomConfig) {
