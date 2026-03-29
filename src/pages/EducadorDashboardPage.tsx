@@ -25,6 +25,7 @@ export default function EducadorDashboardPage() {
   const [turmas, setTurmas] = useState<TurmaInfo[]>([]);
   const [criancas, setCriancas] = useState<CriancaInfo[]>([]);
   const [eventosHoje, setEventosHoje] = useState<EventoInfo[]>([]);
+  const [responsaveis, setResponsaveis] = useState<ResponsavelInfo[]>([]);
   const [selectedTurmaId, setSelectedTurmaId] = useState<string>('all');
   const [loading, setLoading] = useState(true);
   const [eventModalOpen, setEventModalOpen] = useState(false);
