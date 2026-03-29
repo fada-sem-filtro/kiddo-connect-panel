@@ -167,6 +167,9 @@ export default function EducadorDashboardPage() {
   const getEventosCount = (criancaId: string) =>
     eventosHoje.filter(e => e.crianca_id === criancaId).length;
 
+  const getResponsaveis = (criancaId: string) =>
+    responsaveis.filter(r => r.crianca_id === criancaId);
+
   // Summary counts
   const totalAlunos = criancasFiltradas.length;
   const presentes = criancasFiltradas.filter(c => getPresenca(c.id)?.status === 'presente').length;
