@@ -53,7 +53,7 @@ export function Sidebar() {
   if (isDiretor) {
     if (canView('dashboard')) mainNavigation.push({ name: "Dashboard", href: "/diretor/dashboard", icon: BarChart3 });
   } else {
-    mainNavigation.push({ name: "Agenda", href: "/", icon: Calendar });
+    mainNavigation.push({ name: "Agenda", href: "/agenda", icon: Calendar });
   }
 
   // Educador, diretor and admin see Painel do Educador
