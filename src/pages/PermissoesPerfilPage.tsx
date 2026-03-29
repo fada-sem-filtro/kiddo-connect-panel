@@ -38,6 +38,57 @@ export default function PermissoesPerfilPage() {
     toast.success('Permissões padrão inicializadas');
   };
 
+  const handleSetAsDefault = async () => {
+    if (!effectiveCrecheId) return;
+    setSettingDefault(true);
+    // Delete existing template permissions
+    await supabase.from('permissoes_perfil').delete().eq('creche_id', TEMPLATE_CRECHE_ID);
+    // Copy current school's permissions as template
+    const templatePerms = permissoes.map(p => ({
+      creche_id: TEMPLATE_CRECHE_ID,
+      perfil: p.perfil,
+      modulo: p.modulo,
+      pode_visualizar: p.pode_visualizar,
+      pode_criar: p.pode_criar,
+      pode_editar: p.pode_editar,
+      pode_excluir: p.pode_excluir,
+    }));
+    if (templatePerms.length > 0) {
+      await supabase.from('permissoes_perfil').insert(templatePerms);
+    }
+    setSettingDefault(false);
+    toast.success('Padrão definido! Novas escolas usarão estas permissões ao inicializar.');
+  };
+
+  const handleLoadFromDefault = async () => {
+    if (!effectiveCrecheId) return;
+    setSettingDefault(true);
+    const { data: templatePerms } = await supabase
+      .from('permissoes_perfil')
+      .select('*')
+      .eq('creche_id', TEMPLATE_CRECHE_ID);
+    if (!templatePerms || templatePerms.length === 0) {
+      toast.info('Nenhum padrão personalizado encontrado.');
+      setSettingDefault(false);
+      return;
+    }
+    // Delete current school's permissions and insert from template
+    await supabase.from('permissoes_perfil').delete().eq('creche_id', effectiveCrecheId);
+    const newPerms = templatePerms.map(p => ({
+      creche_id: effectiveCrecheId,
+      perfil: p.perfil,
+      modulo: p.modulo,
+      pode_visualizar: p.pode_visualizar,
+      pode_criar: p.pode_criar,
+      pode_editar: p.pode_editar,
+      pode_excluir: p.pode_excluir,
+    }));
+    await supabase.from('permissoes_perfil').insert(newPerms);
+    await refetch();
+    setSettingDefault(false);
+    toast.success('Permissões carregadas do padrão');
+  };
+
   const currentModulos = MODULOS.filter(m => {
     // Filter which modules are relevant per profile
     if (activePerfil === 'responsavel') {
