@@ -171,5 +171,57 @@ export function getDefaultConfig(perfil: string): SidebarConfig {
     ];
   }
 
+  if (perfil === 'admin') {
+    return [
+      {
+        id: 'principal',
+        label: '📊 Principal',
+        ordem: 0,
+        items: [
+          { key: 'dashboard', label: 'Dashboard', ordem: 0, visible: true },
+          { key: 'escolas', label: 'Escolas', ordem: 1, visible: true },
+          { key: 'painel_educador', label: 'Painel Educador', ordem: 2, visible: true },
+          { key: 'alunos_global', label: 'Alunos', ordem: 3, visible: true },
+          { key: 'educadores_global', label: 'Educadores', ordem: 4, visible: true },
+          { key: 'recados', label: 'Recados', ordem: 5, visible: true },
+        ],
+      },
+      {
+        id: 'gestao',
+        label: '⚙️ Administração',
+        ordem: 1,
+        items: [
+          { key: 'membros', label: 'Corpo Docente', ordem: 0, visible: true },
+          { key: 'turmas', label: 'Turmas', ordem: 1, visible: true },
+          { key: 'alunos', label: 'Gestão Alunos', ordem: 2, visible: true },
+          { key: 'usuarios', label: 'Usuários', ordem: 3, visible: true },
+          { key: 'feriados', label: 'Feriados', ordem: 4, visible: true },
+          { key: 'calendario', label: 'Calendário', ordem: 5, visible: true },
+          { key: 'relatorios', label: 'Relatórios', ordem: 6, visible: true },
+          { key: 'relatorio_aluno', label: 'Relatório Aluno', ordem: 7, visible: true },
+          { key: 'pedagogico', label: 'Config. Pedagógicas', ordem: 8, visible: true },
+          { key: 'permissoes', label: 'Permissões', ordem: 9, visible: true },
+          { key: 'orcamentos', label: 'Orçamentos', ordem: 10, visible: true },
+          { key: 'sidebar_config', label: 'Menu Lateral', ordem: 11, visible: true },
+          { key: 'materias', label: 'Matérias', ordem: 12, visible: true },
+          { key: 'boletim', label: 'Boletim', ordem: 13, visible: true },
+          { key: 'grade_aulas', label: 'Grade de Aulas', ordem: 14, visible: true },
+          { key: 'relatorio_modelo', label: 'Modelo Relatório', ordem: 15, visible: true },
+          { key: 'relatorio_desempenho', label: 'Relatórios Desempenho', ordem: 16, visible: true },
+          { key: 'configuracoes', label: 'Minhas Configurações', ordem: 17, visible: true },
+        ],
+      },
+      {
+        id: 'responsavel_view',
+        label: '👨‍👩‍👧 Responsável',
+        ordem: 2,
+        items: [
+          { key: 'eventos_resp', label: 'Meus Eventos', ordem: 0, visible: true },
+          { key: 'calendario_resp', label: 'Calendário Escolar', ordem: 1, visible: true },
+        ],
+      },
+    ];
+  }
+
   return [];
 }
