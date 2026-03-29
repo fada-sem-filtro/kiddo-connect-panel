@@ -22,6 +22,7 @@ import {
   Library,
   BookOpen,
   Shield,
+  SlidersHorizontal,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import logoFleur from "@/assets/logo-fleur-2.webp";
