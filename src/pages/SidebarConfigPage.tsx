@@ -62,23 +62,26 @@ export default function SidebarConfigPage() {
           />
         )}
 
-        {effectiveCrecheId ? (
+        {effectiveCrecheId || selectedPerfil === 'admin' ? (
           <Tabs value={selectedPerfil} onValueChange={setSelectedPerfil}>
-            <TabsList className="grid w-full grid-cols-3 max-w-md">
+            <TabsList className="grid w-full grid-cols-4 max-w-lg">
               {PERFIS.map(p => (
                 <TabsTrigger key={p.value} value={p.value}>{p.label}</TabsTrigger>
               ))}
             </TabsList>
             {PERFIS.map(p => (
               <TabsContent key={p.value} value={p.value}>
-                <SidebarConfigEditor crecheId={effectiveCrecheId} perfil={p.value} />
+                <SidebarConfigEditor
+                  crecheId={p.value === 'admin' ? '00000000-0000-0000-0000-000000000000' : effectiveCrecheId!}
+                  perfil={p.value}
+                />
               </TabsContent>
             ))}
           </Tabs>
         ) : (
           <Card className="rounded-2xl">
             <CardContent className="p-8 text-center text-muted-foreground">
-              Selecione uma escola para configurar o menu lateral
+              Selecione uma escola para configurar o menu lateral dos perfis (exceto Administrador)
             </CardContent>
           </Card>
         )}
