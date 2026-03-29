@@ -427,11 +427,49 @@ function SidebarConfigEditor({ crecheId, perfil }: { crecheId: string; perfil: s
     return config[info.sIdx].items[info.iIdx];
   })() : null;
 
+  const handleSetAsDefault = async () => {
+    const TEMPLATE_CRECHE_ID = '00000000-0000-0000-0000-000000000001';
+    const { error } = await supabase
+      .from('sidebar_config')
+      .upsert(
+        [{ creche_id: TEMPLATE_CRECHE_ID, perfil, config: JSON.parse(JSON.stringify(config)) }],
+        { onConflict: 'creche_id,perfil' }
+      );
+    if (error) {
+      toast.error('Erro ao definir padrão');
+    } else {
+      toast.success('Padrão definido com sucesso! Novas escolas usarão esta configuração.');
+    }
+  };
+
+  const handleLoadFromDefault = async () => {
+    const TEMPLATE_CRECHE_ID = '00000000-0000-0000-0000-000000000001';
+    const { data } = await supabase
+      .from('sidebar_config')
+      .select('config')
+      .eq('creche_id', TEMPLATE_CRECHE_ID)
+      .eq('perfil', perfil)
+      .maybeSingle();
+    if (data?.config) {
+      setConfig(data.config as unknown as SidebarConfig);
+      toast.success('Configuração padrão carregada');
+    } else {
+      toast.info('Nenhum padrão personalizado encontrado. Usando padrão do sistema.');
+      setConfig(getDefaultConfig(perfil));
+    }
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex gap-2 justify-end flex-wrap">
+        <Button variant="outline" size="sm" onClick={handleLoadFromDefault} className="rounded-xl gap-2">
+          <Star className="w-4 h-4" /> Carregar Padrão
+        </Button>
+        <Button variant="outline" size="sm" onClick={handleSetAsDefault} className="rounded-xl gap-2 border-primary text-primary hover:bg-primary/10">
+          <Star className="w-4 h-4" /> Definir Padrão
+        </Button>
         <Button variant="outline" size="sm" onClick={handleReset} className="rounded-xl gap-2">
-          <RotateCcw className="w-4 h-4" /> Restaurar Padrão
+          <RotateCcw className="w-4 h-4" /> Restaurar Sistema
         </Button>
         <Button size="sm" onClick={handleSave} disabled={saving} className="rounded-xl gap-2">
           <Save className="w-4 h-4" /> {saving ? 'Salvando...' : 'Salvar'}
