@@ -12,6 +12,10 @@ export interface Presenca {
   hora_saida: string | null;
   educador_user_id: string | null;
   observacao: string | null;
+  pickup_person_id: string | null;
+  pickup_person_name: string | null;
+  pickup_person_type: string | null;
+  pickup_registered_by: string | null;
 }
 
 export function usePresencas(date: Date) {
@@ -63,11 +67,23 @@ export function usePresencas(date: Date) {
     return { error };
   };
 
-  const registrarSaida = async (criancaId: string) => {
+  const registrarSaida = async (criancaId: string, pickupData?: {
+    pickup_person_id: string;
+    pickup_person_name: string;
+    pickup_person_type: string;
+    pickup_registered_by: string;
+  }) => {
     const now = new Date().toISOString();
+    const updatePayload: Record<string, unknown> = { status: 'saiu', hora_saida: now };
+    if (pickupData) {
+      updatePayload.pickup_person_id = pickupData.pickup_person_id;
+      updatePayload.pickup_person_name = pickupData.pickup_person_name;
+      updatePayload.pickup_person_type = pickupData.pickup_person_type;
+      updatePayload.pickup_registered_by = pickupData.pickup_registered_by;
+    }
     const { error } = await supabase
       .from('presencas')
-      .update({ status: 'saiu', hora_saida: now })
+      .update(updatePayload)
       .eq('crianca_id', criancaId)
       .eq('data', dataStr);
     if (!error) await fetchPresencas();

@@ -786,6 +786,10 @@ export type Database = {
           hora_saida: string | null
           id: string
           observacao: string | null
+          pickup_person_id: string | null
+          pickup_person_name: string | null
+          pickup_person_type: string | null
+          pickup_registered_by: string | null
           status: string
           updated_at: string
         }
@@ -798,6 +802,10 @@ export type Database = {
           hora_saida?: string | null
           id?: string
           observacao?: string | null
+          pickup_person_id?: string | null
+          pickup_person_name?: string | null
+          pickup_person_type?: string | null
+          pickup_registered_by?: string | null
           status?: string
           updated_at?: string
         }
@@ -810,6 +818,10 @@ export type Database = {
           hora_saida?: string | null
           id?: string
           observacao?: string | null
+          pickup_person_id?: string | null
+          pickup_person_name?: string | null
+          pickup_person_type?: string | null
+          pickup_registered_by?: string | null
           status?: string
           updated_at?: string
         }

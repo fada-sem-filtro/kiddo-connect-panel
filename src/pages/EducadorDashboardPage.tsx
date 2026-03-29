@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { EventDbModal } from '@/components/modals/EventDbModal';
 import { usePresencas } from '@/hooks/usePresencas';
+import { PickupModal } from '@/components/modals/PickupModal';
 import { Users, Plus, LogIn, LogOut, Clock, CheckCircle2, XCircle, UserCheck } from 'lucide-react';
 import { EVENT_TYPE_LABELS, EVENT_TYPE_ICONS, EventType, isTurmaFundamental } from '@/types';
 import { format } from 'date-fns';
@@ -29,7 +30,8 @@ export default function EducadorDashboardPage() {
   const [eventMode, setEventMode] = useState<'individual' | 'turma'>('individual');
   const [selectedCriancaId, setSelectedCriancaId] = useState<string | undefined>();
   const [selectedTurmaForEvent, setSelectedTurmaForEvent] = useState<string | undefined>();
-
+  const [pickupCrianca, setPickupCrianca] = useState<{ id: string; nome: string; turma_nome: string } | null>(null);
+  const [pickupLoading, setPickupLoading] = useState(false);
   const today = new Date();
   const { presencas, marcarPresenca, registrarSaida, getPresenca } = usePresencas(today);
 
@@ -93,10 +95,30 @@ export default function EducadorDashboardPage() {
     else toast.success('Presença registrada! ✅');
   };
 
-  const handleRegistrarSaida = async (criancaId: string) => {
-    const { error } = await registrarSaida(criancaId);
+  const handleRegistrarSaida = (criancaId: string) => {
+    const crianca = criancas.find(c => c.id === criancaId);
+    if (!crianca) return;
+    setPickupCrianca({
+      id: crianca.id,
+      nome: crianca.nome,
+      turma_nome: getTurmaNome(crianca.turma_id),
+    });
+  };
+
+  const handlePickupConfirm = async (person: { id: string; nome: string; tipo: 'responsável' | 'autorizado' }) => {
+    if (!pickupCrianca || !profile) return;
+    setPickupLoading(true);
+    const realId = person.id.replace(/^(resp_|aut_)/, '');
+    const { error } = await registrarSaida(pickupCrianca.id, {
+      pickup_person_id: realId,
+      pickup_person_name: person.nome,
+      pickup_person_type: person.tipo,
+      pickup_registered_by: profile.nome,
+    });
+    setPickupLoading(false);
     if (error) toast.error('Erro ao registrar saída');
-    else toast.success('Saída registrada! 👋');
+    else toast.success(`Saída registrada! Buscado por: ${person.nome} 👋`);
+    setPickupCrianca(null);
   };
 
   const handleAddEvento = (criancaId: string) => {
@@ -252,6 +274,11 @@ export default function EducadorDashboardPage() {
                               {format(new Date(p.hora_saida), 'HH:mm')}
                             </span>
                           )}
+                          {p?.pickup_person_name && (
+                            <span className="flex items-center gap-1 text-primary font-medium">
+                              👤 {p.pickup_person_name} ({p.pickup_person_type === 'responsável' ? 'Responsável' : 'Autorizado'})
+                            </span>
+                          )}
                           {getEventosCount(crianca.id) > 0 && (
                             <span>📋 {getEventosCount(crianca.id)} eventos</span>
                           )}
@@ -321,6 +348,14 @@ export default function EducadorDashboardPage() {
         criancas={criancasFiltradas.map(c => ({ id: c.id, nome: c.nome }))}
         turmas={turmas}
         onSaved={fetchData}
+      />
+
+      <PickupModal
+        open={!!pickupCrianca}
+        onOpenChange={(open) => !open && setPickupCrianca(null)}
+        crianca={pickupCrianca}
+        onConfirm={handlePickupConfirm}
+        loading={pickupLoading}
       />
     </MainLayout>
   );
