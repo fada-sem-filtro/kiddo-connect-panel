@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle,
 } from '@/components/ui/dialog';
@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Plus, Trash2, Edit, User, Phone, Save, X } from 'lucide-react';
+import { Plus, Trash2, Edit, User, Phone, Save, X, Camera } from 'lucide-react';
 
 interface AuthorizedPerson {
   id: string;
@@ -32,6 +32,10 @@ export function AuthorizedPickupsModal({ open, onOpenChange, criancaId, criancaN
   const [showForm, setShowForm] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
   const [form, setForm] = useState({ nome: '', parentesco: '', telefone: '', documento: '' });
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const fetchPersons = async () => {
     setLoading(true);
@@ -52,6 +56,40 @@ export function AuthorizedPickupsModal({ open, onOpenChange, criancaId, criancaN
     setForm({ nome: '', parentesco: '', telefone: '', documento: '' });
     setEditId(null);
     setShowForm(false);
+    setPhotoFile(null);
+    setPhotoPreview(null);
+  };
+
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('A foto deve ter no máximo 5MB');
+      return;
+    }
+    setPhotoFile(file);
+    setPhotoPreview(URL.createObjectURL(file));
+  };
+
+  const uploadPhoto = async (personId: string): Promise<string | null> => {
+    if (!photoFile) return null;
+    const ext = photoFile.name.split('.').pop();
+    const path = `${criancaId}/${personId}.${ext}`;
+    
+    const { error } = await supabase.storage
+      .from('authorized-pickups-photos')
+      .upload(path, photoFile, { upsert: true });
+
+    if (error) {
+      console.error('Upload error:', error);
+      return null;
+    }
+
+    const { data: urlData } = supabase.storage
+      .from('authorized-pickups-photos')
+      .getPublicUrl(path);
+
+    return urlData.publicUrl + '?t=' + Date.now();
   };
 
   const handleSave = async () => {
@@ -60,27 +98,50 @@ export function AuthorizedPickupsModal({ open, onOpenChange, criancaId, criancaN
       return;
     }
 
+    setUploading(true);
+
     if (editId) {
-      const { error } = await supabase.from('authorized_pickups').update({
+      let foto_url: string | null | undefined = undefined;
+      if (photoFile) {
+        foto_url = await uploadPhoto(editId);
+      }
+
+      const updateData: any = {
         nome: form.nome,
         parentesco: form.parentesco || 'Outro',
         telefone: form.telefone || null,
         documento: form.documento || null,
-      }).eq('id', editId);
+      };
+      if (foto_url !== undefined && foto_url !== null) {
+        updateData.foto_url = foto_url;
+      }
+
+      const { error } = await supabase.from('authorized_pickups').update(updateData).eq('id', editId);
       if (error) toast.error('Erro ao atualizar');
       else toast.success('Atualizado!');
     } else {
-      const { error } = await supabase.from('authorized_pickups').insert({
+      const { data: inserted, error } = await supabase.from('authorized_pickups').insert({
         crianca_id: criancaId,
         nome: form.nome,
         parentesco: form.parentesco || 'Outro',
         telefone: form.telefone || null,
         documento: form.documento || null,
-      });
-      if (error) toast.error('Erro ao cadastrar');
-      else toast.success('Pessoa autorizada cadastrada!');
+      }).select('id').single();
+
+      if (error) {
+        toast.error('Erro ao cadastrar');
+      } else if (inserted && photoFile) {
+        const foto_url = await uploadPhoto(inserted.id);
+        if (foto_url) {
+          await supabase.from('authorized_pickups').update({ foto_url }).eq('id', inserted.id);
+        }
+        toast.success('Pessoa autorizada cadastrada!');
+      } else {
+        toast.success('Pessoa autorizada cadastrada!');
+      }
     }
 
+    setUploading(false);
     resetForm();
     fetchPersons();
   };
@@ -89,6 +150,8 @@ export function AuthorizedPickupsModal({ open, onOpenChange, criancaId, criancaN
     setForm({ nome: p.nome, parentesco: p.parentesco, telefone: p.telefone || '', documento: p.documento || '' });
     setEditId(p.id);
     setShowForm(true);
+    setPhotoFile(null);
+    setPhotoPreview(p.foto_url || null);
   };
 
   const handleDelete = async (id: string) => {
@@ -111,7 +174,6 @@ export function AuthorizedPickupsModal({ open, onOpenChange, criancaId, criancaN
         </DialogHeader>
 
         <div className="space-y-4">
-          {/* List */}
           {loading ? (
             <p className="text-sm text-muted-foreground text-center py-4">Carregando...</p>
           ) : persons.length === 0 && !showForm ? (
@@ -146,9 +208,34 @@ export function AuthorizedPickupsModal({ open, onOpenChange, criancaId, criancaN
             </div>
           )}
 
-          {/* Form */}
           {showForm && (
             <div className="space-y-3 p-4 rounded-xl border border-primary/20 bg-primary/5">
+              {/* Photo upload */}
+              <div className="flex flex-col items-center gap-2">
+                <div
+                  className="relative cursor-pointer group"
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <Avatar className="w-20 h-20 border-2 border-dashed border-primary/40 group-hover:border-primary transition-colors">
+                    <AvatarImage src={photoPreview || undefined} />
+                    <AvatarFallback className="bg-primary/10">
+                      <Camera className="w-6 h-6 text-primary" />
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/30 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Camera className="w-5 h-5 text-white" />
+                  </div>
+                </div>
+                <span className="text-xs text-muted-foreground">Clique para adicionar foto</span>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handlePhotoChange}
+                />
+              </div>
+
               <div className="space-y-2">
                 <Label>Nome *</Label>
                 <Input value={form.nome} onChange={(e) => setForm(f => ({ ...f, nome: e.target.value }))} placeholder="Nome completo" />
@@ -169,8 +256,8 @@ export function AuthorizedPickupsModal({ open, onOpenChange, criancaId, criancaN
                 <Button variant="outline" size="sm" onClick={resetForm}>
                   <X className="w-3.5 h-3.5 mr-1" /> Cancelar
                 </Button>
-                <Button size="sm" onClick={handleSave}>
-                  <Save className="w-3.5 h-3.5 mr-1" /> {editId ? 'Salvar' : 'Cadastrar'}
+                <Button size="sm" onClick={handleSave} disabled={uploading}>
+                  <Save className="w-3.5 h-3.5 mr-1" /> {uploading ? 'Salvando...' : editId ? 'Salvar' : 'Cadastrar'}
                 </Button>
               </div>
             </div>
