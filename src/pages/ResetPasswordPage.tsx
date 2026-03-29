@@ -43,7 +43,7 @@ export default function ResetPasswordPage() {
       toast.error('Erro ao atualizar senha');
     } else {
       toast.success('Senha atualizada com sucesso! 🌸');
-      navigate('/');
+      navigate('/agenda');
     }
   };
 
