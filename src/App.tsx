@@ -39,6 +39,7 @@ import PermissoesPerfilPage from "./pages/PermissoesPerfilPage";
 import ResponsavelGradePage from "./pages/ResponsavelGradePage";
 import LandingPage from "./pages/LandingPage";
 import OrcamentosPage from "./pages/OrcamentosPage";
+import SidebarConfigPage from "./pages/SidebarConfigPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
