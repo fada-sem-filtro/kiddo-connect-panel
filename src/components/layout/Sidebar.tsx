@@ -158,7 +158,7 @@ export function Sidebar() {
     }
   }
 
-  if (role === "admin" || (isDiretor && !useCustomConfig)) {
+  if (role === "admin" || (isDiretor && !useCustomConfig && !isConfigPending)) {
     const prefix = isDiretor ? "/diretor" : "/admin";
 
     if (role === "admin") {
