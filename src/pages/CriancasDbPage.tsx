@@ -263,6 +263,9 @@ export default function CriancasDbPage() {
                             <Button variant="ghost" size="icon" title="Responsáveis" onClick={() => setRespModalCrianca(crianca)}>
                               <Link2 className="w-4 h-4" />
                             </Button>
+                            <Button variant="ghost" size="icon" title="Pessoas autorizadas" onClick={() => setPickupsCrianca(crianca)}>
+                              <Shield className="w-4 h-4" />
+                            </Button>
                             <Button variant="ghost" size="icon" onClick={() => handleEdit(crianca)}>
                               <Edit className="w-4 h-4" />
                             </Button>
