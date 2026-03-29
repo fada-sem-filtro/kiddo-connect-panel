@@ -364,12 +364,6 @@ export default function EducadorDashboardPage() {
                       </div>
                     </div>
                   </CardContent>
-                </Card>
-                        )}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
               );
             })}
           </div>
