@@ -170,11 +170,11 @@ export function Sidebar() {
   return (
     <>
       {/* Mobile header */}
-      <div className="fixed top-0 left-0 right-0 z-50 lg:hidden bg-card/95 backdrop-blur-sm border-b border-border px-4 py-3 flex items-center justify-between">
+      <div className="fixed top-0 left-0 right-0 z-50 lg:hidden bg-card/95 backdrop-blur-sm border-b border-border px-3 py-2.5 flex items-center justify-between">
         <Button
           variant="ghost"
           size="icon"
-          className="rounded-2xl hover:bg-primary/10"
+          className="rounded-xl hover:bg-primary/10 h-9 w-9"
           onClick={() => setIsOpen(!isOpen)}
         >
           {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -182,8 +182,8 @@ export function Sidebar() {
 
         <div className="flex items-center gap-2">
           <img src={logoFleur} alt="Fleur" className="w-6 h-6" />
-          <span className="font-bold text-foreground">Agenda Fleur</span>
-          {userCreche && <span className="text-xs text-primary font-semibold">{userCreche.nome}</span>}
+          <span className="font-bold text-foreground text-sm">Agenda Fleur</span>
+          {userCreche && <span className="text-[10px] text-primary font-semibold max-w-[100px] truncate">{userCreche.nome}</span>}
         </div>
 
         <NotificationBell />

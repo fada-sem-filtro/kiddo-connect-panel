@@ -39,21 +39,19 @@ const summaryItems = [
 
 export function SummaryCards({ eventCounts }: SummaryCardsProps) {
   return (
-    <div className="kawaii-card bg-card p-6">
-      <div className="flex items-center gap-2 mb-4">
-        
-        <h3 className="text-lg font-bold">Resumo do Dia</h3>
+    <div className="kawaii-card bg-card p-3 sm:p-6">
+      <div className="flex items-center gap-2 mb-3 sm:mb-4">
+        <h3 className="text-base sm:text-lg font-bold">Resumo do Dia</h3>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      <div className="grid grid-cols-4 gap-2 sm:gap-4">
         {summaryItems.map((item) =>
         <div key={item.type} className={cn(item.className, "text-center")}>
-            <div className="flex items-center justify-center gap-2 mb-2">
-              <item.icon className="w-5 h-5 text-foreground/60" />
-              
+            <div className="flex items-center justify-center gap-1 sm:gap-2 mb-1 sm:mb-2">
+              <item.icon className="w-4 h-4 sm:w-5 sm:h-5 text-foreground/60" />
             </div>
-            <p className="text-3xl font-bold">{eventCounts[item.type] || 0}</p>
-            <p className="text-sm text-muted-foreground font-medium">{item.label}</p>
+            <p className="text-xl sm:text-3xl font-bold">{eventCounts[item.type] || 0}</p>
+            <p className="text-[10px] sm:text-sm text-muted-foreground font-medium">{item.label}</p>
           </div>
         )}
       </div>

@@ -200,57 +200,55 @@ export default function EducadorDashboardPage() {
 
   return (
     <MainLayout>
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-bold text-foreground">Painel do Educador</h1>
-            <p className="text-sm text-muted-foreground">
-              {format(today, "EEEE, dd 'de' MMMM", { locale: ptBR })} • {profile?.nome}
-            </p>
-          </div>
+        <div>
+          <h1 className="text-xl sm:text-2xl font-bold text-foreground">Painel do Educador</h1>
+          <p className="text-xs sm:text-sm text-muted-foreground">
+            {format(today, "EEEE, dd 'de' MMMM", { locale: ptBR })} • {profile?.nome}
+          </p>
         </div>
 
         {/* Summary Cards */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <Card className="rounded-2xl border-2 border-border">
-            <CardContent className="p-4 text-center">
-              <Users className="w-6 h-6 mx-auto text-primary mb-1" />
-              <p className="text-2xl font-bold text-foreground">{totalAlunos}</p>
-              <p className="text-xs text-muted-foreground">Total</p>
+        <div className="grid grid-cols-4 gap-2 sm:gap-4">
+          <Card className="rounded-xl sm:rounded-2xl border-2 border-border">
+            <CardContent className="p-2 sm:p-4 text-center">
+              <Users className="w-4 h-4 sm:w-6 sm:h-6 mx-auto text-primary mb-1" />
+              <p className="text-lg sm:text-2xl font-bold text-foreground">{totalAlunos}</p>
+              <p className="text-[10px] sm:text-xs text-muted-foreground">Total</p>
             </CardContent>
           </Card>
-          <Card className="rounded-2xl border-2 border-[hsl(var(--success))]/30">
-            <CardContent className="p-4 text-center">
-              <CheckCircle2 className="w-6 h-6 mx-auto text-[hsl(var(--success))] mb-1" />
-              <p className="text-2xl font-bold text-foreground">{presentes}</p>
-              <p className="text-xs text-muted-foreground">Presentes</p>
+          <Card className="rounded-xl sm:rounded-2xl border-2 border-[hsl(var(--success))]/30">
+            <CardContent className="p-2 sm:p-4 text-center">
+              <CheckCircle2 className="w-4 h-4 sm:w-6 sm:h-6 mx-auto text-[hsl(var(--success))] mb-1" />
+              <p className="text-lg sm:text-2xl font-bold text-foreground">{presentes}</p>
+              <p className="text-[10px] sm:text-xs text-muted-foreground">Presentes</p>
             </CardContent>
           </Card>
-          <Card className="rounded-2xl border-2 border-border">
-            <CardContent className="p-4 text-center">
-              <XCircle className="w-6 h-6 mx-auto text-muted-foreground mb-1" />
-              <p className="text-2xl font-bold text-foreground">{ausentes}</p>
-              <p className="text-xs text-muted-foreground">Ausentes</p>
+          <Card className="rounded-xl sm:rounded-2xl border-2 border-border">
+            <CardContent className="p-2 sm:p-4 text-center">
+              <XCircle className="w-4 h-4 sm:w-6 sm:h-6 mx-auto text-muted-foreground mb-1" />
+              <p className="text-lg sm:text-2xl font-bold text-foreground">{ausentes}</p>
+              <p className="text-[10px] sm:text-xs text-muted-foreground">Ausentes</p>
             </CardContent>
           </Card>
-          <Card className="rounded-2xl border-2 border-secondary">
-            <CardContent className="p-4 text-center">
-              <LogOut className="w-6 h-6 mx-auto text-secondary-foreground mb-1" />
-              <p className="text-2xl font-bold text-foreground">{sairam}</p>
-              <p className="text-xs text-muted-foreground">Saíram</p>
+          <Card className="rounded-xl sm:rounded-2xl border-2 border-secondary">
+            <CardContent className="p-2 sm:p-4 text-center">
+              <LogOut className="w-4 h-4 sm:w-6 sm:h-6 mx-auto text-secondary-foreground mb-1" />
+              <p className="text-lg sm:text-2xl font-bold text-foreground">{sairam}</p>
+              <p className="text-[10px] sm:text-xs text-muted-foreground">Saíram</p>
             </CardContent>
           </Card>
         </div>
 
         {/* Turma filter */}
         {turmas.length > 1 && (
-          <div className="flex flex-wrap gap-3">
-            <Button variant={selectedTurmaId === 'all' ? 'default' : 'outline'} className="rounded-2xl" onClick={() => setSelectedTurmaId('all')}>
+          <div className="flex flex-wrap gap-2 sm:gap-3">
+            <Button variant={selectedTurmaId === 'all' ? 'default' : 'outline'} size="sm" className="rounded-2xl text-xs sm:text-sm" onClick={() => setSelectedTurmaId('all')}>
               Todas ({criancas.length})
             </Button>
             {turmas.map(turma => (
-              <Button key={turma.id} variant={selectedTurmaId === turma.id ? 'default' : 'outline'} className="rounded-2xl" onClick={() => setSelectedTurmaId(turma.id)}>
+              <Button key={turma.id} variant={selectedTurmaId === turma.id ? 'default' : 'outline'} size="sm" className="rounded-2xl text-xs sm:text-sm" onClick={() => setSelectedTurmaId(turma.id)}>
                 {turma.nome} ({criancas.filter(c => c.turma_id === turma.id).length})
               </Button>
             ))}
@@ -273,94 +271,91 @@ export default function EducadorDashboardPage() {
 
               return (
                 <Card key={crianca.id} className="rounded-2xl border-2 border-border hover:border-primary/30 transition-all">
-                  <CardContent className="p-4">
-                    <div className="flex items-center gap-4">
-                      {/* Avatar */}
-                      <Avatar className="w-12 h-12 border-2 border-primary/20 shrink-0">
-                        <AvatarFallback className="bg-gradient-to-br from-primary/20 to-secondary/20 text-primary font-bold">
-                          {getInitials(crianca.nome)}
-                        </AvatarFallback>
-                      </Avatar>
+                  <CardContent className="p-3 sm:p-4">
+                    <div className="flex items-start sm:items-center gap-3 sm:gap-4 flex-col sm:flex-row">
+                      {/* Top row: Avatar + Info */}
+                      <div className="flex items-center gap-3 w-full sm:w-auto sm:flex-1 min-w-0">
+                        <Avatar className="w-10 h-10 sm:w-12 sm:h-12 border-2 border-primary/20 shrink-0">
+                          <AvatarFallback className="bg-gradient-to-br from-primary/20 to-secondary/20 text-primary font-bold text-sm">
+                            {getInitials(crianca.nome)}
+                          </AvatarFallback>
+                        </Avatar>
 
-                      {/* Info */}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <h3 className="font-bold text-foreground truncate">{crianca.nome}</h3>
-                          {getStatusBadge(crianca.id)}
-                        </div>
-                        <div className="flex items-center gap-3 text-xs text-muted-foreground mt-1 flex-wrap">
-                          <span>{getTurmaNome(crianca.turma_id)}</span>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <h3 className="font-bold text-foreground truncate text-sm sm:text-base">{crianca.nome}</h3>
+                            {getStatusBadge(crianca.id)}
+                          </div>
+                          <div className="flex items-center gap-2 sm:gap-3 text-[11px] sm:text-xs text-muted-foreground mt-1 flex-wrap">
+                            <span>{getTurmaNome(crianca.turma_id)}</span>
+                            {p?.hora_chegada && (
+                              <span className="flex items-center gap-1">
+                                <LogIn className="w-3 h-3" />
+                                {format(new Date(p.hora_chegada), 'HH:mm')}
+                              </span>
+                            )}
+                            {p?.hora_saida && (
+                              <span className="flex items-center gap-1">
+                                <LogOut className="w-3 h-3" />
+                                {format(new Date(p.hora_saida), 'HH:mm')}
+                              </span>
+                            )}
+                            {p?.pickup_person_name && (
+                              <span className="flex items-center gap-1 text-primary font-medium">
+                                👤 {p.pickup_person_name}
+                              </span>
+                            )}
+                            {getEventosCount(crianca.id) > 0 && (
+                              <span>📋 {getEventosCount(crianca.id)}</span>
+                            )}
+                          </div>
                           {getResponsaveis(crianca.id).length > 0 && (
-                            <span className="flex items-center gap-1">
+                            <div className="text-[10px] sm:text-xs text-muted-foreground mt-1 truncate">
                               👨‍👩‍👧 {getResponsaveis(crianca.id).map(r => 
-                                r.telefone ? `${r.nome} (📞 ${r.telefone})` : r.nome
+                                r.telefone ? `${r.nome} (${r.telefone})` : r.nome
                               ).join(' • ')}
-                            </span>
-                          )}
-                          {p?.hora_chegada && (
-                            <span className="flex items-center gap-1">
-                              <LogIn className="w-3 h-3" />
-                              {format(new Date(p.hora_chegada), 'HH:mm')}
-                            </span>
-                          )}
-                          {p?.hora_saida && (
-                            <span className="flex items-center gap-1">
-                              <LogOut className="w-3 h-3" />
-                              {format(new Date(p.hora_saida), 'HH:mm')}
-                            </span>
-                          )}
-                          {p?.pickup_person_name && (
-                            <span className="flex items-center gap-1 text-primary font-medium">
-                              👤 {p.pickup_person_name} ({p.pickup_person_type === 'responsável' ? 'Responsável' : 'Autorizado'})
-                            </span>
-                          )}
-                          {getEventosCount(crianca.id) > 0 && (
-                            <span>📋 {getEventosCount(crianca.id)} eventos</span>
+                            </div>
                           )}
                         </div>
                       </div>
 
-                      {/* Action Buttons - Large for tablet */}
-                      <div className="flex gap-2 shrink-0">
+                      {/* Action Buttons */}
+                      <div className="flex gap-2 w-full sm:w-auto shrink-0">
                         {status === 'ausente' && !isCriancaFundamental(crianca.id) && (
                           <Button
-                            size="lg"
-                            className="rounded-2xl bg-[hsl(var(--success))] hover:bg-[hsl(var(--success))]/90 text-[hsl(var(--success-foreground))] font-bold min-w-[120px] h-12"
+                            className="rounded-2xl bg-[hsl(var(--success))] hover:bg-[hsl(var(--success))]/90 text-[hsl(var(--success-foreground))] font-bold h-10 sm:h-12 flex-1 sm:flex-none sm:min-w-[120px]"
                             onClick={() => handleMarcarPresenca(crianca.id)}
                           >
-                            <UserCheck className="w-5 h-5 mr-2" />
+                            <UserCheck className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
                             Presente
                           </Button>
                         )}
                         {status === 'presente' && !isCriancaFundamental(crianca.id) && (
                           <>
                             <Button
-                              size="lg"
                               variant="outline"
-                              className="rounded-2xl font-bold h-12 min-w-[100px]"
+                              className="rounded-2xl font-bold h-10 sm:h-12 flex-1 sm:flex-none sm:min-w-[100px]"
                               onClick={() => handleRegistrarSaida(crianca.id)}
                             >
-                              <LogOut className="w-5 h-5 mr-2" />
+                              <LogOut className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
                               Saída
                             </Button>
                             <Button
-                              size="lg"
-                              className="rounded-2xl font-bold h-12"
+                              className="rounded-2xl font-bold h-10 sm:h-12 flex-1 sm:flex-none"
                               onClick={() => handleAddEvento(crianca.id)}
                             >
-                              <Plus className="w-5 h-5 mr-2" />
+                              <Plus className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
                               Evento
                             </Button>
                           </>
                         )}
                         {status === 'saiu' && !isCriancaFundamental(crianca.id) && (
                           <Button
-                            size="lg"
                             variant="ghost"
-                            className="rounded-2xl font-bold h-12"
+                            className="rounded-2xl font-bold h-10 sm:h-12 flex-1 sm:flex-none"
                             onClick={() => handleAddEvento(crianca.id)}
                           >
-                            <Plus className="w-5 h-5 mr-2" />
+                            <Plus className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
                             Evento
                           </Button>
                         )}
