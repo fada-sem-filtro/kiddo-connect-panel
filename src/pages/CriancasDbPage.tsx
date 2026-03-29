@@ -14,6 +14,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { CriancaDbModal } from '@/components/modals/CriancaDbModal';
 import { CriancaResponsaveisModal } from '@/components/modals/CriancaResponsaveisModal';
+import { AuthorizedPickupsModal } from '@/components/modals/AuthorizedPickupsModal';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
