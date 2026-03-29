@@ -274,9 +274,9 @@ export default function EducadorDashboardPage() {
                               {format(new Date(p.hora_saida), 'HH:mm')}
                             </span>
                           )}
-                          {(p as any)?.pickup_person_name && (
+                          {p?.pickup_person_name && (
                             <span className="flex items-center gap-1 text-primary font-medium">
-                              👤 {(p as any).pickup_person_name} ({(p as any).pickup_person_type === 'responsável' ? 'Responsável' : 'Autorizado'})
+                              👤 {p.pickup_person_name} ({p.pickup_person_type === 'responsável' ? 'Responsável' : 'Autorizado'})
                             </span>
                           )}
                           {getEventosCount(crianca.id) > 0 && (
