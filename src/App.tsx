@@ -39,6 +39,7 @@ import PermissoesPerfilPage from "./pages/PermissoesPerfilPage";
 import ResponsavelGradePage from "./pages/ResponsavelGradePage";
 import LandingPage from "./pages/LandingPage";
 import OrcamentosPage from "./pages/OrcamentosPage";
+import SidebarConfigPage from "./pages/SidebarConfigPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -102,6 +103,7 @@ const App = () => (
               <Route path="/educador/agenda" element={<ProtectedRoute allowedRoles={['educador']}><AgendaEducadorPage /></ProtectedRoute>} />
               <Route path="/admin/permissoes" element={<ProtectedRoute allowedRoles={['admin']}><PermissoesPerfilPage /></ProtectedRoute>} />
               <Route path="/admin/orcamentos" element={<ProtectedRoute allowedRoles={['admin']}><OrcamentosPage /></ProtectedRoute>} />
+              <Route path="/admin/sidebar-config" element={<ProtectedRoute allowedRoles={['admin']}><SidebarConfigPage /></ProtectedRoute>} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </NotificationProvider>
