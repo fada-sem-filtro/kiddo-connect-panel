@@ -292,7 +292,9 @@ export default function EducadorDashboardPage() {
                           <span>{getTurmaNome(crianca.turma_id)}</span>
                           {getResponsaveis(crianca.id).length > 0 && (
                             <span className="flex items-center gap-1">
-                              👨‍👩‍👧 {getResponsaveis(crianca.id).map(r => r.nome).join(', ')}
+                              👨‍👩‍👧 {getResponsaveis(crianca.id).map(r => 
+                                r.telefone ? `${r.nome} (📞 ${r.telefone})` : r.nome
+                              ).join(' • ')}
                             </span>
                           )}
                           {p?.hora_chegada && (
