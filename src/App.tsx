@@ -40,6 +40,7 @@ import ResponsavelGradePage from "./pages/ResponsavelGradePage";
 import LandingPage from "./pages/LandingPage";
 import OrcamentosPage from "./pages/OrcamentosPage";
 import SidebarConfigPage from "./pages/SidebarConfigPage";
+import AdminSettingsPage from "./pages/AdminSettingsPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -104,6 +105,7 @@ const App = () => (
               <Route path="/admin/permissoes" element={<ProtectedRoute allowedRoles={['admin']}><PermissoesPerfilPage /></ProtectedRoute>} />
               <Route path="/admin/orcamentos" element={<ProtectedRoute allowedRoles={['admin']}><OrcamentosPage /></ProtectedRoute>} />
               <Route path="/admin/sidebar-config" element={<ProtectedRoute allowedRoles={['admin']}><SidebarConfigPage /></ProtectedRoute>} />
+              <Route path="/admin/configuracoes" element={<ProtectedRoute allowedRoles={['admin']}><AdminSettingsPage /></ProtectedRoute>} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </NotificationProvider>

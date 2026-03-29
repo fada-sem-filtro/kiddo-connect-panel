@@ -23,6 +23,7 @@ import {
   BookOpen,
   Shield,
   SlidersHorizontal,
+  Cog,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import logoFleur from "@/assets/logo-fleur-2.webp";
@@ -59,6 +60,15 @@ const ICON_MAP: Record<string, typeof Calendar> = {
   pedagogico: Settings,
   materias: Library,
   relatorio_modelo: FileText,
+  escolas: Building2,
+  alunos_global: Baby,
+  educadores_global: GraduationCap,
+  permissoes: Shield,
+  orcamentos: MessageSquare,
+  sidebar_config: SlidersHorizontal,
+  configuracoes: Cog,
+  eventos_resp: ClipboardList,
+  calendario_resp: CalendarDays,
 };
 
 export function Sidebar() {
@@ -88,8 +98,8 @@ export function Sidebar() {
   type NavItem = { name: string; href: string; icon: typeof Calendar };
   type NavSection = { label: string; items: NavItem[] };
 
-  const useCustomConfig = role !== 'admin' && customConfig;
-  const isConfigPending = role !== 'admin' && sidebarConfigLoading;
+  const useCustomConfig = customConfig != null;
+  const isConfigPending = sidebarConfigLoading;
 
   let customSections: NavSection[] = [];
   if (useCustomConfig) {
@@ -115,10 +125,11 @@ export function Sidebar() {
   const adminNavigation: NavItem[] = [];
 
   if (!useCustomConfig && !isConfigPending) {
+    // Admin default nav is built below in adminNavigation
     // Diretor sees Dashboard as primary
     if (isDiretor) {
       if (canView('dashboard')) mainNavigation.push({ name: "Dashboard", href: "/diretor/dashboard", icon: BarChart3 });
-    } else {
+    } else if (role !== 'admin') {
       mainNavigation.push({ name: "Agenda", href: "/agenda", icon: Calendar });
     }
 
@@ -158,7 +169,7 @@ export function Sidebar() {
     }
   }
 
-  if (role === "admin" || (isDiretor && !useCustomConfig && !isConfigPending)) {
+  if (!useCustomConfig && !isConfigPending && (role === "admin" || isDiretor)) {
     const prefix = isDiretor ? "/diretor" : "/admin";
 
     if (role === "admin") {
@@ -189,11 +200,10 @@ export function Sidebar() {
     adminNavigation.push({ name: "Relatório Aluno", href: "/relatorios/aluno", icon: UserCheck });
     if (role === "admin") {
       adminNavigation.push({ name: "Config. Pedagógicas", href: `${prefix}/pedagogico`, icon: Settings });
-    }
-    if (role === "admin") {
       adminNavigation.push({ name: "Permissões", href: "/admin/permissoes", icon: Shield });
       adminNavigation.push({ name: "Orçamentos", href: "/admin/orcamentos", icon: MessageSquare });
       adminNavigation.push({ name: "Menu Lateral", href: "/admin/sidebar-config", icon: SlidersHorizontal });
+      adminNavigation.push({ name: "Minhas Configurações", href: "/admin/configuracoes", icon: Cog });
     }
     if (role === "admin" || (pedSettings?.gestao_materias_ativo && canView('materias'))) {
       adminNavigation.push({ name: "Matérias", href: `${prefix}/materias`, icon: Library });
