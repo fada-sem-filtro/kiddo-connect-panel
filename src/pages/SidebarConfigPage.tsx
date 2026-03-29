@@ -230,7 +230,7 @@ function DroppableSection({
   );
 }
 
-function SidebarConfigEditor({ crecheId, perfil }: { crecheId: string; perfil: string }) {
+export function SidebarConfigEditor({ crecheId, perfil }: { crecheId: string; perfil: string }) {
   const { config, setConfig, loading, saving, saveConfig } = useAdminSidebarConfig(crecheId, perfil);
   const [editingSectionId, setEditingSectionId] = useState<string | null>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
