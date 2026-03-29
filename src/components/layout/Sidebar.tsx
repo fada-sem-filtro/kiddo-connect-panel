@@ -68,7 +68,7 @@ export function Sidebar() {
   const { role, profile, signOut, userCreche, isDiretor } = useAuth();
   const { settings: pedSettings } = usePedagogicalSettings();
   const { canView } = useUserPermissions();
-  const { config: customConfig } = useSidebarConfig();
+  const { config: customConfig, loading: sidebarConfigLoading } = useSidebarConfig();
 
   const handleSignOut = async () => {
     await signOut();
@@ -89,6 +89,7 @@ export function Sidebar() {
   type NavSection = { label: string; items: NavItem[] };
 
   const useCustomConfig = role !== 'admin' && customConfig;
+  const isConfigPending = role !== 'admin' && sidebarConfigLoading;
 
   let customSections: NavSection[] = [];
   if (useCustomConfig) {
@@ -113,7 +114,7 @@ export function Sidebar() {
   const responsavelNavigation: NavItem[] = [];
   const adminNavigation: NavItem[] = [];
 
-  if (!useCustomConfig) {
+  if (!useCustomConfig && !isConfigPending) {
     // Diretor sees Dashboard as primary
     if (isDiretor) {
       if (canView('dashboard')) mainNavigation.push({ name: "Dashboard", href: "/diretor/dashboard", icon: BarChart3 });
@@ -157,7 +158,7 @@ export function Sidebar() {
     }
   }
 
-  if (role === "admin" || (isDiretor && !useCustomConfig)) {
+  if (role === "admin" || (isDiretor && !useCustomConfig && !isConfigPending)) {
     const prefix = isDiretor ? "/diretor" : "/admin";
 
     if (role === "admin") {
