@@ -44,6 +44,7 @@ export default function CalendarioEscolarPage() {
   const [feriados, setFeriados] = useState<Feriado[]>([]);
   const [eventos, setEventos] = useState<EventoFuturo[]>([]);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [expandedMonth, setExpandedMonth] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -142,18 +143,30 @@ export default function CalendarioEscolarPage() {
         </div>
 
         {/* Annual grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {months.map((monthDate) => (
-            <MonthMiniCalendar
-              key={monthDate.getMonth()}
-              monthDate={monthDate}
-              feriadosByDate={feriadosByDate}
-              eventosByDate={eventosByDate}
-              selectedDate={selectedDate}
-              onSelectDate={setSelectedDate}
-            />
-          ))}
-        </div>
+        {expandedMonth !== null ? (
+          <MonthExpandedView
+            monthDate={new Date(year, expandedMonth, 1)}
+            feriadosByDate={feriadosByDate}
+            eventosByDate={eventosByDate}
+            selectedDate={selectedDate}
+            onSelectDate={setSelectedDate}
+            onCollapse={() => setExpandedMonth(null)}
+          />
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {months.map((monthDate) => (
+              <MonthMiniCalendar
+                key={monthDate.getMonth()}
+                monthDate={monthDate}
+                feriadosByDate={feriadosByDate}
+                eventosByDate={eventosByDate}
+                selectedDate={selectedDate}
+                onSelectDate={setSelectedDate}
+                onExpand={() => setExpandedMonth(monthDate.getMonth())}
+              />
+            ))}
+          </div>
+        )}
 
         {/* Detail panel */}
         {selectedDate && (selectedItems.feriados.length > 0 || selectedItems.eventos.length > 0) && (
@@ -202,9 +215,10 @@ interface MonthMiniCalendarProps {
   eventosByDate: Map<string, EventoFuturo[]>;
   selectedDate: Date | null;
   onSelectDate: (d: Date) => void;
+  onExpand: () => void;
 }
 
-function MonthMiniCalendar({ monthDate, feriadosByDate, eventosByDate, selectedDate, onSelectDate }: MonthMiniCalendarProps) {
+function MonthMiniCalendar({ monthDate, feriadosByDate, eventosByDate, selectedDate, onSelectDate, onExpand }: MonthMiniCalendarProps) {
   const monthStart = startOfMonth(monthDate);
   const monthEnd = endOfMonth(monthDate);
   const calStart = startOfWeek(monthStart, { weekStartsOn: 0 });
@@ -222,8 +236,11 @@ function MonthMiniCalendar({ monthDate, feriadosByDate, eventosByDate, selectedD
   return (
     <Card className="rounded-2xl border">
       <CardHeader className="py-2 px-3">
-        <CardTitle className="text-sm font-bold capitalize text-center">
-          {format(monthDate, 'MMMM', { locale: ptBR })}
+        <CardTitle
+          className="text-sm font-bold capitalize text-center cursor-pointer hover:text-primary transition-colors"
+          onClick={onExpand}
+        >
+          {format(monthDate, 'MMMM', { locale: ptBR })} ↗
         </CardTitle>
       </CardHeader>
       <CardContent className="px-2 pb-2">
@@ -268,5 +285,148 @@ function MonthMiniCalendar({ monthDate, feriadosByDate, eventosByDate, selectedD
         </div>
       </CardContent>
     </Card>
+  );
+}
+
+/* ---------- Expanded month view ---------- */
+
+interface MonthExpandedViewProps {
+  monthDate: Date;
+  feriadosByDate: Map<string, Feriado[]>;
+  eventosByDate: Map<string, EventoFuturo[]>;
+  selectedDate: Date | null;
+  onSelectDate: (d: Date) => void;
+  onCollapse: () => void;
+}
+
+function MonthExpandedView({ monthDate, feriadosByDate, eventosByDate, selectedDate, onSelectDate, onCollapse }: MonthExpandedViewProps) {
+  const monthStart = startOfMonth(monthDate);
+  const monthEnd = endOfMonth(monthDate);
+  const calStart = startOfWeek(monthStart, { weekStartsOn: 0 });
+  const calEnd = endOfWeek(monthEnd, { weekStartsOn: 0 });
+
+  const days: Date[] = [];
+  let cursor = calStart;
+  while (cursor <= calEnd) {
+    days.push(cursor);
+    cursor = addDays(cursor, 1);
+  }
+
+  const weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+
+  // Collect all events/holidays for this month
+  const monthItems = useMemo(() => {
+    const items: { date: string; type: 'feriado' | 'evento'; nome: string; descricao?: string | null }[] = [];
+    let d = monthStart;
+    while (d <= monthEnd) {
+      const key = format(d, 'yyyy-MM-dd');
+      (feriadosByDate.get(key) || []).forEach(f => items.push({ date: key, type: 'feriado', nome: f.nome }));
+      (eventosByDate.get(key) || []).forEach(ev => items.push({ date: key, type: 'evento', nome: ev.nome, descricao: ev.descricao }));
+      d = addDays(d, 1);
+    }
+    return items;
+  }, [monthDate, feriadosByDate, eventosByDate]);
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h2 className="text-xl font-bold capitalize flex items-center gap-2">
+          📅 {format(monthDate, 'MMMM yyyy', { locale: ptBR })}
+        </h2>
+        <Button variant="outline" className="rounded-xl" onClick={onCollapse}>
+          <ChevronLeft className="w-4 h-4 mr-1" /> Voltar
+        </Button>
+      </div>
+
+      <Card className="rounded-2xl border-2">
+        <CardContent className="p-4">
+          <div className="grid grid-cols-7 gap-1 text-center">
+            {weekDays.map((d, i) => (
+              <span key={i} className="text-xs font-semibold text-muted-foreground py-2">
+                {d}
+              </span>
+            ))}
+            {days.map((day) => {
+              const key = format(day, 'yyyy-MM-dd');
+              const inMonth = isSameMonth(day, monthDate);
+              const hasFeriado = feriadosByDate.has(key);
+              const hasEvento = eventosByDate.has(key);
+              const isSelected = selectedDate && isSameDay(day, selectedDate);
+              const isToday = isSameDay(day, new Date());
+              const fNames = (feriadosByDate.get(key) || []).map(f => f.nome);
+              const eNames = (eventosByDate.get(key) || []).map(e => e.nome);
+
+              return (
+                <button
+                  key={key}
+                  onClick={() => inMonth && onSelectDate(day)}
+                  className={cn(
+                    'relative w-full min-h-[60px] p-1 flex flex-col items-center rounded-xl transition-colors text-sm',
+                    !inMonth && 'text-muted-foreground/30',
+                    inMonth && 'hover:bg-muted cursor-pointer',
+                    isToday && 'ring-2 ring-primary',
+                    isSelected && 'bg-primary/10 ring-2 ring-primary',
+                  )}
+                >
+                  <span className={cn('font-bold text-sm', isSelected && 'text-primary')}>
+                    {format(day, 'd')}
+                  </span>
+                  {inMonth && (hasFeriado || hasEvento) && (
+                    <div className="flex flex-col gap-0.5 mt-1 w-full">
+                      {fNames.slice(0, 1).map((n, i) => (
+                        <span key={`f${i}`} className="text-[9px] leading-tight bg-destructive/15 text-destructive rounded px-1 truncate">
+                          {n}
+                        </span>
+                      ))}
+                      {eNames.slice(0, 1).map((n, i) => (
+                        <span key={`e${i}`} className="text-[9px] leading-tight bg-primary/15 text-primary rounded px-1 truncate">
+                          {n}
+                        </span>
+                      ))}
+                      {(fNames.length + eNames.length > 2) && (
+                        <span className="text-[8px] text-muted-foreground">+{fNames.length + eNames.length - 2}</span>
+                      )}
+                    </div>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Month events list */}
+      {monthItems.length > 0 && (
+        <Card className="rounded-2xl border">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm">Eventos e feriados do mês</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            {monthItems.map((item, i) => (
+              <div
+                key={`${item.date}-${i}`}
+                className={cn(
+                  'flex items-center gap-3 p-3 rounded-xl border',
+                  item.type === 'feriado' ? 'bg-destructive/5 border-destructive/20' : 'bg-primary/5 border-primary/20'
+                )}
+              >
+                {item.type === 'feriado' ? (
+                  <PartyPopper className="w-4 h-4 text-destructive shrink-0" />
+                ) : (
+                  <CalendarDays className="w-4 h-4 text-primary shrink-0" />
+                )}
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium truncate">{item.nome}</p>
+                  {item.descricao && <p className="text-xs text-muted-foreground truncate">{item.descricao}</p>}
+                </div>
+                <span className="text-xs text-muted-foreground shrink-0">
+                  {format(parseISO(item.date), 'dd/MM')}
+                </span>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      )}
+    </div>
   );
 }
