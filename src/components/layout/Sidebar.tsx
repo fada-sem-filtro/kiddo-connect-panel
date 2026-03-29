@@ -125,10 +125,11 @@ export function Sidebar() {
   const adminNavigation: NavItem[] = [];
 
   if (!useCustomConfig && !isConfigPending) {
+    // Admin default nav is built below in adminNavigation
     // Diretor sees Dashboard as primary
     if (isDiretor) {
       if (canView('dashboard')) mainNavigation.push({ name: "Dashboard", href: "/diretor/dashboard", icon: BarChart3 });
-    } else {
+    } else if (role !== 'admin') {
       mainNavigation.push({ name: "Agenda", href: "/agenda", icon: Calendar });
     }
 
