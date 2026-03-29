@@ -34,6 +34,7 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 
 const PERFIS = [
+  { value: 'admin', label: 'Administrador' },
   { value: 'diretor', label: 'Diretor' },
   { value: 'educador', label: 'Educador' },
   { value: 'responsavel', label: 'Responsável' },
