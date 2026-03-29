@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Plus, Search, Edit, Trash2, Users, Link2 } from 'lucide-react';
+import { Plus, Search, Edit, Trash2, Users, Link2, Shield } from 'lucide-react';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -14,6 +14,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { CriancaDbModal } from '@/components/modals/CriancaDbModal';
 import { CriancaResponsaveisModal } from '@/components/modals/CriancaResponsaveisModal';
+import { AuthorizedPickupsModal } from '@/components/modals/AuthorizedPickupsModal';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
@@ -42,6 +43,7 @@ export default function CriancasDbPage() {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [selected, setSelected] = useState<CriancaRow | null>(null);
   const [respModalCrianca, setRespModalCrianca] = useState<CriancaRow | null>(null);
+  const [pickupsCrianca, setPickupsCrianca] = useState<CriancaRow | null>(null);
   const [loading, setLoading] = useState(true);
 
   const fetchCriancas = async () => {
@@ -261,6 +263,9 @@ export default function CriancasDbPage() {
                             <Button variant="ghost" size="icon" title="Responsáveis" onClick={() => setRespModalCrianca(crianca)}>
                               <Link2 className="w-4 h-4" />
                             </Button>
+                            <Button variant="ghost" size="icon" title="Pessoas autorizadas" onClick={() => setPickupsCrianca(crianca)}>
+                              <Shield className="w-4 h-4" />
+                            </Button>
                             <Button variant="ghost" size="icon" onClick={() => handleEdit(crianca)}>
                               <Edit className="w-4 h-4" />
                             </Button>
@@ -315,6 +320,12 @@ export default function CriancasDbPage() {
         criancaId={respModalCrianca?.id || null}
         criancaNome={respModalCrianca?.nome || ''}
         onChanged={fetchCriancas}
+      />
+      <AuthorizedPickupsModal
+        open={!!pickupsCrianca}
+        onOpenChange={(open) => !open && setPickupsCrianca(null)}
+        criancaId={pickupsCrianca?.id || ''}
+        criancaNome={pickupsCrianca?.nome || ''}
       />
     </MainLayout>
   );
