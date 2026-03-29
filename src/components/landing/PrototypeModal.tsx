@@ -163,7 +163,6 @@ const diretorMenuItems: MenuItem[] = [
   { id: "materias", label: "Matérias", icon: Library, section: "Pedagógico" },
   { id: "grade", label: "Grade de Aulas", icon: CalendarDays, section: "Pedagógico" },
   { id: "desempenho", label: "Rel. Desempenho", icon: ClipboardList, section: "Pedagógico" },
-  { id: "pedagogico", label: "Config. Pedagógicas", icon: Settings, section: "Configurações" },
 ];
 
 const educadorMenuItems: MenuItem[] = [
