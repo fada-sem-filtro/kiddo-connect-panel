@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { EventDbModal } from '@/components/modals/EventDbModal';
 import { usePresencas } from '@/hooks/usePresencas';
+import { PickupModal } from '@/components/modals/PickupModal';
 import { Users, Plus, LogIn, LogOut, Clock, CheckCircle2, XCircle, UserCheck } from 'lucide-react';
 import { EVENT_TYPE_LABELS, EVENT_TYPE_ICONS, EventType, isTurmaFundamental } from '@/types';
 import { format } from 'date-fns';
