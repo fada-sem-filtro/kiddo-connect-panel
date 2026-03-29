@@ -345,6 +345,7 @@ const audiences = [
 /* ── Page ── */
 export default function LandingPage() {
   const [contactOpen, setContactOpen] = useState(false);
+  const [activePrototype, setActivePrototype] = useState<"diretor" | "educador" | "responsavel" | null>(null);
 
   return (
     <div className="min-h-screen bg-background font-[Quicksand] overflow-x-hidden">
