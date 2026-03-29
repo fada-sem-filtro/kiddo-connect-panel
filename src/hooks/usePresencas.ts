@@ -12,6 +12,10 @@ export interface Presenca {
   hora_saida: string | null;
   educador_user_id: string | null;
   observacao: string | null;
+  pickup_person_id: string | null;
+  pickup_person_name: string | null;
+  pickup_person_type: string | null;
+  pickup_registered_by: string | null;
 }
 
 export function usePresencas(date: Date) {
