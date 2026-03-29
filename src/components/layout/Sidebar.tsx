@@ -31,6 +31,8 @@ import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { useAuth } from "@/contexts/AuthContext";
 import { usePedagogicalSettings } from "@/hooks/usePedagogicalSettings";
 import { useUserPermissions } from "@/hooks/useUserPermissions";
+import { useSidebarConfig } from "@/hooks/useSidebarConfig";
+import { AVAILABLE_ITEMS_BY_ROLE } from "@/lib/sidebar-defaults";
 import { toast } from "sonner";
 
 export function Sidebar() {
