@@ -243,12 +243,12 @@ export default function EducadorDashboardPage() {
 
         {/* Turma filter */}
         {turmas.length > 1 && (
-          <div className="flex flex-wrap gap-3">
-            <Button variant={selectedTurmaId === 'all' ? 'default' : 'outline'} className="rounded-2xl" onClick={() => setSelectedTurmaId('all')}>
+          <div className="flex flex-wrap gap-2 sm:gap-3">
+            <Button variant={selectedTurmaId === 'all' ? 'default' : 'outline'} size="sm" className="rounded-2xl text-xs sm:text-sm" onClick={() => setSelectedTurmaId('all')}>
               Todas ({criancas.length})
             </Button>
             {turmas.map(turma => (
-              <Button key={turma.id} variant={selectedTurmaId === turma.id ? 'default' : 'outline'} className="rounded-2xl" onClick={() => setSelectedTurmaId(turma.id)}>
+              <Button key={turma.id} variant={selectedTurmaId === turma.id ? 'default' : 'outline'} size="sm" className="rounded-2xl text-xs sm:text-sm" onClick={() => setSelectedTurmaId(turma.id)}>
                 {turma.nome} ({criancas.filter(c => c.turma_id === turma.id).length})
               </Button>
             ))}
