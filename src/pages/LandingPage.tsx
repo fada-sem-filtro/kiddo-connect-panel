@@ -569,26 +569,48 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto space-y-10">
           <AnimSection className="text-center space-y-3">
             <h2 className="text-3xl md:text-4xl font-bold text-foreground">Veja o Sistema em Ação</h2>
-            <p className="text-muted-foreground max-w-xl mx-auto">Clique em cada perfil para navegar pelo sistema como se fosse um usuário real</p>
+            <p className="text-muted-foreground max-w-xl mx-auto">
+              Clique em cada perfil para navegar pelo sistema como se fosse um usuário real
+            </p>
           </AnimSection>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {([
-              { role: "diretor" as const, label: "Diretor", desc: "Visão completa da escola com dashboards, gestão de turmas, alunos, calendário, configurações pedagógicas e relatórios.", icon: BarChart3, color: "from-blue-500 to-indigo-600" },
-              { role: "educador" as const, label: "Educador", desc: "Agenda diária, painel de presença, registro de atividades, recados com fotos, boletim e relatórios de desempenho.", icon: GraduationCap, color: "from-primary to-pink-600" },
-              { role: "responsavel" as const, label: "Responsável", desc: "Acompanhamento dos eventos do dia, recados, calendário escolar, boletim e grade de aulas dos filhos.", icon: Users, color: "from-green-500 to-emerald-600" },
-            ]).map((p, i) => (
+            {[
+              {
+                role: "diretor" as const,
+                label: "Diretor",
+                desc: "Visão completa da escola com dashboards, gestão de turmas, alunos, calendário, configurações pedagógicas e relatórios.",
+                icon: BarChart3,
+                color: "from-blue-500 to-indigo-600",
+              },
+              {
+                role: "educador" as const,
+                label: "Educador",
+                desc: "Agenda diária, painel de presença, registro de atividades, recados com fotos, boletim e relatórios de desempenho.",
+                icon: GraduationCap,
+                color: "from-primary to-pink-600",
+              },
+              {
+                role: "responsavel" as const,
+                label: "Responsável",
+                desc: "Acompanhamento dos eventos do dia, recados, calendário escolar, boletim e grade de aulas dos filhos.",
+                icon: Users,
+                color: "from-green-500 to-emerald-600",
+              },
+            ].map((p, i) => (
               <AnimCard key={p.role} i={i}>
                 <button
                   onClick={() => setActivePrototype(p.role)}
                   className="w-full text-left rounded-2xl border-2 border-border bg-card p-6 hover:shadow-xl hover:border-primary/40 hover:-translate-y-1 transition-all duration-300 group"
                 >
-                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${p.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                  <div
+                    className={`w-12 h-12 rounded-xl bg-gradient-to-br ${p.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}
+                  >
                     <p.icon className="w-6 h-6 text-white" />
                   </div>
                   <h3 className="text-lg font-bold text-foreground mb-2">{p.label}</h3>
                   <p className="text-sm text-muted-foreground mb-4">{p.desc}</p>
                   <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary group-hover:gap-2.5 transition-all">
-                    Explorar protótipo <ChevronRight className="w-4 h-4" />
+                    Explorar Demonstração <ChevronRight className="w-4 h-4" />
                   </span>
                 </button>
               </AnimCard>
@@ -600,7 +622,11 @@ export default function LandingPage() {
       {/* Prototype Modals */}
       <PrototypeModal open={activePrototype === "diretor"} onClose={() => setActivePrototype(null)} role="diretor" />
       <PrototypeModal open={activePrototype === "educador"} onClose={() => setActivePrototype(null)} role="educador" />
-      <PrototypeModal open={activePrototype === "responsavel"} onClose={() => setActivePrototype(null)} role="responsavel" />
+      <PrototypeModal
+        open={activePrototype === "responsavel"}
+        onClose={() => setActivePrototype(null)}
+        role="responsavel"
+      />
 
       {/* COMPARAÇÃO */}
       <section className="py-16 md:py-24 px-4 bg-muted/40">
