@@ -143,18 +143,30 @@ export default function CalendarioEscolarPage() {
         </div>
 
         {/* Annual grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {months.map((monthDate) => (
-            <MonthMiniCalendar
-              key={monthDate.getMonth()}
-              monthDate={monthDate}
-              feriadosByDate={feriadosByDate}
-              eventosByDate={eventosByDate}
-              selectedDate={selectedDate}
-              onSelectDate={setSelectedDate}
-            />
-          ))}
-        </div>
+        {expandedMonth !== null ? (
+          <MonthExpandedView
+            monthDate={new Date(year, expandedMonth, 1)}
+            feriadosByDate={feriadosByDate}
+            eventosByDate={eventosByDate}
+            selectedDate={selectedDate}
+            onSelectDate={setSelectedDate}
+            onCollapse={() => setExpandedMonth(null)}
+          />
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {months.map((monthDate) => (
+              <MonthMiniCalendar
+                key={monthDate.getMonth()}
+                monthDate={monthDate}
+                feriadosByDate={feriadosByDate}
+                eventosByDate={eventosByDate}
+                selectedDate={selectedDate}
+                onSelectDate={setSelectedDate}
+                onExpand={() => setExpandedMonth(monthDate.getMonth())}
+              />
+            ))}
+          </div>
+        )}
 
         {/* Detail panel */}
         {selectedDate && (selectedItems.feriados.length > 0 || selectedItems.eventos.length > 0) && (
