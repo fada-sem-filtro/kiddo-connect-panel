@@ -81,6 +81,28 @@ export default function EducadorDashboardPage() {
         .gte('data_inicio', start.toISOString())
         .lte('data_inicio', end.toISOString());
       setEventosHoje(eventosData || []);
+
+      // Fetch responsáveis vinculados
+      const { data: vinculos } = await supabase
+        .from('crianca_responsaveis')
+        .select('crianca_id, responsavel_user_id')
+        .in('crianca_id', criancaIds);
+
+      if (vinculos && vinculos.length > 0) {
+        const userIds = [...new Set(vinculos.map(v => v.responsavel_user_id))];
+        const { data: profiles } = await supabase
+          .from('profiles')
+          .select('user_id, nome')
+          .in('user_id', userIds);
+
+        const profileMap = new Map((profiles || []).map(p => [p.user_id, p.nome]));
+        setResponsaveis(vinculos.map(v => ({
+          crianca_id: v.crianca_id,
+          nome: profileMap.get(v.responsavel_user_id) || 'Responsável',
+        })));
+      } else {
+        setResponsaveis([]);
+      }
     }
     setLoading(false);
   };
