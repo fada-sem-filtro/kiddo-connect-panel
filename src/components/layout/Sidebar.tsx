@@ -89,6 +89,7 @@ export function Sidebar() {
   type NavSection = { label: string; items: NavItem[] };
 
   const useCustomConfig = role !== 'admin' && customConfig;
+  const isConfigPending = role !== 'admin' && sidebarConfigLoading;
 
   let customSections: NavSection[] = [];
   if (useCustomConfig) {
