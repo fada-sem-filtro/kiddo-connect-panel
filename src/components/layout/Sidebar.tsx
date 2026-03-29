@@ -68,7 +68,7 @@ export function Sidebar() {
   const { role, profile, signOut, userCreche, isDiretor } = useAuth();
   const { settings: pedSettings } = usePedagogicalSettings();
   const { canView } = useUserPermissions();
-  const { config: customConfig } = useSidebarConfig();
+  const { config: customConfig, loading: sidebarConfigLoading } = useSidebarConfig();
 
   const handleSignOut = async () => {
     await signOut();
