@@ -200,45 +200,43 @@ export default function EducadorDashboardPage() {
 
   return (
     <MainLayout>
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-bold text-foreground">Painel do Educador</h1>
-            <p className="text-sm text-muted-foreground">
-              {format(today, "EEEE, dd 'de' MMMM", { locale: ptBR })} • {profile?.nome}
-            </p>
-          </div>
+        <div>
+          <h1 className="text-xl sm:text-2xl font-bold text-foreground">Painel do Educador</h1>
+          <p className="text-xs sm:text-sm text-muted-foreground">
+            {format(today, "EEEE, dd 'de' MMMM", { locale: ptBR })} • {profile?.nome}
+          </p>
         </div>
 
         {/* Summary Cards */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <Card className="rounded-2xl border-2 border-border">
-            <CardContent className="p-4 text-center">
-              <Users className="w-6 h-6 mx-auto text-primary mb-1" />
-              <p className="text-2xl font-bold text-foreground">{totalAlunos}</p>
-              <p className="text-xs text-muted-foreground">Total</p>
+        <div className="grid grid-cols-4 gap-2 sm:gap-4">
+          <Card className="rounded-xl sm:rounded-2xl border-2 border-border">
+            <CardContent className="p-2 sm:p-4 text-center">
+              <Users className="w-4 h-4 sm:w-6 sm:h-6 mx-auto text-primary mb-1" />
+              <p className="text-lg sm:text-2xl font-bold text-foreground">{totalAlunos}</p>
+              <p className="text-[10px] sm:text-xs text-muted-foreground">Total</p>
             </CardContent>
           </Card>
-          <Card className="rounded-2xl border-2 border-[hsl(var(--success))]/30">
-            <CardContent className="p-4 text-center">
-              <CheckCircle2 className="w-6 h-6 mx-auto text-[hsl(var(--success))] mb-1" />
-              <p className="text-2xl font-bold text-foreground">{presentes}</p>
-              <p className="text-xs text-muted-foreground">Presentes</p>
+          <Card className="rounded-xl sm:rounded-2xl border-2 border-[hsl(var(--success))]/30">
+            <CardContent className="p-2 sm:p-4 text-center">
+              <CheckCircle2 className="w-4 h-4 sm:w-6 sm:h-6 mx-auto text-[hsl(var(--success))] mb-1" />
+              <p className="text-lg sm:text-2xl font-bold text-foreground">{presentes}</p>
+              <p className="text-[10px] sm:text-xs text-muted-foreground">Presentes</p>
             </CardContent>
           </Card>
-          <Card className="rounded-2xl border-2 border-border">
-            <CardContent className="p-4 text-center">
-              <XCircle className="w-6 h-6 mx-auto text-muted-foreground mb-1" />
-              <p className="text-2xl font-bold text-foreground">{ausentes}</p>
-              <p className="text-xs text-muted-foreground">Ausentes</p>
+          <Card className="rounded-xl sm:rounded-2xl border-2 border-border">
+            <CardContent className="p-2 sm:p-4 text-center">
+              <XCircle className="w-4 h-4 sm:w-6 sm:h-6 mx-auto text-muted-foreground mb-1" />
+              <p className="text-lg sm:text-2xl font-bold text-foreground">{ausentes}</p>
+              <p className="text-[10px] sm:text-xs text-muted-foreground">Ausentes</p>
             </CardContent>
           </Card>
-          <Card className="rounded-2xl border-2 border-secondary">
-            <CardContent className="p-4 text-center">
-              <LogOut className="w-6 h-6 mx-auto text-secondary-foreground mb-1" />
-              <p className="text-2xl font-bold text-foreground">{sairam}</p>
-              <p className="text-xs text-muted-foreground">Saíram</p>
+          <Card className="rounded-xl sm:rounded-2xl border-2 border-secondary">
+            <CardContent className="p-2 sm:p-4 text-center">
+              <LogOut className="w-4 h-4 sm:w-6 sm:h-6 mx-auto text-secondary-foreground mb-1" />
+              <p className="text-lg sm:text-2xl font-bold text-foreground">{sairam}</p>
+              <p className="text-[10px] sm:text-xs text-muted-foreground">Saíram</p>
             </CardContent>
           </Card>
         </div>
