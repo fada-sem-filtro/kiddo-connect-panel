@@ -113,7 +113,7 @@ export default function UsuariosPage() {
               ativo: (p as any).ativo ?? true,
             };
           })
-          .filter(u => isDiretor ? u.role !== 'admin' : true);
+          .filter(u => (isDiretor || isSecretaria) ? u.role !== 'admin' : true);
         setUsers(usersWithRoles);
       }
     } else if (isAdmin) {
