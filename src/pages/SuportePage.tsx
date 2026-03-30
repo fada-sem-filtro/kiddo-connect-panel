@@ -70,6 +70,16 @@ export default function SuportePage() {
         .update({ status: 'respondido' })
         .eq('id', selectedMsg.id);
 
+      // Also create a recado for the user so they see it in Recados
+      await supabase.from('recados').insert({
+        conteudo: replyContent.trim(),
+        remetente_user_id: user.id,
+        remetente_nome: '🛟 Suporte',
+        titulo: `Re: ${selectedMsg.assunto}`,
+        crianca_id: null,
+        turma_id: null,
+      });
+
       // Send email via edge function
       const emailBody = `
 Olá ${selectedMsg.nome},
