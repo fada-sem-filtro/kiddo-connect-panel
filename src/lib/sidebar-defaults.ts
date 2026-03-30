@@ -212,6 +212,8 @@ export function getDefaultConfig(perfil: string): SidebarConfig {
           { key: 'grade_aulas', label: 'Grade de Aulas', ordem: 11, visible: true },
           { key: 'relatorio_modelo', label: 'Modelo Relatório', ordem: 12, visible: true },
           { key: 'relatorio_desempenho', label: 'Relatórios Desempenho', ordem: 13, visible: true },
+          { key: 'permissoes', label: 'Permissões Secretaria', ordem: 14, visible: true },
+          { key: 'sidebar_config', label: 'Menu Lateral', ordem: 15, visible: true },
         ],
       },
     ];
