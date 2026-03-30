@@ -26,9 +26,19 @@ interface ResponsavelEntry {
 interface CriancaDbModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  editData?: { id: string; nome: string; data_nascimento: string; turma_id: string; observacoes: string | null } | null;
+  editData?: { id: string; nome: string; data_nascimento: string; turma_id: string; observacoes: string | null; email_aluno?: string | null } | null;
   turmas: { id: string; nome: string; creche_id: string }[];
   onSaved: () => void;
+}
+
+function calcAge(dateStr: string): number {
+  if (!dateStr) return 0;
+  const birth = new Date(dateStr + 'T00:00:00');
+  const today = new Date();
+  let age = today.getFullYear() - birth.getFullYear();
+  const m = today.getMonth() - birth.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+  return age;
 }
 
 export function CriancaDbModal({ open, onOpenChange, editData, turmas, onSaved }: CriancaDbModalProps) {
