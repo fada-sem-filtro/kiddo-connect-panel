@@ -61,6 +61,7 @@ interface CriancaEditData {
   data_nascimento: string;
   turma_id: string;
   observacoes: string | null | undefined;
+  email_aluno?: string | null;
   responsaveis: { id: string; nome: string; telefone: string; email: string; parentesco: string }[];
 }
 
