@@ -73,6 +73,7 @@ const ICON_MAP: Record<string, typeof Calendar> = {
   atividades_aluno: BookOpen,
   atividades: BookOpen,
   notas: FileText,
+  calendario_aluno: CalendarDays,
 };
 
 export function Sidebar() {
