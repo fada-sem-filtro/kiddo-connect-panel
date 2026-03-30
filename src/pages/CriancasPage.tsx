@@ -258,6 +258,7 @@ export default function CriancasPage() {
                 data_nascimento: selectedCrianca.data_nascimento,
                 turma_id: selectedCrianca.turma_id,
                 observacoes: selectedCrianca.observacoes || "",
+                email_aluno: selectedCrianca.email_aluno,
                 responsaveis: selectedCrianca.responsaveis,
               }
             : null
