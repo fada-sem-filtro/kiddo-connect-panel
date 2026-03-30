@@ -141,6 +141,7 @@ export function CriancaDbModal({ open, onOpenChange, editData, turmas, onSaved }
         data_nascimento: dataNascimento,
         turma_id: turmaId,
         observacoes: observacoes || null,
+        email_aluno: showEmailAluno ? (emailAluno || null) : null,
       };
 
       let criancaId: string;
