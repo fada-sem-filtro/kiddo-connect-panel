@@ -43,6 +43,8 @@ export const AVAILABLE_ITEMS_BY_ROLE: Record<string, { key: string; defaultLabel
     { key: 'dashboard', defaultLabel: 'Dashboard', route: '/aluno/dashboard' },
     { key: 'atividades', defaultLabel: 'Minhas Atividades', route: '/aluno/atividades' },
     { key: 'notas', defaultLabel: 'Minhas Notas', route: '/aluno/notas' },
+    { key: 'calendario_aluno', defaultLabel: 'Calendário', route: '/aluno/calendario' },
+    { key: 'grade_aulas', defaultLabel: 'Grade de Aulas', route: '/aluno/grade-aulas' },
   ],
   admin: [
     { key: 'dashboard', defaultLabel: 'Dashboard', route: '/admin' },
