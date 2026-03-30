@@ -41,6 +41,7 @@ const ROLE_LABELS: Record<string, string> = {
   educador: 'Educador',
   responsavel: 'Responsável',
   secretaria: 'Secretaria',
+  aluno: 'Aluno',
 };
 
 const ROLE_ICONS: Record<string, React.ReactNode> = {
