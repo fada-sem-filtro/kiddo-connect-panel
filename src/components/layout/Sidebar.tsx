@@ -121,6 +121,10 @@ export function Sidebar() {
   const isItemEnabledByPedSettings = (key: string): boolean => {
     // Admin always sees everything
     if (role === 'admin') return true;
+    // Director-specific: permissoes & sidebar_config only when secretaria module is active
+    if (isDiretor && (key === 'permissoes' || key === 'sidebar_config')) {
+      return !!(pedSettings as any)?.modulo_secretaria_ativo;
+    }
     const settingKey = PED_SETTING_MAP[key];
     if (!settingKey) return true; // Not a pedagogical item
     if (!pedSettings) return false; // Settings not loaded yet or not configured → hide
