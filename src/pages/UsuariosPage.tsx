@@ -30,7 +30,7 @@ interface UserWithRole {
   nome: string;
   email: string;
   telefone: string | null;
-  role: 'admin' | 'educador' | 'responsavel' | 'diretor' | 'secretaria';
+  role: 'admin' | 'educador' | 'responsavel' | 'diretor' | 'secretaria' | 'aluno';
   created_at: string;
   ativo: boolean;
 }
