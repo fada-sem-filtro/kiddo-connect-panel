@@ -28,7 +28,7 @@ serve(async (req) => {
       });
     }
 
-    // Check admin or diretor role
+    // Check admin, diretor, or secretaria role
     const { data: hasAdmin } = await userClient.rpc('has_role', {
       _user_id: callingUser.id,
       _role: 'admin',
@@ -39,8 +39,13 @@ serve(async (req) => {
       _role: 'diretor',
     });
 
-    if (!hasAdmin && !hasDiretor) {
-      return new Response(JSON.stringify({ error: 'Forbidden: admin or diretor role required' }), {
+    const { data: hasSecretaria } = await userClient.rpc('has_role', {
+      _user_id: callingUser.id,
+      _role: 'secretaria',
+    });
+
+    if (!hasAdmin && !hasDiretor && !hasSecretaria) {
+      return new Response(JSON.stringify({ error: 'Forbidden: admin, diretor or secretaria role required' }), {
         status: 403,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
