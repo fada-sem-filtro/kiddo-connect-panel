@@ -27,6 +27,7 @@ export const AVAILABLE_ITEMS_BY_ROLE: Record<string, { key: string; defaultLabel
     { key: 'agenda_educador', defaultLabel: 'Minha Agenda', route: '/educador/agenda' },
     { key: 'grade_aulas', defaultLabel: 'Grade de Aulas', route: '/educador/grade-aulas' },
     { key: 'relatorio_desempenho', defaultLabel: 'Relatórios Desempenho', route: '/educador/relatorio-desempenho' },
+    { key: 'atividades_pedagogicas', defaultLabel: 'Atividades Pedagógicas', route: '/educador/atividades' },
   ],
   responsavel: [
     { key: 'agenda', defaultLabel: 'Agenda', route: '/agenda' },
@@ -36,6 +37,12 @@ export const AVAILABLE_ITEMS_BY_ROLE: Record<string, { key: string; defaultLabel
     { key: 'boletim', defaultLabel: 'Desempenho', route: '/responsavel/desempenho' },
     { key: 'grade_aulas', defaultLabel: 'Grade de Aulas', route: '/responsavel/grade-aulas' },
     { key: 'relatorio', defaultLabel: 'Relatório', route: '/responsavel/relatorio' },
+    { key: 'atividades_aluno', defaultLabel: 'Atividades do Aluno', route: '/responsavel/atividades' },
+  ],
+  aluno: [
+    { key: 'dashboard', defaultLabel: 'Dashboard', route: '/aluno/dashboard' },
+    { key: 'atividades', defaultLabel: 'Minhas Atividades', route: '/aluno/atividades' },
+    { key: 'notas', defaultLabel: 'Minhas Notas', route: '/aluno/notas' },
   ],
   admin: [
     { key: 'dashboard', defaultLabel: 'Dashboard', route: '/admin' },
