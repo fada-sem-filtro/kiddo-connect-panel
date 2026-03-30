@@ -58,6 +58,7 @@ export default function UsuariosPage() {
   const isSecretaria = role === 'secretaria';
   const { settings: pedSettings } = usePedagogicalSettings();
   const secretariaEnabled = !!(pedSettings as any)?.modulo_secretaria_ativo;
+  const [users, setUsers] = useState<UserWithRole[]>([]);
   const [search, setSearch] = useState('');
   const [roleFilter, setRoleFilter] = useState<string>('all');
   const [isModalOpen, setIsModalOpen] = useState(false);
