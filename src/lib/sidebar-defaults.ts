@@ -27,6 +27,7 @@ export const AVAILABLE_ITEMS_BY_ROLE: Record<string, { key: string; defaultLabel
     { key: 'agenda_educador', defaultLabel: 'Minha Agenda', route: '/educador/agenda' },
     { key: 'grade_aulas', defaultLabel: 'Grade de Aulas', route: '/educador/grade-aulas' },
     { key: 'relatorio_desempenho', defaultLabel: 'Relatórios Desempenho', route: '/educador/relatorio-desempenho' },
+    { key: 'atividades_pedagogicas', defaultLabel: 'Atividades Pedagógicas', route: '/educador/atividades' },
   ],
   responsavel: [
     { key: 'agenda', defaultLabel: 'Agenda', route: '/agenda' },
@@ -36,6 +37,12 @@ export const AVAILABLE_ITEMS_BY_ROLE: Record<string, { key: string; defaultLabel
     { key: 'boletim', defaultLabel: 'Desempenho', route: '/responsavel/desempenho' },
     { key: 'grade_aulas', defaultLabel: 'Grade de Aulas', route: '/responsavel/grade-aulas' },
     { key: 'relatorio', defaultLabel: 'Relatório', route: '/responsavel/relatorio' },
+    { key: 'atividades_aluno', defaultLabel: 'Atividades do Aluno', route: '/responsavel/atividades' },
+  ],
+  aluno: [
+    { key: 'dashboard', defaultLabel: 'Dashboard', route: '/aluno/dashboard' },
+    { key: 'atividades', defaultLabel: 'Minhas Atividades', route: '/aluno/atividades' },
+    { key: 'notas', defaultLabel: 'Minhas Notas', route: '/aluno/notas' },
   ],
   admin: [
     { key: 'dashboard', defaultLabel: 'Dashboard', route: '/admin' },
@@ -104,6 +111,22 @@ export function getDefaultConfig(perfil: string): SidebarConfig {
           { key: 'agenda_educador', label: 'Minha Agenda', ordem: 5, visible: true },
           { key: 'grade_aulas', label: 'Grade de Aulas', ordem: 6, visible: true },
           { key: 'relatorio_desempenho', label: 'Relatórios Desempenho', ordem: 7, visible: true },
+          { key: 'atividades_pedagogicas', label: 'Atividades Pedagógicas', ordem: 8, visible: true },
+        ],
+      },
+    ];
+  }
+
+  if (perfil === 'aluno') {
+    return [
+      {
+        id: 'principal',
+        label: '📚 Principal',
+        ordem: 0,
+        items: [
+          { key: 'dashboard', label: 'Dashboard', ordem: 0, visible: true },
+          { key: 'atividades', label: 'Minhas Atividades', ordem: 1, visible: true },
+          { key: 'notas', label: 'Minhas Notas', ordem: 2, visible: true },
         ],
       },
     ];
@@ -130,6 +153,7 @@ export function getDefaultConfig(perfil: string): SidebarConfig {
           { key: 'boletim', label: 'Desempenho', ordem: 2, visible: true },
           { key: 'grade_aulas', label: 'Grade de Aulas', ordem: 3, visible: true },
           { key: 'relatorio', label: 'Relatório', ordem: 4, visible: true },
+          { key: 'atividades_aluno', label: 'Atividades do Aluno', ordem: 5, visible: true },
         ],
       },
     ];

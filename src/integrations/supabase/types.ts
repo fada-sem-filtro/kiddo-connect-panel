@@ -14,6 +14,232 @@ export type Database = {
   }
   public: {
     Tables: {
+      atividade_entregas: {
+        Row: {
+          aluno_crianca_id: string
+          atividade_id: string
+          created_at: string
+          feedback_educador: string | null
+          id: string
+          nota: number | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          aluno_crianca_id: string
+          atividade_id: string
+          created_at?: string
+          feedback_educador?: string | null
+          id?: string
+          nota?: number | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          aluno_crianca_id?: string
+          atividade_id?: string
+          created_at?: string
+          feedback_educador?: string | null
+          id?: string
+          nota?: number | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "atividade_entregas_aluno_crianca_id_fkey"
+            columns: ["aluno_crianca_id"]
+            isOneToOne: false
+            referencedRelation: "criancas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "atividade_entregas_atividade_id_fkey"
+            columns: ["atividade_id"]
+            isOneToOne: false
+            referencedRelation: "atividades_pedagogicas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      atividade_opcoes: {
+        Row: {
+          created_at: string
+          id: string
+          is_correta: boolean
+          ordem: number
+          questao_id: string
+          texto: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_correta?: boolean
+          ordem?: number
+          questao_id: string
+          texto: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_correta?: boolean
+          ordem?: number
+          questao_id?: string
+          texto?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "atividade_opcoes_questao_id_fkey"
+            columns: ["questao_id"]
+            isOneToOne: false
+            referencedRelation: "atividade_questoes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      atividade_questoes: {
+        Row: {
+          atividade_id: string
+          created_at: string
+          descricao: string | null
+          id: string
+          imagem_url: string | null
+          ordem: number
+          pontuacao: number | null
+          tipo: string
+          titulo: string
+        }
+        Insert: {
+          atividade_id: string
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          imagem_url?: string | null
+          ordem?: number
+          pontuacao?: number | null
+          tipo?: string
+          titulo: string
+        }
+        Update: {
+          atividade_id?: string
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          imagem_url?: string | null
+          ordem?: number
+          pontuacao?: number | null
+          tipo?: string
+          titulo?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "atividade_questoes_atividade_id_fkey"
+            columns: ["atividade_id"]
+            isOneToOne: false
+            referencedRelation: "atividades_pedagogicas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      atividade_respostas: {
+        Row: {
+          created_at: string
+          entrega_id: string
+          foto_url: string | null
+          id: string
+          opcao_selecionada_id: string | null
+          questao_id: string
+          resposta_texto: string | null
+        }
+        Insert: {
+          created_at?: string
+          entrega_id: string
+          foto_url?: string | null
+          id?: string
+          opcao_selecionada_id?: string | null
+          questao_id: string
+          resposta_texto?: string | null
+        }
+        Update: {
+          created_at?: string
+          entrega_id?: string
+          foto_url?: string | null
+          id?: string
+          opcao_selecionada_id?: string | null
+          questao_id?: string
+          resposta_texto?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "atividade_respostas_entrega_id_fkey"
+            columns: ["entrega_id"]
+            isOneToOne: false
+            referencedRelation: "atividade_entregas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "atividade_respostas_opcao_selecionada_id_fkey"
+            columns: ["opcao_selecionada_id"]
+            isOneToOne: false
+            referencedRelation: "atividade_opcoes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "atividade_respostas_questao_id_fkey"
+            columns: ["questao_id"]
+            isOneToOne: false
+            referencedRelation: "atividade_questoes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      atividades_pedagogicas: {
+        Row: {
+          created_at: string
+          data_entrega: string
+          descricao: string | null
+          educador_user_id: string
+          id: string
+          instrucoes: string | null
+          tipo: string
+          titulo: string
+          turma_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          data_entrega: string
+          descricao?: string | null
+          educador_user_id: string
+          id?: string
+          instrucoes?: string | null
+          tipo?: string
+          titulo: string
+          turma_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          data_entrega?: string
+          descricao?: string | null
+          educador_user_id?: string
+          id?: string
+          instrucoes?: string | null
+          tipo?: string
+          titulo?: string
+          turma_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "atividades_pedagogicas_turma_id_fkey"
+            columns: ["turma_id"]
+            isOneToOne: false
+            referencedRelation: "turmas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       authorized_pickups: {
         Row: {
           created_at: string
@@ -121,6 +347,7 @@ export type Database = {
       }
       configuracoes_pedagogicas: {
         Row: {
+          atividades_avaliacoes_ativo: boolean
           boletim_ativo: boolean
           created_at: string
           creche_id: string
@@ -131,6 +358,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          atividades_avaliacoes_ativo?: boolean
           boletim_ativo?: boolean
           created_at?: string
           creche_id: string
@@ -141,6 +369,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          atividades_avaliacoes_ativo?: boolean
           boletim_ativo?: boolean
           created_at?: string
           creche_id?: string
@@ -265,34 +494,40 @@ export type Database = {
           ativo: boolean
           created_at: string
           data_nascimento: string
+          email_aluno: string | null
           foto_url: string | null
           id: string
           nome: string
           observacoes: string | null
           turma_id: string
           updated_at: string
+          user_id: string | null
         }
         Insert: {
           ativo?: boolean
           created_at?: string
           data_nascimento: string
+          email_aluno?: string | null
           foto_url?: string | null
           id?: string
           nome: string
           observacoes?: string | null
           turma_id: string
           updated_at?: string
+          user_id?: string | null
         }
         Update: {
           ativo?: boolean
           created_at?: string
           data_nascimento?: string
+          email_aluno?: string | null
           foto_url?: string | null
           id?: string
           nome?: string
           observacoes?: string | null
           turma_id?: string
           updated_at?: string
+          user_id?: string | null
         }
         Relationships: [
           {
@@ -1371,7 +1606,7 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "admin" | "educador" | "responsavel" | "diretor"
+      app_role: "admin" | "educador" | "responsavel" | "diretor" | "aluno"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1499,7 +1734,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "educador", "responsavel", "diretor"],
+      app_role: ["admin", "educador", "responsavel", "diretor", "aluno"],
     },
   },
 } as const

@@ -69,6 +69,10 @@ const ICON_MAP: Record<string, typeof Calendar> = {
   configuracoes: Cog,
   eventos_resp: ClipboardList,
   calendario_resp: CalendarDays,
+  atividades_pedagogicas: BookOpen,
+  atividades_aluno: BookOpen,
+  atividades: BookOpen,
+  notas: FileText,
 };
 
 export function Sidebar() {
@@ -125,9 +129,12 @@ export function Sidebar() {
   const adminNavigation: NavItem[] = [];
 
   if (!useCustomConfig && !isConfigPending) {
-    // Admin default nav is built below in adminNavigation
-    // Diretor sees Dashboard as primary
-    if (isDiretor) {
+    // Aluno has its own simple nav
+    if (role === 'aluno') {
+      mainNavigation.push({ name: "Dashboard", href: "/aluno/dashboard", icon: BarChart3 });
+      mainNavigation.push({ name: "Minhas Atividades", href: "/aluno/atividades", icon: BookOpen });
+      mainNavigation.push({ name: "Minhas Notas", href: "/aluno/notas", icon: FileText });
+    } else if (isDiretor) {
       if (canView('dashboard')) mainNavigation.push({ name: "Dashboard", href: "/diretor/dashboard", icon: BarChart3 });
     } else if (role !== 'admin') {
       mainNavigation.push({ name: "Agenda", href: "/agenda", icon: Calendar });
@@ -141,6 +148,9 @@ export function Sidebar() {
     }
     if (role === "educador" && pedSettings?.boletim_ativo && canView('boletim')) {
       mainNavigation.push({ name: "Boletim", href: "/educador/boletim", icon: BookOpen });
+    }
+    if (role === "educador" && (pedSettings as any)?.atividades_avaliacoes_ativo && canView('atividades_pedagogicas')) {
+      mainNavigation.push({ name: "Atividades Pedagógicas", href: "/educador/atividades", icon: BookOpen });
     }
     if (role === "admin") {
       mainNavigation.push({ name: "Alunos", href: "/criancas", icon: Users });

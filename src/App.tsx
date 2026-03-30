@@ -41,6 +41,11 @@ import LandingPage from "./pages/LandingPage";
 import OrcamentosPage from "./pages/OrcamentosPage";
 import SidebarConfigPage from "./pages/SidebarConfigPage";
 import AdminSettingsPage from "./pages/AdminSettingsPage";
+import AlunoDashboardPage from "./pages/AlunoDashboardPage";
+import AlunoAtividadesPage from "./pages/AlunoAtividadesPage";
+import AlunoNotasPage from "./pages/AlunoNotasPage";
+import EducadorAtividadesPage from "./pages/EducadorAtividadesPage";
+import ResponsavelAtividadesPage from "./pages/ResponsavelAtividadesPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -106,6 +111,14 @@ const App = () => (
               <Route path="/admin/orcamentos" element={<ProtectedRoute allowedRoles={['admin']}><OrcamentosPage /></ProtectedRoute>} />
               <Route path="/admin/sidebar-config" element={<ProtectedRoute allowedRoles={['admin']}><SidebarConfigPage /></ProtectedRoute>} />
               <Route path="/admin/configuracoes" element={<ProtectedRoute allowedRoles={['admin']}><AdminSettingsPage /></ProtectedRoute>} />
+              {/* Aluno routes */}
+              <Route path="/aluno/dashboard" element={<ProtectedRoute allowedRoles={['aluno']}><AlunoDashboardPage /></ProtectedRoute>} />
+              <Route path="/aluno/atividades" element={<ProtectedRoute allowedRoles={['aluno']}><AlunoAtividadesPage /></ProtectedRoute>} />
+              <Route path="/aluno/notas" element={<ProtectedRoute allowedRoles={['aluno']}><AlunoNotasPage /></ProtectedRoute>} />
+              {/* Educador atividades */}
+              <Route path="/educador/atividades" element={<ProtectedRoute allowedRoles={['admin', 'educador', 'diretor']}><EducadorAtividadesPage /></ProtectedRoute>} />
+              {/* Responsável atividades */}
+              <Route path="/responsavel/atividades" element={<ProtectedRoute allowedRoles={['admin', 'responsavel']}><ResponsavelAtividadesPage /></ProtectedRoute>} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </NotificationProvider>

@@ -33,6 +33,10 @@ export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) 
     }
 
     if (!allowedRoles.includes(role)) {
+      // Redirect alunos to their dashboard instead of agenda
+      if (role === 'aluno') {
+        return <Navigate to="/aluno/dashboard" replace />;
+      }
       return <Navigate to="/agenda" replace />;
     }
   }
