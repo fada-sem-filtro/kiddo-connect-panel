@@ -511,7 +511,7 @@ export default function LandingPage() {
       <section className="py-16 md:py-24 px-4 bg-muted/40">
         <div className="max-w-6xl mx-auto space-y-10">
           <AnimSection className="text-center max-w-2xl mx-auto space-y-3">
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground">Os desafios da gestão escolar</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground">Comunicação em tempo real entre escola e responsáveis</h2>
             <p className="text-muted-foreground">
               Muitas escolas ainda utilizam planilhas, processos manuais ou sistemas limitados para organizar suas
               atividades pedagógicas.
