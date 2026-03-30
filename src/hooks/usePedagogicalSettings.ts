@@ -10,6 +10,7 @@ export interface PedagogicalSettings {
   gestao_materias_ativo: boolean;
   grade_aulas_ativo: boolean;
   atividades_avaliacoes_ativo: boolean;
+  modulo_secretaria_ativo: boolean;
 }
 
 export function usePedagogicalSettings(overrideCrecheId?: string) {
