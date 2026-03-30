@@ -131,6 +131,18 @@ export function RecadoThread({ recado, onChanged }: RecadoThreadProps) {
 
       const { error } = await supabase.from('recados').insert(payload);
       if (error) throw error;
+
+      // If replying to a Suporte recado, also create a suporte_mensagens entry for the admin
+      if (isSuporte(recado.remetente_nome)) {
+        await supabase.from('suporte_mensagens').insert({
+          user_id: user.id,
+          nome: profile?.nome || 'Usuário',
+          email: profile?.email || '',
+          assunto: `Re: ${recado.titulo || 'Suporte'}`,
+          mensagem: replyText.trim() || '📷 Foto anexada',
+        });
+      }
+
       setReplyText('');
       removeReplyFile();
       setIsReplying(false);
