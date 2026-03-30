@@ -99,6 +99,9 @@ export default function PermissoesPerfilPage() {
     if (activePerfil === 'educador') {
       return ['painel_educador', 'minha_turma', 'recados', 'presencas', 'eventos', 'boletim', 'grade_aulas', 'relatorio_desempenho', 'agenda_educador', 'atividades_pedagogicas'].includes(m.key);
     }
+    if (activePerfil === 'secretaria') {
+      return ['dashboard', 'recados', 'turmas', 'alunos', 'usuarios', 'calendario', 'relatorios', 'feriados', 'presencas', 'eventos', 'boletim', 'grade_aulas', 'materias', 'atividades_pedagogicas', 'membros'].includes(m.key);
+    }
     // diretor sees all
     return true;
   });
