@@ -285,6 +285,11 @@ export default function CriancasDbPage() {
                             <Button variant="ghost" size="icon" title="Pessoas autorizadas" onClick={() => setPickupsCrianca(crianca)}>
                               <Shield className="w-4 h-4" />
                             </Button>
+                            {crianca.user_id && (
+                              <Button variant="ghost" size="icon" title="Resetar senha" onClick={() => setResetTarget(crianca)}>
+                                <KeyRound className="w-4 h-4" />
+                              </Button>
+                            )}
                             <Button variant="ghost" size="icon" onClick={() => handleEdit(crianca)}>
                               <Edit className="w-4 h-4" />
                             </Button>
