@@ -403,7 +403,7 @@ export default function UsuariosPage() {
             <TableBody>
               {filteredUsers.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={(isAdmin || isDiretor) ? 6 : 5} className="text-center py-8 text-muted-foreground">
+                  <TableCell colSpan={(isAdmin || isDiretor || isSecretaria) ? 6 : 5} className="text-center py-8 text-muted-foreground">
                     Nenhum usuário encontrado
                   </TableCell>
                 </TableRow>
