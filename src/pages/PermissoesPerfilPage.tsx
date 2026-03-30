@@ -91,7 +91,7 @@ export default function PermissoesPerfilPage() {
 
   const currentModulos = MODULOS.filter(m => {
     if (activePerfil === 'aluno') {
-      return ['dashboard', 'atividades', 'notas', 'grade_aulas'].includes(m.key);
+      return ['dashboard', 'atividades', 'notas', 'grade_aulas', 'calendario'].includes(m.key);
     }
     if (activePerfil === 'responsavel') {
       return ['recados', 'eventos', 'calendario', 'boletim', 'relatorio_desempenho', 'grade_aulas', 'atividades_aluno'].includes(m.key);

@@ -73,6 +73,7 @@ const ICON_MAP: Record<string, typeof Calendar> = {
   atividades_aluno: BookOpen,
   atividades: BookOpen,
   notas: FileText,
+  calendario_aluno: CalendarDays,
 };
 
 export function Sidebar() {
@@ -157,6 +158,10 @@ export function Sidebar() {
       if (pedSettings?.atividades_avaliacoes_ativo) {
         mainNavigation.push({ name: "Minhas Atividades", href: "/aluno/atividades", icon: BookOpen });
         mainNavigation.push({ name: "Minhas Notas", href: "/aluno/notas", icon: FileText });
+      }
+      mainNavigation.push({ name: "Calendário", href: "/aluno/calendario", icon: CalendarDays });
+      if (pedSettings?.grade_aulas_ativo) {
+        mainNavigation.push({ name: "Grade de Aulas", href: "/aluno/grade-aulas", icon: CalendarDays });
       }
     } else if (isDiretor) {
       if (canView('dashboard')) mainNavigation.push({ name: "Dashboard", href: "/diretor/dashboard", icon: BarChart3 });

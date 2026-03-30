@@ -115,6 +115,8 @@ const App = () => (
               <Route path="/aluno/dashboard" element={<ProtectedRoute allowedRoles={['aluno']}><AlunoDashboardPage /></ProtectedRoute>} />
               <Route path="/aluno/atividades" element={<ProtectedRoute allowedRoles={['aluno']}><AlunoAtividadesPage /></ProtectedRoute>} />
               <Route path="/aluno/notas" element={<ProtectedRoute allowedRoles={['aluno']}><AlunoNotasPage /></ProtectedRoute>} />
+              <Route path="/aluno/calendario" element={<ProtectedRoute allowedRoles={['aluno']}><CalendarioEscolarPage /></ProtectedRoute>} />
+              <Route path="/aluno/grade-aulas" element={<ProtectedRoute allowedRoles={['aluno']}><ResponsavelGradePage /></ProtectedRoute>} />
               {/* Educador atividades */}
               <Route path="/educador/atividades" element={<ProtectedRoute allowedRoles={['admin', 'educador', 'diretor']}><EducadorAtividadesPage /></ProtectedRoute>} />
               {/* Responsável atividades */}
