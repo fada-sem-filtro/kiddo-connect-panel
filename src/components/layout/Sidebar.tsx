@@ -280,6 +280,10 @@ export function Sidebar() {
       adminNavigation.push({ name: "Modelo Relatório", href: `${prefix}/relatorio-modelo`, icon: FileText });
       adminNavigation.push({ name: "Relatórios Desempenho", href: `${prefix}/relatorio-desempenho`, icon: ClipboardList });
     }
+    if (isDiretor && (pedSettings as any)?.modulo_secretaria_ativo) {
+      adminNavigation.push({ name: "Permissões Secretaria", href: "/diretor/permissoes", icon: Shield });
+      adminNavigation.push({ name: "Menu Lateral", href: "/diretor/sidebar-config", icon: SlidersHorizontal });
+    }
   }
 
   return (
