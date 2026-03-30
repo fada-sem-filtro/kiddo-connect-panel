@@ -464,9 +464,9 @@ export default function LandingPage() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-4xl md:text-6xl font-extrabold text-foreground leading-tight"
           >
-            Sistema Completo de
+            Agenda Escolar Digital para
             <br />
-            <span className="text-primary">Gestão Escolar</span>
+            <span className="text-primary">Creches e Escolas</span>
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
