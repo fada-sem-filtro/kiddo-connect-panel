@@ -242,7 +242,18 @@ export function Sidebar() {
     if (role === "admin" || canView('relatorios')) {
       adminNavigation.push({ name: "Relatórios", href: "/relatorios", icon: FileText });
     }
-    adminNavigation.push({ name: "Relatório Aluno", href: "/relatorios/aluno", icon: UserCheck });
+    if (role === "admin" || canView('relatorio_aluno')) {
+      adminNavigation.push({ name: "Relatório Aluno", href: "/relatorios/aluno", icon: UserCheck });
+    }
+    if (isSecretaria && canView('presencas')) {
+      adminNavigation.push({ name: "Presenças", href: `${prefix}/presencas`, icon: ClipboardList });
+    }
+    if (isSecretaria && canView('eventos')) {
+      adminNavigation.push({ name: "Eventos Diários", href: `${prefix}/eventos`, icon: ClipboardList });
+    }
+    if (isSecretaria && pedSettings?.atividades_avaliacoes_ativo && canView('atividades_pedagogicas')) {
+      adminNavigation.push({ name: "Atividades Pedagógicas", href: `${prefix}/atividades`, icon: BookOpen });
+    }
     if (role === "admin") {
       adminNavigation.push({ name: "Config. Pedagógicas", href: `${prefix}/pedagogico`, icon: Settings });
       adminNavigation.push({ name: "Permissões", href: "/admin/permissoes", icon: Shield });

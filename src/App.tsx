@@ -136,6 +136,10 @@ const App = () => (
               <Route path="/secretaria/boletim" element={<ProtectedRoute allowedRoles={['secretaria']}><BoletimPage /></ProtectedRoute>} />
               <Route path="/secretaria/grade-aulas" element={<ProtectedRoute allowedRoles={['secretaria']}><GradeAulasPage /></ProtectedRoute>} />
               <Route path="/secretaria/atividades" element={<ProtectedRoute allowedRoles={['secretaria']}><EducadorAtividadesPage /></ProtectedRoute>} />
+              <Route path="/secretaria/relatorio-modelo" element={<ProtectedRoute allowedRoles={['secretaria']}><RelatorioModeloPage /></ProtectedRoute>} />
+              <Route path="/secretaria/relatorio-desempenho" element={<ProtectedRoute allowedRoles={['secretaria']}><RelatorioDesempenhoPage /></ProtectedRoute>} />
+              <Route path="/secretaria/presencas" element={<ProtectedRoute allowedRoles={['secretaria']}><Index /></ProtectedRoute>} />
+              <Route path="/secretaria/eventos" element={<ProtectedRoute allowedRoles={['secretaria']}><Index /></ProtectedRoute>} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </NotificationProvider>
