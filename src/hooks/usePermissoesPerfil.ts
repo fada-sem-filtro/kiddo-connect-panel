@@ -147,6 +147,14 @@ export function usePermissoesPerfil(crecheId?: string) {
       }
     }
 
+    const secretariaModulos = ['dashboard', 'recados', 'turmas', 'alunos', 'usuarios', 'calendario', 'relatorios', 'feriados', 'presencas', 'eventos', 'boletim', 'grade_aulas', 'materias', 'atividades_pedagogicas', 'membros'];
+    for (const mod of secretariaModulos) {
+      if (!getPermissao('secretaria', mod)) {
+        const canWrite = ['recados', 'presencas', 'eventos', 'alunos'].includes(mod);
+        defaults.push({ perfil: 'secretaria', modulo: mod, pode_visualizar: true, pode_criar: canWrite, pode_editar: canWrite, pode_excluir: false });
+      }
+    }
+
     if (defaults.length > 0) {
       await supabase.from('permissoes_perfil').insert(
         defaults.map(d => ({ ...d, creche_id: crecheId }))

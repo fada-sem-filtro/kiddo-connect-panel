@@ -66,7 +66,7 @@ export default function SidebarConfigPage() {
 
         {effectiveCrecheId ? (
           <Tabs value={selectedPerfil} onValueChange={setSelectedPerfil}>
-            <TabsList className="grid w-full grid-cols-3 max-w-lg">
+            <TabsList className="grid w-full grid-cols-5 max-w-2xl">
               {PERFIS.map(p => (
                 <TabsTrigger key={p.value} value={p.value}>{p.label}</TabsTrigger>
               ))}
