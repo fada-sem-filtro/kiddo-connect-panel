@@ -32,6 +32,7 @@ export const MODULOS = [
   { key: 'feriados', label: 'Feriados', icon: '🎉' },
   { key: 'relatorios', label: 'Relatórios de Presença', icon: '📊' },
   { key: 'agenda_educador', label: 'Minha Agenda', icon: '📋' },
+  { key: 'atividades_pedagogicas', label: 'Atividades Pedagógicas', icon: '📝' },
 ] as const;
 
 export const PERFIS = [
