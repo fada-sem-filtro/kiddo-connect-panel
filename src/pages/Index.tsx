@@ -15,6 +15,7 @@ import { useAuth } from '@/contexts/AuthContext';
 
 const Index = () => {
   const { role } = useAuth();
+
   const canCreate = role === 'admin' || role === 'educador' || role === 'diretor';
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedCriancaId, setSelectedCriancaId] = useState<string>('all');
@@ -46,9 +47,12 @@ const Index = () => {
     }, {} as Record<string, number>);
   }, [eventos]);
 
-  // Redirect diretor to their dashboard
+  // Redirect diretor/aluno to their dashboards
   if (role === 'diretor') {
     return <Navigate to="/diretor/dashboard" replace />;
+  }
+  if (role === 'aluno') {
+    return <Navigate to="/aluno/dashboard" replace />;
   }
 
   return (
