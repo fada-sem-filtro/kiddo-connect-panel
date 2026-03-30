@@ -245,6 +245,11 @@ export default function CriancasPage() {
                         <Button variant="ghost" size="icon" onClick={() => handleView(crianca)}>
                           <Eye className="w-4 h-4" />
                         </Button>
+                        {crianca.user_id && (
+                          <Button variant="ghost" size="icon" title="Resetar senha" onClick={() => setResetTarget(crianca)}>
+                            <KeyRound className="w-4 h-4" />
+                          </Button>
+                        )}
                         <Button variant="ghost" size="icon" onClick={() => handleEdit(crianca)}>
                           <Edit className="w-4 h-4" />
                         </Button>
