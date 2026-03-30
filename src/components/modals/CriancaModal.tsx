@@ -118,9 +118,39 @@ export function CriancaModal({ open, onOpenChange, editData, turmas, onSaved }: 
     name: 'responsaveis',
   });
 
+  const createStudentAccount = async (criancaId: string, email: string, studentName: string, turmaId: string) => {
+    const { data: existingProfile } = await supabase
+      .from('profiles')
+      .select('user_id')
+      .eq('email', email)
+      .maybeSingle();
+
+    if (existingProfile) {
+      await supabase.from('criancas').update({ user_id: existingProfile.user_id }).eq('id', criancaId);
+      return;
+    }
+
+    const { data, error } = await supabase.functions.invoke('create-user', {
+      body: {
+        email,
+        nome: studentName,
+        role: 'aluno',
+      },
+    });
+
+    if (error || data?.error) {
+      toast.error(`Erro ao criar conta do aluno: ${data?.error || error?.message}`);
+      return;
+    }
+
+    await supabase.from('criancas').update({ user_id: data.user.id }).eq('id', criancaId);
+  };
+
   const onSubmit = async (data: CriancaFormData) => {
     setSaving(true);
     try {
+      const emailAluno = showEmailAluno ? (data.email_aluno || null) : null;
+
       if (editData) {
         // Update crianca
         const { error } = await supabase
@@ -130,17 +160,29 @@ export function CriancaModal({ open, onOpenChange, editData, turmas, onSaved }: 
             data_nascimento: data.data_nascimento,
             turma_id: data.turma_id,
             observacoes: data.observacoes || null,
-            email_aluno: showEmailAluno ? (data.email_aluno || null) : null,
+            email_aluno: emailAluno,
           })
           .eq('id', editData.id);
 
         if (error) throw error;
 
+        // If email_aluno was added/changed, create auth account if not yet linked
+        if (emailAluno) {
+          const { data: existing } = await supabase
+            .from('criancas')
+            .select('user_id')
+            .eq('id', editData.id)
+            .single();
+
+          if (!existing?.user_id) {
+            await createStudentAccount(editData.id, emailAluno, data.nome, data.turma_id);
+          }
+        }
+
         // Sync responsaveis: delete old, insert new
         await supabase.from('crianca_responsaveis').delete().eq('crianca_id', editData.id);
 
         for (const resp of data.responsaveis) {
-          // Find or create profile for responsavel by email
           const { data: profile } = await supabase
             .from('profiles')
             .select('user_id')
@@ -166,12 +208,17 @@ export function CriancaModal({ open, onOpenChange, editData, turmas, onSaved }: 
             data_nascimento: data.data_nascimento,
             turma_id: data.turma_id,
             observacoes: data.observacoes || null,
-            email_aluno: showEmailAluno ? (data.email_aluno || null) : null,
+            email_aluno: emailAluno,
           })
           .select('id')
           .single();
 
         if (error) throw error;
+
+        // Create student auth account if email provided
+        if (emailAluno) {
+          await createStudentAccount(newCrianca.id, emailAluno, data.nome, data.turma_id);
+        }
 
         // Link responsaveis
         for (const resp of data.responsaveis) {
