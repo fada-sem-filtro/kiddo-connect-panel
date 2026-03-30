@@ -538,7 +538,7 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto space-y-10">
           <AnimSection className="text-center max-w-2xl mx-auto space-y-3">
             <h2 className="text-3xl md:text-4xl font-bold text-foreground">
-              Uma plataforma pensada para escolas modernas
+              Registros pedagógicos completos
             </h2>
             <p className="text-muted-foreground">
               Nosso sistema centraliza todas as informações acadêmicas e administrativas da escola, permitindo uma
