@@ -25,6 +25,8 @@ export const MODULOS = [
   { key: 'materias', label: 'Matérias', icon: '📚' },
   { key: 'grade_aulas', label: 'Grade de Aulas', icon: '🕐' },
   { key: 'relatorio_desempenho', label: 'Relatório de Desempenho', icon: '📄' },
+  { key: 'relatorio_aluno', label: 'Relatório do Aluno', icon: '👤' },
+  { key: 'relatorio_modelo', label: 'Modelo de Relatório', icon: '📋' },
   { key: 'turmas', label: 'Turmas', icon: '🏫' },
   { key: 'alunos', label: 'Alunos', icon: '👶' },
   { key: 'membros', label: 'Corpo Docente', icon: '👩‍🏫' },
@@ -36,6 +38,10 @@ export const MODULOS = [
   { key: 'atividades_aluno', label: 'Atividades do Aluno', icon: '📐' },
   { key: 'atividades', label: 'Minhas Atividades', icon: '📐' },
   { key: 'notas', label: 'Minhas Notas', icon: '🏆' },
+  { key: 'calendario_aluno', label: 'Calendário do Aluno', icon: '🗓️' },
+  { key: 'pedagogico', label: 'Config. Pedagógicas', icon: '⚙️' },
+  { key: 'sidebar_config', label: 'Menu Lateral', icon: '📑' },
+  { key: 'permissoes', label: 'Permissões', icon: '🛡️' },
 ] as const;
 
 export const PERFIS = [

@@ -95,7 +95,7 @@ export default function PermissoesPerfilPage() {
 
   const currentModulos = MODULOS.filter(m => {
     if (activePerfil === 'aluno') {
-      return ['dashboard', 'atividades', 'notas', 'grade_aulas', 'calendario'].includes(m.key);
+      return ['dashboard', 'atividades', 'notas', 'grade_aulas', 'calendario_aluno'].includes(m.key);
     }
     if (activePerfil === 'responsavel') {
       return ['recados', 'eventos', 'calendario', 'boletim', 'relatorio_desempenho', 'grade_aulas', 'atividades_aluno'].includes(m.key);
@@ -104,9 +104,12 @@ export default function PermissoesPerfilPage() {
       return ['painel_educador', 'minha_turma', 'recados', 'presencas', 'eventos', 'boletim', 'grade_aulas', 'relatorio_desempenho', 'agenda_educador', 'atividades_pedagogicas'].includes(m.key);
     }
     if (activePerfil === 'secretaria') {
-      return ['dashboard', 'recados', 'turmas', 'alunos', 'usuarios', 'calendario', 'relatorios', 'feriados', 'presencas', 'eventos', 'boletim', 'grade_aulas', 'materias', 'atividades_pedagogicas', 'membros'].includes(m.key);
+      return ['dashboard', 'recados', 'turmas', 'alunos', 'usuarios', 'calendario', 'relatorios', 'feriados', 'presencas', 'eventos', 'boletim', 'grade_aulas', 'materias', 'atividades_pedagogicas', 'membros', 'relatorio_aluno'].includes(m.key);
     }
-    // diretor sees all
+    if (activePerfil === 'diretor') {
+      return ['dashboard', 'painel_educador', 'minha_turma', 'recados', 'presencas', 'eventos', 'calendario', 'boletim', 'materias', 'grade_aulas', 'relatorio_desempenho', 'relatorio_aluno', 'relatorio_modelo', 'turmas', 'alunos', 'membros', 'usuarios', 'feriados', 'relatorios', 'atividades_pedagogicas', 'pedagogico', 'permissoes', 'sidebar_config'].includes(m.key);
+    }
+    // admin sees all
     return true;
   });
 
