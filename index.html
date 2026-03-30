@@ -7,19 +7,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- SEO PRINCIPAL -->
-    <title>Agenda Fleur | Gestão Escolar Completa</title>
+    <title>Agenda Escolar Digital | Agenda Fleur</title>
 
     <meta
       name="description"
-      content="Agenda Fleur é uma plataforma completa de gestão escolar com controle de alunos, professores, turmas, presença, boletim escolar, agenda e permissões por perfil."
+      content="Agenda escolar digital completa para creches e escolas. Conecte professores, responsáveis e alunos em tempo real com registros pedagógicos, atividades, alimentação, sono, fotos e comunicados."
     />
 
     <meta
       name="keywords"
-      content="sistema escolar, gestão escolar, agenda escolar, controle de alunos, boletim escolar online, diário de classe digital, software para escola"
+      content="agenda escolar digital, agenda escolar online, agenda digital para escolas, sistema para creches, comunicação escola e pais, diário escolar digital, app escolar para responsáveis, agenda escolar para professores, agenda escolar infantil, agenda escolar online para creches, sistema de gestão escolar"
     />
 
-    <meta name="author" content="Raissa Oliveira" />
+    <meta name="author" content="Agenda Fleur" />
 
     <meta name="robots" content="index, follow" />
 
@@ -30,14 +30,14 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.json" />
-    <meta name="theme-color" content="#f472b6" />
+    <meta name="theme-color" content="#00AFAF" />
 
     <!-- OPEN GRAPH (FACEBOOK / WHATSAPP / LINKEDIN) -->
-    <meta property="og:title" content="Agenda Fleur" />
+    <meta property="og:title" content="Agenda Fleur | Agenda Escolar Digital" />
 
     <meta
       property="og:description"
-      content="Gerencie alunos, professores, turmas, presença, boletins e agenda escolar com o Agenda Fleur."
+      content="Sistema de agenda escolar digital que conecta escolas e responsáveis em tempo real."
     />
 
     <meta property="og:type" content="website" />
@@ -49,11 +49,11 @@
     <!-- TWITTER CARD -->
     <meta name="twitter:card" content="summary_large_image" />
 
-    <meta name="twitter:title" content="Agenda Fleur" />
+    <meta name="twitter:title" content="Agenda Fleur | Agenda Escolar Digital" />
 
     <meta
       name="twitter:description"
-      content="Sistema completo de gestão escolar com agenda, boletim, presença e controle de usuários."
+      content="Agenda escolar digital completa para creches e escolas com gestão pedagógica, atividades, presença e comunicação."
     />
 
     <meta name="twitter:image" content="https://agendafleur.app/preview.png" />
@@ -65,8 +65,10 @@
         "@type": "SoftwareApplication",
         "name": "Agenda Fleur",
         "applicationCategory": "EducationalApplication",
-        "operatingSystem": "Web",
-        "description": "Sistema completo de gestão escolar com controle de alunos, professores, agenda, presença e boletins.",
+        "operatingSystem": "Android, iOS, Web",
+        "description": "Agenda escolar digital que conecta escola, responsáveis e alunos com registros pedagógicos, atividades, alimentação, sono, fotos e comunicados em tempo real.",
+        "url": "https://agendafleur.app",
+        "image": "https://agendafleur.app/logo-fleur-2.webp",
         "creator": {
           "@type": "Person",
           "name": "Raissa Oliveira"
@@ -85,5 +87,24 @@
 
     <!-- REACT APP -->
     <script type="module" src="/src/main.tsx"></script>
+
+    <!-- SERVICE WORKER REGISTRATION -->
+    <script>
+      if ("serviceWorker" in navigator) {
+        var isInIframe = false;
+        try { isInIframe = window.self !== window.top; } catch(e) { isInIframe = true; }
+        var isPreview = window.location.hostname.indexOf("id-preview--") !== -1 ||
+                        window.location.hostname.indexOf("lovableproject.com") !== -1;
+        if (isPreview || isInIframe) {
+          navigator.serviceWorker.getRegistrations().then(function(regs) {
+            regs.forEach(function(r) { r.unregister(); });
+          });
+        } else {
+          navigator.serviceWorker.register("/service-worker.js").then(function() {
+            console.log("Service Worker registrado");
+          });
+        }
+      }
+    </script>
   </body>
 </html>
