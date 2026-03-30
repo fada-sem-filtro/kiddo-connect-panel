@@ -402,6 +402,28 @@ const audiences = [
 export default function LandingPage() {
   const [contactOpen, setContactOpen] = useState(false);
   const [activePrototype, setActivePrototype] = useState<"diretor" | "educador" | "responsavel" | null>(null);
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [showInstall, setShowInstall] = useState(false);
+
+  useEffect(() => {
+    const handler = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      setShowInstall(true);
+    };
+    window.addEventListener("beforeinstallprompt", handler);
+    return () => window.removeEventListener("beforeinstallprompt", handler);
+  }, []);
+
+  const handleInstall = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === "accepted") {
+      setShowInstall(false);
+      setDeferredPrompt(null);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background font-[Quicksand] overflow-x-hidden">
