@@ -190,7 +190,7 @@ export function Sidebar() {
       mainNavigation.push({ name: "Alunos", href: "/criancas", icon: Users });
       mainNavigation.push({ name: "Educadores", href: "/educadores", icon: GraduationCap });
     }
-    if (role === "admin" || ((role === "educador" || role === "responsavel" || role === "diretor" || role === "secretaria") && canView('recados'))) {
+    if (role === "admin" || ((role === "educador" || role === "responsavel" || role === "diretor") && canView('recados'))) {
       mainNavigation.push({ name: "Recados", href: "/recados", icon: MessageSquare });
     }
     if (role === "educador" && canView('agenda_educador')) {
