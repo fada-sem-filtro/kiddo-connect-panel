@@ -442,10 +442,11 @@ export default function LandingPage() {
             <span className="font-bold text-lg text-foreground">Agenda Fleur</span>
           </div>
           <div className="flex items-center gap-2">
+            <Link to="/sobre">
+              <Button variant="ghost" size="sm">Sobre</Button>
+            </Link>
             <Link to="/login">
-              <Button variant="ghost" size="sm">
-                Entrar
-              </Button>
+              <Button variant="ghost" size="sm">Entrar</Button>
             </Link>
             <Button size="sm" onClick={() => setContactOpen(true)}>
               Solicite seu Orçamento
@@ -791,8 +792,14 @@ export default function LandingPage() {
       </section>
 
       {/* FOOTER */}
-      <footer className="py-6 px-4 border-t border-border text-center">
-        <p className="text-xs text-muted-foreground">Copyright © 2026 - Desenvolvido por Fleur Tech Solutions.</p>
+      <footer className="py-6 px-4 border-t border-border">
+        <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+          <p className="text-xs text-muted-foreground">Copyright © 2026 - Desenvolvido por Fleur Tech Solutions.</p>
+          <div className="flex items-center gap-4 text-xs">
+            <Link to="/sobre" className="text-muted-foreground hover:text-primary transition-colors">Sobre</Link>
+            <Link to="/login" className="text-muted-foreground hover:text-primary transition-colors">Entrar</Link>
+          </div>
+        </div>
       </footer>
     </div>
   );
