@@ -331,7 +331,8 @@ export default function UsuariosPage() {
   };
 
   const canToggleUser = (user: UserWithRole) => {
-    if (isDiretor && ['educador', 'responsavel', 'secretaria'].includes(user.role)) return true;
+    if (isDiretor && ['educador', 'responsavel', 'secretaria', 'aluno'].includes(user.role)) return true;
+    if (isSecretaria && ['educador', 'responsavel', 'aluno'].includes(user.role)) return true;
     return false;
   };
 
