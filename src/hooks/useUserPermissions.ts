@@ -50,7 +50,7 @@ export function useUserPermissions() {
     if (role === 'admin') return true;
     if (permissions.length === 0) return true; // No permissions configured yet
     const perm = permissions.find(p => p.modulo === modulo);
-    if (!perm) return true; // Module not in permission table = visible by default
+    if (!perm) return false; // Module not in permission table = hidden (director must explicitly enable)
     return perm.pode_visualizar;
   }, [role, permissions]);
 
