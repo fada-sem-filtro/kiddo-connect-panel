@@ -159,6 +159,10 @@ export function Sidebar() {
         mainNavigation.push({ name: "Minhas Atividades", href: "/aluno/atividades", icon: BookOpen });
         mainNavigation.push({ name: "Minhas Notas", href: "/aluno/notas", icon: FileText });
       }
+      mainNavigation.push({ name: "Calendário", href: "/aluno/calendario", icon: CalendarDays });
+      if (pedSettings?.grade_aulas_ativo) {
+        mainNavigation.push({ name: "Grade de Aulas", href: "/aluno/grade-aulas", icon: CalendarDays });
+      }
     } else if (isDiretor) {
       if (canView('dashboard')) mainNavigation.push({ name: "Dashboard", href: "/diretor/dashboard", icon: BarChart3 });
     } else if (role !== 'admin') {
