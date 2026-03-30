@@ -214,8 +214,8 @@ export function Sidebar() {
     }
   }
 
-  if (!useCustomConfig && !isConfigPending && (role === "admin" || isDiretor)) {
-    const prefix = isDiretor ? "/diretor" : "/admin";
+  if (!useCustomConfig && !isConfigPending && (role === "admin" || isDiretor || isSecretaria)) {
+    const prefix = isSecretaria ? "/secretaria" : isDiretor ? "/diretor" : "/admin";
 
     if (role === "admin") {
       adminNavigation.push({ name: "Dashboard", href: "/admin", icon: BarChart3 });

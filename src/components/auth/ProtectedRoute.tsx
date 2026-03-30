@@ -37,6 +37,9 @@ export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) 
       if (role === 'aluno') {
         return <Navigate to="/aluno/dashboard" replace />;
       }
+      if (role === 'secretaria') {
+        return <Navigate to="/secretaria/dashboard" replace />;
+      }
       return <Navigate to="/agenda" replace />;
     }
   }

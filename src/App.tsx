@@ -87,8 +87,8 @@ const App = () => (
               <Route path="/diretor/calendario" element={<ProtectedRoute allowedRoles={['diretor']}><CalendarioAdminPage /></ProtectedRoute>} />
               <Route path="/educador/dashboard" element={<ProtectedRoute allowedRoles={['admin', 'educador', 'diretor']}><EducadorDashboardPage /></ProtectedRoute>} />
               <Route path="/diretor/dashboard" element={<ProtectedRoute allowedRoles={['admin', 'diretor']}><DiretorDashboardPage /></ProtectedRoute>} />
-              <Route path="/relatorios" element={<ProtectedRoute allowedRoles={['admin', 'diretor']}><RelatoriosPage /></ProtectedRoute>} />
-              <Route path="/relatorios/aluno" element={<ProtectedRoute allowedRoles={['admin', 'diretor']}><RelatorioAlunoPage /></ProtectedRoute>} />
+              <Route path="/relatorios" element={<ProtectedRoute allowedRoles={['admin', 'diretor', 'secretaria']}><RelatoriosPage /></ProtectedRoute>} />
+              <Route path="/relatorios/aluno" element={<ProtectedRoute allowedRoles={['admin', 'diretor', 'secretaria']}><RelatorioAlunoPage /></ProtectedRoute>} />
               <Route path="/admin/pedagogico" element={<ProtectedRoute allowedRoles={['admin']}><ConfiguracoesPedagogicasPage /></ProtectedRoute>} />
               <Route path="/admin/materias" element={<ProtectedRoute allowedRoles={['admin']}><MateriasPage /></ProtectedRoute>} />
               <Route path="/admin/boletim" element={<ProtectedRoute allowedRoles={['admin']}><BoletimPage /></ProtectedRoute>} />
