@@ -150,6 +150,20 @@ export function CriancaDbModal({ open, onOpenChange, editData, turmas, onSaved }
         const { error } = await supabase.from('criancas').update(payload).eq('id', editData.id);
         if (error) throw error;
         criancaId = editData.id;
+
+        // If email_aluno was added/changed, create auth account if not yet linked
+        if (showEmailAluno && emailAluno) {
+          const { data: existing } = await supabase
+            .from('criancas')
+            .select('user_id')
+            .eq('id', criancaId)
+            .single();
+
+          if (!existing?.user_id) {
+            await createStudentAccount(criancaId, emailAluno, nome);
+          }
+        }
+
         toast.success('Aluno atualizado!');
       } else {
         const { data: newCrianca, error } = await supabase
@@ -159,6 +173,11 @@ export function CriancaDbModal({ open, onOpenChange, editData, turmas, onSaved }
           .single();
         if (error) throw error;
         criancaId = newCrianca.id;
+
+        // Create student auth account if email provided
+        if (showEmailAluno && emailAluno) {
+          await createStudentAccount(criancaId, emailAluno, nome);
+        }
 
         // Process responsáveis - find or create each one
         const validResps = responsaveis.filter(r => r.nome && r.email);
