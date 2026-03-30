@@ -200,6 +200,9 @@ export function Sidebar() {
       if (pedSettings?.grade_aulas_ativo && (role === "admin" || canView('grade_aulas'))) {
         responsavelNavigation.push({ name: "Grade de Aulas", href: "/responsavel/grade-aulas", icon: CalendarDays });
       }
+      if (pedSettings?.atividades_avaliacoes_ativo && (role === "admin" || canView('atividades_aluno'))) {
+        responsavelNavigation.push({ name: "Atividades do Aluno", href: "/responsavel/atividades", icon: BookOpen });
+      }
     }
   }
 
