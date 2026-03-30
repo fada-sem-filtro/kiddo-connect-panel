@@ -83,9 +83,13 @@ export function CriancaModal({ open, onOpenChange, editData, turmas, onSaved }: 
       data_nascimento: '',
       turma_id: '',
       observacoes: '',
+      email_aluno: '',
       responsaveis: [{ id: '', nome: '', telefone: '', email: '', parentesco: '' }],
     },
   });
+
+  const dataNascimento = form.watch('data_nascimento');
+  const showEmailAluno = calcAge(dataNascimento) >= 6;
 
   useEffect(() => {
     if (open) {
@@ -94,6 +98,7 @@ export function CriancaModal({ open, onOpenChange, editData, turmas, onSaved }: 
         data_nascimento: editData.data_nascimento,
         turma_id: editData.turma_id,
         observacoes: editData.observacoes || '',
+        email_aluno: editData.email_aluno || '',
         responsaveis: editData.responsaveis.length > 0
           ? editData.responsaveis
           : [{ id: '', nome: '', telefone: '', email: '', parentesco: '' }],
@@ -102,6 +107,7 @@ export function CriancaModal({ open, onOpenChange, editData, turmas, onSaved }: 
         data_nascimento: '',
         turma_id: '',
         observacoes: '',
+        email_aluno: '',
         responsaveis: [{ id: '', nome: '', telefone: '', email: '', parentesco: '' }],
       });
     }
