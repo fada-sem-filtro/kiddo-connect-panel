@@ -65,6 +65,7 @@ const App = () => (
             <Routes>
               <Route path="/" element={<LandingPage />} />
               <Route path="/conheca" element={<LandingPage />} />
+              <Route path="/sobre" element={<SobrePage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/reset-password" element={<ResetPasswordPage />} />
               <Route path="/agenda" element={<ProtectedRoute><Index /></ProtectedRoute>} />
