@@ -98,6 +98,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           telefone: creche.telefone,
           email: creche.email,
         });
+      } else if (roleData === 'aluno') {
+        // Alunos are not in creche_membros; fetch creche via criancas → turmas → creches
+        const { data: criancaData } = await supabase
+          .from('criancas')
+          .select('turma_id, turmas(creche_id, creches(id, nome, logo_url, endereco, telefone, email))')
+          .eq('user_id', userId)
+          .limit(1)
+          .maybeSingle();
+
+        if (criancaData?.turmas) {
+          const turma = criancaData.turmas as unknown as { creche_id: string; creches: { id: string; nome: string; logo_url: string | null; endereco: string | null; telefone: string | null; email: string | null } };
+          if (turma.creches) {
+            setUserCreche({
+              id: turma.creches.id,
+              nome: turma.creches.nome,
+              logo_url: turma.creches.logo_url,
+              endereco: turma.creches.endereco,
+              telefone: turma.creches.telefone,
+              email: turma.creches.email,
+            });
+          } else {
+            setUserCreche(null);
+          }
+        } else {
+          setUserCreche(null);
+        }
       } else {
         setUserCreche(null);
       }
