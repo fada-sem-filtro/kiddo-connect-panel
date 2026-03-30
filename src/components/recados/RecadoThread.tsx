@@ -75,6 +75,8 @@ export function RecadoThread({ recado, onChanged }: RecadoThreadProps) {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
 
+  const isSuporte = (nome?: string) => nome?.includes('Suporte') ?? false;
+
   const formatDate = (dateStr: string) =>
     format(new Date(dateStr), "dd 'de' MMMM 'às' HH:mm", { locale: ptBR });
 
