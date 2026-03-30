@@ -419,7 +419,7 @@ export default function UsuariosPage() {
                         {ROLE_LABELS[user.role]}
                       </Badge>
                     </TableCell>
-                    {(isAdmin || isDiretor) && (
+                    {(isAdmin || isDiretor || isSecretaria) && (
                       <TableCell>
                         {canToggleUser(user) ? (
                           <div className="flex items-center gap-2">
