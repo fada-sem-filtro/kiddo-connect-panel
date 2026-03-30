@@ -66,7 +66,7 @@ export function useUserPermissions() {
     if (role === 'admin') return true;
     if (permissions.length === 0) return true;
     const perm = permissions.find(p => p.modulo === modulo);
-    if (!perm) return true;
+    if (!perm) return false;
     return perm.pode_editar;
   }, [role, permissions]);
 
