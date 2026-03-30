@@ -108,6 +108,8 @@ export const AVAILABLE_ITEMS_BY_ROLE: Record<string, { key: string; defaultLabel
     { key: 'grade_aulas', defaultLabel: 'Grade de Aulas', route: '/diretor/grade-aulas' },
     { key: 'relatorio_modelo', defaultLabel: 'Modelo Relatório', route: '/diretor/relatorio-modelo' },
     { key: 'relatorio_desempenho', defaultLabel: 'Relatórios Desempenho', route: '/diretor/relatorio-desempenho' },
+    { key: 'permissoes', defaultLabel: 'Permissões Secretaria', route: '/diretor/permissoes' },
+    { key: 'sidebar_config', defaultLabel: 'Menu Lateral', route: '/diretor/sidebar-config' },
   ],
 };
 
@@ -210,6 +212,8 @@ export function getDefaultConfig(perfil: string): SidebarConfig {
           { key: 'grade_aulas', label: 'Grade de Aulas', ordem: 11, visible: true },
           { key: 'relatorio_modelo', label: 'Modelo Relatório', ordem: 12, visible: true },
           { key: 'relatorio_desempenho', label: 'Relatórios Desempenho', ordem: 13, visible: true },
+          { key: 'permissoes', label: 'Permissões Secretaria', ordem: 14, visible: true },
+          { key: 'sidebar_config', label: 'Menu Lateral', ordem: 15, visible: true },
         ],
       },
     ];

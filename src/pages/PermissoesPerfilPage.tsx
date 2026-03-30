@@ -8,13 +8,17 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Shield, RefreshCw, Star } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { useAuth } from '@/contexts/AuthContext';
 import { useAdminSchoolSelector, AdminSchoolSelector } from '@/components/admin/AdminSchoolSelector';
 import { usePermissoesPerfil, MODULOS, PERFIS } from '@/hooks/usePermissoesPerfil';
 
 export default function PermissoesPerfilPage() {
   const { effectiveCrecheId, selectedCrecheId, setSelectedCrecheId, creches, isAdmin } = useAdminSchoolSelector();
+  const { role } = useAuth();
+  const isDiretor = role === 'diretor';
   const { permissoes, loading, getPermissao, upsertPermissao, initializeDefaults, refetch } = usePermissoesPerfil(effectiveCrecheId);
-  const [activePerfil, setActivePerfil] = useState('diretor');
+  const visiblePerfis = isDiretor ? PERFIS.filter(p => p.key === 'secretaria') : PERFIS;
+  const [activePerfil, setActivePerfil] = useState(isDiretor ? 'secretaria' : 'diretor');
   const [initializing, setInitializing] = useState(false);
   const [settingDefault, setSettingDefault] = useState(false);
   const TEMPLATE_CRECHE_ID = '00000000-0000-0000-0000-000000000001';
@@ -113,9 +117,11 @@ export default function PermissoesPerfilPage() {
           <div>
             <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
               <Shield className="w-6 h-6 text-primary" />
-              Permissões por Perfil
+              {isDiretor ? 'Permissões da Secretaria' : 'Permissões por Perfil'}
             </h1>
-            <p className="text-sm text-muted-foreground mt-1">Configure o que cada perfil pode visualizar e fazer por escola</p>
+            <p className="text-sm text-muted-foreground mt-1">
+              {isDiretor ? 'Configure o que o perfil Secretaria pode visualizar e fazer' : 'Configure o que cada perfil pode visualizar e fazer por escola'}
+            </p>
           </div>
         </div>
 
@@ -130,25 +136,27 @@ export default function PermissoesPerfilPage() {
           </Card>
         ) : (
           <div className="space-y-4">
-            <div className="flex items-center gap-3 flex-wrap">
-              <Button variant="outline" className="rounded-xl" onClick={handleLoadFromDefault} disabled={settingDefault}>
-                <Star className={`w-4 h-4 mr-2`} />
-                Carregar Padrão
-              </Button>
-              <Button variant="outline" className="rounded-xl border-primary text-primary hover:bg-primary/10" onClick={handleSetAsDefault} disabled={settingDefault}>
-                <Star className={`w-4 h-4 mr-2`} />
-                Definir Padrão
-              </Button>
-              <Button variant="outline" className="rounded-xl" onClick={handleInitDefaults} disabled={initializing}>
-                <RefreshCw className={`w-4 h-4 mr-2 ${initializing ? 'animate-spin' : ''}`} />
-                Inicializar Padrões
-              </Button>
-              <span className="text-xs text-muted-foreground">Cria permissões padrão para perfis que ainda não possuem configuração</span>
-            </div>
+            {isAdmin && (
+              <div className="flex items-center gap-3 flex-wrap">
+                <Button variant="outline" className="rounded-xl" onClick={handleLoadFromDefault} disabled={settingDefault}>
+                  <Star className={`w-4 h-4 mr-2`} />
+                  Carregar Padrão
+                </Button>
+                <Button variant="outline" className="rounded-xl border-primary text-primary hover:bg-primary/10" onClick={handleSetAsDefault} disabled={settingDefault}>
+                  <Star className={`w-4 h-4 mr-2`} />
+                  Definir Padrão
+                </Button>
+                <Button variant="outline" className="rounded-xl" onClick={handleInitDefaults} disabled={initializing}>
+                  <RefreshCw className={`w-4 h-4 mr-2 ${initializing ? 'animate-spin' : ''}`} />
+                  Inicializar Padrões
+                </Button>
+                <span className="text-xs text-muted-foreground">Cria permissões padrão para perfis que ainda não possuem configuração</span>
+              </div>
+            )}
 
             <Tabs value={activePerfil} onValueChange={setActivePerfil}>
               <TabsList className="rounded-xl">
-                {PERFIS.map(p => (
+                {visiblePerfis.map(p => (
                   <TabsTrigger key={p.key} value={p.key} className="rounded-lg">
                     {p.label}
                   </TabsTrigger>

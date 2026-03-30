@@ -109,8 +109,10 @@ const App = () => (
               <Route path="/educador/grade-aulas" element={<ProtectedRoute allowedRoles={['educador']}><GradeAulasPage /></ProtectedRoute>} />
               <Route path="/educador/agenda" element={<ProtectedRoute allowedRoles={['educador']}><AgendaEducadorPage /></ProtectedRoute>} />
               <Route path="/admin/permissoes" element={<ProtectedRoute allowedRoles={['admin']}><PermissoesPerfilPage /></ProtectedRoute>} />
+              <Route path="/diretor/permissoes" element={<ProtectedRoute allowedRoles={['diretor']}><PermissoesPerfilPage /></ProtectedRoute>} />
               <Route path="/admin/orcamentos" element={<ProtectedRoute allowedRoles={['admin']}><OrcamentosPage /></ProtectedRoute>} />
               <Route path="/admin/sidebar-config" element={<ProtectedRoute allowedRoles={['admin']}><SidebarConfigPage /></ProtectedRoute>} />
+              <Route path="/diretor/sidebar-config" element={<ProtectedRoute allowedRoles={['diretor']}><SidebarConfigPage /></ProtectedRoute>} />
               <Route path="/admin/configuracoes" element={<ProtectedRoute allowedRoles={['admin']}><AdminSettingsPage /></ProtectedRoute>} />
               {/* Aluno routes */}
               <Route path="/aluno/dashboard" element={<ProtectedRoute allowedRoles={['aluno']}><AlunoDashboardPage /></ProtectedRoute>} />
