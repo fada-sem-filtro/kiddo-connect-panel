@@ -121,7 +121,7 @@ export function usePermissoesPerfil(crecheId?: string) {
     const diretorModulos = ['dashboard', 'painel_educador', 'minha_turma', 'recados', 'presencas', 'eventos', 'calendario', 'boletim', 'materias', 'grade_aulas', 'relatorio_desempenho', 'turmas', 'alunos', 'membros', 'usuarios', 'feriados', 'relatorios', 'atividades_pedagogicas'];
     const educadorModulos = ['painel_educador', 'minha_turma', 'recados', 'presencas', 'eventos', 'boletim', 'grade_aulas', 'relatorio_desempenho', 'agenda_educador', 'atividades_pedagogicas'];
     const responsavelModulos = ['recados', 'eventos', 'calendario', 'boletim', 'relatorio_desempenho', 'grade_aulas', 'atividades_aluno'];
-    const alunoModulos = ['dashboard', 'atividades', 'notas', 'grade_aulas'];
+    const alunoModulos = ['dashboard', 'atividades', 'notas', 'grade_aulas', 'calendario'];
 
     for (const mod of diretorModulos) {
       if (!getPermissao('diretor', mod)) {

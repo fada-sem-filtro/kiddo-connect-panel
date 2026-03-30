@@ -129,6 +129,8 @@ export function getDefaultConfig(perfil: string): SidebarConfig {
           { key: 'dashboard', label: 'Dashboard', ordem: 0, visible: true },
           { key: 'atividades', label: 'Minhas Atividades', ordem: 1, visible: true },
           { key: 'notas', label: 'Minhas Notas', ordem: 2, visible: true },
+          { key: 'calendario_aluno', label: 'Calendário', ordem: 3, visible: true },
+          { key: 'grade_aulas', label: 'Grade de Aulas', ordem: 4, visible: true },
         ],
       },
     ];
