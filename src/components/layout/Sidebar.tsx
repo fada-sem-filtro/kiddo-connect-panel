@@ -154,8 +154,10 @@ export function Sidebar() {
     // Aluno has its own simple nav
     if (role === 'aluno') {
       mainNavigation.push({ name: "Dashboard", href: "/aluno/dashboard", icon: BarChart3 });
-      mainNavigation.push({ name: "Minhas Atividades", href: "/aluno/atividades", icon: BookOpen });
-      mainNavigation.push({ name: "Minhas Notas", href: "/aluno/notas", icon: FileText });
+      if (pedSettings?.atividades_avaliacoes_ativo) {
+        mainNavigation.push({ name: "Minhas Atividades", href: "/aluno/atividades", icon: BookOpen });
+        mainNavigation.push({ name: "Minhas Notas", href: "/aluno/notas", icon: FileText });
+      }
     } else if (isDiretor) {
       if (canView('dashboard')) mainNavigation.push({ name: "Dashboard", href: "/diretor/dashboard", icon: BarChart3 });
     } else if (role !== 'admin') {
