@@ -76,28 +76,51 @@ export default function UsuariosPage() {
     const crecheId = (isDiretor || isSecretaria) ? userCreche?.id : effectiveCrecheId;
 
     if (crecheId) {
-      // Filter by school membership
+      // Get members from creche_membros
       const { data: membros } = await supabase
         .from('creche_membros')
         .select('user_id')
         .eq('creche_id', crecheId);
 
-      if (!membros || membros.length === 0) {
+      const memberUserIds = (membros || []).map(m => m.user_id);
+
+      // Also get aluno user_ids from criancas in the school's turmas
+      const { data: turmas } = await supabase
+        .from('turmas')
+        .select('id')
+        .eq('creche_id', crecheId);
+
+      let alunoUserIds: string[] = [];
+      if (turmas && turmas.length > 0) {
+        const turmaIds = turmas.map(t => t.id);
+        const { data: criancas } = await supabase
+          .from('criancas')
+          .select('user_id')
+          .in('turma_id', turmaIds)
+          .not('user_id', 'is', null);
+
+        alunoUserIds = (criancas || [])
+          .map(c => c.user_id)
+          .filter((id): id is string => !!id);
+      }
+
+      // Combine unique user IDs
+      const allUserIds = [...new Set([...memberUserIds, ...alunoUserIds])];
+
+      if (allUserIds.length === 0) {
         setUsers([]);
         return;
       }
 
-      const memberUserIds = membros.map(m => m.user_id);
-
       const { data: profiles } = await supabase
         .from('profiles')
         .select('*')
-        .in('user_id', memberUserIds);
+        .in('user_id', allUserIds);
 
       const { data: roles } = await supabase
         .from('user_roles')
         .select('*')
-        .in('user_id', memberUserIds);
+        .in('user_id', allUserIds);
 
       if (profiles && roles) {
         const usersWithRoles: UserWithRole[] = profiles
