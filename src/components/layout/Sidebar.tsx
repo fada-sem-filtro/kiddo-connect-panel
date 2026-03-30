@@ -74,6 +74,7 @@ const ICON_MAP: Record<string, typeof Calendar> = {
   atividades: BookOpen,
   notas: FileText,
   calendario_aluno: CalendarDays,
+  presencas: ClipboardList,
 };
 
 export function Sidebar() {
