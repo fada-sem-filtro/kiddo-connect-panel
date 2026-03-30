@@ -39,10 +39,21 @@ const criancaSchema = z.object({
   data_nascimento: z.string().min(1, 'Data de nascimento obrigatória'),
   turma_id: z.string().min(1, 'Turma obrigatória'),
   observacoes: z.string().optional(),
+  email_aluno: z.string().email('Email inválido').optional().or(z.literal('')),
   responsaveis: z.array(responsavelSchema).min(1, 'Adicione pelo menos um responsável'),
 });
 
 type CriancaFormData = z.infer<typeof criancaSchema>;
+
+function calcAge(dateStr: string): number {
+  if (!dateStr) return 0;
+  const birth = new Date(dateStr + 'T00:00:00');
+  const today = new Date();
+  let age = today.getFullYear() - birth.getFullYear();
+  const m = today.getMonth() - birth.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+  return age;
+}
 
 interface CriancaEditData {
   id: string;
