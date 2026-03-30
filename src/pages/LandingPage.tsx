@@ -39,6 +39,8 @@ import {
   Clipboard,
   UserCheck,
   PieChart,
+  HelpCircle,
+  Briefcase,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -214,6 +216,11 @@ const features = [
     desc: "Relatórios qualitativos com modelo personalizável por escola.",
   },
   {
+    icon: ListChecks,
+    title: "Atividades e avaliações",
+    desc: "Criação de atividades com questões, avaliação automática e acompanhamento de entregas.",
+  },
+  {
     icon: MessageSquare,
     title: "Recados e comunicação",
     desc: "Envio de recados entre educadores e responsáveis com suporte a fotos.",
@@ -235,7 +242,7 @@ const features = [
   {
     icon: Settings,
     title: "Config. pedagógicas",
-    desc: "Ative ou desative módulos pedagógicos por escola: boletim, relatório, grade.",
+    desc: "Ative ou desative módulos pedagógicos por escola: boletim, relatório, grade, atividades e secretaria.",
   },
   {
     icon: Lock,
@@ -245,12 +252,22 @@ const features = [
   {
     icon: PieChart,
     title: "Dashboards por perfil",
-    desc: "Painéis personalizados para diretor, educador e responsável.",
+    desc: "Painéis personalizados para diretor, educador, responsável, aluno e secretaria.",
   },
   {
     icon: Shield,
     title: "Multi-tenant SaaS",
     desc: "Cada escola possui suas configurações, dados e identidade visual.",
+  },
+  {
+    icon: Briefcase,
+    title: "Módulo Secretaria",
+    desc: "Perfil dedicado para secretaria escolar com acesso configurável pelo diretor.",
+  },
+  {
+    icon: HelpCircle,
+    title: "Suporte integrado",
+    desc: "Canal de suporte direto dentro do sistema com notificações em tempo real.",
   },
 ];
 
@@ -265,12 +282,14 @@ const profiles = [
       "Grade de aulas semanal",
       "Boletim escolar por período",
       "Relatório de desempenho qualitativo",
+      "Atividades e avaliações pedagógicas",
       "Calendário escolar e feriados",
       "Gestão de alunos e responsáveis",
       "Recados com anexo de fotos",
       "Controle de presença",
       "Configurações pedagógicas",
       "Permissões por perfil",
+      "Configuração do módulo secretaria",
     ],
   },
   {
@@ -281,6 +300,7 @@ const profiles = [
       "Visualização das turmas que leciona",
       "Grade de aulas semanal",
       "Registro de notas no boletim",
+      "Criação e gestão de atividades",
       "Preenchimento de relatório de desempenho",
       "Agenda infantil (alimentação, sono, higiene)",
       "Controle de presença diária",
@@ -296,6 +316,7 @@ const profiles = [
       "Dashboard com informações do aluno",
       "Boletim escolar do filho",
       "Relatório de desempenho qualitativo",
+      "Acompanhamento de atividades e notas",
       "Grade de aulas semanal",
       "Agenda infantil diária",
       "Eventos e calendário escolar",
@@ -304,35 +325,69 @@ const profiles = [
       "Pessoas autorizadas para busca",
     ],
   },
+  {
+    icon: BookOpen,
+    title: "Aluno",
+    items: [
+      "Dashboard personalizado com turma",
+      "Grade de aulas da semana",
+      "Visualização e entrega de atividades",
+      "Consulta de notas e avaliações",
+      "Calendário escolar",
+      "Suporte integrado",
+    ],
+  },
+  {
+    icon: Briefcase,
+    title: "Secretaria",
+    items: [
+      "Dashboard com acesso configurável",
+      "Gestão de membros e alunos",
+      "Controle de turmas e feriados",
+      "Calendário escolar",
+      "Grade de aulas e matérias",
+      "Boletim e relatórios",
+      "Atividades pedagógicas",
+      "Presenças e eventos",
+      "Recados com fotos",
+      "Acesso definido pelo diretor",
+    ],
+  },
 ];
 
 const steps = [
   { n: "1", text: "Diretor cadastra professores e turmas" },
   { n: "2", text: "Diretor define matérias e calendário semanal" },
-  { n: "3", text: "Professores acessam suas turmas" },
-  { n: "4", text: "A escola acompanha o desempenho acadêmico" },
+  { n: "3", text: "Professores criam atividades e registram notas" },
+  { n: "4", text: "Alunos acessam e entregam atividades" },
   { n: "5", text: "Responsável acompanha o desempenho acadêmico do aluno" },
+  { n: "6", text: "Secretaria auxilia na gestão administrativa" },
 ];
 
 const screenshots = [
   "Dashboard do Diretor",
   "Dashboard do Educador",
   "Dashboard do Responsável",
+  "Dashboard do Aluno",
   "Cadastro de Alunos",
   "Cadastro de Professores",
   "Gestão de Turmas",
   "Calendário Semanal",
   "Horário das Aulas",
+  "Atividades Pedagógicas",
   "Recados com Fotos",
   "Boletim Escolar",
+  "Painel da Secretaria",
 ];
 
 const comparison = [
   { item: "Organização", old: false, new_: true },
   { item: "Automação", old: false, new_: true },
   { item: "Controle pedagógico", old: false, new_: true },
+  { item: "Atividades online", old: false, new_: true },
   { item: "Escalabilidade", old: false, new_: true },
   { item: "Segurança dos dados", old: false, new_: true },
+  { item: "Suporte integrado", old: false, new_: true },
 ];
 
 const audiences = [
@@ -513,7 +568,7 @@ export default function LandingPage() {
           <AnimSection className="text-center">
             <h2 className="text-3xl md:text-4xl font-bold text-foreground">Perfis de Usuário</h2>
           </AnimSection>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {profiles.map((p, i) => (
               <AnimCard key={p.title} i={i}>
                 <Card className="border-primary/20 h-full">
