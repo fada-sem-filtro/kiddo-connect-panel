@@ -442,10 +442,11 @@ export default function LandingPage() {
             <span className="font-bold text-lg text-foreground">Agenda Fleur</span>
           </div>
           <div className="flex items-center gap-2">
+            <Link to="/sobre">
+              <Button variant="ghost" size="sm">Sobre</Button>
+            </Link>
             <Link to="/login">
-              <Button variant="ghost" size="sm">
-                Entrar
-              </Button>
+              <Button variant="ghost" size="sm">Entrar</Button>
             </Link>
             <Button size="sm" onClick={() => setContactOpen(true)}>
               Solicite seu Orçamento
