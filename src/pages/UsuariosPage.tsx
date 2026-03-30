@@ -477,6 +477,7 @@ export default function UsuariosPage() {
                   {!isDiretor && <SelectItem value="diretor">Diretor(a)</SelectItem>}
                   <SelectItem value="educador">Educador</SelectItem>
                   <SelectItem value="responsavel">Responsável</SelectItem>
+                  <SelectItem value="secretaria">Secretaria</SelectItem>
                 </SelectContent>
               </Select>
             </div>
