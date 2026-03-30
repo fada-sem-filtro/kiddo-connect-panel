@@ -41,6 +41,7 @@ import LandingPage from "./pages/LandingPage";
 import OrcamentosPage from "./pages/OrcamentosPage";
 import SidebarConfigPage from "./pages/SidebarConfigPage";
 import AdminSettingsPage from "./pages/AdminSettingsPage";
+import SuportePage from "./pages/SuportePage";
 import AlunoDashboardPage from "./pages/AlunoDashboardPage";
 import AlunoAtividadesPage from "./pages/AlunoAtividadesPage";
 import AlunoNotasPage from "./pages/AlunoNotasPage";
