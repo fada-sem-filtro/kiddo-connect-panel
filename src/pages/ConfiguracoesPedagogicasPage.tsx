@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Settings, BookOpen, FileText, Library, CalendarClock } from 'lucide-react';
 import { usePedagogicalSettings } from '@/hooks/usePedagogicalSettings';
 import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useAdminSchoolSelector, AdminSchoolSelector } from '@/components/admin/AdminSchoolSelector';
 
@@ -18,8 +19,41 @@ export default function ConfiguracoesPedagogicasPage() {
 
   const handleToggle = async (field: string, value: boolean) => {
     const { error } = await updateSettings({ [field]: value } as any);
-    if (error) toast.error('Erro ao salvar configuração');
-    else toast.success('Configuração atualizada');
+    if (error) {
+      toast.error('Erro ao salvar configuração');
+      return;
+    }
+    toast.success('Configuração atualizada');
+
+    // When disabling secretaria module, deactivate secretaria users of this school
+    if (field === 'modulo_secretaria_ativo' && !value && effectiveCrecheId) {
+      // Find secretaria users of this school
+      const { data: membros } = await supabase
+        .from('creche_membros')
+        .select('user_id')
+        .eq('creche_id', effectiveCrecheId);
+
+      if (membros && membros.length > 0) {
+        const userIds = membros.map(m => m.user_id);
+        // Get which of these are secretaria
+        const { data: secretariaRoles } = await supabase
+          .from('user_roles')
+          .select('user_id')
+          .in('user_id', userIds)
+          .eq('role', 'secretaria');
+
+        if (secretariaRoles && secretariaRoles.length > 0) {
+          const secretariaUserIds = secretariaRoles.map(r => r.user_id);
+          // Deactivate their profiles
+          await supabase
+            .from('profiles')
+            .update({ ativo: false })
+            .in('user_id', secretariaUserIds);
+
+          toast.info(`${secretariaRoles.length} usuário(s) de secretaria foram inativados`);
+        }
+      }
+    }
   };
 
   if (loading && !isAdmin) {
