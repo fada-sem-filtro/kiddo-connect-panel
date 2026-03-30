@@ -3,6 +3,7 @@ import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Edit, Trash2, Reply, User, ImagePlus, X, Image as ImageIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import logoFleur from '@/assets/logo-fleur-2.webp';
 import {
   Accordion, AccordionContent, AccordionItem, AccordionTrigger,
 } from '@/components/ui/accordion';
@@ -182,14 +183,15 @@ export function RecadoThread({ recado, onChanged }: RecadoThreadProps) {
         <AccordionItem value="thread" className="border-0">
           <div className="p-4">
             <div className="flex items-start gap-3 mb-3">
-              <Avatar className="w-10 h-10">
-                <AvatarFallback className={cn(
-                  "text-sm",
-                  isSuporte(recado.remetente_nome) ? "bg-blue-500 text-white" : "bg-primary/10 text-primary"
-                )}>
-                  {isSuporte(recado.remetente_nome) ? '🛟' : getInitials(recado.remetente_nome || 'US')}
-                </AvatarFallback>
-              </Avatar>
+              {isSuporte(recado.remetente_nome) ? (
+                <img src={logoFleur} alt="Suporte" className="w-10 h-10 rounded-full object-contain bg-white border border-blue-200" />
+              ) : (
+                <Avatar className="w-10 h-10">
+                  <AvatarFallback className="bg-primary/10 text-primary text-sm">
+                    {getInitials(recado.remetente_nome || 'US')}
+                  </AvatarFallback>
+                </Avatar>
+              )}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className={cn(
@@ -301,14 +303,15 @@ export function RecadoThread({ recado, onChanged }: RecadoThreadProps) {
                       isSuporteResp && "bg-blue-50/80 dark:bg-blue-950/20"
                     )}>
                       <div className="flex items-start gap-3">
-                        <Avatar className="w-8 h-8">
-                          <AvatarFallback className={cn(
-                            "text-xs",
-                            isSuporteResp ? "bg-blue-500 text-white" : "bg-secondary text-secondary-foreground"
-                          )}>
-                            {isSuporteResp ? '🛟' : <User className="w-4 h-4" />}
-                          </AvatarFallback>
-                        </Avatar>
+                        {isSuporteResp ? (
+                          <img src={logoFleur} alt="Suporte" className="w-8 h-8 rounded-full object-contain bg-white border border-blue-200" />
+                        ) : (
+                          <Avatar className="w-8 h-8">
+                            <AvatarFallback className="bg-secondary text-secondary-foreground text-xs">
+                              <User className="w-4 h-4" />
+                            </AvatarFallback>
+                          </Avatar>
+                        )}
                         <div className="flex-1">
                           <div className="flex items-center gap-2">
                             <span className={cn(
