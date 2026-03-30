@@ -102,6 +102,28 @@ export function Sidebar() {
   type NavItem = { name: string; href: string; icon: typeof Calendar };
   type NavSection = { label: string; items: NavItem[] };
 
+  // Map sidebar item keys to their pedagogical setting requirement
+  const PED_SETTING_MAP: Record<string, keyof NonNullable<typeof pedSettings>> = {
+    atividades_pedagogicas: 'atividades_avaliacoes_ativo',
+    atividades_aluno: 'atividades_avaliacoes_ativo',
+    atividades: 'atividades_avaliacoes_ativo',
+    notas: 'atividades_avaliacoes_ativo',
+    boletim: 'boletim_ativo',
+    grade_aulas: 'grade_aulas_ativo',
+    materias: 'gestao_materias_ativo',
+    relatorio_desempenho: 'relatorio_desempenho_ativo',
+    relatorio_modelo: 'relatorio_desempenho_ativo',
+  };
+
+  const isItemEnabledByPedSettings = (key: string): boolean => {
+    // Admin always sees everything
+    if (role === 'admin') return true;
+    const settingKey = PED_SETTING_MAP[key];
+    if (!settingKey) return true; // Not a pedagogical item
+    if (!pedSettings) return false; // Settings not loaded yet or not configured → hide
+    return !!(pedSettings as any)[settingKey];
+  };
+
   const useCustomConfig = customConfig != null;
   const isConfigPending = sidebarConfigLoading;
 
@@ -112,7 +134,7 @@ export function Sidebar() {
       .map(section => ({
         label: section.label,
         items: section.items
-          .filter(i => i.visible)
+          .filter(i => i.visible && isItemEnabledByPedSettings(i.key))
           .sort((a, b) => a.ordem - b.ordem)
           .map(i => ({
             name: i.label,
