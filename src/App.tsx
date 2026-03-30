@@ -47,6 +47,7 @@ import AlunoNotasPage from "./pages/AlunoNotasPage";
 import AlunoGradePage from "./pages/AlunoGradePage";
 import EducadorAtividadesPage from "./pages/EducadorAtividadesPage";
 import ResponsavelAtividadesPage from "./pages/ResponsavelAtividadesPage";
+import SecretariaDashboardPage from "./pages/SecretariaDashboardPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -125,7 +126,7 @@ const App = () => (
               {/* Responsável atividades */}
               <Route path="/responsavel/atividades" element={<ProtectedRoute allowedRoles={['admin', 'responsavel']}><ResponsavelAtividadesPage /></ProtectedRoute>} />
               {/* Secretaria routes */}
-              <Route path="/secretaria/dashboard" element={<ProtectedRoute allowedRoles={['secretaria']}><DiretorDashboardPage /></ProtectedRoute>} />
+              <Route path="/secretaria/dashboard" element={<ProtectedRoute allowedRoles={['secretaria']}><SecretariaDashboardPage /></ProtectedRoute>} />
               <Route path="/secretaria/membros" element={<ProtectedRoute allowedRoles={['secretaria']}><DiretorMembrosPage /></ProtectedRoute>} />
               <Route path="/secretaria/turmas" element={<ProtectedRoute allowedRoles={['secretaria']}><TurmasPage /></ProtectedRoute>} />
               <Route path="/secretaria/criancas" element={<ProtectedRoute allowedRoles={['secretaria']}><CriancasDbPage /></ProtectedRoute>} />
