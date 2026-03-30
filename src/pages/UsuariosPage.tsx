@@ -191,7 +191,7 @@ export default function UsuariosPage() {
         nome: form.nome,
         telefone: form.telefone || null,
         role: form.role,
-        creche_id: isDiretor && userCreche ? userCreche.id : undefined,
+        creche_id: (isDiretor || isSecretaria) && userCreche ? userCreche.id : undefined,
       },
     });
     setIsLoading(false);
