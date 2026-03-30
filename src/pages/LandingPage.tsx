@@ -498,6 +498,11 @@ export default function LandingPage() {
                 Ver funcionalidades <ChevronRight className="ml-1 w-4 h-4" />
               </a>
             </Button>
+            {showInstall && (
+              <Button size="lg" variant="secondary" className="text-base px-8" onClick={handleInstall}>
+                <Download className="mr-2 w-5 h-5" /> Instalar Agenda Fleur
+              </Button>
+            )}
           </motion.div>
         </div>
       </section>
