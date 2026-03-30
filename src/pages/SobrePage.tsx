@@ -301,8 +301,14 @@ export default function SobrePage() {
       </section>
 
       {/* FOOTER */}
-      <footer className="py-6 px-4 border-t border-border text-center">
-        <p className="text-xs text-muted-foreground">Copyright © 2026 - Desenvolvido por Fleur Tech Solutions.</p>
+      <footer className="py-6 px-4 border-t border-border">
+        <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+          <p className="text-xs text-muted-foreground">Copyright © 2026 - Desenvolvido por Fleur Tech Solutions.</p>
+          <div className="flex items-center gap-4 text-xs">
+            <Link to="/conheca" className="text-muted-foreground hover:text-primary transition-colors">Conheça</Link>
+            <Link to="/login" className="text-muted-foreground hover:text-primary transition-colors">Entrar</Link>
+          </div>
+        </div>
       </footer>
     </div>
   );
