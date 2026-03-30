@@ -43,6 +43,7 @@ export const PERFIS = [
   { key: 'educador', label: 'Educador' },
   { key: 'responsavel', label: 'Responsável' },
   { key: 'aluno', label: 'Aluno' },
+  { key: 'secretaria', label: 'Secretaria' },
 ] as const;
 
 export function usePermissoesPerfil(crecheId?: string) {
