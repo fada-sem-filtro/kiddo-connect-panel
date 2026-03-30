@@ -118,6 +118,37 @@ export default function RelatorioAlunoPage() {
       email: (r.profiles as any)?.email,
     })));
 
+    // Check if atividades module is active and fetch grades
+    if (crecheId) {
+      const { data: pedConfig } = await supabase
+        .from('configuracoes_pedagogicas')
+        .select('atividades_avaliacoes_ativo')
+        .eq('creche_id', crecheId)
+        .maybeSingle();
+
+      const isAtivo = pedConfig?.atividades_avaliacoes_ativo === true;
+      setAtividadesAtivo(isAtivo);
+
+      if (isAtivo) {
+        const { data: entregas } = await supabase
+          .from('atividade_entregas')
+          .select('nota, status, feedback_educador, atividades_pedagogicas(titulo, tipo, data_entrega)')
+          .eq('aluno_crianca_id', alunoId)
+          .order('created_at', { ascending: false });
+
+        setAtividadeNotas((entregas || []).map((e: any) => ({
+          titulo: e.atividades_pedagogicas?.titulo || '',
+          tipo: e.atividades_pedagogicas?.tipo || 'atividade',
+          data_entrega: e.atividades_pedagogicas?.data_entrega || '',
+          nota: e.nota,
+          status: e.status,
+          feedback: e.feedback_educador,
+        })));
+      } else {
+        setAtividadeNotas([]);
+      }
+    }
+
     setGerado(true);
     setLoading(false);
   };
