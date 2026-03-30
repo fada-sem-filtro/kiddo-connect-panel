@@ -281,17 +281,33 @@ export function RecadoThread({ recado, onChanged }: RecadoThreadProps) {
             <AccordionContent>
               <div className="border-t border-border bg-muted/30 px-4 py-2">
                 <div className="space-y-4">
-                  {recado.respostas.map((resp) => (
-                    <div key={resp.id} className="thread-message pl-6 py-3">
+                  {recado.respostas.map((resp) => {
+                    const isSuporteResp = isSuporte(resp.remetente_nome);
+                    return (
+                    <div key={resp.id} className={cn(
+                      "thread-message pl-6 py-3 rounded-xl",
+                      isSuporteResp && "bg-blue-50/80 dark:bg-blue-950/20"
+                    )}>
                       <div className="flex items-start gap-3">
                         <Avatar className="w-8 h-8">
-                          <AvatarFallback className="bg-secondary text-secondary-foreground text-xs">
-                            <User className="w-4 h-4" />
+                          <AvatarFallback className={cn(
+                            "text-xs",
+                            isSuporteResp ? "bg-blue-500 text-white" : "bg-secondary text-secondary-foreground"
+                          )}>
+                            {isSuporteResp ? '🛟' : <User className="w-4 h-4" />}
                           </AvatarFallback>
                         </Avatar>
                         <div className="flex-1">
                           <div className="flex items-center gap-2">
-                            <span className="font-medium text-sm">{resp.remetente_nome || 'Usuário'}</span>
+                            <span className={cn(
+                              "font-medium text-sm",
+                              isSuporteResp && "text-blue-700 dark:text-blue-300"
+                            )}>
+                              {isSuporteResp ? 'Suporte' : (resp.remetente_nome || 'Usuário')}
+                            </span>
+                            {isSuporteResp && (
+                              <Badge className="bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200 text-[10px] border-0 py-0">Equipe</Badge>
+                            )}
                             <span className="text-xs text-muted-foreground">{formatDate(resp.created_at)}</span>
                           </div>
                           <p className="text-sm text-foreground/80 mt-1">{resp.conteudo}</p>
@@ -307,7 +323,8 @@ export function RecadoThread({ recado, onChanged }: RecadoThreadProps) {
                         )}
                       </div>
                     </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             </AccordionContent>
