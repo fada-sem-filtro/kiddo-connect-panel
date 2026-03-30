@@ -426,6 +426,83 @@ export default function RelatorioAlunoPage() {
                     {eventos.length === 0 && <p className="text-center text-muted-foreground py-4">Nenhum evento registrado no período</p>}
                   </CardContent>
                 </Card>
+
+                {/* Atividades e Notas */}
+                {atividadesAtivo && (
+                  <Card className="rounded-2xl border-2 border-border">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-lg flex items-center gap-2">
+                        <Trophy className="w-5 h-5 text-primary" />
+                        Atividades e Notas
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      {atividadeNotas.length === 0 ? (
+                        <p className="text-center text-muted-foreground py-4">Nenhuma atividade realizada</p>
+                      ) : (
+                        <>
+                          <div className="overflow-x-auto">
+                            <table className="w-full text-sm">
+                              <thead>
+                                <tr className="border-b border-border">
+                                  <th className="text-left py-2 px-3 text-muted-foreground font-medium">Atividade</th>
+                                  <th className="text-left py-2 px-3 text-muted-foreground font-medium">Tipo</th>
+                                  <th className="text-left py-2 px-3 text-muted-foreground font-medium">Entrega</th>
+                                  <th className="text-left py-2 px-3 text-muted-foreground font-medium">Status</th>
+                                  <th className="text-left py-2 px-3 text-muted-foreground font-medium">Nota</th>
+                                  <th className="text-left py-2 px-3 text-muted-foreground font-medium">Feedback</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {atividadeNotas.map((a, i) => (
+                                  <tr key={i} className="border-b border-border/50 hover:bg-muted/30">
+                                    <td className="py-2 px-3 font-medium text-foreground">{a.titulo}</td>
+                                    <td className="py-2 px-3 text-muted-foreground">
+                                      {a.tipo === 'avaliacao' ? '📝 Avaliação' : '📚 Atividade'}
+                                    </td>
+                                    <td className="py-2 px-3 text-muted-foreground">
+                                      {a.data_entrega ? format(new Date(a.data_entrega + 'T00:00:00'), 'dd/MM/yyyy') : '—'}
+                                    </td>
+                                    <td className="py-2 px-3">
+                                      <Badge className={`rounded-lg text-xs ${
+                                        a.status === 'avaliada' ? 'bg-green-100 text-green-800' :
+                                        a.status === 'entregue' ? 'bg-blue-100 text-blue-800' :
+                                        'bg-yellow-100 text-yellow-800'
+                                      }`}>
+                                        {a.status === 'avaliada' ? 'Avaliada' : a.status === 'entregue' ? 'Entregue' : 'Pendente'}
+                                      </Badge>
+                                    </td>
+                                    <td className="py-2 px-3">
+                                      {a.nota != null ? (
+                                        <span className="font-bold text-primary">{a.nota}</span>
+                                      ) : (
+                                        <span className="text-muted-foreground">—</span>
+                                      )}
+                                    </td>
+                                    <td className="py-2 px-3 text-muted-foreground text-xs max-w-[200px] truncate">
+                                      {a.feedback || '—'}
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                          {(() => {
+                            const comNota = atividadeNotas.filter(a => a.nota != null);
+                            if (comNota.length === 0) return null;
+                            const media = comNota.reduce((sum, a) => sum + (a.nota || 0), 0) / comNota.length;
+                            return (
+                              <div className="mt-4 p-3 bg-primary/5 rounded-xl flex items-center justify-between">
+                                <span className="text-sm font-medium text-foreground">Média geral das notas</span>
+                                <span className="text-xl font-bold text-primary">{media.toFixed(1)}</span>
+                              </div>
+                            );
+                          })()}
+                        </>
+                      )}
+                    </CardContent>
+                  </Card>
+                )}
               </>
             )}
           </>
