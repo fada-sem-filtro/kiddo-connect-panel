@@ -167,8 +167,6 @@ export function CriancaModal({ open, onOpenChange, editData, turmas, onSaved }: 
             turma_id: data.turma_id,
             observacoes: data.observacoes || null,
             email_aluno: showEmailAluno ? (data.email_aluno || null) : null,
-            turma_id: data.turma_id,
-            observacoes: data.observacoes || null,
           })
           .select('id')
           .single();
