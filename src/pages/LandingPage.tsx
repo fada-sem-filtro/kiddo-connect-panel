@@ -567,7 +567,7 @@ export default function LandingPage() {
       <section id="funcionalidades" className="py-16 md:py-24 px-4 bg-muted/40">
         <div className="max-w-6xl mx-auto space-y-10">
           <AnimSection className="text-center space-y-3">
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground">Funcionalidades do Sistema</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground">Sistema de gestão escolar simples e moderno</h2>
             <p className="text-muted-foreground">Tudo o que sua escola precisa em uma única plataforma</p>
           </AnimSection>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
