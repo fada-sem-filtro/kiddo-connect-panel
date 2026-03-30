@@ -183,14 +183,15 @@ export function RecadoThread({ recado, onChanged }: RecadoThreadProps) {
         <AccordionItem value="thread" className="border-0">
           <div className="p-4">
             <div className="flex items-start gap-3 mb-3">
-              <Avatar className="w-10 h-10">
-                <AvatarFallback className={cn(
-                  "text-sm",
-                  isSuporte(recado.remetente_nome) ? "bg-blue-500 text-white" : "bg-primary/10 text-primary"
-                )}>
-                  {isSuporte(recado.remetente_nome) ? '🛟' : getInitials(recado.remetente_nome || 'US')}
-                </AvatarFallback>
-              </Avatar>
+              {isSuporte(recado.remetente_nome) ? (
+                <img src={logoFleur} alt="Suporte" className="w-10 h-10 rounded-full object-contain bg-white border border-blue-200" />
+              ) : (
+                <Avatar className="w-10 h-10">
+                  <AvatarFallback className="bg-primary/10 text-primary text-sm">
+                    {getInitials(recado.remetente_nome || 'US')}
+                  </AvatarFallback>
+                </Avatar>
+              )}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className={cn(
