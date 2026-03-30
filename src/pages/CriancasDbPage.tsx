@@ -351,6 +351,23 @@ export default function CriancasDbPage() {
         criancaId={pickupsCrianca?.id || ''}
         criancaNome={pickupsCrianca?.nome || ''}
       />
+
+      <AlertDialog open={!!resetTarget} onOpenChange={(open) => !open && setResetTarget(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Resetar senha do aluno</AlertDialogTitle>
+            <AlertDialogDescription>
+              A senha de <strong>{resetTarget?.nome}</strong> será resetada para a senha padrão (fleur@2026). No próximo login será solicitada uma nova senha.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isResetting}>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={handleResetPassword} disabled={isResetting}>
+              {isResetting ? 'Resetando...' : 'Resetar Senha'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </MainLayout>
   );
 }
