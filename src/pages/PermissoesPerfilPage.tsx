@@ -151,7 +151,7 @@ export default function PermissoesPerfilPage() {
 
             <Tabs value={activePerfil} onValueChange={setActivePerfil}>
               <TabsList className="rounded-xl">
-                {PERFIS.map(p => (
+                {visiblePerfis.map(p => (
                   <TabsTrigger key={p.key} value={p.key} className="rounded-lg">
                     {p.label}
                   </TabsTrigger>
