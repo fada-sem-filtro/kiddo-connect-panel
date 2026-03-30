@@ -153,7 +153,7 @@ export function usePermissoesPerfil(crecheId?: string) {
       }
     }
 
-    const secretariaModulos = ['dashboard', 'recados', 'turmas', 'alunos', 'usuarios', 'calendario', 'relatorios', 'feriados', 'presencas', 'eventos', 'boletim', 'grade_aulas', 'materias', 'atividades_pedagogicas', 'membros'];
+    const secretariaModulos = ['dashboard', 'recados', 'turmas', 'alunos', 'usuarios', 'calendario', 'relatorios', 'feriados', 'presencas', 'eventos', 'boletim', 'grade_aulas', 'materias', 'atividades_pedagogicas', 'membros', 'relatorio_aluno'];
     for (const mod of secretariaModulos) {
       if (!getPermissao('secretaria', mod)) {
         const canWrite = ['recados', 'presencas', 'eventos', 'alunos'].includes(mod);
