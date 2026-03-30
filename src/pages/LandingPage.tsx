@@ -216,6 +216,11 @@ const features = [
     desc: "Relatórios qualitativos com modelo personalizável por escola.",
   },
   {
+    icon: ListChecks,
+    title: "Atividades e avaliações",
+    desc: "Criação de atividades com questões, avaliação automática e acompanhamento de entregas.",
+  },
+  {
     icon: MessageSquare,
     title: "Recados e comunicação",
     desc: "Envio de recados entre educadores e responsáveis com suporte a fotos.",
@@ -237,7 +242,7 @@ const features = [
   {
     icon: Settings,
     title: "Config. pedagógicas",
-    desc: "Ative ou desative módulos pedagógicos por escola: boletim, relatório, grade.",
+    desc: "Ative ou desative módulos pedagógicos por escola: boletim, relatório, grade, atividades e secretaria.",
   },
   {
     icon: Lock,
@@ -247,12 +252,22 @@ const features = [
   {
     icon: PieChart,
     title: "Dashboards por perfil",
-    desc: "Painéis personalizados para diretor, educador e responsável.",
+    desc: "Painéis personalizados para diretor, educador, responsável, aluno e secretaria.",
   },
   {
     icon: Shield,
     title: "Multi-tenant SaaS",
     desc: "Cada escola possui suas configurações, dados e identidade visual.",
+  },
+  {
+    icon: Briefcase,
+    title: "Módulo Secretaria",
+    desc: "Perfil dedicado para secretaria escolar com acesso configurável pelo diretor.",
+  },
+  {
+    icon: HelpCircle,
+    title: "Suporte integrado",
+    desc: "Canal de suporte direto dentro do sistema com notificações em tempo real.",
   },
 ];
 
