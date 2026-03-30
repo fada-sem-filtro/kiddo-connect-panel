@@ -396,7 +396,7 @@ export default function UsuariosPage() {
                 <TableHead>Email</TableHead>
                 <TableHead>Telefone</TableHead>
                 <TableHead>Papel</TableHead>
-                {(isAdmin || isDiretor) && <TableHead>Status</TableHead>}
+                {(isAdmin || isDiretor || isSecretaria) && <TableHead>Status</TableHead>}
                 <TableHead className="text-right">Ações</TableHead>
               </TableRow>
             </TableHeader>
