@@ -47,6 +47,8 @@ export default function CriancasDbPage() {
   const [respModalCrianca, setRespModalCrianca] = useState<CriancaRow | null>(null);
   const [pickupsCrianca, setPickupsCrianca] = useState<CriancaRow | null>(null);
   const [loading, setLoading] = useState(true);
+  const [resetTarget, setResetTarget] = useState<CriancaRow | null>(null);
+  const [isResetting, setIsResetting] = useState(false);
 
   const fetchCriancas = async () => {
     setLoading(true);
