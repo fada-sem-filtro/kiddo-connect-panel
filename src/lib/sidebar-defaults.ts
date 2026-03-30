@@ -108,6 +108,8 @@ export const AVAILABLE_ITEMS_BY_ROLE: Record<string, { key: string; defaultLabel
     { key: 'grade_aulas', defaultLabel: 'Grade de Aulas', route: '/diretor/grade-aulas' },
     { key: 'relatorio_modelo', defaultLabel: 'Modelo Relatório', route: '/diretor/relatorio-modelo' },
     { key: 'relatorio_desempenho', defaultLabel: 'Relatórios Desempenho', route: '/diretor/relatorio-desempenho' },
+    { key: 'permissoes', defaultLabel: 'Permissões Secretaria', route: '/diretor/permissoes' },
+    { key: 'sidebar_config', defaultLabel: 'Menu Lateral', route: '/diretor/sidebar-config' },
   ],
 };
 
