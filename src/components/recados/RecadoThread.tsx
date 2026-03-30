@@ -161,19 +161,33 @@ export function RecadoThread({ recado, onChanged }: RecadoThreadProps) {
   };
 
   return (
-    <div className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden animate-fade-in">
+    <div className={cn(
+      "rounded-2xl border shadow-sm overflow-hidden animate-fade-in",
+      isSuporte(recado.remetente_nome) ? "bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800" : "bg-card border-border"
+    )}>
       <Accordion type="single" collapsible>
         <AccordionItem value="thread" className="border-0">
           <div className="p-4">
             <div className="flex items-start gap-3 mb-3">
               <Avatar className="w-10 h-10">
-                <AvatarFallback className="bg-primary/10 text-primary text-sm">
-                  {getInitials(recado.remetente_nome || 'US')}
+                <AvatarFallback className={cn(
+                  "text-sm",
+                  isSuporte(recado.remetente_nome) ? "bg-blue-500 text-white" : "bg-primary/10 text-primary"
+                )}>
+                  {isSuporte(recado.remetente_nome) ? '🛟' : getInitials(recado.remetente_nome || 'US')}
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="font-semibold text-foreground">{recado.remetente_nome || 'Usuário'}</span>
+                  <span className={cn(
+                    "font-semibold",
+                    isSuporte(recado.remetente_nome) ? "text-blue-700 dark:text-blue-300" : "text-foreground"
+                  )}>
+                    {isSuporte(recado.remetente_nome) ? 'Suporte' : (recado.remetente_nome || 'Usuário')}
+                  </span>
+                  {isSuporte(recado.remetente_nome) && (
+                    <Badge className="bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200 text-xs border-0">Equipe</Badge>
+                  )}
                   {recado.turma_nome && <Badge variant="secondary" className="text-xs">{recado.turma_nome}</Badge>}
                   {recado.crianca_nome && <Badge variant="outline" className="text-xs">{recado.crianca_nome}</Badge>}
                 </div>
