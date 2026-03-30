@@ -28,6 +28,7 @@ interface CriancaRow {
   turma_id: string;
   turma_nome: string;
   observacoes: string | null;
+  email_aluno: string | null;
   responsaveis: { id: string; nome: string; parentesco: string; email: string; telefone: string }[];
 }
 
@@ -46,7 +47,7 @@ export default function CriancasPage() {
 
     const [{ data: turmasData }, { data: criancasData }] = await Promise.all([
       supabase.from("turmas").select("id, nome, descricao").order("nome"),
-      supabase.from("criancas").select("id, nome, data_nascimento, turma_id, observacoes, turmas(nome)").order("nome"),
+      supabase.from("criancas").select("id, nome, data_nascimento, turma_id, observacoes, email_aluno, turmas(nome)").order("nome"),
     ]);
 
     setTurmas((turmasData || []).map((t: any) => ({ id: t.id, nome: t.nome, descricao: t.descricao })));
@@ -95,6 +96,7 @@ export default function CriancasPage() {
         turma_id: c.turma_id,
         turma_nome: c.turmas?.nome || "Sem turma",
         observacoes: c.observacoes,
+        email_aluno: c.email_aluno,
         responsaveis: responsaveisMap[c.id] || [],
       })),
     );
@@ -256,6 +258,7 @@ export default function CriancasPage() {
                 data_nascimento: selectedCrianca.data_nascimento,
                 turma_id: selectedCrianca.turma_id,
                 observacoes: selectedCrianca.observacoes || "",
+                email_aluno: selectedCrianca.email_aluno,
                 responsaveis: selectedCrianca.responsaveis,
               }
             : null

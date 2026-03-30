@@ -39,10 +39,21 @@ const criancaSchema = z.object({
   data_nascimento: z.string().min(1, 'Data de nascimento obrigatória'),
   turma_id: z.string().min(1, 'Turma obrigatória'),
   observacoes: z.string().optional(),
+  email_aluno: z.string().email('Email inválido').optional().or(z.literal('')),
   responsaveis: z.array(responsavelSchema).min(1, 'Adicione pelo menos um responsável'),
 });
 
 type CriancaFormData = z.infer<typeof criancaSchema>;
+
+function calcAge(dateStr: string): number {
+  if (!dateStr) return 0;
+  const birth = new Date(dateStr + 'T00:00:00');
+  const today = new Date();
+  let age = today.getFullYear() - birth.getFullYear();
+  const m = today.getMonth() - birth.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+  return age;
+}
 
 interface CriancaEditData {
   id: string;
@@ -50,6 +61,7 @@ interface CriancaEditData {
   data_nascimento: string;
   turma_id: string;
   observacoes: string | null | undefined;
+  email_aluno?: string | null;
   responsaveis: { id: string; nome: string; telefone: string; email: string; parentesco: string }[];
 }
 
@@ -71,9 +83,13 @@ export function CriancaModal({ open, onOpenChange, editData, turmas, onSaved }: 
       data_nascimento: '',
       turma_id: '',
       observacoes: '',
+      email_aluno: '',
       responsaveis: [{ id: '', nome: '', telefone: '', email: '', parentesco: '' }],
     },
   });
+
+  const dataNascimento = form.watch('data_nascimento');
+  const showEmailAluno = calcAge(dataNascimento) >= 6;
 
   useEffect(() => {
     if (open) {
@@ -82,6 +98,7 @@ export function CriancaModal({ open, onOpenChange, editData, turmas, onSaved }: 
         data_nascimento: editData.data_nascimento,
         turma_id: editData.turma_id,
         observacoes: editData.observacoes || '',
+        email_aluno: editData.email_aluno || '',
         responsaveis: editData.responsaveis.length > 0
           ? editData.responsaveis
           : [{ id: '', nome: '', telefone: '', email: '', parentesco: '' }],
@@ -90,6 +107,7 @@ export function CriancaModal({ open, onOpenChange, editData, turmas, onSaved }: 
         data_nascimento: '',
         turma_id: '',
         observacoes: '',
+        email_aluno: '',
         responsaveis: [{ id: '', nome: '', telefone: '', email: '', parentesco: '' }],
       });
     }
@@ -112,6 +130,7 @@ export function CriancaModal({ open, onOpenChange, editData, turmas, onSaved }: 
             data_nascimento: data.data_nascimento,
             turma_id: data.turma_id,
             observacoes: data.observacoes || null,
+            email_aluno: showEmailAluno ? (data.email_aluno || null) : null,
           })
           .eq('id', editData.id);
 
@@ -147,6 +166,7 @@ export function CriancaModal({ open, onOpenChange, editData, turmas, onSaved }: 
             data_nascimento: data.data_nascimento,
             turma_id: data.turma_id,
             observacoes: data.observacoes || null,
+            email_aluno: showEmailAluno ? (data.email_aluno || null) : null,
           })
           .select('id')
           .single();
@@ -269,6 +289,22 @@ export function CriancaModal({ open, onOpenChange, editData, turmas, onSaved }: 
                     </FormItem>
                   )}
                 />
+
+                {showEmailAluno && (
+                  <FormField
+                    control={form.control}
+                    name="email_aluno"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email do Aluno</FormLabel>
+                        <FormControl>
+                          <Input type="email" placeholder="email@exemplo.com" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
               </div>
 
               <Separator />
