@@ -151,6 +151,21 @@ export default function CriancasDbPage() {
     setCriancas(prev => prev.map(c => c.id === crianca.id ? { ...c, ativo: newAtivo } : c));
   };
 
+  const handleResetPassword = async () => {
+    if (!resetTarget?.user_id) return;
+    setIsResetting(true);
+    const { data, error } = await supabase.functions.invoke('reset-user-password', {
+      body: { user_id: resetTarget.user_id },
+    });
+    setIsResetting(false);
+    if (error || data?.error) {
+      toast.error(data?.error || 'Erro ao resetar senha');
+      return;
+    }
+    toast.success(`Senha de ${resetTarget.nome} resetada! No próximo login será solicitada uma nova senha.`);
+    setResetTarget(null);
+  };
+
   const handleModalClose = () => {
     setIsModalOpen(false);
     setSelected(null);
