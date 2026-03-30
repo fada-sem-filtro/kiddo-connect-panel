@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { Plus, Search, Edit, Trash2, Eye, Users } from "lucide-react";
+import { Plus, Search, Edit, Trash2, Eye, Users, KeyRound } from "lucide-react";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,6 +29,7 @@ interface CriancaRow {
   turma_nome: string;
   observacoes: string | null;
   email_aluno: string | null;
+  user_id: string | null;
   responsaveis: { id: string; nome: string; parentesco: string; email: string; telefone: string }[];
 }
 
@@ -41,13 +42,15 @@ export default function CriancasPage() {
   const [criancas, setCriancas] = useState<CriancaRow[]>([]);
   const [turmas, setTurmas] = useState<{ id: string; nome: string; descricao?: string }[]>([]);
   const [loading, setLoading] = useState(true);
+  const [resetTarget, setResetTarget] = useState<CriancaRow | null>(null);
+  const [isResetting, setIsResetting] = useState(false);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
 
     const [{ data: turmasData }, { data: criancasData }] = await Promise.all([
       supabase.from("turmas").select("id, nome, descricao").order("nome"),
-      supabase.from("criancas").select("id, nome, data_nascimento, turma_id, observacoes, email_aluno, turmas(nome)").order("nome"),
+      supabase.from("criancas").select("id, nome, data_nascimento, turma_id, observacoes, email_aluno, user_id, turmas(nome)").order("nome"),
     ]);
 
     setTurmas((turmasData || []).map((t: any) => ({ id: t.id, nome: t.nome, descricao: t.descricao })));
@@ -97,6 +100,7 @@ export default function CriancasPage() {
         turma_nome: c.turmas?.nome || "Sem turma",
         observacoes: c.observacoes,
         email_aluno: c.email_aluno,
+        user_id: c.user_id,
         responsaveis: responsaveisMap[c.id] || [],
       })),
     );
@@ -137,6 +141,21 @@ export default function CriancasPage() {
     }
     setIsDeleteDialogOpen(false);
     setSelectedCrianca(null);
+  };
+
+  const handleResetPassword = async () => {
+    if (!resetTarget?.user_id) return;
+    setIsResetting(true);
+    const { data, error } = await supabase.functions.invoke('reset-user-password', {
+      body: { user_id: resetTarget.user_id },
+    });
+    setIsResetting(false);
+    if (error || data?.error) {
+      toast.error(data?.error || 'Erro ao resetar senha');
+      return;
+    }
+    toast.success(`Senha de ${resetTarget.nome} resetada! No próximo login será solicitada uma nova senha.`);
+    setResetTarget(null);
   };
 
   const handleModalClose = () => {
@@ -226,6 +245,11 @@ export default function CriancasPage() {
                         <Button variant="ghost" size="icon" onClick={() => handleView(crianca)}>
                           <Eye className="w-4 h-4" />
                         </Button>
+                        {crianca.user_id && (
+                          <Button variant="ghost" size="icon" title="Resetar senha" onClick={() => setResetTarget(crianca)}>
+                            <KeyRound className="w-4 h-4" />
+                          </Button>
+                        )}
                         <Button variant="ghost" size="icon" onClick={() => handleEdit(crianca)}>
                           <Edit className="w-4 h-4" />
                         </Button>
@@ -284,6 +308,23 @@ export default function CriancasPage() {
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
               Excluir
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={!!resetTarget} onOpenChange={(open) => !open && setResetTarget(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Resetar senha do aluno</AlertDialogTitle>
+            <AlertDialogDescription>
+              A senha de <strong>{resetTarget?.nome}</strong> será resetada para a senha padrão (fleur@2026). No próximo login será solicitada uma nova senha.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isResetting}>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={handleResetPassword} disabled={isResetting}>
+              {isResetting ? 'Resetando...' : 'Resetar Senha'}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

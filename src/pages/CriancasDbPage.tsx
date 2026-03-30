@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Plus, Search, Edit, Trash2, Users, Link2, Shield } from 'lucide-react';
+import { Plus, Search, Edit, Trash2, Users, Link2, Shield, KeyRound } from 'lucide-react';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -28,6 +28,7 @@ interface CriancaRow {
   turma_id: string;
   observacoes: string | null;
   email_aluno?: string | null;
+  user_id?: string | null;
   turma_nome?: string;
   ativo: boolean;
   responsaveis?: { nome: string; parentesco: string }[];
@@ -46,6 +47,8 @@ export default function CriancasDbPage() {
   const [respModalCrianca, setRespModalCrianca] = useState<CriancaRow | null>(null);
   const [pickupsCrianca, setPickupsCrianca] = useState<CriancaRow | null>(null);
   const [loading, setLoading] = useState(true);
+  const [resetTarget, setResetTarget] = useState<CriancaRow | null>(null);
+  const [isResetting, setIsResetting] = useState(false);
 
   const fetchCriancas = async () => {
     setLoading(true);
@@ -146,6 +149,21 @@ export default function CriancasDbPage() {
 
     toast.success(`${crianca.nome} foi ${newAtivo ? 'habilitado' : 'desabilitado'}.`);
     setCriancas(prev => prev.map(c => c.id === crianca.id ? { ...c, ativo: newAtivo } : c));
+  };
+
+  const handleResetPassword = async () => {
+    if (!resetTarget?.user_id) return;
+    setIsResetting(true);
+    const { data, error } = await supabase.functions.invoke('reset-user-password', {
+      body: { user_id: resetTarget.user_id },
+    });
+    setIsResetting(false);
+    if (error || data?.error) {
+      toast.error(data?.error || 'Erro ao resetar senha');
+      return;
+    }
+    toast.success(`Senha de ${resetTarget.nome} resetada! No próximo login será solicitada uma nova senha.`);
+    setResetTarget(null);
   };
 
   const handleModalClose = () => {
@@ -267,6 +285,11 @@ export default function CriancasDbPage() {
                             <Button variant="ghost" size="icon" title="Pessoas autorizadas" onClick={() => setPickupsCrianca(crianca)}>
                               <Shield className="w-4 h-4" />
                             </Button>
+                            {crianca.user_id && (
+                              <Button variant="ghost" size="icon" title="Resetar senha" onClick={() => setResetTarget(crianca)}>
+                                <KeyRound className="w-4 h-4" />
+                              </Button>
+                            )}
                             <Button variant="ghost" size="icon" onClick={() => handleEdit(crianca)}>
                               <Edit className="w-4 h-4" />
                             </Button>
@@ -328,6 +351,23 @@ export default function CriancasDbPage() {
         criancaId={pickupsCrianca?.id || ''}
         criancaNome={pickupsCrianca?.nome || ''}
       />
+
+      <AlertDialog open={!!resetTarget} onOpenChange={(open) => !open && setResetTarget(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Resetar senha do aluno</AlertDialogTitle>
+            <AlertDialogDescription>
+              A senha de <strong>{resetTarget?.nome}</strong> será resetada para a senha padrão (fleur@2026). No próximo login será solicitada uma nova senha.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isResetting}>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={handleResetPassword} disabled={isResetting}>
+              {isResetting ? 'Resetando...' : 'Resetar Senha'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </MainLayout>
   );
 }
