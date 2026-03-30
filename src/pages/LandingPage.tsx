@@ -282,12 +282,14 @@ const profiles = [
       "Grade de aulas semanal",
       "Boletim escolar por período",
       "Relatório de desempenho qualitativo",
+      "Atividades e avaliações pedagógicas",
       "Calendário escolar e feriados",
       "Gestão de alunos e responsáveis",
       "Recados com anexo de fotos",
       "Controle de presença",
       "Configurações pedagógicas",
       "Permissões por perfil",
+      "Configuração do módulo secretaria",
     ],
   },
   {
@@ -298,6 +300,7 @@ const profiles = [
       "Visualização das turmas que leciona",
       "Grade de aulas semanal",
       "Registro de notas no boletim",
+      "Criação e gestão de atividades",
       "Preenchimento de relatório de desempenho",
       "Agenda infantil (alimentação, sono, higiene)",
       "Controle de presença diária",
@@ -313,6 +316,7 @@ const profiles = [
       "Dashboard com informações do aluno",
       "Boletim escolar do filho",
       "Relatório de desempenho qualitativo",
+      "Acompanhamento de atividades e notas",
       "Grade de aulas semanal",
       "Agenda infantil diária",
       "Eventos e calendário escolar",
@@ -321,14 +325,43 @@ const profiles = [
       "Pessoas autorizadas para busca",
     ],
   },
+  {
+    icon: BookOpen,
+    title: "Aluno",
+    items: [
+      "Dashboard personalizado com turma",
+      "Grade de aulas da semana",
+      "Visualização e entrega de atividades",
+      "Consulta de notas e avaliações",
+      "Calendário escolar",
+      "Suporte integrado",
+    ],
+  },
+  {
+    icon: Briefcase,
+    title: "Secretaria",
+    items: [
+      "Dashboard com acesso configurável",
+      "Gestão de membros e alunos",
+      "Controle de turmas e feriados",
+      "Calendário escolar",
+      "Grade de aulas e matérias",
+      "Boletim e relatórios",
+      "Atividades pedagógicas",
+      "Presenças e eventos",
+      "Recados com fotos",
+      "Acesso definido pelo diretor",
+    ],
+  },
 ];
 
 const steps = [
   { n: "1", text: "Diretor cadastra professores e turmas" },
   { n: "2", text: "Diretor define matérias e calendário semanal" },
-  { n: "3", text: "Professores acessam suas turmas" },
-  { n: "4", text: "A escola acompanha o desempenho acadêmico" },
+  { n: "3", text: "Professores criam atividades e registram notas" },
+  { n: "4", text: "Alunos acessam e entregam atividades" },
   { n: "5", text: "Responsável acompanha o desempenho acadêmico do aluno" },
+  { n: "6", text: "Secretaria auxilia na gestão administrativa" },
 ];
 
 const screenshots = [
