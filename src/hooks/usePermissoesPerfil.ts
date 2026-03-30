@@ -32,12 +32,17 @@ export const MODULOS = [
   { key: 'feriados', label: 'Feriados', icon: '🎉' },
   { key: 'relatorios', label: 'Relatórios de Presença', icon: '📊' },
   { key: 'agenda_educador', label: 'Minha Agenda', icon: '📋' },
+  { key: 'atividades_pedagogicas', label: 'Atividades Pedagógicas', icon: '📐' },
+  { key: 'atividades_aluno', label: 'Atividades do Aluno', icon: '📐' },
+  { key: 'atividades', label: 'Minhas Atividades', icon: '📐' },
+  { key: 'notas', label: 'Minhas Notas', icon: '🏆' },
 ] as const;
 
 export const PERFIS = [
   { key: 'diretor', label: 'Diretor' },
   { key: 'educador', label: 'Educador' },
   { key: 'responsavel', label: 'Responsável' },
+  { key: 'aluno', label: 'Aluno' },
 ] as const;
 
 export function usePermissoesPerfil(crecheId?: string) {
