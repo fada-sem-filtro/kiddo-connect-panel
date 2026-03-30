@@ -117,9 +117,11 @@ export default function PermissoesPerfilPage() {
           <div>
             <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
               <Shield className="w-6 h-6 text-primary" />
-              Permissões por Perfil
+              {isDiretor ? 'Permissões da Secretaria' : 'Permissões por Perfil'}
             </h1>
-            <p className="text-sm text-muted-foreground mt-1">Configure o que cada perfil pode visualizar e fazer por escola</p>
+            <p className="text-sm text-muted-foreground mt-1">
+              {isDiretor ? 'Configure o que o perfil Secretaria pode visualizar e fazer' : 'Configure o que cada perfil pode visualizar e fazer por escola'}
+            </p>
           </div>
         </div>
 
