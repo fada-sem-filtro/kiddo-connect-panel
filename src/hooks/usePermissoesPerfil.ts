@@ -25,6 +25,8 @@ export const MODULOS = [
   { key: 'materias', label: 'Matérias', icon: '📚' },
   { key: 'grade_aulas', label: 'Grade de Aulas', icon: '🕐' },
   { key: 'relatorio_desempenho', label: 'Relatório de Desempenho', icon: '📄' },
+  { key: 'relatorio_aluno', label: 'Relatório do Aluno', icon: '👤' },
+  { key: 'relatorio_modelo', label: 'Modelo de Relatório', icon: '📋' },
   { key: 'turmas', label: 'Turmas', icon: '🏫' },
   { key: 'alunos', label: 'Alunos', icon: '👶' },
   { key: 'membros', label: 'Corpo Docente', icon: '👩‍🏫' },
@@ -36,6 +38,10 @@ export const MODULOS = [
   { key: 'atividades_aluno', label: 'Atividades do Aluno', icon: '📐' },
   { key: 'atividades', label: 'Minhas Atividades', icon: '📐' },
   { key: 'notas', label: 'Minhas Notas', icon: '🏆' },
+  { key: 'calendario_aluno', label: 'Calendário do Aluno', icon: '🗓️' },
+  { key: 'pedagogico', label: 'Config. Pedagógicas', icon: '⚙️' },
+  { key: 'sidebar_config', label: 'Menu Lateral', icon: '📑' },
+  { key: 'permissoes', label: 'Permissões', icon: '🛡️' },
 ] as const;
 
 export const PERFIS = [
@@ -119,10 +125,10 @@ export function usePermissoesPerfil(crecheId?: string) {
     // Fallback to hardcoded defaults
     const defaults: { perfil: string; modulo: string; pode_visualizar: boolean; pode_criar: boolean; pode_editar: boolean; pode_excluir: boolean }[] = [];
 
-    const diretorModulos = ['dashboard', 'painel_educador', 'minha_turma', 'recados', 'presencas', 'eventos', 'calendario', 'boletim', 'materias', 'grade_aulas', 'relatorio_desempenho', 'turmas', 'alunos', 'membros', 'usuarios', 'feriados', 'relatorios', 'atividades_pedagogicas'];
+    const diretorModulos = ['dashboard', 'painel_educador', 'minha_turma', 'recados', 'presencas', 'eventos', 'calendario', 'boletim', 'materias', 'grade_aulas', 'relatorio_desempenho', 'relatorio_aluno', 'relatorio_modelo', 'turmas', 'alunos', 'membros', 'usuarios', 'feriados', 'relatorios', 'atividades_pedagogicas', 'pedagogico', 'permissoes', 'sidebar_config'];
     const educadorModulos = ['painel_educador', 'minha_turma', 'recados', 'presencas', 'eventos', 'boletim', 'grade_aulas', 'relatorio_desempenho', 'agenda_educador', 'atividades_pedagogicas'];
     const responsavelModulos = ['recados', 'eventos', 'calendario', 'boletim', 'relatorio_desempenho', 'grade_aulas', 'atividades_aluno'];
-    const alunoModulos = ['dashboard', 'atividades', 'notas', 'grade_aulas', 'calendario'];
+    const alunoModulos = ['dashboard', 'atividades', 'notas', 'grade_aulas', 'calendario_aluno'];
 
     for (const mod of diretorModulos) {
       if (!getPermissao('diretor', mod)) {
@@ -147,7 +153,7 @@ export function usePermissoesPerfil(crecheId?: string) {
       }
     }
 
-    const secretariaModulos = ['dashboard', 'recados', 'turmas', 'alunos', 'usuarios', 'calendario', 'relatorios', 'feriados', 'presencas', 'eventos', 'boletim', 'grade_aulas', 'materias', 'atividades_pedagogicas', 'membros'];
+    const secretariaModulos = ['dashboard', 'recados', 'turmas', 'alunos', 'usuarios', 'calendario', 'relatorios', 'feriados', 'presencas', 'eventos', 'boletim', 'grade_aulas', 'materias', 'atividades_pedagogicas', 'membros', 'relatorio_aluno'];
     for (const mod of secretariaModulos) {
       if (!getPermissao('secretaria', mod)) {
         const canWrite = ['recados', 'presencas', 'eventos', 'alunos'].includes(mod);
