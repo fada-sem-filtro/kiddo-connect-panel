@@ -130,6 +130,7 @@ export function CriancaModal({ open, onOpenChange, editData, turmas, onSaved }: 
             data_nascimento: data.data_nascimento,
             turma_id: data.turma_id,
             observacoes: data.observacoes || null,
+            email_aluno: showEmailAluno ? (data.email_aluno || null) : null,
           })
           .eq('id', editData.id);
 
