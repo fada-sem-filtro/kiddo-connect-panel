@@ -55,7 +55,9 @@ export default function UsuariosPage() {
   const { role, userCreche } = useAuth();
   const { effectiveCrecheId, selectedCrecheId, setSelectedCrecheId, creches, isAdmin } = useAdminSchoolSelector();
   const isDiretor = role === 'diretor';
-  const [users, setUsers] = useState<UserWithRole[]>([]);
+  const isSecretaria = role === 'secretaria';
+  const { settings: pedSettings } = usePedagogicalSettings();
+  const secretariaEnabled = !!(pedSettings as any)?.modulo_secretaria_ativo;
   const [search, setSearch] = useState('');
   const [roleFilter, setRoleFilter] = useState<string>('all');
   const [isModalOpen, setIsModalOpen] = useState(false);
