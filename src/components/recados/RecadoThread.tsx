@@ -303,14 +303,15 @@ export function RecadoThread({ recado, onChanged }: RecadoThreadProps) {
                       isSuporteResp && "bg-blue-50/80 dark:bg-blue-950/20"
                     )}>
                       <div className="flex items-start gap-3">
-                        <Avatar className="w-8 h-8">
-                          <AvatarFallback className={cn(
-                            "text-xs",
-                            isSuporteResp ? "bg-blue-500 text-white" : "bg-secondary text-secondary-foreground"
-                          )}>
-                            {isSuporteResp ? '🛟' : <User className="w-4 h-4" />}
-                          </AvatarFallback>
-                        </Avatar>
+                        {isSuporteResp ? (
+                          <img src={logoFleur} alt="Suporte" className="w-8 h-8 rounded-full object-contain bg-white border border-blue-200" />
+                        ) : (
+                          <Avatar className="w-8 h-8">
+                            <AvatarFallback className="bg-secondary text-secondary-foreground text-xs">
+                              <User className="w-4 h-4" />
+                            </AvatarFallback>
+                          </Avatar>
+                        )}
                         <div className="flex-1">
                           <div className="flex items-center gap-2">
                             <span className={cn(
