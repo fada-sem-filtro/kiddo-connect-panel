@@ -39,6 +39,7 @@ const PERFIS = [
   { value: 'educador', label: 'Educador' },
   { value: 'responsavel', label: 'Responsável' },
   { value: 'aluno', label: 'Aluno' },
+  { value: 'secretaria', label: 'Secretaria' },
 ];
 
 export default function SidebarConfigPage() {
@@ -65,7 +66,7 @@ export default function SidebarConfigPage() {
 
         {effectiveCrecheId ? (
           <Tabs value={selectedPerfil} onValueChange={setSelectedPerfil}>
-            <TabsList className="grid w-full grid-cols-3 max-w-lg">
+            <TabsList className="grid w-full grid-cols-5 max-w-2xl">
               {PERFIS.map(p => (
                 <TabsTrigger key={p.value} value={p.value}>{p.label}</TabsTrigger>
               ))}

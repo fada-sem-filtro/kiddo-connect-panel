@@ -81,6 +81,7 @@ export function Sidebar() {
   const location = useLocation();
   const navigate = useNavigate();
   const { role, profile, signOut, userCreche, isDiretor } = useAuth();
+  const isSecretaria = role === 'secretaria';
   const { settings: pedSettings } = usePedagogicalSettings();
   const { canView } = useUserPermissions();
   const { config: customConfig, loading: sidebarConfigLoading } = useSidebarConfig();
@@ -165,6 +166,8 @@ export function Sidebar() {
       }
     } else if (isDiretor) {
       if (canView('dashboard')) mainNavigation.push({ name: "Dashboard", href: "/diretor/dashboard", icon: BarChart3 });
+    } else if (isSecretaria) {
+      mainNavigation.push({ name: "Dashboard", href: "/secretaria/dashboard", icon: BarChart3 });
     } else if (role !== 'admin') {
       mainNavigation.push({ name: "Agenda", href: "/agenda", icon: Calendar });
     }
@@ -185,7 +188,7 @@ export function Sidebar() {
       mainNavigation.push({ name: "Alunos", href: "/criancas", icon: Users });
       mainNavigation.push({ name: "Educadores", href: "/educadores", icon: GraduationCap });
     }
-    if (role === "admin" || ((role === "educador" || role === "responsavel" || role === "diretor") && canView('recados'))) {
+    if (role === "admin" || ((role === "educador" || role === "responsavel" || role === "diretor" || role === "secretaria") && canView('recados'))) {
       mainNavigation.push({ name: "Recados", href: "/recados", icon: MessageSquare });
     }
     if (role === "educador" && canView('agenda_educador')) {
@@ -211,8 +214,8 @@ export function Sidebar() {
     }
   }
 
-  if (!useCustomConfig && !isConfigPending && (role === "admin" || isDiretor)) {
-    const prefix = isDiretor ? "/diretor" : "/admin";
+  if (!useCustomConfig && !isConfigPending && (role === "admin" || isDiretor || isSecretaria)) {
+    const prefix = isSecretaria ? "/secretaria" : isDiretor ? "/diretor" : "/admin";
 
     if (role === "admin") {
       adminNavigation.push({ name: "Dashboard", href: "/admin", icon: BarChart3 });

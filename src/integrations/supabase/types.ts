@@ -354,6 +354,7 @@ export type Database = {
           gestao_materias_ativo: boolean
           grade_aulas_ativo: boolean
           id: string
+          modulo_secretaria_ativo: boolean
           relatorio_desempenho_ativo: boolean
           updated_at: string
         }
@@ -365,6 +366,7 @@ export type Database = {
           gestao_materias_ativo?: boolean
           grade_aulas_ativo?: boolean
           id?: string
+          modulo_secretaria_ativo?: boolean
           relatorio_desempenho_ativo?: boolean
           updated_at?: string
         }
@@ -376,6 +378,7 @@ export type Database = {
           gestao_materias_ativo?: boolean
           grade_aulas_ativo?: boolean
           id?: string
+          modulo_secretaria_ativo?: boolean
           relatorio_desempenho_ativo?: boolean
           updated_at?: string
         }
@@ -1606,7 +1609,13 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "admin" | "educador" | "responsavel" | "diretor" | "aluno"
+      app_role:
+        | "admin"
+        | "educador"
+        | "responsavel"
+        | "diretor"
+        | "aluno"
+        | "secretaria"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1734,7 +1743,14 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "educador", "responsavel", "diretor", "aluno"],
+      app_role: [
+        "admin",
+        "educador",
+        "responsavel",
+        "diretor",
+        "aluno",
+        "secretaria",
+      ],
     },
   },
 } as const

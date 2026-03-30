@@ -33,6 +33,7 @@ export default function ConfiguracoesPedagogicasPage() {
   }
 
   const features = [
+    { key: 'modulo_secretaria_ativo', label: 'Módulo Secretaria', desc: 'Habilita o perfil de Secretaria da escola com acesso configurável', icon: Settings },
     { key: 'boletim_ativo', label: 'Boletim Escolar', desc: 'Registro de notas por matéria e período letivo', icon: BookOpen },
     { key: 'relatorio_desempenho_ativo', label: 'Relatório de Desempenho', desc: 'Relatórios pedagógicos qualitativos dos alunos', icon: FileText },
     { key: 'gestao_materias_ativo', label: 'Gestão de Matérias', desc: 'Cadastro e gerenciamento de disciplinas da escola', icon: Library },

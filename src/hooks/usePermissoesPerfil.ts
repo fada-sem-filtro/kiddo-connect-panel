@@ -43,6 +43,7 @@ export const PERFIS = [
   { key: 'educador', label: 'Educador' },
   { key: 'responsavel', label: 'Responsável' },
   { key: 'aluno', label: 'Aluno' },
+  { key: 'secretaria', label: 'Secretaria' },
 ] as const;
 
 export function usePermissoesPerfil(crecheId?: string) {
@@ -143,6 +144,14 @@ export function usePermissoesPerfil(crecheId?: string) {
     for (const mod of alunoModulos) {
       if (!getPermissao('aluno', mod)) {
         defaults.push({ perfil: 'aluno', modulo: mod, pode_visualizar: true, pode_criar: mod === 'atividades', pode_editar: false, pode_excluir: false });
+      }
+    }
+
+    const secretariaModulos = ['dashboard', 'recados', 'turmas', 'alunos', 'usuarios', 'calendario', 'relatorios', 'feriados', 'presencas', 'eventos', 'boletim', 'grade_aulas', 'materias', 'atividades_pedagogicas', 'membros'];
+    for (const mod of secretariaModulos) {
+      if (!getPermissao('secretaria', mod)) {
+        const canWrite = ['recados', 'presencas', 'eventos', 'alunos'].includes(mod);
+        defaults.push({ perfil: 'secretaria', modulo: mod, pode_visualizar: true, pode_criar: canWrite, pode_editar: canWrite, pode_excluir: false });
       }
     }
 

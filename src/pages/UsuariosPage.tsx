@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Plus, Search, Users, Shield, GraduationCap, UserCheck, Edit, KeyRound, AlertTriangle, Filter, Trash2 } from 'lucide-react';
+import { Plus, Search, Users, Shield, GraduationCap, UserCheck, UserCog, Edit, KeyRound, AlertTriangle, Filter, Trash2 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { usePedagogicalSettings } from '@/hooks/usePedagogicalSettings';
 import { useAdminSchoolSelector, AdminSchoolSelector } from '@/components/admin/AdminSchoolSelector';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { Button } from '@/components/ui/button';
@@ -29,7 +30,7 @@ interface UserWithRole {
   nome: string;
   email: string;
   telefone: string | null;
-  role: 'admin' | 'educador' | 'responsavel' | 'diretor';
+  role: 'admin' | 'educador' | 'responsavel' | 'diretor' | 'secretaria';
   created_at: string;
   ativo: boolean;
 }
@@ -39,6 +40,7 @@ const ROLE_LABELS: Record<string, string> = {
   diretor: 'Diretor(a)',
   educador: 'Educador',
   responsavel: 'Responsável',
+  secretaria: 'Secretaria',
 };
 
 const ROLE_ICONS: Record<string, React.ReactNode> = {
@@ -46,12 +48,16 @@ const ROLE_ICONS: Record<string, React.ReactNode> = {
   diretor: <Shield className="w-3 h-3" />,
   educador: <GraduationCap className="w-3 h-3" />,
   responsavel: <UserCheck className="w-3 h-3" />,
+  secretaria: <UserCog className="w-3 h-3" />,
 };
 
 export default function UsuariosPage() {
   const { role, userCreche } = useAuth();
   const { effectiveCrecheId, selectedCrecheId, setSelectedCrecheId, creches, isAdmin } = useAdminSchoolSelector();
   const isDiretor = role === 'diretor';
+  const isSecretaria = role === 'secretaria';
+  const { settings: pedSettings } = usePedagogicalSettings();
+  const secretariaEnabled = !!(pedSettings as any)?.modulo_secretaria_ativo;
   const [users, setUsers] = useState<UserWithRole[]>([]);
   const [search, setSearch] = useState('');
   const [roleFilter, setRoleFilter] = useState<string>('all');
@@ -67,7 +73,7 @@ export default function UsuariosPage() {
   });
 
   const fetchUsers = async () => {
-    const crecheId = isDiretor ? userCreche?.id : effectiveCrecheId;
+    const crecheId = (isDiretor || isSecretaria) ? userCreche?.id : effectiveCrecheId;
 
     if (crecheId) {
       // Filter by school membership
@@ -107,7 +113,7 @@ export default function UsuariosPage() {
               ativo: (p as any).ativo ?? true,
             };
           })
-          .filter(u => isDiretor ? u.role !== 'admin' : true);
+          .filter(u => (isDiretor || isSecretaria) ? u.role !== 'admin' : true);
         setUsers(usersWithRoles);
       }
     } else if (isAdmin) {
@@ -185,7 +191,7 @@ export default function UsuariosPage() {
         nome: form.nome,
         telefone: form.telefone || null,
         role: form.role,
-        creche_id: isDiretor && userCreche ? userCreche.id : undefined,
+        creche_id: (isDiretor || isSecretaria) && userCreche ? userCreche.id : undefined,
       },
     });
     setIsLoading(false);
@@ -300,7 +306,7 @@ export default function UsuariosPage() {
   };
 
   const canToggleUser = (user: UserWithRole) => {
-    if (isDiretor && ['educador', 'responsavel'].includes(user.role)) return true;
+    if (isDiretor && ['educador', 'responsavel', 'secretaria'].includes(user.role)) return true;
     return false;
   };
 
@@ -350,6 +356,7 @@ export default function UsuariosPage() {
               {!isDiretor && <SelectItem value="diretor">Diretor(a)</SelectItem>}
               <SelectItem value="educador">Educador</SelectItem>
               <SelectItem value="responsavel">Responsável</SelectItem>
+              {secretariaEnabled && <SelectItem value="secretaria">Secretaria</SelectItem>}
             </SelectContent>
           </Select>
         </div>
@@ -475,6 +482,7 @@ export default function UsuariosPage() {
                   {!isDiretor && <SelectItem value="diretor">Diretor(a)</SelectItem>}
                   <SelectItem value="educador">Educador</SelectItem>
                   <SelectItem value="responsavel">Responsável</SelectItem>
+                  {secretariaEnabled && <SelectItem value="secretaria">Secretaria</SelectItem>}
                 </SelectContent>
               </Select>
             </div>
