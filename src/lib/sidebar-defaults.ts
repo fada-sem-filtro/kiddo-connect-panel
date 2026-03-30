@@ -49,6 +49,8 @@ export const AVAILABLE_ITEMS_BY_ROLE: Record<string, { key: string; defaultLabel
   secretaria: [
     { key: 'dashboard', defaultLabel: 'Dashboard', route: '/secretaria/dashboard' },
     { key: 'recados', defaultLabel: 'Recados', route: '/recados' },
+    { key: 'presencas', defaultLabel: 'Presenças', route: '/secretaria/presencas' },
+    { key: 'eventos', defaultLabel: 'Eventos Diários', route: '/secretaria/eventos' },
     { key: 'turmas', defaultLabel: 'Turmas', route: '/secretaria/turmas' },
     { key: 'alunos', defaultLabel: 'Alunos', route: '/secretaria/criancas' },
     { key: 'membros', defaultLabel: 'Corpo Docente', route: '/secretaria/membros' },
@@ -60,6 +62,8 @@ export const AVAILABLE_ITEMS_BY_ROLE: Record<string, { key: string; defaultLabel
     { key: 'materias', defaultLabel: 'Matérias', route: '/secretaria/materias' },
     { key: 'boletim', defaultLabel: 'Boletim', route: '/secretaria/boletim' },
     { key: 'grade_aulas', defaultLabel: 'Grade de Aulas', route: '/secretaria/grade-aulas' },
+    { key: 'relatorio_modelo', defaultLabel: 'Modelo Relatório', route: '/secretaria/relatorio-modelo' },
+    { key: 'relatorio_desempenho', defaultLabel: 'Relatórios Desempenho', route: '/secretaria/relatorio-desempenho' },
     { key: 'atividades_pedagogicas', defaultLabel: 'Atividades Pedagógicas', route: '/secretaria/atividades' },
   ],
   admin: [
