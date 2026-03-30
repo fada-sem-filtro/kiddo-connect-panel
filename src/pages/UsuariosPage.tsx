@@ -30,7 +30,7 @@ interface UserWithRole {
   nome: string;
   email: string;
   telefone: string | null;
-  role: 'admin' | 'educador' | 'responsavel' | 'diretor' | 'secretaria';
+  role: 'admin' | 'educador' | 'responsavel' | 'diretor' | 'secretaria' | 'aluno';
   created_at: string;
   ativo: boolean;
 }
@@ -41,6 +41,7 @@ const ROLE_LABELS: Record<string, string> = {
   educador: 'Educador',
   responsavel: 'Responsável',
   secretaria: 'Secretaria',
+  aluno: 'Aluno',
 };
 
 const ROLE_ICONS: Record<string, React.ReactNode> = {
@@ -49,6 +50,7 @@ const ROLE_ICONS: Record<string, React.ReactNode> = {
   educador: <GraduationCap className="w-3 h-3" />,
   responsavel: <UserCheck className="w-3 h-3" />,
   secretaria: <UserCog className="w-3 h-3" />,
+  aluno: <Users className="w-3 h-3" />,
 };
 
 export default function UsuariosPage() {
@@ -76,28 +78,51 @@ export default function UsuariosPage() {
     const crecheId = (isDiretor || isSecretaria) ? userCreche?.id : effectiveCrecheId;
 
     if (crecheId) {
-      // Filter by school membership
+      // Get members from creche_membros
       const { data: membros } = await supabase
         .from('creche_membros')
         .select('user_id')
         .eq('creche_id', crecheId);
 
-      if (!membros || membros.length === 0) {
+      const memberUserIds = (membros || []).map(m => m.user_id);
+
+      // Also get aluno user_ids from criancas in the school's turmas
+      const { data: turmas } = await supabase
+        .from('turmas')
+        .select('id')
+        .eq('creche_id', crecheId);
+
+      let alunoUserIds: string[] = [];
+      if (turmas && turmas.length > 0) {
+        const turmaIds = turmas.map(t => t.id);
+        const { data: criancas } = await supabase
+          .from('criancas')
+          .select('user_id')
+          .in('turma_id', turmaIds)
+          .not('user_id', 'is', null);
+
+        alunoUserIds = (criancas || [])
+          .map(c => c.user_id)
+          .filter((id): id is string => !!id);
+      }
+
+      // Combine unique user IDs
+      const allUserIds = [...new Set([...memberUserIds, ...alunoUserIds])];
+
+      if (allUserIds.length === 0) {
         setUsers([]);
         return;
       }
 
-      const memberUserIds = membros.map(m => m.user_id);
-
       const { data: profiles } = await supabase
         .from('profiles')
         .select('*')
-        .in('user_id', memberUserIds);
+        .in('user_id', allUserIds);
 
       const { data: roles } = await supabase
         .from('user_roles')
         .select('*')
-        .in('user_id', memberUserIds);
+        .in('user_id', allUserIds);
 
       if (profiles && roles) {
         const usersWithRoles: UserWithRole[] = profiles
@@ -306,7 +331,8 @@ export default function UsuariosPage() {
   };
 
   const canToggleUser = (user: UserWithRole) => {
-    if (isDiretor && ['educador', 'responsavel', 'secretaria'].includes(user.role)) return true;
+    if (isDiretor && ['educador', 'responsavel', 'secretaria', 'aluno'].includes(user.role)) return true;
+    if (isSecretaria && ['educador', 'responsavel', 'aluno'].includes(user.role)) return true;
     return false;
   };
 
@@ -357,6 +383,7 @@ export default function UsuariosPage() {
               <SelectItem value="educador">Educador</SelectItem>
               <SelectItem value="responsavel">Responsável</SelectItem>
               {secretariaEnabled && <SelectItem value="secretaria">Secretaria</SelectItem>}
+              <SelectItem value="aluno">Aluno</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -369,14 +396,14 @@ export default function UsuariosPage() {
                 <TableHead>Email</TableHead>
                 <TableHead>Telefone</TableHead>
                 <TableHead>Papel</TableHead>
-                {(isAdmin || isDiretor) && <TableHead>Status</TableHead>}
+                {(isAdmin || isDiretor || isSecretaria) && <TableHead>Status</TableHead>}
                 <TableHead className="text-right">Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filteredUsers.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={(isAdmin || isDiretor) ? 6 : 5} className="text-center py-8 text-muted-foreground">
+                  <TableCell colSpan={(isAdmin || isDiretor || isSecretaria) ? 6 : 5} className="text-center py-8 text-muted-foreground">
                     Nenhum usuário encontrado
                   </TableCell>
                 </TableRow>
@@ -392,7 +419,7 @@ export default function UsuariosPage() {
                         {ROLE_LABELS[user.role]}
                       </Badge>
                     </TableCell>
-                    {(isAdmin || isDiretor) && (
+                    {(isAdmin || isDiretor || isSecretaria) && (
                       <TableCell>
                         {canToggleUser(user) ? (
                           <div className="flex items-center gap-2">
