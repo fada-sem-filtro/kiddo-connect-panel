@@ -29,6 +29,7 @@ interface CriancaRow {
   turma_nome: string;
   observacoes: string | null;
   email_aluno: string | null;
+  user_id: string | null;
   responsaveis: { id: string; nome: string; parentesco: string; email: string; telefone: string }[];
 }
 
