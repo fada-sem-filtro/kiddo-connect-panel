@@ -42,6 +42,8 @@ export default function CriancasPage() {
   const [criancas, setCriancas] = useState<CriancaRow[]>([]);
   const [turmas, setTurmas] = useState<{ id: string; nome: string; descricao?: string }[]>([]);
   const [loading, setLoading] = useState(true);
+  const [resetTarget, setResetTarget] = useState<CriancaRow | null>(null);
+  const [isResetting, setIsResetting] = useState(false);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
