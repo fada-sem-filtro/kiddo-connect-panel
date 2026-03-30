@@ -47,9 +47,12 @@ const Index = () => {
     }, {} as Record<string, number>);
   }, [eventos]);
 
-  // Redirect diretor to their dashboard
+  // Redirect diretor/aluno to their dashboards
   if (role === 'diretor') {
     return <Navigate to="/diretor/dashboard" replace />;
+  }
+  if (role === 'aluno') {
+    return <Navigate to="/aluno/dashboard" replace />;
   }
 
   return (
