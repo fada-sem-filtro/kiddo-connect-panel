@@ -26,9 +26,19 @@ interface ResponsavelEntry {
 interface CriancaDbModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  editData?: { id: string; nome: string; data_nascimento: string; turma_id: string; observacoes: string | null } | null;
+  editData?: { id: string; nome: string; data_nascimento: string; turma_id: string; observacoes: string | null; email_aluno?: string | null } | null;
   turmas: { id: string; nome: string; creche_id: string }[];
   onSaved: () => void;
+}
+
+function calcAge(dateStr: string): number {
+  if (!dateStr) return 0;
+  const birth = new Date(dateStr + 'T00:00:00');
+  const today = new Date();
+  let age = today.getFullYear() - birth.getFullYear();
+  const m = today.getMonth() - birth.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+  return age;
 }
 
 export function CriancaDbModal({ open, onOpenChange, editData, turmas, onSaved }: CriancaDbModalProps) {
@@ -37,8 +47,11 @@ export function CriancaDbModal({ open, onOpenChange, editData, turmas, onSaved }
   const [dataNascimento, setDataNascimento] = useState('');
   const [turmaId, setTurmaId] = useState('');
   const [observacoes, setObservacoes] = useState('');
+  const [emailAluno, setEmailAluno] = useState('');
   const [responsaveis, setResponsaveis] = useState<ResponsavelEntry[]>([]);
   const [loading, setLoading] = useState(false);
+
+  const showEmailAluno = calcAge(dataNascimento) >= 6;
 
   useEffect(() => {
     if (open) {
@@ -47,12 +60,14 @@ export function CriancaDbModal({ open, onOpenChange, editData, turmas, onSaved }
         setDataNascimento(editData.data_nascimento);
         setTurmaId(editData.turma_id);
         setObservacoes(editData.observacoes || '');
+        setEmailAluno(editData.email_aluno || '');
         setResponsaveis([]);
       } else {
         setNome('');
         setDataNascimento('');
         setTurmaId('');
         setObservacoes('');
+        setEmailAluno('');
         setResponsaveis([{ nome: '', email: '', telefone: '', parentesco: 'Mãe' }]);
       }
     }
@@ -126,6 +141,7 @@ export function CriancaDbModal({ open, onOpenChange, editData, turmas, onSaved }
         data_nascimento: dataNascimento,
         turma_id: turmaId,
         observacoes: observacoes || null,
+        email_aluno: showEmailAluno ? (emailAluno || null) : null,
       };
 
       let criancaId: string;
@@ -210,6 +226,14 @@ export function CriancaDbModal({ open, onOpenChange, editData, turmas, onSaved }
                 <Label>Observações</Label>
                 <Textarea value={observacoes} onChange={(e) => setObservacoes(e.target.value)} placeholder="Alergias, observações especiais..." />
               </div>
+
+              {showEmailAluno && (
+                <div className="space-y-2">
+                  <Label>Email do Aluno</Label>
+                  <Input type="email" value={emailAluno} onChange={(e) => setEmailAluno(e.target.value)} placeholder="email@exemplo.com" />
+                  <p className="text-xs text-muted-foreground">Para alunos acima de 6 anos. Permite acesso ao sistema.</p>
+                </div>
+              )}
             </div>
 
             {!editData && (
