@@ -73,7 +73,7 @@ export default function UsuariosPage() {
   });
 
   const fetchUsers = async () => {
-    const crecheId = isDiretor ? userCreche?.id : effectiveCrecheId;
+    const crecheId = (isDiretor || isSecretaria) ? userCreche?.id : effectiveCrecheId;
 
     if (crecheId) {
       // Filter by school membership
