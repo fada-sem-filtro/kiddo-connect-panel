@@ -37,6 +37,7 @@ export default function ConfiguracoesPedagogicasPage() {
     { key: 'relatorio_desempenho_ativo', label: 'Relatório de Desempenho', desc: 'Relatórios pedagógicos qualitativos dos alunos', icon: FileText },
     { key: 'gestao_materias_ativo', label: 'Gestão de Matérias', desc: 'Cadastro e gerenciamento de disciplinas da escola', icon: Library },
     { key: 'grade_aulas_ativo', label: 'Grade de Aulas', desc: 'Calendário semanal de aulas por turma', icon: CalendarClock },
+    { key: 'atividades_avaliacoes_ativo', label: 'Atividades e Avaliações', desc: 'Módulo de atividades pedagógicas e avaliações do aluno', icon: BookOpen },
   ];
 
   return (
