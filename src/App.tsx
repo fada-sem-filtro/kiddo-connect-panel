@@ -41,6 +41,7 @@ import LandingPage from "./pages/LandingPage";
 import OrcamentosPage from "./pages/OrcamentosPage";
 import SidebarConfigPage from "./pages/SidebarConfigPage";
 import AdminSettingsPage from "./pages/AdminSettingsPage";
+import SuportePage from "./pages/SuportePage";
 import AlunoDashboardPage from "./pages/AlunoDashboardPage";
 import AlunoAtividadesPage from "./pages/AlunoAtividadesPage";
 import AlunoNotasPage from "./pages/AlunoNotasPage";
@@ -115,6 +116,7 @@ const App = () => (
               <Route path="/admin/sidebar-config" element={<ProtectedRoute allowedRoles={['admin']}><SidebarConfigPage /></ProtectedRoute>} />
               <Route path="/diretor/sidebar-config" element={<ProtectedRoute allowedRoles={['diretor']}><SidebarConfigPage /></ProtectedRoute>} />
               <Route path="/admin/configuracoes" element={<ProtectedRoute allowedRoles={['admin']}><AdminSettingsPage /></ProtectedRoute>} />
+              <Route path="/admin/suporte" element={<ProtectedRoute allowedRoles={['admin']}><SuportePage /></ProtectedRoute>} />
               {/* Aluno routes */}
               <Route path="/aluno/dashboard" element={<ProtectedRoute allowedRoles={['aluno']}><AlunoDashboardPage /></ProtectedRoute>} />
               <Route path="/aluno/atividades" element={<ProtectedRoute allowedRoles={['aluno']}><AlunoAtividadesPage /></ProtectedRoute>} />

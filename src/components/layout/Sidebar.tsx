@@ -65,6 +65,7 @@ const ICON_MAP: Record<string, typeof Calendar> = {
   educadores_global: GraduationCap,
   permissoes: Shield,
   orcamentos: MessageSquare,
+  suporte: MessageSquare,
   sidebar_config: SlidersHorizontal,
   configuracoes: Cog,
   eventos_resp: ClipboardList,
