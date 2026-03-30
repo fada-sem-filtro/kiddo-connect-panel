@@ -38,6 +38,7 @@ import RelatorioDesempenhoPage from "./pages/RelatorioDesempenhoPage";
 import PermissoesPerfilPage from "./pages/PermissoesPerfilPage";
 import ResponsavelGradePage from "./pages/ResponsavelGradePage";
 import LandingPage from "./pages/LandingPage";
+import SobrePage from "./pages/SobrePage";
 import OrcamentosPage from "./pages/OrcamentosPage";
 import SidebarConfigPage from "./pages/SidebarConfigPage";
 import AdminSettingsPage from "./pages/AdminSettingsPage";
@@ -64,6 +65,7 @@ const App = () => (
             <Routes>
               <Route path="/" element={<LandingPage />} />
               <Route path="/conheca" element={<LandingPage />} />
+              <Route path="/sobre" element={<SobrePage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/reset-password" element={<ResetPasswordPage />} />
               <Route path="/agenda" element={<ProtectedRoute><Index /></ProtectedRoute>} />
