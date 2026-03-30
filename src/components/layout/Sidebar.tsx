@@ -81,6 +81,7 @@ export function Sidebar() {
   const location = useLocation();
   const navigate = useNavigate();
   const { role, profile, signOut, userCreche, isDiretor } = useAuth();
+  const isSecretaria = role === 'secretaria';
   const { settings: pedSettings } = usePedagogicalSettings();
   const { canView } = useUserPermissions();
   const { config: customConfig, loading: sidebarConfigLoading } = useSidebarConfig();
