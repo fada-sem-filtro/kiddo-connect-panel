@@ -71,9 +71,10 @@ export default function SuportePage() {
         .eq('id', selectedMsg.id);
 
       // Also create a recado for the user so they see it in Recados
+      // Use the support requester's user_id as remetente so RLS allows them to see it
       await supabase.from('recados').insert({
         conteudo: replyContent.trim(),
-        remetente_user_id: user.id,
+        remetente_user_id: selectedMsg.user_id,
         remetente_nome: '🛟 Suporte',
         titulo: `Re: ${selectedMsg.assunto}`,
         crianca_id: null,
