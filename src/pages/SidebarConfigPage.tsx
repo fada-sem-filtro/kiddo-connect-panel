@@ -39,6 +39,7 @@ const PERFIS = [
   { value: 'educador', label: 'Educador' },
   { value: 'responsavel', label: 'Responsável' },
   { value: 'aluno', label: 'Aluno' },
+  { value: 'secretaria', label: 'Secretaria' },
 ];
 
 export default function SidebarConfigPage() {
