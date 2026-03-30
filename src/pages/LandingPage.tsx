@@ -1,7 +1,8 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { PrototypeModal } from "@/components/landing/PrototypeModal";
 import { Link } from "react-router-dom";
 import { motion, useInView } from "framer-motion";
+import { Download } from "lucide-react";
 import {
   ArrowRight,
   CheckCircle2,
@@ -401,6 +402,28 @@ const audiences = [
 export default function LandingPage() {
   const [contactOpen, setContactOpen] = useState(false);
   const [activePrototype, setActivePrototype] = useState<"diretor" | "educador" | "responsavel" | null>(null);
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [showInstall, setShowInstall] = useState(false);
+
+  useEffect(() => {
+    const handler = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      setShowInstall(true);
+    };
+    window.addEventListener("beforeinstallprompt", handler);
+    return () => window.removeEventListener("beforeinstallprompt", handler);
+  }, []);
+
+  const handleInstall = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === "accepted") {
+      setShowInstall(false);
+      setDeferredPrompt(null);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background font-[Quicksand] overflow-x-hidden">
@@ -441,9 +464,9 @@ export default function LandingPage() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-4xl md:text-6xl font-extrabold text-foreground leading-tight"
           >
-            Sistema Completo de
+            Agenda Escolar Digital para
             <br />
-            <span className="text-primary">Gestão Escolar</span>
+            <span className="text-primary">Creches e Escolas</span>
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -451,8 +474,7 @@ export default function LandingPage() {
             transition={{ duration: 0.5, delay: 0.4 }}
             className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto"
           >
-            Uma plataforma moderna, totalmente responsiva, que organiza a gestão pedagógica e administrativa da sua
-            escola em um único lugar.
+            Conecte professores, responsáveis e alunos em tempo real com registros pedagógicos, atividades, alimentação, sono, fotos e comunicados.
           </motion.p>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -460,8 +482,7 @@ export default function LandingPage() {
             transition={{ duration: 0.5, delay: 0.5 }}
             className="text-base text-muted-foreground max-w-xl mx-auto"
           >
-            Controle turmas, professores, matérias, calendário escolar e desempenho acadêmico com uma plataforma
-            simples, rápida e segura.
+            Aplicativo de agenda escolar instalável no celular — sistema de gestão escolar simples e moderno.
           </motion.p>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -477,6 +498,11 @@ export default function LandingPage() {
                 Ver funcionalidades <ChevronRight className="ml-1 w-4 h-4" />
               </a>
             </Button>
+            {showInstall && (
+              <Button size="lg" variant="secondary" className="text-base px-8" onClick={handleInstall}>
+                <Download className="mr-2 w-5 h-5" /> Instalar Agenda Fleur
+              </Button>
+            )}
           </motion.div>
         </div>
       </section>
@@ -485,7 +511,7 @@ export default function LandingPage() {
       <section className="py-16 md:py-24 px-4 bg-muted/40">
         <div className="max-w-6xl mx-auto space-y-10">
           <AnimSection className="text-center max-w-2xl mx-auto space-y-3">
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground">Os desafios da gestão escolar</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground">Comunicação em tempo real entre escola e responsáveis</h2>
             <p className="text-muted-foreground">
               Muitas escolas ainda utilizam planilhas, processos manuais ou sistemas limitados para organizar suas
               atividades pedagógicas.
@@ -512,7 +538,7 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto space-y-10">
           <AnimSection className="text-center max-w-2xl mx-auto space-y-3">
             <h2 className="text-3xl md:text-4xl font-bold text-foreground">
-              Uma plataforma pensada para escolas modernas
+              Registros pedagógicos completos
             </h2>
             <p className="text-muted-foreground">
               Nosso sistema centraliza todas as informações acadêmicas e administrativas da escola, permitindo uma
@@ -541,7 +567,7 @@ export default function LandingPage() {
       <section id="funcionalidades" className="py-16 md:py-24 px-4 bg-muted/40">
         <div className="max-w-6xl mx-auto space-y-10">
           <AnimSection className="text-center space-y-3">
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground">Funcionalidades do Sistema</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground">Sistema de gestão escolar simples e moderno</h2>
             <p className="text-muted-foreground">Tudo o que sua escola precisa em uma única plataforma</p>
           </AnimSection>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
