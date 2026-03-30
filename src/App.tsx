@@ -44,6 +44,7 @@ import AdminSettingsPage from "./pages/AdminSettingsPage";
 import AlunoDashboardPage from "./pages/AlunoDashboardPage";
 import AlunoAtividadesPage from "./pages/AlunoAtividadesPage";
 import AlunoNotasPage from "./pages/AlunoNotasPage";
+import AlunoGradePage from "./pages/AlunoGradePage";
 import EducadorAtividadesPage from "./pages/EducadorAtividadesPage";
 import ResponsavelAtividadesPage from "./pages/ResponsavelAtividadesPage";
 import NotFound from "./pages/NotFound";
