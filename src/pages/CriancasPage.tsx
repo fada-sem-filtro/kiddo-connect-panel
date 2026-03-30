@@ -50,7 +50,7 @@ export default function CriancasPage() {
 
     const [{ data: turmasData }, { data: criancasData }] = await Promise.all([
       supabase.from("turmas").select("id, nome, descricao").order("nome"),
-      supabase.from("criancas").select("id, nome, data_nascimento, turma_id, observacoes, email_aluno, turmas(nome)").order("nome"),
+      supabase.from("criancas").select("id, nome, data_nascimento, turma_id, observacoes, email_aluno, user_id, turmas(nome)").order("nome"),
     ]);
 
     setTurmas((turmasData || []).map((t: any) => ({ id: t.id, nome: t.nome, descricao: t.descricao })));
