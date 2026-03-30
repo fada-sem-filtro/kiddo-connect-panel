@@ -39,6 +39,7 @@ const ROLE_LABELS: Record<string, string> = {
   diretor: 'Diretor(a)',
   educador: 'Educador',
   responsavel: 'Responsável',
+  secretaria: 'Secretaria',
 };
 
 const ROLE_ICONS: Record<string, React.ReactNode> = {
@@ -46,6 +47,7 @@ const ROLE_ICONS: Record<string, React.ReactNode> = {
   diretor: <Shield className="w-3 h-3" />,
   educador: <GraduationCap className="w-3 h-3" />,
   responsavel: <UserCheck className="w-3 h-3" />,
+  secretaria: <UserCog className="w-3 h-3" />,
 };
 
 export default function UsuariosPage() {
