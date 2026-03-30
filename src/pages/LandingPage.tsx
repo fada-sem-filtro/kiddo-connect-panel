@@ -436,20 +436,21 @@ export default function LandingPage() {
         transition={{ duration: 0.5 }}
         className="sticky top-0 z-50 bg-card/80 backdrop-blur-md border-b border-border"
       >
-        <div className="max-w-7xl mx-auto flex items-center justify-between px-4 py-3">
-          <div className="flex items-center gap-2">
-            <img src={logoFleur} alt="Agenda Fleur" className="w-8 h-8" />
-            <span className="font-bold text-lg text-foreground">Agenda Fleur</span>
+        <div className="max-w-7xl mx-auto flex items-center justify-between px-3 sm:px-4 py-2.5 sm:py-3">
+          <div className="flex items-center gap-2 shrink-0">
+            <img src={logoFleur} alt="Agenda Fleur" className="w-7 h-7 sm:w-8 sm:h-8" />
+            <span className="font-bold text-base sm:text-lg text-foreground hidden xs:block">Agenda Fleur</span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2">
             <Link to="/sobre">
-              <Button variant="ghost" size="sm">Sobre</Button>
+              <Button variant="ghost" size="sm" className="text-xs sm:text-sm px-2 sm:px-3">Sobre</Button>
             </Link>
             <Link to="/login">
-              <Button variant="ghost" size="sm">Entrar</Button>
+              <Button variant="ghost" size="sm" className="text-xs sm:text-sm px-2 sm:px-3">Entrar</Button>
             </Link>
-            <Button size="sm" onClick={() => setContactOpen(true)}>
-              Solicite seu Orçamento
+            <Button size="sm" className="text-xs sm:text-sm px-2 sm:px-3 whitespace-nowrap" onClick={() => setContactOpen(true)}>
+              <span className="hidden sm:inline">Solicite seu Orçamento</span>
+              <span className="sm:hidden">Orçamento</span>
             </Button>
           </div>
         </div>
