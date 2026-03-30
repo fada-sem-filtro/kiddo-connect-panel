@@ -111,6 +111,22 @@ export function getDefaultConfig(perfil: string): SidebarConfig {
           { key: 'agenda_educador', label: 'Minha Agenda', ordem: 5, visible: true },
           { key: 'grade_aulas', label: 'Grade de Aulas', ordem: 6, visible: true },
           { key: 'relatorio_desempenho', label: 'Relatórios Desempenho', ordem: 7, visible: true },
+          { key: 'atividades_pedagogicas', label: 'Atividades Pedagógicas', ordem: 8, visible: true },
+        ],
+      },
+    ];
+  }
+
+  if (perfil === 'aluno') {
+    return [
+      {
+        id: 'principal',
+        label: '📚 Principal',
+        ordem: 0,
+        items: [
+          { key: 'dashboard', label: 'Dashboard', ordem: 0, visible: true },
+          { key: 'atividades', label: 'Minhas Atividades', ordem: 1, visible: true },
+          { key: 'notas', label: 'Minhas Notas', ordem: 2, visible: true },
         ],
       },
     ];
