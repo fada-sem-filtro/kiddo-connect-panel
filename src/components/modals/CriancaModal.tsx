@@ -291,6 +291,22 @@ export function CriancaModal({ open, onOpenChange, editData, turmas, onSaved }: 
                     </FormItem>
                   )}
                 />
+
+                {showEmailAluno && (
+                  <FormField
+                    control={form.control}
+                    name="email_aluno"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email do Aluno</FormLabel>
+                        <FormControl>
+                          <Input type="email" placeholder="email@exemplo.com" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
               </div>
 
               <Separator />
