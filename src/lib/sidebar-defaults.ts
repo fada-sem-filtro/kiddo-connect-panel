@@ -153,6 +153,7 @@ export function getDefaultConfig(perfil: string): SidebarConfig {
           { key: 'boletim', label: 'Desempenho', ordem: 2, visible: true },
           { key: 'grade_aulas', label: 'Grade de Aulas', ordem: 3, visible: true },
           { key: 'relatorio', label: 'Relatório', ordem: 4, visible: true },
+          { key: 'atividades_aluno', label: 'Atividades do Aluno', ordem: 5, visible: true },
         ],
       },
     ];
