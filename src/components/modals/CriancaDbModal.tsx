@@ -117,6 +117,42 @@ export function CriancaDbModal({ open, onOpenChange, editData, turmas, onSaved }
     return data.user.id;
   };
 
+  const createStudentAccount = async (criancaId: string, email: string, studentName: string) => {
+    // Check if a profile with this email already exists
+    const { data: existingProfile } = await supabase
+      .from('profiles')
+      .select('user_id')
+      .eq('email', email)
+      .maybeSingle();
+
+    if (existingProfile) {
+      // Link existing user
+      await supabase.from('criancas').update({ user_id: existingProfile.user_id }).eq('id', criancaId);
+      return;
+    }
+
+    // Get creche_id from the turma
+    const selectedTurma = turmas.find(t => t.id === turmaId);
+    const crecheId = selectedTurma?.creche_id || userCreche?.id || null;
+
+    const { data, error } = await supabase.functions.invoke('create-user', {
+      body: {
+        email,
+        nome: studentName,
+        role: 'aluno',
+        creche_id: crecheId,
+      },
+    });
+
+    if (error || data?.error) {
+      toast.error(`Erro ao criar conta do aluno: ${data?.error || error?.message}`);
+      return;
+    }
+
+    // Link user_id to crianca
+    await supabase.from('criancas').update({ user_id: data.user.id }).eq('id', criancaId);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!nome || !dataNascimento || !turmaId) {
