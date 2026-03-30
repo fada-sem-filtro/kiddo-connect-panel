@@ -50,6 +50,7 @@ const ROLE_ICONS: Record<string, React.ReactNode> = {
   educador: <GraduationCap className="w-3 h-3" />,
   responsavel: <UserCheck className="w-3 h-3" />,
   secretaria: <UserCog className="w-3 h-3" />,
+  aluno: <Users className="w-3 h-3" />,
 };
 
 export default function UsuariosPage() {
