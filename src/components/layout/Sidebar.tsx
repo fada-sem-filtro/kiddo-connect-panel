@@ -121,6 +121,10 @@ export function Sidebar() {
   const isItemEnabledByPedSettings = (key: string): boolean => {
     // Admin always sees everything
     if (role === 'admin') return true;
+    // Director-specific: permissoes & sidebar_config only when secretaria module is active
+    if (isDiretor && (key === 'permissoes' || key === 'sidebar_config')) {
+      return !!(pedSettings as any)?.modulo_secretaria_ativo;
+    }
     const settingKey = PED_SETTING_MAP[key];
     if (!settingKey) return true; // Not a pedagogical item
     if (!pedSettings) return false; // Settings not loaded yet or not configured → hide
@@ -275,6 +279,10 @@ export function Sidebar() {
     if (role === "admin" || (pedSettings?.relatorio_desempenho_ativo && canView('relatorio_desempenho'))) {
       adminNavigation.push({ name: "Modelo Relatório", href: `${prefix}/relatorio-modelo`, icon: FileText });
       adminNavigation.push({ name: "Relatórios Desempenho", href: `${prefix}/relatorio-desempenho`, icon: ClipboardList });
+    }
+    if (isDiretor && (pedSettings as any)?.modulo_secretaria_ativo) {
+      adminNavigation.push({ name: "Permissões Secretaria", href: "/diretor/permissoes", icon: Shield });
+      adminNavigation.push({ name: "Menu Lateral", href: "/diretor/sidebar-config", icon: SlidersHorizontal });
     }
   }
 
