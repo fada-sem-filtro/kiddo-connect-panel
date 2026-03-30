@@ -60,9 +60,9 @@ serve(async (req) => {
       });
     }
 
-    // Directors can only create educador or responsavel roles
-    if (hasDiretor && !hasAdmin && !['educador', 'responsavel', 'aluno', 'secretaria'].includes(role)) {
-      return new Response(JSON.stringify({ error: 'Directors can only create educador or responsavel users' }), {
+    // Directors and secretaria can only create limited roles
+    if ((hasDiretor || hasSecretaria) && !hasAdmin && !['educador', 'responsavel', 'aluno', 'secretaria'].includes(role)) {
+      return new Response(JSON.stringify({ error: 'You can only create educador, responsavel, aluno or secretaria users' }), {
         status: 403,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
