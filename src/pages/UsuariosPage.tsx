@@ -29,7 +29,7 @@ interface UserWithRole {
   nome: string;
   email: string;
   telefone: string | null;
-  role: 'admin' | 'educador' | 'responsavel' | 'diretor';
+  role: 'admin' | 'educador' | 'responsavel' | 'diretor' | 'secretaria';
   created_at: string;
   ativo: boolean;
 }
