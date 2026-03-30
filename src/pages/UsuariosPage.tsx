@@ -382,6 +382,7 @@ export default function UsuariosPage() {
               <SelectItem value="educador">Educador</SelectItem>
               <SelectItem value="responsavel">Responsável</SelectItem>
               {secretariaEnabled && <SelectItem value="secretaria">Secretaria</SelectItem>}
+              <SelectItem value="aluno">Aluno</SelectItem>
             </SelectContent>
           </Select>
         </div>
