@@ -226,6 +226,14 @@ export function CriancaDbModal({ open, onOpenChange, editData, turmas, onSaved }
                 <Label>Observações</Label>
                 <Textarea value={observacoes} onChange={(e) => setObservacoes(e.target.value)} placeholder="Alergias, observações especiais..." />
               </div>
+
+              {showEmailAluno && (
+                <div className="space-y-2">
+                  <Label>Email do Aluno</Label>
+                  <Input type="email" value={emailAluno} onChange={(e) => setEmailAluno(e.target.value)} placeholder="email@exemplo.com" />
+                  <p className="text-xs text-muted-foreground">Para alunos acima de 6 anos. Permite acesso ao sistema.</p>
+                </div>
+              )}
             </div>
 
             {!editData && (
