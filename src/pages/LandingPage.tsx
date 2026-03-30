@@ -474,8 +474,7 @@ export default function LandingPage() {
             transition={{ duration: 0.5, delay: 0.4 }}
             className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto"
           >
-            Uma plataforma moderna, totalmente responsiva, que organiza a gestão pedagógica e administrativa da sua
-            escola em um único lugar.
+            Conecte professores, responsáveis e alunos em tempo real com registros pedagógicos, atividades, alimentação, sono, fotos e comunicados.
           </motion.p>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -483,8 +482,7 @@ export default function LandingPage() {
             transition={{ duration: 0.5, delay: 0.5 }}
             className="text-base text-muted-foreground max-w-xl mx-auto"
           >
-            Controle turmas, professores, matérias, calendário escolar e desempenho acadêmico com uma plataforma
-            simples, rápida e segura.
+            Aplicativo de agenda escolar instalável no celular — sistema de gestão escolar simples e moderno.
           </motion.p>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
