@@ -41,6 +41,11 @@ import LandingPage from "./pages/LandingPage";
 import OrcamentosPage from "./pages/OrcamentosPage";
 import SidebarConfigPage from "./pages/SidebarConfigPage";
 import AdminSettingsPage from "./pages/AdminSettingsPage";
+import AlunoDashboardPage from "./pages/AlunoDashboardPage";
+import AlunoAtividadesPage from "./pages/AlunoAtividadesPage";
+import AlunoNotasPage from "./pages/AlunoNotasPage";
+import EducadorAtividadesPage from "./pages/EducadorAtividadesPage";
+import ResponsavelAtividadesPage from "./pages/ResponsavelAtividadesPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
