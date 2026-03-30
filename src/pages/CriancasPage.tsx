@@ -96,6 +96,7 @@ export default function CriancasPage() {
         turma_id: c.turma_id,
         turma_nome: c.turmas?.nome || "Sem turma",
         observacoes: c.observacoes,
+        email_aluno: c.email_aluno,
         responsaveis: responsaveisMap[c.id] || [],
       })),
     );
