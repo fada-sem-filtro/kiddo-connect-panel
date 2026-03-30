@@ -84,6 +84,7 @@ export const AVAILABLE_ITEMS_BY_ROLE: Record<string, { key: string; defaultLabel
     { key: 'pedagogico', defaultLabel: 'Config. Pedagógicas', route: '/admin/pedagogico' },
     { key: 'permissoes', defaultLabel: 'Permissões', route: '/admin/permissoes' },
     { key: 'orcamentos', defaultLabel: 'Orçamentos', route: '/admin/orcamentos' },
+    { key: 'suporte', defaultLabel: 'Suporte', route: '/admin/suporte' },
     { key: 'sidebar_config', defaultLabel: 'Menu Lateral', route: '/admin/sidebar-config' },
     { key: 'materias', defaultLabel: 'Matérias', route: '/admin/materias' },
     { key: 'boletim', defaultLabel: 'Boletim', route: '/admin/boletim' },
