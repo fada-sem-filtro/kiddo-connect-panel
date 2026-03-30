@@ -1,7 +1,8 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { PrototypeModal } from "@/components/landing/PrototypeModal";
 import { Link } from "react-router-dom";
 import { motion, useInView } from "framer-motion";
+import { Download } from "lucide-react";
 import {
   ArrowRight,
   CheckCircle2,
