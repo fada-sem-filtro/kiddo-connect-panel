@@ -368,21 +368,26 @@ const screenshots = [
   "Dashboard do Diretor",
   "Dashboard do Educador",
   "Dashboard do Responsável",
+  "Dashboard do Aluno",
   "Cadastro de Alunos",
   "Cadastro de Professores",
   "Gestão de Turmas",
   "Calendário Semanal",
   "Horário das Aulas",
+  "Atividades Pedagógicas",
   "Recados com Fotos",
   "Boletim Escolar",
+  "Painel da Secretaria",
 ];
 
 const comparison = [
   { item: "Organização", old: false, new_: true },
   { item: "Automação", old: false, new_: true },
   { item: "Controle pedagógico", old: false, new_: true },
+  { item: "Atividades online", old: false, new_: true },
   { item: "Escalabilidade", old: false, new_: true },
   { item: "Segurança dos dados", old: false, new_: true },
+  { item: "Suporte integrado", old: false, new_: true },
 ];
 
 const audiences = [
