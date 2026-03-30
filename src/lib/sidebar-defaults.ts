@@ -215,6 +215,39 @@ export function getDefaultConfig(perfil: string): SidebarConfig {
     ];
   }
 
+  if (perfil === 'secretaria') {
+    return [
+      {
+        id: 'principal',
+        label: '📋 Principal',
+        ordem: 0,
+        items: [
+          { key: 'dashboard', label: 'Dashboard', ordem: 0, visible: true },
+          { key: 'recados', label: 'Recados', ordem: 1, visible: true },
+        ],
+      },
+      {
+        id: 'gestao',
+        label: '🏫 Gestão',
+        ordem: 1,
+        items: [
+          { key: 'membros', label: 'Corpo Docente', ordem: 0, visible: true },
+          { key: 'turmas', label: 'Turmas', ordem: 1, visible: true },
+          { key: 'alunos', label: 'Alunos', ordem: 2, visible: true },
+          { key: 'usuarios', label: 'Usuários', ordem: 3, visible: true },
+          { key: 'feriados', label: 'Feriados', ordem: 4, visible: true },
+          { key: 'calendario', label: 'Calendário', ordem: 5, visible: true },
+          { key: 'relatorios', label: 'Relatórios', ordem: 6, visible: true },
+          { key: 'relatorio_aluno', label: 'Relatório Aluno', ordem: 7, visible: true },
+          { key: 'materias', label: 'Matérias', ordem: 8, visible: true },
+          { key: 'boletim', label: 'Boletim', ordem: 9, visible: true },
+          { key: 'grade_aulas', label: 'Grade de Aulas', ordem: 10, visible: true },
+          { key: 'atividades_pedagogicas', label: 'Atividades Pedagógicas', ordem: 11, visible: true },
+        ],
+      },
+    ];
+  }
+
   if (perfil === 'admin') {
     return [
       {
