@@ -47,8 +47,11 @@ export function CriancaDbModal({ open, onOpenChange, editData, turmas, onSaved }
   const [dataNascimento, setDataNascimento] = useState('');
   const [turmaId, setTurmaId] = useState('');
   const [observacoes, setObservacoes] = useState('');
+  const [emailAluno, setEmailAluno] = useState('');
   const [responsaveis, setResponsaveis] = useState<ResponsavelEntry[]>([]);
   const [loading, setLoading] = useState(false);
+
+  const showEmailAluno = calcAge(dataNascimento) >= 6;
 
   useEffect(() => {
     if (open) {
