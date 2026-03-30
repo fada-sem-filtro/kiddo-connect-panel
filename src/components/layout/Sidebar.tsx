@@ -168,7 +168,8 @@ export function Sidebar() {
     } else if (isDiretor) {
       if (canView('dashboard')) mainNavigation.push({ name: "Dashboard", href: "/diretor/dashboard", icon: BarChart3 });
     } else if (isSecretaria) {
-      mainNavigation.push({ name: "Dashboard", href: "/secretaria/dashboard", icon: BarChart3 });
+      if (canView('dashboard')) mainNavigation.push({ name: "Dashboard", href: "/secretaria/dashboard", icon: BarChart3 });
+      if (canView('recados')) mainNavigation.push({ name: "Recados", href: "/recados", icon: MessageSquare });
     } else if (role !== 'admin') {
       mainNavigation.push({ name: "Agenda", href: "/agenda", icon: Calendar });
     }
