@@ -154,6 +154,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         await supabase.auth.signOut();
         return { error: new Error('Sua conta está desabilitada. Entre em contato com a direção.') };
       }
+
+      // Check must_change_password flag
+      if (data.user.user_metadata?.must_change_password) {
+        setMustChangePassword(true);
+      }
     }
 
     return { error: null };
