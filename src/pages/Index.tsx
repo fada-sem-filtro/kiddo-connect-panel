@@ -16,11 +16,6 @@ import { useAuth } from '@/contexts/AuthContext';
 const Index = () => {
   const { role } = useAuth();
 
-  // Redirect alunos to their dashboard
-  if (role === 'aluno') {
-    return <Navigate to="/aluno/dashboard" replace />;
-  }
-
   const canCreate = role === 'admin' || role === 'educador' || role === 'diretor';
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedCriancaId, setSelectedCriancaId] = useState<string>('all');
