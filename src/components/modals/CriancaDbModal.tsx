@@ -60,12 +60,14 @@ export function CriancaDbModal({ open, onOpenChange, editData, turmas, onSaved }
         setDataNascimento(editData.data_nascimento);
         setTurmaId(editData.turma_id);
         setObservacoes(editData.observacoes || '');
+        setEmailAluno(editData.email_aluno || '');
         setResponsaveis([]);
       } else {
         setNome('');
         setDataNascimento('');
         setTurmaId('');
         setObservacoes('');
+        setEmailAluno('');
         setResponsaveis([{ nome: '', email: '', telefone: '', parentesco: 'Mãe' }]);
       }
     }
