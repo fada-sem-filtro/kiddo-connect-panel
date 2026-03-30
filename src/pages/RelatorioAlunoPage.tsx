@@ -5,8 +5,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
+import { Trophy } from 'lucide-react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { FileText, Download, User, Calendar, Clock, CheckCircle2 } from 'lucide-react';
+import { FileText, Download, User, Calendar, Clock, CheckCircle2, BookOpen } from 'lucide-react';
 import { format, differenceInMinutes, startOfWeek, endOfWeek, startOfMonth, endOfMonth, subMonths } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { supabase } from '@/integrations/supabase/client';
@@ -42,6 +43,8 @@ export default function RelatorioAlunoPage() {
   const [presencas, setPresencas] = useState<PresencaRow[]>([]);
   const [eventos, setEventos] = useState<EventoRow[]>([]);
   const [responsaveis, setResponsaveis] = useState<{ nome: string; parentesco: string; telefone?: string | null; email?: string | null }[]>([]);
+  const [atividadeNotas, setAtividadeNotas] = useState<{ titulo: string; tipo: string; data_entrega: string; nota: number | null; status: string; feedback: string | null }[]>([]);
+  const [atividadesAtivo, setAtividadesAtivo] = useState(false);
   const [loading, setLoading] = useState(false);
   const [gerado, setGerado] = useState(false);
 
@@ -114,6 +117,37 @@ export default function RelatorioAlunoPage() {
       telefone: (r.profiles as any)?.telefone,
       email: (r.profiles as any)?.email,
     })));
+
+    // Check if atividades module is active and fetch grades
+    if (crecheId) {
+      const { data: pedConfig } = await supabase
+        .from('configuracoes_pedagogicas')
+        .select('atividades_avaliacoes_ativo')
+        .eq('creche_id', crecheId)
+        .maybeSingle();
+
+      const isAtivo = pedConfig?.atividades_avaliacoes_ativo === true;
+      setAtividadesAtivo(isAtivo);
+
+      if (isAtivo) {
+        const { data: entregas } = await supabase
+          .from('atividade_entregas')
+          .select('nota, status, feedback_educador, atividades_pedagogicas(titulo, tipo, data_entrega)')
+          .eq('aluno_crianca_id', alunoId)
+          .order('created_at', { ascending: false });
+
+        setAtividadeNotas((entregas || []).map((e: any) => ({
+          titulo: e.atividades_pedagogicas?.titulo || '',
+          tipo: e.atividades_pedagogicas?.tipo || 'atividade',
+          data_entrega: e.atividades_pedagogicas?.data_entrega || '',
+          nota: e.nota,
+          status: e.status,
+          feedback: e.feedback_educador,
+        })));
+      } else {
+        setAtividadeNotas([]);
+      }
+    }
 
     setGerado(true);
     setLoading(false);
@@ -392,6 +426,83 @@ export default function RelatorioAlunoPage() {
                     {eventos.length === 0 && <p className="text-center text-muted-foreground py-4">Nenhum evento registrado no período</p>}
                   </CardContent>
                 </Card>
+
+                {/* Atividades e Notas */}
+                {atividadesAtivo && (
+                  <Card className="rounded-2xl border-2 border-border">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-lg flex items-center gap-2">
+                        <Trophy className="w-5 h-5 text-primary" />
+                        Atividades e Notas
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      {atividadeNotas.length === 0 ? (
+                        <p className="text-center text-muted-foreground py-4">Nenhuma atividade realizada</p>
+                      ) : (
+                        <>
+                          <div className="overflow-x-auto">
+                            <table className="w-full text-sm">
+                              <thead>
+                                <tr className="border-b border-border">
+                                  <th className="text-left py-2 px-3 text-muted-foreground font-medium">Atividade</th>
+                                  <th className="text-left py-2 px-3 text-muted-foreground font-medium">Tipo</th>
+                                  <th className="text-left py-2 px-3 text-muted-foreground font-medium">Entrega</th>
+                                  <th className="text-left py-2 px-3 text-muted-foreground font-medium">Status</th>
+                                  <th className="text-left py-2 px-3 text-muted-foreground font-medium">Nota</th>
+                                  <th className="text-left py-2 px-3 text-muted-foreground font-medium">Feedback</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {atividadeNotas.map((a, i) => (
+                                  <tr key={i} className="border-b border-border/50 hover:bg-muted/30">
+                                    <td className="py-2 px-3 font-medium text-foreground">{a.titulo}</td>
+                                    <td className="py-2 px-3 text-muted-foreground">
+                                      {a.tipo === 'avaliacao' ? '📝 Avaliação' : '📚 Atividade'}
+                                    </td>
+                                    <td className="py-2 px-3 text-muted-foreground">
+                                      {a.data_entrega ? format(new Date(a.data_entrega + 'T00:00:00'), 'dd/MM/yyyy') : '—'}
+                                    </td>
+                                    <td className="py-2 px-3">
+                                      <Badge className={`rounded-lg text-xs ${
+                                        a.status === 'avaliada' ? 'bg-green-100 text-green-800' :
+                                        a.status === 'entregue' ? 'bg-blue-100 text-blue-800' :
+                                        'bg-yellow-100 text-yellow-800'
+                                      }`}>
+                                        {a.status === 'avaliada' ? 'Avaliada' : a.status === 'entregue' ? 'Entregue' : 'Pendente'}
+                                      </Badge>
+                                    </td>
+                                    <td className="py-2 px-3">
+                                      {a.nota != null ? (
+                                        <span className="font-bold text-primary">{a.nota}</span>
+                                      ) : (
+                                        <span className="text-muted-foreground">—</span>
+                                      )}
+                                    </td>
+                                    <td className="py-2 px-3 text-muted-foreground text-xs max-w-[200px] truncate">
+                                      {a.feedback || '—'}
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                          {(() => {
+                            const comNota = atividadeNotas.filter(a => a.nota != null);
+                            if (comNota.length === 0) return null;
+                            const media = comNota.reduce((sum, a) => sum + (a.nota || 0), 0) / comNota.length;
+                            return (
+                              <div className="mt-4 p-3 bg-primary/5 rounded-xl flex items-center justify-between">
+                                <span className="text-sm font-medium text-foreground">Média geral das notas</span>
+                                <span className="text-xl font-bold text-primary">{media.toFixed(1)}</span>
+                              </div>
+                            );
+                          })()}
+                        </>
+                      )}
+                    </CardContent>
+                  </Card>
+                )}
               </>
             )}
           </>
