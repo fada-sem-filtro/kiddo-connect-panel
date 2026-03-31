@@ -23,13 +23,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import logoFleur from "@/assets/logo-fleur-2.webp";
@@ -91,9 +85,7 @@ function ContactModal({
         num_alunos: form.alunos || null,
       });
       if (error) throw error;
-      toast.success(
-        "Solicitação enviada com sucesso! Entraremos em contato em breve."
-      );
+      toast.success("Solicitação enviada com sucesso! Entraremos em contato em breve.");
       onOpenChange(false);
       setForm({
         nome: "",
@@ -124,9 +116,7 @@ function ContactModal({
       <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-xl">{title}</DialogTitle>
-          <DialogDescription>
-            Preencha os dados abaixo e entraremos em contato.
-          </DialogDescription>
+          <DialogDescription>Preencha os dados abaixo e entraremos em contato.</DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 mt-2">
           {fields.map((f) => (
@@ -140,9 +130,7 @@ function ContactModal({
                   required
                   className="pl-10"
                   value={(form as any)[f.id]}
-                  onChange={(e) =>
-                    setForm((p) => ({ ...p, [f.id]: e.target.value }))
-                  }
+                  onChange={(e) => setForm((p) => ({ ...p, [f.id]: e.target.value }))}
                 />
               </div>
             </div>
@@ -162,13 +150,12 @@ export default function HomePage() {
   const [orcamentoOpen, setOrcamentoOpen] = useState(false);
 
   useEffect(() => {
-    document.title =
-      "Agenda Escolar Digital | Agenda Fleur — A agenda que custa menos que papel";
+    document.title = "Agenda Escolar Digital | Agenda Fleur — A agenda que custa menos que papel";
     const meta = document.querySelector('meta[name="description"]');
     if (meta) {
       meta.setAttribute(
         "content",
-        "Agenda Fleur é a agenda escolar digital que substitui a agenda de papel. Sistema completo para escolas, creches e responsáveis com comunicação em tempo real."
+        "Agenda Fleur é a agenda escolar digital que substitui a agenda de papel. Sistema completo para escolas, creches e responsáveis com comunicação em tempo real.",
       );
     }
   }, []);
@@ -179,41 +166,23 @@ export default function HomePage() {
       <header className="sticky top-0 z-50 bg-background/90 backdrop-blur-md border-b border-border">
         <div className="max-w-6xl mx-auto flex items-center justify-between px-4 py-3">
           <Link to="/" className="flex items-center gap-2 shrink-0">
-            <img
-              src={logoFleur}
-              alt="Agenda Fleur"
-              className="h-8 w-8 rounded-xl"
-            />
-            <span className="font-bold text-foreground text-sm sm:text-base">
-              Agenda Fleur
-            </span>
+            <img src={logoFleur} alt="Agenda Fleur" className="h-8 w-8 rounded-xl" />
+            <span className="font-bold text-foreground text-sm sm:text-base">Agenda Fleur</span>
           </Link>
           <nav className="flex items-center gap-1 sm:gap-2">
             <Link to="/sobre">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-xs sm:text-sm px-2 sm:px-3"
-              >
+              <Button variant="ghost" size="sm" className="text-xs sm:text-sm px-2 sm:px-3">
                 Sobre
               </Button>
             </Link>
             <Link to="/conheca">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-xs sm:text-sm px-2 sm:px-3"
-              >
+              <Button variant="ghost" size="sm" className="text-xs sm:text-sm px-2 sm:px-3">
                 <span className="hidden sm:inline">Conheça o Sistema</span>
                 <span className="sm:hidden">Sistema</span>
               </Button>
             </Link>
             <Link to="/login">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-xs sm:text-sm px-2 sm:px-3"
-              >
+              <Button variant="ghost" size="sm" className="text-xs sm:text-sm px-2 sm:px-3">
                 Entrar
               </Button>
             </Link>
@@ -235,24 +204,20 @@ export default function HomePage() {
         <div className="relative max-w-5xl mx-auto text-center space-y-8">
           <Anim>
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight">
-              A agenda escolar digital que custa{" "}
-              <span className="text-primary">
-                menos que a agenda de papel.
-              </span>
+              A agenda escolar digital que custa <span className="text-primary">menos que a agenda de papel.</span>
             </h1>
           </Anim>
 
           <Anim delay={0.1}>
             <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-              Modernize a comunicação da sua escola e centralize tudo em um
-              único sistema.
+              Modernize a comunicação da sua escola e centralize tudo em um único sistema.
             </p>
           </Anim>
 
           <Anim delay={0.15}>
             <p className="text-base text-muted-foreground max-w-xl mx-auto">
-              Com a Agenda Fleur sua escola substitui a agenda de papel por uma
-              solução digital simples, rápida e eficiente.
+              Com a Agenda Fleur sua escola substitui a agenda de papel por uma solução digital simples, rápida e
+              eficiente.
             </p>
           </Anim>
 
@@ -303,55 +268,31 @@ export default function HomePage() {
                 <div className="w-3 h-3 rounded-full bg-destructive/60" />
                 <div className="w-3 h-3 rounded-full bg-warning/60" />
                 <div className="w-3 h-3 rounded-full bg-primary/60" />
-                <span className="text-xs text-muted-foreground ml-2">
-                  agendafleur.app
-                </span>
+                <span className="text-xs text-muted-foreground ml-2">agendafleur.app</span>
               </div>
               <div className="p-6 sm:p-10 space-y-4">
                 <div className="flex items-center gap-3">
-                  <img
-                    src={logoFleur}
-                    alt="Agenda Fleur"
-                    className="h-10 w-10 rounded-xl"
-                  />
+                  <img src={logoFleur} alt="Agenda Fleur" className="h-10 w-10 rounded-xl" />
                   <div>
                     <div className="h-3 w-32 bg-primary/20 rounded-full" />
                     <div className="h-2 w-20 bg-muted rounded-full mt-2" />
                   </div>
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                  {["Alimentação", "Sono", "Atividades", "Recados"].map(
-                    (item) => (
-                      <div
-                        key={item}
-                        className="rounded-xl bg-primary/10 border border-primary/20 p-3 text-center"
-                      >
-                        <div className="text-xs font-semibold text-primary">
-                          {item}
-                        </div>
-                        <div className="text-lg font-bold text-foreground mt-1">
-                          —
-                        </div>
-                      </div>
-                    )
-                  )}
+                  {["Alimentação", "Sono", "Atividades", "Recados"].map((item) => (
+                    <div key={item} className="rounded-xl bg-primary/10 border border-primary/20 p-3 text-center">
+                      <div className="text-xs font-semibold text-primary">{item}</div>
+                      <div className="text-lg font-bold text-foreground mt-1">—</div>
+                    </div>
+                  ))}
                 </div>
                 <div className="space-y-2">
                   {[1, 2, 3].map((i) => (
-                    <div
-                      key={i}
-                      className="flex items-center gap-3 rounded-lg bg-muted/40 p-3"
-                    >
+                    <div key={i} className="flex items-center gap-3 rounded-lg bg-muted/40 p-3">
                       <div className="w-8 h-8 rounded-full bg-primary/15" />
                       <div className="flex-1 space-y-1">
-                        <div
-                          className="h-2.5 bg-muted rounded-full"
-                          style={{ width: `${60 + i * 10}%` }}
-                        />
-                        <div
-                          className="h-2 bg-muted/60 rounded-full"
-                          style={{ width: `${40 + i * 8}%` }}
-                        />
+                        <div className="h-2.5 bg-muted rounded-full" style={{ width: `${60 + i * 10}%` }} />
+                        <div className="h-2 bg-muted/60 rounded-full" style={{ width: `${40 + i * 8}%` }} />
                       </div>
                     </div>
                   ))}
@@ -370,8 +311,8 @@ export default function HomePage() {
               A agenda de papel já não atende mais a rotina das escolas.
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Comunicação perdida, agendas esquecidas e excesso de trabalho
-              manual são problemas comuns na rotina escolar.
+              Comunicação perdida, agendas esquecidas e excesso de trabalho manual são problemas comuns na rotina
+              escolar.
             </p>
           </Anim>
 
@@ -407,8 +348,7 @@ export default function HomePage() {
 
           <Anim className="text-center">
             <p className="text-primary font-semibold text-lg">
-              A Agenda Fleur resolve esses desafios com uma solução digital
-              simples.
+              A Agenda Fleur resolve esses desafios com uma solução digital simples.
             </p>
           </Anim>
         </div>
@@ -466,9 +406,7 @@ export default function HomePage() {
       <section className="py-16 md:py-24 px-4 bg-gradient-to-br from-primary/5 via-transparent to-accent/5">
         <div className="max-w-4xl mx-auto space-y-10">
           <Anim className="text-center space-y-3">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold">
-              Começar é simples
-            </h2>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold">Começar é simples</h2>
           </Anim>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -497,9 +435,7 @@ export default function HomePage() {
                   <div className="mx-auto w-14 h-14 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold text-xl">
                     {s.step}
                   </div>
-                  <h3 className="font-bold text-foreground text-lg">
-                    {s.title}
-                  </h3>
+                  <h3 className="font-bold text-foreground text-lg">{s.title}</h3>
                   <p className="text-sm text-muted-foreground">{s.desc}</p>
                 </div>
               </Anim>
@@ -508,8 +444,7 @@ export default function HomePage() {
 
           <Anim className="text-center">
             <p className="text-muted-foreground">
-              Em poucos minutos sua escola já pode começar a utilizar a Agenda
-              Fleur.
+              Em poucos minutos sua escola já pode começar a utilizar a Agenda Fleur.
             </p>
           </Anim>
         </div>
@@ -519,29 +454,26 @@ export default function HomePage() {
       <section className="py-16 md:py-24 px-4">
         <div className="max-w-3xl mx-auto space-y-10">
           <Anim className="text-center space-y-3">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold">
-              Novidades do sistema
-            </h2>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold">Novidades do sistema</h2>
             <p className="text-muted-foreground">
-              A Agenda Fleur está em constante evolução para atender melhor as
-              escolas.
+              A Agenda Fleur está em constante evolução para atender melhor as escolas.
             </p>
           </Anim>
 
           <div className="space-y-4">
             {[
               {
-                version: "1.3",
-                date: "Março 2026",
+                version: "2.3",
+                date: "Abril 2026",
                 desc: "Novidades no módulo financeiro e melhorias gerais.",
               },
               {
-                version: "1.2",
-                date: "Fevereiro 2026",
+                version: "2.2",
+                date: "Março 2026",
                 desc: "Melhorias de desempenho e novas funcionalidades.",
               },
               {
-                version: "1.1",
+                version: "2.1",
                 date: "Janeiro 2026",
                 desc: "Aprimoramentos na experiência de uso e correções.",
               },
@@ -553,16 +485,10 @@ export default function HomePage() {
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="font-bold text-foreground">
-                        Versão {v.version}
-                      </span>
-                      <span className="text-xs text-muted-foreground">
-                        — {v.date}
-                      </span>
+                      <span className="font-bold text-foreground">Versão {v.version}</span>
+                      <span className="text-xs text-muted-foreground">— {v.date}</span>
                     </div>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      {v.desc}
-                    </p>
+                    <p className="text-sm text-muted-foreground mt-1">{v.desc}</p>
                   </div>
                 </div>
               </Anim>
@@ -570,13 +496,8 @@ export default function HomePage() {
           </div>
 
           <Anim className="text-center">
-            <Link
-              to="/conheca"
-              className="text-primary font-medium hover:underline inline-flex items-center gap-1"
-            >
-              Ver histórico completo de atualizações
-              <ArrowRight className="w-4 h-4" />
-            </Link>
+            Em breve visualização do histórico completo de atualizações
+            <ArrowRight className="w-4 h-4" />
           </Anim>
         </div>
       </section>
@@ -585,12 +506,10 @@ export default function HomePage() {
       <section className="py-20 md:py-28 px-4 bg-gradient-to-br from-primary/10 via-primary/5 to-accent/10">
         <Anim className="max-w-3xl mx-auto text-center space-y-6">
           <h2 className="text-3xl md:text-5xl font-extrabold">
-            Leve sua escola para o{" "}
-            <span className="text-primary">digital</span>
+            Leve sua escola para o <span className="text-primary">digital</span>
           </h2>
           <p className="text-lg text-muted-foreground max-w-xl mx-auto">
-            Solicite uma demonstração ou peça um orçamento e descubra como a
-            Agenda Fleur pode ajudar sua escola.
+            Solicite uma demonstração ou peça um orçamento e descubra como a Agenda Fleur pode ajudar sua escola.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
@@ -620,9 +539,7 @@ export default function HomePage() {
       {/* ─── CONTATO ─── */}
       <section className="py-12 px-4 bg-card border-t border-border">
         <div className="max-w-4xl mx-auto text-center space-y-3">
-          <h3 className="text-lg font-bold text-foreground">
-            Contato Comercial
-          </h3>
+          <h3 className="text-lg font-bold text-foreground">Contato Comercial</h3>
           <div className="flex items-center justify-center gap-2 text-muted-foreground">
             <Mail className="w-4 h-4" />
             <span>contato@agendafleur.app</span>
@@ -633,20 +550,12 @@ export default function HomePage() {
       {/* ─── FOOTER ─── */}
       <footer className="py-6 px-4 border-t border-border">
         <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-xs text-muted-foreground">
-            Copyright © 2026 - Desenvolvido por Fleur Tech Solutions.
-          </p>
+          <p className="text-xs text-muted-foreground">Copyright © 2026 - Desenvolvido por Fleur Tech Solutions.</p>
           <div className="flex items-center gap-4 text-xs">
-            <Link
-              to="/sobre"
-              className="text-muted-foreground hover:text-primary transition-colors"
-            >
+            <Link to="/sobre" className="text-muted-foreground hover:text-primary transition-colors">
               Sobre
             </Link>
-            <Link
-              to="/conheca"
-              className="text-muted-foreground hover:text-primary transition-colors"
-            >
+            <Link to="/conheca" className="text-muted-foreground hover:text-primary transition-colors">
               Conheça o sistema
             </Link>
             <button
@@ -661,10 +570,7 @@ export default function HomePage() {
             >
               Contato
             </a>
-            <Link
-              to="/login"
-              className="text-muted-foreground hover:text-primary transition-colors"
-            >
+            <Link to="/login" className="text-muted-foreground hover:text-primary transition-colors">
               Entrar
             </Link>
           </div>
@@ -672,16 +578,8 @@ export default function HomePage() {
       </footer>
 
       {/* ─── MODALS ─── */}
-      <ContactModal
-        open={demoOpen}
-        onOpenChange={setDemoOpen}
-        title="Solicitar demonstração"
-      />
-      <ContactModal
-        open={orcamentoOpen}
-        onOpenChange={setOrcamentoOpen}
-        title="Solicitar orçamento"
-      />
+      <ContactModal open={demoOpen} onOpenChange={setDemoOpen} title="Solicitar demonstração" />
+      <ContactModal open={orcamentoOpen} onOpenChange={setOrcamentoOpen} title="Solicitar orçamento" />
     </div>
   );
 }
