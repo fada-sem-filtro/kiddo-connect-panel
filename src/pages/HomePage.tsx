@@ -422,10 +422,7 @@ export default function HomePage() {
             ))}
           </div>
 
-          <Anim className="text-center">
-            Em breve visualização do histórico completo de atualizações
-            <ArrowRight className="w-4 h-4" />
-          </Anim>
+          <Anim className="text-center">Em breve visualização do histórico completo de atualizações</Anim>
         </div>
       </section>
 
