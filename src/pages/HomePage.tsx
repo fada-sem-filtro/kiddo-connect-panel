@@ -170,15 +170,15 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5" />
         <div className="relative max-w-5xl mx-auto text-center space-y-8">
           <Anim>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight">
+              A agenda escolar digital que custa <span className="text-primary">menos que a agenda de papel.</span>
+            </h1>
             <div className="flex justify-center mb-4">
               <span className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-semibold tracking-wide animate-fade-in">
                 <Zap className="w-4 h-4" />
                 Planos mensais com valores competitivos
               </span>
             </div>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight">
-              A agenda escolar digital que custa <span className="text-primary">menos que a agenda de papel.</span>
-            </h1>
           </Anim>
 
           <Anim delay={0.1}>
