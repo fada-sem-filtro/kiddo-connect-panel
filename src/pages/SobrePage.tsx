@@ -90,27 +90,7 @@ export default function SobrePage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* NAV */}
-      <nav className="sticky top-0 z-50 bg-card/90 backdrop-blur border-b border-border">
-        <div className="max-w-6xl mx-auto flex items-center justify-between px-3 sm:px-4 py-2.5 sm:py-3">
-          <Link to="/" className="flex items-center gap-2 shrink-0">
-            <img src={logoFleur} alt="Agenda Fleur" className="h-7 sm:h-9 w-auto" loading="lazy" />
-            <span className="font-bold text-base sm:text-lg text-foreground hidden sm:block">Agenda Fleur</span>
-          </Link>
-          <div className="flex items-center gap-1 sm:gap-3">
-            <Link to="/conheca">
-              <Button variant="ghost" size="sm" className="text-xs sm:text-sm px-2 sm:px-3">
-                Conheça
-              </Button>
-            </Link>
-            <Link to="/login">
-              <Button size="sm" className="text-xs sm:text-sm px-2 sm:px-3">
-                Entrar
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </nav>
+      <SiteHeader showSobre={false} />
 
       {/* HERO / H1 */}
       <section className="py-16 md:py-24 px-4 bg-gradient-to-br from-primary/10 via-primary/5 to-accent/10">
