@@ -364,18 +364,19 @@ export default function HomePage() {
                 desc: "Pronto para usar imediatamente.",
               },
             ].map((s, i) => (
-              <Anim key={s.step} delay={i * 0.1}>
-                <div className="relative text-center space-y-4 p-6 rounded-2xl bg-card border border-border shadow-sm">
+              <Anim key={s.step} delay={i * 0.1} className="h-full">
+                <div className="relative h-full flex flex-col text-center space-y-4 p-6 rounded-2xl bg-card border border-border shadow-sm">
                   <div className="mx-auto w-14 h-14 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold text-xl">
                     {s.step}
                   </div>
+
                   <h3 className="font-bold text-foreground text-lg">{s.title}</h3>
+
                   <p className="text-sm text-muted-foreground">{s.desc}</p>
                 </div>
               </Anim>
             ))}
           </div>
-
           <Anim className="text-center">
             <p className="text-muted-foreground">
               Em poucos minutos sua escola já pode começar a utilizar a Agenda Fleur.
