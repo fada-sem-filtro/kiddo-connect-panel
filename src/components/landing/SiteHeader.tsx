@@ -55,8 +55,8 @@ export function SiteHeader({ onOrcamentoClick, showSobre = true, showConheca = t
                 className="text-xs sm:text-sm px-2 sm:px-3 whitespace-nowrap"
                 onClick={onOrcamentoClick}
               >
-                <span className="hidden sm:inline">Orçamento</span>
-                <span className="sm:hidden">Orçamento</span>
+                <span className="hidden sm:inline">Solicitar Orçamento</span>
+                <span className="sm:hidden">Solicitar Orçamento</span>
               </Button>
             )}
           </div>
