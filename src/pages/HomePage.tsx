@@ -441,7 +441,7 @@ export default function HomePage() {
               },
               {
                 version: "2.1",
-                date: "Janeiro 2026",
+                date: "Fevereiro 2026",
                 desc: "Aprimoramentos na experiência de uso e correções.",
               },
             ].map((v, i) => (
