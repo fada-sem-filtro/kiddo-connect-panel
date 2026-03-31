@@ -227,8 +227,10 @@ export default function HomePage() {
               ))}
             </div>
           </Anim>
+        </div>
+      </section>
 
-               {/* ─── SECTION 2: PROBLEMA ─── */}
+      {/* ─── SECTION 2: PROBLEMA ─── */}
       <section className="py-16 md:py-24 px-4 bg-muted/30">
         <div className="max-w-4xl mx-auto space-y-10">
           <Anim className="text-center space-y-4">
