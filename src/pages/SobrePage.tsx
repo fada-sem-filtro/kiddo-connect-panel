@@ -78,12 +78,12 @@ const publicoAlvo = [
 
 export default function SobrePage() {
   useEffect(() => {
-    document.title = "a Agenda Fleur | Sobre a agenda escolar digital";
+    document.title = "Agenda Fleur | Sobre a agenda escolar digital";
     const meta = document.querySelector('meta[name="description"]');
     if (meta) {
       meta.setAttribute(
         "content",
-        "Conheça a história da Agenda Fleur, a agenda escolar digital criada para facilitar a comunicação entre escolas, creches e responsáveis."
+        "Conheça a história da Agenda Fleur, a agenda escolar digital criada para facilitar a comunicação entre escolas, creches e responsáveis.",
       );
     }
   }, []);
@@ -99,10 +99,14 @@ export default function SobrePage() {
           </Link>
           <div className="flex items-center gap-1 sm:gap-3">
             <Link to="/conheca">
-              <Button variant="ghost" size="sm" className="text-xs sm:text-sm px-2 sm:px-3">Conheça</Button>
+              <Button variant="ghost" size="sm" className="text-xs sm:text-sm px-2 sm:px-3">
+                Conheça
+              </Button>
             </Link>
             <Link to="/login">
-              <Button size="sm" className="text-xs sm:text-sm px-2 sm:px-3">Entrar</Button>
+              <Button size="sm" className="text-xs sm:text-sm px-2 sm:px-3">
+                Entrar
+              </Button>
             </Link>
           </div>
         </div>
@@ -112,7 +116,7 @@ export default function SobrePage() {
       <section className="py-16 md:py-24 px-4 bg-gradient-to-br from-primary/10 via-primary/5 to-accent/10">
         <AnimSection className="max-w-4xl mx-auto text-center space-y-6">
           <h1 className="text-3xl md:text-5xl font-extrabold leading-tight text-foreground">
-            a Agenda Fleur: a agenda escolar digital criada para aproximar escolas e famílias
+            Agenda Fleur: a agenda escolar digital criada para aproximar escolas e famílias
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Tecnologia simples, acessível e eficiente para transformar a comunicação escolar.
@@ -125,16 +129,20 @@ export default function SobrePage() {
         <AnimSection className="max-w-3xl mx-auto space-y-6">
           <article className="prose prose-lg max-w-none text-foreground/90 space-y-4">
             <p>
-              A Agenda Fleur é um sistema de <strong>agenda escolar digital</strong> criado para facilitar a comunicação entre escolas, creches e responsáveis.
+              A Agenda Fleur é um sistema de <strong>agenda escolar digital</strong> criado para facilitar a comunicação
+              entre escolas, creches e responsáveis.
             </p>
             <p>
-              A plataforma permite que educadores registrem informações importantes do dia da criança, como alimentação, sono, atividades pedagógicas, fotos, recados e avaliações.
+              A plataforma permite que educadores registrem informações importantes do dia da criança, como alimentação,
+              sono, atividades pedagógicas, fotos, recados e avaliações.
             </p>
             <p>
-              Todas as informações ficam organizadas em um único ambiente digital, acessível pelo celular, tablet ou computador.
+              Todas as informações ficam organizadas em um único ambiente digital, acessível pelo celular, tablet ou
+              computador.
             </p>
             <p>
-              A Agenda Fleur substitui a tradicional agenda de papel utilizada por muitas escolas e creches, tornando a comunicação mais rápida, segura e eficiente.
+              A Agenda Fleur substitui a tradicional agenda de papel utilizada por muitas escolas e creches, tornando a
+              comunicação mais rápida, segura e eficiente.
             </p>
           </article>
         </AnimSection>
@@ -145,27 +153,27 @@ export default function SobrePage() {
         <AnimSection className="max-w-3xl mx-auto space-y-6">
           <h2 className="text-2xl md:text-4xl font-bold text-foreground">Como surgiu a Agenda Fleur</h2>
           <article className="prose prose-lg max-w-none text-foreground/90 space-y-4">
+            <p>A ideia da Agenda Fleur surgiu a partir de uma necessidade real do dia a dia.</p>
             <p>
-              A ideia da Agenda Fleur surgiu a partir de uma necessidade real do dia a dia.
+              A creche do meu filho utilizava uma agenda de papel para registrar informações sobre a rotina das
+              crianças. Todos os dias os educadores precisavam escrever manualmente o que aconteceu durante o período
+              escolar, como alimentação, sono, trocas de fralda e atividades realizadas.
             </p>
+            <p>Apesar de funcionar, esse modelo apresenta diversas limitações.</p>
             <p>
-              A creche do meu filho utilizava uma agenda de papel para registrar informações sobre a rotina das crianças. Todos os dias os educadores precisavam escrever manualmente o que aconteceu durante o período escolar, como alimentação, sono, trocas de fralda e atividades realizadas.
-            </p>
-            <p>
-              Apesar de funcionar, esse modelo apresenta diversas limitações.
-            </p>
-            <p>
-              A agenda pode ser perdida, as informações não chegam em tempo real aos responsáveis e não existe um histórico digital organizado ao longo do tempo.
-            </p>
-            <p>
-              Além disso, agendas de papel não permitem o envio de fotos, registros pedagógicos detalhados ou comunicação instantânea entre escola e família.
+              A agenda pode ser perdida, as informações não chegam em tempo real aos responsáveis e não existe um
+              histórico digital organizado ao longo do tempo.
             </p>
             <p>
-              Diante dessa realidade, surgiu a ideia de criar um <strong>sistema de agenda escolar</strong> digital simples, acessível e eficiente que pudesse substituir a agenda de papel e melhorar a comunicação entre escolas e responsáveis.
+              Além disso, agendas de papel não permitem o envio de fotos, registros pedagógicos detalhados ou
+              comunicação instantânea entre escola e família.
             </p>
-            <p className="font-semibold text-primary">
-              Assim nasceu a Agenda Fleur.
+            <p>
+              Diante dessa realidade, surgiu a ideia de criar um <strong>sistema de agenda escolar</strong> digital
+              simples, acessível e eficiente que pudesse substituir a agenda de papel e melhorar a comunicação entre
+              escolas e responsáveis.
             </p>
+            <p className="font-semibold text-primary">Assim nasceu a Agenda Fleur.</p>
           </article>
         </AnimSection>
       </section>
@@ -178,10 +186,12 @@ export default function SobrePage() {
           </h2>
           <article className="prose prose-lg max-w-none text-foreground/90 space-y-4">
             <p>
-              A rotina escolar envolve muitas informações importantes que precisam ser compartilhadas com os responsáveis.
+              A rotina escolar envolve muitas informações importantes que precisam ser compartilhadas com os
+              responsáveis.
             </p>
             <p>
-              Uma <strong>agenda escolar online</strong> permite que as escolas registrem a rotina diária das crianças e mantenham os responsáveis sempre informados sobre o que acontece durante o período escolar.
+              Uma <strong>agenda escolar online</strong> permite que as escolas registrem a rotina diária das crianças e
+              mantenham os responsáveis sempre informados sobre o que acontece durante o período escolar.
             </p>
             <p>Com uma agenda digital é possível:</p>
             <ul className="space-y-2 list-none pl-0">
@@ -202,7 +212,8 @@ export default function SobrePage() {
               ))}
             </ul>
             <p>
-              Além disso, facilita o trabalho da equipe pedagógica e melhora a transparência na comunicação entre escola e responsáveis.
+              Além disso, facilita o trabalho da equipe pedagógica e melhora a transparência na comunicação entre escola
+              e responsáveis.
             </p>
           </article>
         </AnimSection>
@@ -214,13 +225,15 @@ export default function SobrePage() {
           <AnimSection className="bg-card rounded-2xl border border-border p-8 shadow-sm space-y-4">
             <h2 className="text-2xl md:text-3xl font-bold text-foreground">Nossa missão</h2>
             <p className="text-foreground/90 leading-relaxed">
-              Criar tecnologia simples e acessível que ajude escolas e creches a fortalecer a comunicação com as famílias e registrar o desenvolvimento das crianças de forma organizada, segura e eficiente.
+              Criar tecnologia simples e acessível que ajude escolas e creches a fortalecer a comunicação com as
+              famílias e registrar o desenvolvimento das crianças de forma organizada, segura e eficiente.
             </p>
           </AnimSection>
           <AnimSection delay={0.15} className="bg-card rounded-2xl border border-border p-8 shadow-sm space-y-4">
             <h2 className="text-2xl md:text-3xl font-bold text-foreground">Nossa visão</h2>
             <p className="text-foreground/90 leading-relaxed">
-              Ser uma das principais plataformas de <strong>agenda escolar digital</strong> do Brasil, ajudando escolas a modernizar sua comunicação e melhorar a experiência de alunos, responsáveis e educadores.
+              Ser uma das principais plataformas de <strong>agenda escolar digital</strong> do Brasil, ajudando escolas
+              a modernizar sua comunicação e melhorar a experiência de alunos, responsáveis e educadores.
             </p>
           </AnimSection>
         </div>
@@ -254,7 +267,8 @@ export default function SobrePage() {
           <AnimSection className="space-y-3">
             <h2 className="text-2xl md:text-4xl font-bold text-foreground">Para quem é a Agenda Fleur</h2>
             <p className="text-foreground/90 leading-relaxed">
-              A Agenda Fleur foi criada para atender instituições de ensino que desejam melhorar a comunicação com as famílias e organizar o registro pedagógico dos alunos. Pode ser utilizada por:
+              A Agenda Fleur foi criada para atender instituições de ensino que desejam melhorar a comunicação com as
+              famílias e organizar o registro pedagógico dos alunos. Pode ser utilizada por:
             </p>
           </AnimSection>
           <div className="space-y-3">
@@ -277,7 +291,8 @@ export default function SobrePage() {
             Transforme a rotina escolar da sua instituição
           </h2>
           <p className="text-lg text-muted-foreground max-w-xl mx-auto">
-            Se sua escola ainda utiliza agenda de papel ou deseja melhorar a comunicação com as famílias, conheça a Agenda Fleur e descubra como a tecnologia pode transformar a rotina escolar.
+            Se sua escola ainda utiliza agenda de papel ou deseja melhorar a comunicação com as famílias, conheça a
+            Agenda Fleur e descubra como a tecnologia pode transformar a rotina escolar.
           </p>
           <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
             <Link to="/conheca">
@@ -305,8 +320,12 @@ export default function SobrePage() {
         <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-xs text-muted-foreground">Copyright © 2026 - Desenvolvido por Fleur Tech Solutions.</p>
           <div className="flex items-center gap-4 text-xs">
-            <Link to="/conheca" className="text-muted-foreground hover:text-primary transition-colors">Conheça</Link>
-            <Link to="/login" className="text-muted-foreground hover:text-primary transition-colors">Entrar</Link>
+            <Link to="/conheca" className="text-muted-foreground hover:text-primary transition-colors">
+              Conheça
+            </Link>
+            <Link to="/login" className="text-muted-foreground hover:text-primary transition-colors">
+              Entrar
+            </Link>
           </div>
         </div>
       </footer>
