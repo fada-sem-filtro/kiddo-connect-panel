@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { SiteHeader } from "@/components/landing/SiteHeader";
 import { motion, useInView } from "framer-motion";
 import {
   ArrowRight,
@@ -162,41 +163,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* ─── HEADER ─── */}
-      <header className="sticky top-0 z-50 bg-background/90 backdrop-blur-md border-b border-border">
-        <div className="max-w-6xl mx-auto flex items-center justify-between px-4 py-3">
-          <Link to="/" className="flex items-center gap-2 shrink-0">
-            <img src={logoFleur} alt="Agenda Fleur" className="h-8 w-8 rounded-xl" />
-            <span className="font-bold text-foreground text-sm sm:text-base">Agenda Fleur</span>
-          </Link>
-          <nav className="flex items-center gap-1 sm:gap-2">
-            <Link to="/sobre">
-              <Button variant="ghost" size="sm" className="text-xs sm:text-sm px-2 sm:px-3">
-                Sobre
-              </Button>
-            </Link>
-            <Link to="/conheca">
-              <Button variant="ghost" size="sm" className="text-xs sm:text-sm px-2 sm:px-3">
-                <span className="hidden sm:inline">Conheça o Sistema</span>
-                <span className="sm:hidden">Sistema</span>
-              </Button>
-            </Link>
-            <Link to="/login">
-              <Button variant="ghost" size="sm" className="text-xs sm:text-sm px-2 sm:px-3">
-                Entrar
-              </Button>
-            </Link>
-            <Button
-              size="sm"
-              className="text-xs sm:text-sm px-2 sm:px-3 whitespace-nowrap"
-              onClick={() => setOrcamentoOpen(true)}
-            >
-              <span className="hidden sm:inline">Solicitar Orçamento</span>
-              <span className="sm:hidden">Orçamento</span>
-            </Button>
-          </nav>
-        </div>
-      </header>
+      <SiteHeader onOrcamentoClick={() => setOrcamentoOpen(true)} />
 
       {/* ─── SECTION 1: HERO ─── */}
       <section className="relative overflow-hidden py-20 md:py-32 px-4">

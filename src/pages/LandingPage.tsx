@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { PrototypeModal } from "@/components/landing/PrototypeModal";
 import { Link } from "react-router-dom";
+import { SiteHeader } from "@/components/landing/SiteHeader";
 import { motion, useInView } from "framer-motion";
 import { Download } from "lucide-react";
 import {
@@ -429,32 +430,7 @@ export default function LandingPage() {
     <div className="min-h-screen bg-background font-[Quicksand] overflow-x-hidden">
       <ContactModal open={contactOpen} onOpenChange={setContactOpen} />
 
-      {/* NAV */}
-      <motion.nav
-        initial={{ y: -60, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.5 }}
-        className="sticky top-0 z-50 bg-card/80 backdrop-blur-md border-b border-border"
-      >
-        <div className="max-w-7xl mx-auto flex items-center justify-between px-3 sm:px-4 py-2.5 sm:py-3">
-          <div className="flex items-center gap-2 shrink-0">
-            <img src={logoFleur} alt="Agenda Fleur" className="w-7 h-7 sm:w-8 sm:h-8" />
-            <span className="font-bold text-base sm:text-lg text-foreground hidden xs:block">Agenda Fleur</span>
-          </div>
-          <div className="flex items-center gap-1 sm:gap-2">
-            <Link to="/sobre">
-              <Button variant="ghost" size="sm" className="text-xs sm:text-sm px-2 sm:px-3">Sobre</Button>
-            </Link>
-            <Link to="/login">
-              <Button variant="ghost" size="sm" className="text-xs sm:text-sm px-2 sm:px-3">Entrar</Button>
-            </Link>
-            <Button size="sm" className="text-xs sm:text-sm px-2 sm:px-3 whitespace-nowrap" onClick={() => setContactOpen(true)}>
-              <span className="hidden sm:inline">Solicite seu Orçamento</span>
-              <span className="sm:hidden">Orçamento</span>
-            </Button>
-          </div>
-        </div>
-      </motion.nav>
+      <SiteHeader showConheca={false} onOrcamentoClick={() => setContactOpen(true)} />
 
       {/* HERO */}
       <section className="relative overflow-hidden py-20 md:py-32 px-4">
