@@ -348,7 +348,7 @@ export default function HomePage() {
               {
                 step: "1",
                 icon: Rocket,
-                title: "Crie a conta da escola",
+                title: "Criação da conta da escola",
                 desc: "Cadastro rápido e sem burocracia.",
               },
               {
@@ -360,7 +360,7 @@ export default function HomePage() {
               {
                 step: "3",
                 icon: CheckCircle2,
-                title: "Comece a utilizar o sistema",
+                title: "Comece a utilizar o sistema em menos de 1 minuto",
                 desc: "Pronto para usar imediatamente.",
               },
             ].map((s, i) => (
