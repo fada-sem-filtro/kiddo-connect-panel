@@ -18,7 +18,7 @@ export function SiteHeader({ onOrcamentoClick, showSobre = true, showConheca = t
         {/* Left: Logo */}
         <Link to="/" className="flex items-center gap-2 shrink-0">
           <img src={logoFleur} alt="Agenda Fleur" className="h-7 sm:h-8 w-auto rounded-xl" loading="lazy" />
-          <span className="font-bold text-foreground text-sm sm:text-base hidden xs:block">Agenda Fleur</span>
+          <span className="font-bold text-foreground text-sm sm:text-base">Agenda Fleur</span>
         </Link>
 
         {/* Center: Entrar button */}
