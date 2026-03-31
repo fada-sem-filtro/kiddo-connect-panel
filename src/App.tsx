@@ -64,7 +64,7 @@ const App = () => (
             <Toaster />
             <Sonner />
             <Routes>
-              <Route path="/" element={<LandingPage />} />
+              <Route path="/" element={<HomePage />} />
               <Route path="/conheca" element={<LandingPage />} />
               <Route path="/sobre" element={<SobrePage />} />
               <Route path="/login" element={<LoginPage />} />
