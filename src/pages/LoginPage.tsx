@@ -128,11 +128,6 @@ export default function LoginPage() {
             >
               {isForgotPassword ? "Voltar ao login" : "Esqueci minha senha"}
             </Button>
-            <div>
-              <Button variant="link" className="text-sm text-primary" asChild>
-                <Link to="/conheca">Conheça a Agenda Fleur 🌸</Link>
-              </Button>
-            </div>
           </div>
         </div>
 
