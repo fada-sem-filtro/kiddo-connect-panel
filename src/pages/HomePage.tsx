@@ -228,49 +228,7 @@ export default function HomePage() {
             </div>
           </Anim>
 
-          {/* Mockup illustration */}
-          <Anim delay={0.3}>
-            <div className="mt-8 max-w-3xl mx-auto rounded-2xl border-2 border-border bg-card shadow-xl overflow-hidden">
-              <div className="flex items-center gap-2 px-4 py-3 border-b border-border bg-muted/30">
-                <div className="w-3 h-3 rounded-full bg-destructive/60" />
-                <div className="w-3 h-3 rounded-full bg-warning/60" />
-                <div className="w-3 h-3 rounded-full bg-primary/60" />
-                <span className="text-xs text-muted-foreground ml-2">agendafleur.app</span>
-              </div>
-              <div className="p-6 sm:p-10 space-y-4">
-                <div className="flex items-center gap-3">
-                  <img src={logoFleur} alt="Agenda Fleur" className="h-10 w-10 rounded-xl" />
-                  <div>
-                    <div className="h-3 w-32 bg-primary/20 rounded-full" />
-                    <div className="h-2 w-20 bg-muted rounded-full mt-2" />
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                  {["Alimentação", "Sono", "Atividades", "Recados"].map((item) => (
-                    <div key={item} className="rounded-xl bg-primary/10 border border-primary/20 p-3 text-center">
-                      <div className="text-xs font-semibold text-primary">{item}</div>
-                      <div className="text-lg font-bold text-foreground mt-1">—</div>
-                    </div>
-                  ))}
-                </div>
-                <div className="space-y-2">
-                  {[1, 2, 3].map((i) => (
-                    <div key={i} className="flex items-center gap-3 rounded-lg bg-muted/40 p-3">
-                      <div className="w-8 h-8 rounded-full bg-primary/15" />
-                      <div className="flex-1 space-y-1">
-                        <div className="h-2.5 bg-muted rounded-full" style={{ width: `${60 + i * 10}%` }} />
-                        <div className="h-2 bg-muted/60 rounded-full" style={{ width: `${40 + i * 8}%` }} />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </Anim>
-        </div>
-      </section>
-
-      {/* ─── SECTION 2: PROBLEMA ─── */}
+               {/* ─── SECTION 2: PROBLEMA ─── */}
       <section className="py-16 md:py-24 px-4 bg-muted/30">
         <div className="max-w-4xl mx-auto space-y-10">
           <Anim className="text-center space-y-4">
