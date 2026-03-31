@@ -38,6 +38,7 @@ import RelatorioDesempenhoPage from "./pages/RelatorioDesempenhoPage";
 import PermissoesPerfilPage from "./pages/PermissoesPerfilPage";
 import ResponsavelGradePage from "./pages/ResponsavelGradePage";
 import LandingPage from "./pages/LandingPage";
+import HomePage from "./pages/HomePage";
 import SobrePage from "./pages/SobrePage";
 import OrcamentosPage from "./pages/OrcamentosPage";
 import SidebarConfigPage from "./pages/SidebarConfigPage";
@@ -63,7 +64,7 @@ const App = () => (
             <Toaster />
             <Sonner />
             <Routes>
-              <Route path="/" element={<LandingPage />} />
+              <Route path="/" element={<HomePage />} />
               <Route path="/conheca" element={<LandingPage />} />
               <Route path="/sobre" element={<SobrePage />} />
               <Route path="/login" element={<LoginPage />} />
