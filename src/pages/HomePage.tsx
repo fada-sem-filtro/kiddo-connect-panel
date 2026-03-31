@@ -173,12 +173,6 @@ export default function HomePage() {
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight">
               A agenda escolar digital que custa <span className="text-primary">menos que a agenda de papel.</span>
             </h1>
-            <div className="flex justify-center mb-4">
-              <span className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-semibold tracking-wide animate-fade-in">
-                <Zap className="w-4 h-4" />
-                Planos mensais com valores competitivos
-              </span>
-            </div>
           </Anim>
 
           <Anim delay={0.1}>
@@ -187,7 +181,7 @@ export default function HomePage() {
             </p>
           </Anim>
 
-          <Anim delay={0.15}>
+          <Anim delay={0.1}>
             <p className="text-base text-muted-foreground max-w-xl mx-auto">
               Com a Agenda Fleur sua escola substitui a agenda de papel por uma solução digital simples, rápida e
               eficiente.
@@ -231,6 +225,12 @@ export default function HomePage() {
                   <span>{b}</span>
                 </div>
               ))}
+            </div>
+            <div className="flex justify-center mb-4">
+              <span className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-semibold tracking-wide animate-fade-in">
+                <Zap className="w-4 h-4" />
+                Planos mensais com valores competitivos
+              </span>
             </div>
           </Anim>
         </div>
