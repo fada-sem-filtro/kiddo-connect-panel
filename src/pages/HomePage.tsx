@@ -211,6 +211,13 @@ export default function HomePage() {
                 </Button>
               </motion.div>
             </div>
+            <BR> 
+              <div className="flex justify-center mb-4">
+              <span className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-semibold tracking-wide animate-fade-in">
+                <Zap className="w-4 h-4" />
+                Planos mensais com valores competitivos
+              </span>
+            </div>
           </Anim>
 
           <Anim delay={0.25}>
@@ -225,12 +232,6 @@ export default function HomePage() {
                   <span>{b}</span>
                 </div>
               ))}
-            </div>
-            <div className="flex justify-center mb-4">
-              <span className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-semibold tracking-wide animate-fade-in">
-                <Zap className="w-4 h-4" />
-                Planos mensais com valores competitivos
-              </span>
             </div>
           </Anim>
         </div>
