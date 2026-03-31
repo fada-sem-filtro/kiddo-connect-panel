@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { PrototypeModal } from "@/components/landing/PrototypeModal";
 import { Link } from "react-router-dom";
+import { SiteHeader } from "@/components/landing/SiteHeader";
 import { motion, useInView } from "framer-motion";
 import { Download } from "lucide-react";
 import {

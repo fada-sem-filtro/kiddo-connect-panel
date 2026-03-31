@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { SiteHeader } from "@/components/landing/SiteHeader";
 import { motion, useInView } from "framer-motion";
 import {
   ArrowRight,
