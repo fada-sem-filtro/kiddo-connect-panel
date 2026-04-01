@@ -1,0 +1,26 @@
+<svg version="1.2" baseProfile="tiny-ps" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <title>Agenda Fleur</title>
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="256" fill="#00AFAF"/>
+  <!-- Flower/fleur petals -->
+  <g transform="translate(256,220)">
+    <!-- Top petal -->
+    <ellipse cx="0" cy="-60" rx="28" ry="50" fill="#FFFFFF" opacity="0.95"/>
+    <!-- Top-right petal -->
+    <ellipse cx="52" cy="-30" rx="28" ry="50" fill="#FFFFFF" opacity="0.9" transform="rotate(60,52,-30)"/>
+    <!-- Bottom-right petal -->
+    <ellipse cx="52" cy="30" rx="28" ry="50" fill="#FFFFFF" opacity="0.85" transform="rotate(120,52,30)"/>
+    <!-- Bottom petal -->
+    <ellipse cx="0" cy="60" rx="28" ry="50" fill="#FFFFFF" opacity="0.9"/>
+    <!-- Bottom-left petal -->
+    <ellipse cx="-52" cy="30" rx="28" ry="50" fill="#FFFFFF" opacity="0.85" transform="rotate(-120,-52,30)"/>
+    <!-- Top-left petal -->
+    <ellipse cx="-52" cy="-30" rx="28" ry="50" fill="#FFFFFF" opacity="0.9" transform="rotate(-60,-52,-30)"/>
+    <!-- Center -->
+    <circle cx="0" cy="0" r="20" fill="#FFD700"/>
+  </g>
+  <!-- Text "AF" -->
+  <g transform="translate(256,390)">
+    <text x="0" y="0" text-anchor="middle" font-family="sans-serif" font-weight="bold" font-size="72" fill="#FFFFFF">AF</text>
+  </g>
+</svg>
