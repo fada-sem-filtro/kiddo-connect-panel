@@ -1,26 +1,21 @@
 <svg version="1.2" baseProfile="tiny-ps" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
   <title>Agenda Fleur</title>
-  <!-- Background circle -->
-  <circle cx="256" cy="256" r="256" fill="#00AFAF"/>
-  <!-- Flower/fleur petals -->
-  <g transform="translate(256,220)">
-    <!-- Top petal -->
-    <ellipse cx="0" cy="-60" rx="28" ry="50" fill="#FFFFFF" opacity="0.95"/>
-    <!-- Top-right petal -->
-    <ellipse cx="52" cy="-30" rx="28" ry="50" fill="#FFFFFF" opacity="0.9" transform="rotate(60,52,-30)"/>
-    <!-- Bottom-right petal -->
-    <ellipse cx="52" cy="30" rx="28" ry="50" fill="#FFFFFF" opacity="0.85" transform="rotate(120,52,30)"/>
-    <!-- Bottom petal -->
-    <ellipse cx="0" cy="60" rx="28" ry="50" fill="#FFFFFF" opacity="0.9"/>
-    <!-- Bottom-left petal -->
-    <ellipse cx="-52" cy="30" rx="28" ry="50" fill="#FFFFFF" opacity="0.85" transform="rotate(-120,-52,30)"/>
-    <!-- Top-left petal -->
-    <ellipse cx="-52" cy="-30" rx="28" ry="50" fill="#FFFFFF" opacity="0.9" transform="rotate(-60,-52,-30)"/>
-    <!-- Center -->
-    <circle cx="0" cy="0" r="20" fill="#FFD700"/>
+  <!-- Outer flower - 5 cyan petals -->
+  <g>
+    <circle cx="256" cy="128" r="110" fill="#2BC4E8"/>
+    <circle cx="378" cy="216" r="110" fill="#2BC4E8"/>
+    <circle cx="332" cy="358" r="110" fill="#2BC4E8"/>
+    <circle cx="180" cy="358" r="110" fill="#2BC4E8"/>
+    <circle cx="134" cy="216" r="110" fill="#2BC4E8"/>
   </g>
-  <!-- Text "AF" -->
-  <g transform="translate(256,390)">
-    <text x="0" y="0" text-anchor="middle" font-family="sans-serif" font-weight="bold" font-size="72" fill="#FFFFFF">AF</text>
+  <!-- Inner flower - 5 white petals -->
+  <g>
+    <circle cx="256" cy="188" r="62" fill="#FFFFFF"/>
+    <circle cx="321" cy="230" r="62" fill="#FFFFFF"/>
+    <circle cx="296" cy="306" r="62" fill="#FFFFFF"/>
+    <circle cx="216" cy="306" r="62" fill="#FFFFFF"/>
+    <circle cx="191" cy="230" r="62" fill="#FFFFFF"/>
   </g>
+  <!-- Center circle - dark teal -->
+  <circle cx="256" cy="260" r="38" fill="#0E7E7E"/>
 </svg>
