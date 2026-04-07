@@ -307,6 +307,7 @@ export function getDefaultConfig(perfil: string): SidebarConfig {
           { key: 'relatorio_modelo', label: 'Modelo Relatório', ordem: 15, visible: true },
           { key: 'relatorio_desempenho', label: 'Relatórios Desempenho', ordem: 16, visible: true },
           { key: 'configuracoes', label: 'Minhas Configurações', ordem: 17, visible: true },
+          { key: 'boletos', label: 'Boletos', ordem: 18, visible: true },
         ],
       },
       {
