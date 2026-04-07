@@ -3,7 +3,7 @@ import { MainLayout } from '@/components/layout/MainLayout';
 import { Card, CardContent } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { Settings, BookOpen, FileText, Library, CalendarClock } from 'lucide-react';
+import { Settings, BookOpen, FileText, Library, CalendarClock, Receipt } from 'lucide-react';
 import { usePedagogicalSettings } from '@/hooks/usePedagogicalSettings';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -73,6 +73,7 @@ export default function ConfiguracoesPedagogicasPage() {
     { key: 'gestao_materias_ativo', label: 'Gestão de Matérias', desc: 'Cadastro e gerenciamento de disciplinas da escola', icon: Library },
     { key: 'grade_aulas_ativo', label: 'Grade de Aulas', desc: 'Calendário semanal de aulas por turma', icon: CalendarClock },
     { key: 'atividades_avaliacoes_ativo', label: 'Atividades e Avaliações', desc: 'Módulo de atividades pedagógicas e avaliações do aluno', icon: BookOpen },
+    { key: 'modulo_boletos_ativo', label: 'Boletos e Cobranças', desc: 'Módulo de gestão de boletos, cobranças e pagamentos', icon: Receipt },
   ];
 
   return (

@@ -30,6 +30,7 @@ import CalendarioEscolarPage from "./pages/CalendarioEscolarPage";
 import ConfiguracoesPedagogicasPage from "./pages/ConfiguracoesPedagogicasPage";
 import MateriasPage from "./pages/MateriasPage";
 import BoletimPage from "./pages/BoletimPage";
+import BoletosPage from "./pages/BoletosPage";
 import ResponsavelDesempenhoPage from "./pages/ResponsavelDesempenhoPage";
 import GradeAulasPage from "./pages/GradeAulasPage";
 import AgendaEducadorPage from "./pages/AgendaEducadorPage";
@@ -146,6 +147,11 @@ const App = () => (
               <Route path="/secretaria/relatorio-desempenho" element={<ProtectedRoute allowedRoles={['secretaria']}><RelatorioDesempenhoPage /></ProtectedRoute>} />
               <Route path="/secretaria/presencas" element={<ProtectedRoute allowedRoles={['secretaria']}><Index /></ProtectedRoute>} />
               <Route path="/secretaria/eventos" element={<ProtectedRoute allowedRoles={['secretaria']}><Index /></ProtectedRoute>} />
+              <Route path="/secretaria/boletos" element={<ProtectedRoute allowedRoles={['secretaria']}><BoletosPage /></ProtectedRoute>} />
+              {/* Boletos routes */}
+              <Route path="/admin/boletos" element={<ProtectedRoute allowedRoles={['admin']}><BoletosPage /></ProtectedRoute>} />
+              <Route path="/diretor/boletos" element={<ProtectedRoute allowedRoles={['diretor']}><BoletosPage /></ProtectedRoute>} />
+              <Route path="/responsavel/boletos" element={<ProtectedRoute allowedRoles={['responsavel']}><BoletosPage /></ProtectedRoute>} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </NotificationProvider>

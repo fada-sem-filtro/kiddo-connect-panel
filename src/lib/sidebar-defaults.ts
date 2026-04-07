@@ -38,6 +38,7 @@ export const AVAILABLE_ITEMS_BY_ROLE: Record<string, { key: string; defaultLabel
     { key: 'grade_aulas', defaultLabel: 'Grade de Aulas', route: '/responsavel/grade-aulas' },
     { key: 'relatorio', defaultLabel: 'Relatório', route: '/responsavel/relatorio' },
     { key: 'atividades_aluno', defaultLabel: 'Atividades do Aluno', route: '/responsavel/atividades' },
+    { key: 'boletos', defaultLabel: 'Boletos', route: '/responsavel/boletos' },
   ],
   aluno: [
     { key: 'dashboard', defaultLabel: 'Dashboard', route: '/aluno/dashboard' },
@@ -65,6 +66,7 @@ export const AVAILABLE_ITEMS_BY_ROLE: Record<string, { key: string; defaultLabel
     { key: 'relatorio_modelo', defaultLabel: 'Modelo Relatório', route: '/secretaria/relatorio-modelo' },
     { key: 'relatorio_desempenho', defaultLabel: 'Relatórios Desempenho', route: '/secretaria/relatorio-desempenho' },
     { key: 'atividades_pedagogicas', defaultLabel: 'Atividades Pedagógicas', route: '/secretaria/atividades' },
+    { key: 'boletos', defaultLabel: 'Boletos', route: '/secretaria/boletos' },
   ],
   admin: [
     { key: 'dashboard', defaultLabel: 'Dashboard', route: '/admin' },
@@ -92,6 +94,7 @@ export const AVAILABLE_ITEMS_BY_ROLE: Record<string, { key: string; defaultLabel
     { key: 'relatorio_modelo', defaultLabel: 'Modelo Relatório', route: '/admin/relatorio-modelo' },
     { key: 'relatorio_desempenho', defaultLabel: 'Relatórios Desempenho', route: '/admin/relatorio-desempenho' },
     { key: 'configuracoes', defaultLabel: 'Minhas Configurações', route: '/admin/configuracoes' },
+    { key: 'boletos', defaultLabel: 'Boletos', route: '/admin/boletos' },
     { key: 'eventos_resp', defaultLabel: 'Meus Eventos', route: '/responsavel/eventos' },
     { key: 'calendario_resp', defaultLabel: 'Calendário Escolar', route: '/responsavel/calendario' },
   ],
@@ -115,6 +118,7 @@ export const AVAILABLE_ITEMS_BY_ROLE: Record<string, { key: string; defaultLabel
     { key: 'relatorio_desempenho', defaultLabel: 'Relatórios Desempenho', route: '/diretor/relatorio-desempenho' },
     { key: 'permissoes', defaultLabel: 'Permissões Secretaria', route: '/diretor/permissoes' },
     { key: 'sidebar_config', defaultLabel: 'Menu Lateral', route: '/diretor/sidebar-config' },
+    { key: 'boletos', defaultLabel: 'Boletos', route: '/diretor/boletos' },
   ],
 };
 
@@ -181,6 +185,7 @@ export function getDefaultConfig(perfil: string): SidebarConfig {
           { key: 'grade_aulas', label: 'Grade de Aulas', ordem: 3, visible: true },
           { key: 'relatorio', label: 'Relatório', ordem: 4, visible: true },
           { key: 'atividades_aluno', label: 'Atividades do Aluno', ordem: 5, visible: true },
+          { key: 'boletos', label: 'Boletos', ordem: 6, visible: true },
         ],
       },
     ];
@@ -219,6 +224,7 @@ export function getDefaultConfig(perfil: string): SidebarConfig {
           { key: 'relatorio_desempenho', label: 'Relatórios Desempenho', ordem: 13, visible: true },
           { key: 'permissoes', label: 'Permissões Secretaria', ordem: 14, visible: true },
           { key: 'sidebar_config', label: 'Menu Lateral', ordem: 15, visible: true },
+          { key: 'boletos', label: 'Boletos', ordem: 16, visible: true },
         ],
       },
     ];
@@ -256,6 +262,7 @@ export function getDefaultConfig(perfil: string): SidebarConfig {
           { key: 'relatorio_modelo', label: 'Modelo Relatório', ordem: 13, visible: true },
           { key: 'relatorio_desempenho', label: 'Relatórios Desempenho', ordem: 14, visible: true },
           { key: 'atividades_pedagogicas', label: 'Atividades Pedagógicas', ordem: 15, visible: true },
+          { key: 'boletos', label: 'Boletos', ordem: 16, visible: true },
         ],
       },
     ];
@@ -300,6 +307,7 @@ export function getDefaultConfig(perfil: string): SidebarConfig {
           { key: 'relatorio_modelo', label: 'Modelo Relatório', ordem: 15, visible: true },
           { key: 'relatorio_desempenho', label: 'Relatórios Desempenho', ordem: 16, visible: true },
           { key: 'configuracoes', label: 'Minhas Configurações', ordem: 17, visible: true },
+          { key: 'boletos', label: 'Boletos', ordem: 18, visible: true },
         ],
       },
       {

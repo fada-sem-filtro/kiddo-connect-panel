@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   Users, GraduationCap, Baby, UserCog, PartyPopper, CalendarDays,
   FileText, UserCheck, ClipboardList, BookOpen, Library, MessageSquare,
-  BarChart3, SlidersHorizontal
+  BarChart3, SlidersHorizontal, Receipt
 } from 'lucide-react';
 
 interface ShortcutItem {
@@ -46,6 +46,7 @@ const SecretariaDashboardPage = () => {
     shortcuts.push({ label: 'Modelo Relatório', href: `${prefix}/relatorio-modelo`, icon: FileText, color: 'bg-stone-500/10 text-stone-600' });
     shortcuts.push({ label: 'Relatórios Desempenho', href: `${prefix}/relatorio-desempenho`, icon: ClipboardList, color: 'bg-zinc-500/10 text-zinc-600' });
   }
+  if (pedSettings?.modulo_boletos_ativo && canView('boletos')) shortcuts.push({ label: 'Boletos', href: `${prefix}/boletos`, icon: Receipt, color: 'bg-yellow-500/10 text-yellow-600' });
 
   const isLoading = permLoading || pedLoading;
 

@@ -345,6 +345,106 @@ export type Database = {
           },
         ]
       }
+      boletos: {
+        Row: {
+          codigo_barras: string | null
+          created_at: string
+          creche_id: string
+          crianca_id: string
+          data_limite_desconto: string | null
+          data_pagamento: string | null
+          desconto_antecipacao: number | null
+          descricao: string | null
+          id: string
+          juros_dia: number | null
+          linha_digitavel: string | null
+          multa_atraso: number | null
+          nosso_numero: string | null
+          observacoes: string | null
+          parcela_atual: number | null
+          referencia: string | null
+          registrado_por_user_id: string
+          status: string
+          total_parcelas: number | null
+          turma_id: string
+          updated_at: string
+          valor: number
+          vencimento: string
+        }
+        Insert: {
+          codigo_barras?: string | null
+          created_at?: string
+          creche_id: string
+          crianca_id: string
+          data_limite_desconto?: string | null
+          data_pagamento?: string | null
+          desconto_antecipacao?: number | null
+          descricao?: string | null
+          id?: string
+          juros_dia?: number | null
+          linha_digitavel?: string | null
+          multa_atraso?: number | null
+          nosso_numero?: string | null
+          observacoes?: string | null
+          parcela_atual?: number | null
+          referencia?: string | null
+          registrado_por_user_id: string
+          status?: string
+          total_parcelas?: number | null
+          turma_id: string
+          updated_at?: string
+          valor: number
+          vencimento: string
+        }
+        Update: {
+          codigo_barras?: string | null
+          created_at?: string
+          creche_id?: string
+          crianca_id?: string
+          data_limite_desconto?: string | null
+          data_pagamento?: string | null
+          desconto_antecipacao?: number | null
+          descricao?: string | null
+          id?: string
+          juros_dia?: number | null
+          linha_digitavel?: string | null
+          multa_atraso?: number | null
+          nosso_numero?: string | null
+          observacoes?: string | null
+          parcela_atual?: number | null
+          referencia?: string | null
+          registrado_por_user_id?: string
+          status?: string
+          total_parcelas?: number | null
+          turma_id?: string
+          updated_at?: string
+          valor?: number
+          vencimento?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "boletos_creche_id_fkey"
+            columns: ["creche_id"]
+            isOneToOne: false
+            referencedRelation: "creches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "boletos_crianca_id_fkey"
+            columns: ["crianca_id"]
+            isOneToOne: false
+            referencedRelation: "criancas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "boletos_turma_id_fkey"
+            columns: ["turma_id"]
+            isOneToOne: false
+            referencedRelation: "turmas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       configuracoes_pedagogicas: {
         Row: {
           atividades_avaliacoes_ativo: boolean
@@ -354,6 +454,7 @@ export type Database = {
           gestao_materias_ativo: boolean
           grade_aulas_ativo: boolean
           id: string
+          modulo_boletos_ativo: boolean
           modulo_secretaria_ativo: boolean
           relatorio_desempenho_ativo: boolean
           updated_at: string
@@ -366,6 +467,7 @@ export type Database = {
           gestao_materias_ativo?: boolean
           grade_aulas_ativo?: boolean
           id?: string
+          modulo_boletos_ativo?: boolean
           modulo_secretaria_ativo?: boolean
           relatorio_desempenho_ativo?: boolean
           updated_at?: string
@@ -378,6 +480,7 @@ export type Database = {
           gestao_materias_ativo?: boolean
           grade_aulas_ativo?: boolean
           id?: string
+          modulo_boletos_ativo?: boolean
           modulo_secretaria_ativo?: boolean
           relatorio_desempenho_ativo?: boolean
           updated_at?: string
