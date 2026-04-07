@@ -258,7 +258,7 @@ function BoletoViewModal({ boleto, criancaNome, onClose, onCopy }: {
   boleto: Boleto; criancaNome: string; onClose: () => void;
   onCopy: (linha: string) => void;
 }) {
-  const { Dialog, DialogContent, DialogHeader, DialogTitle } = require('@/components/ui/dialog');
+  // Uses Dialog imported at top of file
   
   return (
     <Dialog open onOpenChange={onClose}>
