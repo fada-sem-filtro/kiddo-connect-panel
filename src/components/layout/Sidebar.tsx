@@ -221,6 +221,9 @@ export function Sidebar() {
       if (pedSettings?.atividades_avaliacoes_ativo && (role === "admin" || canView('atividades_aluno'))) {
         responsavelNavigation.push({ name: "Atividades do Aluno", href: "/responsavel/atividades", icon: BookOpen });
       }
+      if ((pedSettings as any)?.modulo_boletos_ativo && (role === "admin" || canView('boletos'))) {
+        responsavelNavigation.push({ name: "Boletos", href: "/responsavel/boletos", icon: Receipt });
+      }
     }
   }
 
@@ -287,6 +290,9 @@ export function Sidebar() {
     if (isDiretor && (pedSettings as any)?.modulo_secretaria_ativo) {
       adminNavigation.push({ name: "Permissões Secretaria", href: "/diretor/permissoes", icon: Shield });
       adminNavigation.push({ name: "Menu Lateral", href: "/diretor/sidebar-config", icon: SlidersHorizontal });
+    }
+    if (role === "admin" || ((pedSettings as any)?.modulo_boletos_ativo && canView('boletos'))) {
+      adminNavigation.push({ name: "Boletos", href: `${prefix}/boletos`, icon: Receipt });
     }
   }
 
