@@ -223,6 +223,7 @@ export function getDefaultConfig(perfil: string): SidebarConfig {
           { key: 'relatorio_desempenho', label: 'Relatórios Desempenho', ordem: 13, visible: true },
           { key: 'permissoes', label: 'Permissões Secretaria', ordem: 14, visible: true },
           { key: 'sidebar_config', label: 'Menu Lateral', ordem: 15, visible: true },
+          { key: 'boletos', label: 'Boletos', ordem: 16, visible: true },
         ],
       },
     ];
@@ -260,6 +261,7 @@ export function getDefaultConfig(perfil: string): SidebarConfig {
           { key: 'relatorio_modelo', label: 'Modelo Relatório', ordem: 13, visible: true },
           { key: 'relatorio_desempenho', label: 'Relatórios Desempenho', ordem: 14, visible: true },
           { key: 'atividades_pedagogicas', label: 'Atividades Pedagógicas', ordem: 15, visible: true },
+          { key: 'boletos', label: 'Boletos', ordem: 16, visible: true },
         ],
       },
     ];
