@@ -74,7 +74,7 @@ export function usePresencas(date: Date) {
     pickup_registered_by: string;
   }) => {
     const now = new Date().toISOString();
-    const updatePayload: Record<string, unknown> = { status: 'saiu', hora_saida: now };
+    const updatePayload: { status: string; hora_saida: string; pickup_person_id?: string; pickup_person_name?: string; pickup_person_type?: string; pickup_registered_by?: string } = { status: 'saiu', hora_saida: now };
     if (pickupData) {
       updatePayload.pickup_person_id = pickupData.pickup_person_id;
       updatePayload.pickup_person_name = pickupData.pickup_person_name;
