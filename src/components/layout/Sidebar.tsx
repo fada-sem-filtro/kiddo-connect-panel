@@ -24,6 +24,7 @@ import {
   Shield,
   SlidersHorizontal,
   Cog,
+  Receipt,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import logoFleur from "@/assets/logo-fleur-2.webp";
@@ -76,6 +77,7 @@ const ICON_MAP: Record<string, typeof Calendar> = {
   notas: FileText,
   calendario_aluno: CalendarDays,
   presencas: ClipboardList,
+  boletos: Receipt,
 };
 
 export function Sidebar() {
@@ -117,6 +119,7 @@ export function Sidebar() {
     materias: 'gestao_materias_ativo',
     relatorio_desempenho: 'relatorio_desempenho_ativo',
     relatorio_modelo: 'relatorio_desempenho_ativo',
+    boletos: 'modulo_boletos_ativo',
   };
 
   const isItemEnabledByPedSettings = (key: string): boolean => {
