@@ -259,7 +259,7 @@ function BoletoViewModal({ boleto, criancaNome, onClose, onCopy }: {
   boleto: Boleto; criancaNome: string; onClose: () => void;
   onCopy: (linha: string) => void;
 }) {
-  // Uses Dialog imported at top of file
+  // Dialog components imported at top of file
   
   return (
     <Dialog open onOpenChange={onClose}>
