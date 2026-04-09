@@ -44,7 +44,7 @@ export default function DiretorDashboardPage() {
   const [criancas, setCriancas] = useState<CriancaSimples[]>([]);
   const [eventosFuturos, setEventosFuturos] = useState<EventoFuturoInfo[]>([]);
   const [eventosHoje, setEventosHoje] = useState<{ id: string; tipo: string; crianca_id: string; observacao: string | null; data_inicio: string }[]>([]);
-  const [boletosStats, setBoletosStats] = useState<{ pendentes: number; vencidos: number; totalValor: number }>({ pendentes: 0, vencidos: 0, totalValor: 0 });
+  const [loading, setLoading] = useState(true);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -101,22 +101,6 @@ export default function DiretorDashboardPage() {
           .lte('data_inicio', end.toISOString())
           .order('data_inicio', { ascending: false });
         setEventosHoje(evData || []);
-      }
-
-      // Boletos stats
-      if (userCreche) {
-        const todayStr = new Date().toISOString().split('T')[0];
-        const { data: boletosData } = await supabase
-          .from('boletos')
-          .select('valor, status, vencimento')
-          .eq('creche_id', userCreche.id)
-          .in('status', ['pendente', 'vencido']);
-        if (boletosData) {
-          const pendentes = boletosData.filter(b => b.status === 'pendente').length;
-          const vencidos = boletosData.filter(b => b.status === 'vencido' || (b.status === 'pendente' && b.vencimento < todayStr)).length;
-          const totalValor = boletosData.reduce((sum, b) => sum + Number(b.valor), 0);
-          setBoletosStats({ pendentes, vencidos, totalValor });
-        }
       }
 
       setLoading(false);
