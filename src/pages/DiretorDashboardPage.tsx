@@ -11,6 +11,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { usePedagogicalSettings } from '@/hooks/usePedagogicalSettings';
 import { useNavigate } from 'react-router-dom';
+import FinanceiroDashboard from '@/components/financeiro/FinanceiroDashboard';
 
 interface TurmaComCriancas {
   id: string;
@@ -265,37 +266,13 @@ export default function DiretorDashboardPage() {
           </Card>
         </div>
 
-        {/* Boletos */}
-        {pedSettings?.modulo_boletos_ativo && (
-          <Card className="rounded-2xl border-2 border-border">
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <Receipt className="w-5 h-5 text-primary" />
-                  Boletos e Cobranças
-                </CardTitle>
-                <Button size="sm" variant="outline" className="rounded-xl" onClick={() => navigate('/diretor/boletos')}>
-                  Ver todos
-                </Button>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-3 gap-3">
-                <div className="text-center p-3 bg-muted/50 rounded-xl">
-                  <p className="text-2xl font-bold text-foreground">{boletosStats.pendentes}</p>
-                  <p className="text-xs text-muted-foreground">Pendentes</p>
-                </div>
-                <div className="text-center p-3 bg-destructive/10 rounded-xl">
-                  <p className="text-2xl font-bold text-destructive">{boletosStats.vencidos}</p>
-                  <p className="text-xs text-muted-foreground">Vencidos</p>
-                </div>
-                <div className="text-center p-3 bg-primary/5 rounded-xl">
-                  <p className="text-lg font-bold text-foreground">R$ {boletosStats.totalValor.toFixed(0)}</p>
-                  <p className="text-xs text-muted-foreground">A receber</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+        {/* Dashboard Financeiro */}
+        {pedSettings?.modulo_boletos_ativo && userCreche && (
+          <FinanceiroDashboard
+            crecheId={userCreche.id}
+            turmas={turmas.map(t => ({ id: t.id, nome: t.nome }))}
+            prefix="/diretor"
+          />
         )}
 
         {/* Real-time Presence */}
