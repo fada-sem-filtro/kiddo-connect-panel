@@ -2,12 +2,15 @@ import { useState, useEffect } from 'react';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { usePresencas } from '@/hooks/usePresencas';
-import { Users, Baby, CheckCircle2, XCircle, LogOut, Clock, AlertTriangle, Calendar, GraduationCap } from 'lucide-react';
+import { Users, Baby, CheckCircle2, XCircle, LogOut, Clock, AlertTriangle, Calendar, GraduationCap, Receipt } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { usePedagogicalSettings } from '@/hooks/usePedagogicalSettings';
+import { useNavigate } from 'react-router-dom';
 
 interface TurmaComCriancas {
   id: string;
@@ -31,6 +34,8 @@ interface EventoFuturoInfo {
 
 export default function DiretorDashboardPage() {
   const { userCreche } = useAuth();
+  const { settings: pedSettings } = usePedagogicalSettings();
+  const navigate = useNavigate();
   const today = new Date();
   const { presencas, getPresenca } = usePresencas(today);
 
@@ -38,6 +43,7 @@ export default function DiretorDashboardPage() {
   const [criancas, setCriancas] = useState<CriancaSimples[]>([]);
   const [eventosFuturos, setEventosFuturos] = useState<EventoFuturoInfo[]>([]);
   const [eventosHoje, setEventosHoje] = useState<{ id: string; tipo: string; crianca_id: string; observacao: string | null; data_inicio: string }[]>([]);
+  const [boletosStats, setBoletosStats] = useState<{ pendentes: number; vencidos: number; totalValor: number }>({ pendentes: 0, vencidos: 0, totalValor: 0 });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
