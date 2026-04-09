@@ -102,6 +102,22 @@ export default function DiretorDashboardPage() {
         setEventosHoje(evData || []);
       }
 
+      // Boletos stats
+      if (userCreche) {
+        const todayStr = new Date().toISOString().split('T')[0];
+        const { data: boletosData } = await supabase
+          .from('boletos')
+          .select('valor, status, vencimento')
+          .eq('creche_id', userCreche.id)
+          .in('status', ['pendente', 'vencido']);
+        if (boletosData) {
+          const pendentes = boletosData.filter(b => b.status === 'pendente').length;
+          const vencidos = boletosData.filter(b => b.status === 'vencido' || (b.status === 'pendente' && b.vencimento < todayStr)).length;
+          const totalValor = boletosData.reduce((sum, b) => sum + Number(b.valor), 0);
+          setBoletosStats({ pendentes, vencidos, totalValor });
+        }
+      }
+
       setLoading(false);
     };
     fetch();
