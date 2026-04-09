@@ -45,7 +45,6 @@ export default function DiretorDashboardPage() {
   const [eventosFuturos, setEventosFuturos] = useState<EventoFuturoInfo[]>([]);
   const [eventosHoje, setEventosHoje] = useState<{ id: string; tipo: string; crianca_id: string; observacao: string | null; data_inicio: string }[]>([]);
   const [loading, setLoading] = useState(true);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!userCreche) return;
