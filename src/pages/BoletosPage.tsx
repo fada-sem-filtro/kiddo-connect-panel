@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Receipt, Plus, Pencil, Trash2, Copy, Eye } from 'lucide-react';
+import { Receipt, Plus, Pencil, Trash2, Copy, Eye, Users } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
@@ -15,6 +15,7 @@ import { useUserPermissions } from '@/hooks/useUserPermissions';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import BoletoModal from '@/components/modals/BoletoModal';
+import BoletoLoteModal from '@/components/modals/BoletoLoteModal';
 
 interface Turma { id: string; nome: string; }
 interface Crianca { id: string; nome: string; turma_id: string; }
@@ -52,6 +53,7 @@ export default function BoletosPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editingBoleto, setEditingBoleto] = useState<Boleto | null>(null);
   const [viewBoleto, setViewBoleto] = useState<Boleto | null>(null);
+  const [loteModalOpen, setLoteModalOpen] = useState(false);
 
   const crecheId = isResponsavel ? userCreche?.id : effectiveCrecheId;
 
@@ -128,9 +130,14 @@ export default function BoletosPage() {
             </p>
           </div>
           {!isResponsavel && canManage && (
-            <Button onClick={() => { setEditingBoleto(null); setModalOpen(true); }} className="rounded-xl">
-              <Plus className="w-4 h-4 mr-2" /> Novo Boleto
-            </Button>
+            <div className="flex gap-2">
+              <Button onClick={() => { setEditingBoleto(null); setModalOpen(true); }} className="rounded-xl">
+                <Plus className="w-4 h-4 mr-2" /> Novo Boleto
+              </Button>
+              <Button variant="outline" onClick={() => setLoteModalOpen(true)} className="rounded-xl">
+                <Users className="w-4 h-4 mr-2" /> Criar em Lote
+              </Button>
+            </div>
           )}
         </div>
 
@@ -246,6 +253,19 @@ export default function BoletosPage() {
             turmas={turmas}
             criancas={criancas}
             editingBoleto={editingBoleto}
+            userId={user!.id}
+          />
+        )}
+
+        {/* Bulk Modal */}
+        {loteModalOpen && crecheId && (
+          <BoletoLoteModal
+            open={loteModalOpen}
+            onClose={() => setLoteModalOpen(false)}
+            onSaved={fetchData}
+            crecheId={crecheId}
+            turmas={turmas}
+            criancas={criancas}
             userId={user!.id}
           />
         )}
