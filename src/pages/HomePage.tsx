@@ -430,7 +430,15 @@ export default function HomePage() {
             ))}
           </div>
 
-          <Anim className="text-center">Em breve visualização do histórico completo de atualizações</Anim>
+          <Anim className="text-center">
+            <Link
+              to="/changelog"
+              className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
+            >
+              Ver histórico completo de atualizações
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </Anim>
         </div>
       </section>
 
