@@ -75,7 +75,7 @@ export function PickupModal({ open, onOpenChange, crianca, onConfirm, loading }:
     if (paths.length > 0) {
       const { data: signed } = await supabase.storage
         .from('authorized-pickups-photos')
-        .createSignedUrls(paths, 3600);
+        .createSignedUrls(paths, 60 * 60 * 24);
       signed?.forEach((s, i) => { if (s.signedUrl) signedMap[paths[i]] = s.signedUrl; });
     }
 
