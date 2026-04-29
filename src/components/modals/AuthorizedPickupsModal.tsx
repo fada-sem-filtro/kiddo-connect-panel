@@ -91,9 +91,9 @@ export function AuthorizedPickupsModal({ open, onOpenChange, criancaId, criancaN
 
   const uploadPhoto = async (personId: string): Promise<string | null> => {
     if (!photoFile) return null;
-    const ext = photoFile.name.split('.').pop();
+    const ext = (photoFile.name.split('.').pop() || 'jpg').toLowerCase();
     const path = `${criancaId}/${personId}.${ext}`;
-    
+
     const { error } = await supabase.storage
       .from('authorized-pickups-photos')
       .upload(path, photoFile, { upsert: true });
@@ -103,11 +103,8 @@ export function AuthorizedPickupsModal({ open, onOpenChange, criancaId, criancaN
       return null;
     }
 
-    const { data: urlData } = supabase.storage
-      .from('authorized-pickups-photos')
-      .getPublicUrl(path);
-
-    return urlData.publicUrl + '?t=' + Date.now();
+    // Store the storage path; we resolve to signed URLs at read time.
+    return path;
   };
 
   const handleSave = async () => {
