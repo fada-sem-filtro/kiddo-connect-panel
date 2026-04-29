@@ -498,6 +498,9 @@ export default function HomePage() {
             <Link to="/conheca" className="text-muted-foreground hover:text-primary transition-colors">
               Conheça o sistema
             </Link>
+            <Link to="/changelog" className="text-muted-foreground hover:text-primary transition-colors">
+              Novidades
+            </Link>
             <button
               onClick={() => setOrcamentoOpen(true)}
               className="text-muted-foreground hover:text-primary transition-colors"
