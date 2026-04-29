@@ -52,6 +52,7 @@ import AlunoGradePage from "./pages/AlunoGradePage";
 import EducadorAtividadesPage from "./pages/EducadorAtividadesPage";
 import ResponsavelAtividadesPage from "./pages/ResponsavelAtividadesPage";
 import SecretariaDashboardPage from "./pages/SecretariaDashboardPage";
+import AdminAuditoriaFotosPage from "./pages/AdminAuditoriaFotosPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
