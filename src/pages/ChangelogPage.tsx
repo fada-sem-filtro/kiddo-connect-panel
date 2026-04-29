@@ -24,12 +24,15 @@ const CHANGELOG: ChangelogEntry[] = [
   {
     version: "2.6",
     date: "Abril 2026",
-    title: "Auditoria de fotos e segurança reforçada",
+    title: "Auditoria dos dados, política LGPD e segurança reforçada",
     highlights: [
-      { type: "feature", text: "Tela de auditoria (admin) registrando visualização, envio, alteração e remoção de fotos de autorizados." },
-      { type: "security", text: "Fotos de autorizados agora servidas apenas via URL temporária assinada (24h) — bucket privado." },
+      {
+        type: "feature",
+        text: "Auditoria registrando visualização, envio, alteração e remoção das informações no sistema.",
+      },
+      { type: "security", text: "Implementação de bucket privado." },
       { type: "security", text: "RLS reforçado em eventos futuros: cada escola só vê os próprios eventos." },
-      { type: "security", text: "Edge function de envio de orçamento agora exige autenticação de admin." },
+      { type: "security", text: "Implementação de política LGPD." },
       { type: "improvement", text: "Educadores agora abrem direto no painel do educador ao acessar o sistema." },
     ],
   },
@@ -115,11 +118,16 @@ export default function ChangelogPage() {
       {/* Header */}
       <header className="border-b border-border">
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors">
+          <Link
+            to="/"
+            className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
+          >
             <ArrowLeft className="w-4 h-4" />
             Voltar
           </Link>
-          <Link to="/" className="font-bold text-primary">Agenda Fleur</Link>
+          <Link to="/" className="font-bold text-primary">
+            Agenda Fleur
+          </Link>
         </div>
       </header>
 
@@ -178,9 +186,15 @@ export default function ChangelogPage() {
         <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-muted-foreground">
           <p>Copyright © 2026 - Desenvolvido por Raissa.</p>
           <div className="flex items-center gap-4">
-            <Link to="/" className="hover:text-primary transition-colors">Início</Link>
-            <Link to="/sobre" className="hover:text-primary transition-colors">Sobre</Link>
-            <Link to="/login" className="hover:text-primary transition-colors">Entrar</Link>
+            <Link to="/" className="hover:text-primary transition-colors">
+              Início
+            </Link>
+            <Link to="/sobre" className="hover:text-primary transition-colors">
+              Sobre
+            </Link>
+            <Link to="/login" className="hover:text-primary transition-colors">
+              Entrar
+            </Link>
           </div>
         </div>
       </footer>
