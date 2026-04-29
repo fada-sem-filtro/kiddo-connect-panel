@@ -198,7 +198,7 @@ export function AuthorizedPickupsModal({ open, onOpenChange, criancaId, criancaN
               {persons.map((p) => (
                 <div key={p.id} className="flex items-center gap-3 p-3 rounded-xl border border-border bg-muted/30">
                   <Avatar className="w-10 h-10">
-                    <AvatarImage src={p.foto_url || undefined} />
+                    <AvatarImage src={(p.foto_url && (p.foto_url.startsWith('http') ? p.foto_url : signedUrls[p.foto_url])) || undefined} />
                     <AvatarFallback><User className="w-4 h-4" /></AvatarFallback>
                   </Avatar>
                   <div className="flex-1 min-w-0">
