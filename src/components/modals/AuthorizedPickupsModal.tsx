@@ -44,7 +44,7 @@ export function AuthorizedPickupsModal({ open, onOpenChange, criancaId, criancaN
     if (paths.length === 0) return;
     const { data } = await supabase.storage
       .from('authorized-pickups-photos')
-      .createSignedUrls(paths, 3600);
+      .createSignedUrls(paths, 60 * 60 * 24);
     if (data) {
       const map: Record<string, string> = {};
       data.forEach((d, i) => { if (d.signedUrl) map[paths[i]] = d.signedUrl; });
