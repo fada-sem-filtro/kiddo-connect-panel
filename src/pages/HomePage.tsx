@@ -398,19 +398,19 @@ export default function HomePage() {
           <div className="space-y-4">
             {[
               {
-                version: "2.3",
+                version: "2.6",
                 date: "Abril 2026",
-                desc: "Novidades no módulo financeiro e melhorias gerais.",
+                desc: "Auditoria de fotos de autorizados (admin), URLs assinadas por 24h, RLS reforçado em eventos futuros e edge function de orçamento protegida por admin.",
               },
               {
-                version: "2.2",
+                version: "2.5",
+                date: "Abril 2026",
+                desc: "Módulo de atividades com média geral automática, boletim restrito ao 1º ano do Fundamental e segmentação rotina/acadêmico por idade.",
+              },
+              {
+                version: "2.4",
                 date: "Março 2026",
-                desc: "Melhorias de desempenho e novas funcionalidades.",
-              },
-              {
-                version: "2.1",
-                date: "Fevereiro 2026",
-                desc: "Aprimoramentos na experiência de uso e correções.",
+                desc: "Sidebar configurável por escola e perfil (drag and drop), novo perfil Secretaria e seletor global de escola para o admin.",
               },
             ].map((v, i) => (
               <Anim key={v.version} delay={i * 0.08}>
