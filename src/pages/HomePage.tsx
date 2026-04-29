@@ -441,11 +441,6 @@ export default function HomePage() {
                       <span className="text-xs text-muted-foreground">— {v.date}</span>
                     </div>
                     <p className="text-sm font-medium text-primary mt-0.5">{v.title}</p>
-                    <ul className="mt-2 space-y-1 list-disc list-inside text-sm text-muted-foreground">
-                      {v.items.map((it, idx) => (
-                        <li key={idx}>{it}</li>
-                      ))}
-                    </ul>
                   </div>
                 </div>
               </Anim>
