@@ -400,7 +400,7 @@ export default function HomePage() {
               {
                 version: "2.6",
                 date: "Abril 2026",
-                title: "Auditoria de fotos e segurança reforçada",
+                title: "Auditoria dos dados, política LGPD e segurança reforçada",
                 items: [
                   "Tela de auditoria (admin) registrando visualização, envio, alteração e remoção de fotos de autorizados.",
                   "Fotos de autorizados agora servidas apenas via URL temporária assinada (24h) — bucket privado.",
