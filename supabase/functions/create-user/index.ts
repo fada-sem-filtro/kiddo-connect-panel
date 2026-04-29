@@ -1,10 +1,70 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import * as React from "npm:react@18.3.1";
+import { renderAsync } from "npm:@react-email/components@0.0.22";
+import { InviteEmail } from "../_shared/email-templates/invite.tsx";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
+
+const SITE_NAME = "Agenda Fleur";
+const FROM_DOMAIN = "agendafleur.app";
+const SITE_URL = "https://agendafleur.app";
+
+async function sendInviteEmail(params: {
+  to: string;
+  userName: string;
+  userRole: string;
+  schoolName?: string;
+  schoolLogo?: string;
+}) {
+  const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
+  if (!RESEND_API_KEY) {
+    console.error('RESEND_API_KEY not configured');
+    return { ok: false, error: 'RESEND_API_KEY not configured' };
+  }
+
+  try {
+    const html = await renderAsync(
+      React.createElement(InviteEmail, {
+        siteName: SITE_NAME,
+        siteUrl: SITE_URL,
+        confirmationUrl: SITE_URL,
+        recipient: params.to,
+        userName: params.userName,
+        userRole: params.userRole,
+        schoolName: params.schoolName,
+        schoolLogo: params.schoolLogo,
+      })
+    );
+
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${RESEND_API_KEY}`,
+      },
+      body: JSON.stringify({
+        from: `${SITE_NAME} <contato@${FROM_DOMAIN}>`,
+        to: [params.to],
+        subject: 'Você foi convidado(a) para a Agenda Fleur 🌸',
+        html,
+      }),
+    });
+
+    if (!res.ok) {
+      const errText = await res.text();
+      console.error('Resend send failed:', errText);
+      return { ok: false, error: errText };
+    }
+    return { ok: true };
+  } catch (e) {
+    console.error('Error rendering/sending invite email:', e);
+    return { ok: false, error: (e as Error).message };
+  }
+}
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -28,7 +88,6 @@ serve(async (req) => {
       });
     }
 
-    // Check admin, diretor, or secretaria role
     const { data: hasAdmin } = await userClient.rpc('has_role', {
       _user_id: callingUser.id,
       _role: 'admin',
@@ -60,7 +119,6 @@ serve(async (req) => {
       });
     }
 
-    // Directors and secretaria can only create limited roles
     if ((hasDiretor || hasSecretaria) && !hasAdmin && !['educador', 'responsavel', 'aluno', 'secretaria'].includes(role)) {
       return new Response(JSON.stringify({ error: 'You can only create educador, responsavel, aluno or secretaria users' }), {
         status: 403,
@@ -72,7 +130,6 @@ serve(async (req) => {
 
     const defaultPassword = 'fleur@2026';
 
-    // Create user with default password and must_change_password flag
     const { data: newUser, error: createError } = await adminClient.auth.admin.createUser({
       email,
       password: defaultPassword,
@@ -87,7 +144,6 @@ serve(async (req) => {
       });
     }
 
-    // Assign role
     const { error: roleError } = await adminClient
       .from('user_roles')
       .insert({ user_id: newUser.user.id, role });
@@ -99,7 +155,6 @@ serve(async (req) => {
       });
     }
 
-    // Update profile with telefone if provided
     if (telefone) {
       await adminClient
         .from('profiles')
@@ -107,7 +162,9 @@ serve(async (req) => {
         .eq('user_id', newUser.user.id);
     }
 
-    // Auto-link to creche if creche_id provided
+    let schoolName: string | undefined;
+    let schoolLogo: string | undefined;
+
     if (creche_id) {
       const { error: membroError } = await adminClient
         .from('creche_membros')
@@ -116,9 +173,28 @@ serve(async (req) => {
       if (membroError) {
         console.error('Error linking user to creche:', membroError.message);
       }
+
+      const { data: creche } = await adminClient
+        .from('creches')
+        .select('nome, logo_url')
+        .eq('id', creche_id)
+        .maybeSingle();
+      if (creche) {
+        schoolName = creche.nome;
+        schoolLogo = creche.logo_url || undefined;
+      }
     }
 
-    return new Response(JSON.stringify({ user: newUser.user }), {
+    // Enviar email de boas-vindas com dados de acesso
+    const emailResult = await sendInviteEmail({
+      to: email,
+      userName: nome,
+      userRole: role,
+      schoolName,
+      schoolLogo,
+    });
+
+    return new Response(JSON.stringify({ user: newUser.user, email_sent: emailResult.ok, email_error: emailResult.ok ? undefined : emailResult.error }), {
       status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
