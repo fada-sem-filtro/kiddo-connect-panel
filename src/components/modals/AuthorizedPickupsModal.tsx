@@ -40,14 +40,26 @@ export function AuthorizedPickupsModal({ open, onOpenChange, criancaId, criancaN
   const [signedUrls, setSignedUrls] = useState<Record<string, string>>({});
 
   const resolveSignedUrls = async (rows: AuthorizedPerson[]) => {
-    const paths = rows.map(r => r.foto_url).filter((p): p is string => !!p && !p.startsWith('http'));
-    if (paths.length === 0) return;
+    const items = rows
+      .filter(r => !!r.foto_url && !r.foto_url.startsWith('http'))
+      .map(r => ({ id: r.id, path: r.foto_url as string }));
+    if (items.length === 0) return;
     const { data } = await supabase.storage
       .from('authorized-pickups-photos')
-      .createSignedUrls(paths, 60 * 60 * 24);
+      .createSignedUrls(items.map(i => i.path), 60 * 60 * 24);
     if (data) {
       const map: Record<string, string> = {};
-      data.forEach((d, i) => { if (d.signedUrl) map[paths[i]] = d.signedUrl; });
+      data.forEach((d, i) => {
+        if (d.signedUrl) {
+          map[items[i].path] = d.signedUrl;
+          // Audit: record the view
+          supabase.rpc('log_pickup_photo_view', {
+            _crianca_id: criancaId,
+            _authorized_pickup_id: items[i].id,
+            _foto_path: items[i].path,
+          });
+        }
+      });
       setSignedUrls(prev => ({ ...prev, ...map }));
     }
   };
