@@ -53,6 +53,7 @@ import EducadorAtividadesPage from "./pages/EducadorAtividadesPage";
 import ResponsavelAtividadesPage from "./pages/ResponsavelAtividadesPage";
 import SecretariaDashboardPage from "./pages/SecretariaDashboardPage";
 import AdminAuditoriaFotosPage from "./pages/AdminAuditoriaFotosPage";
+import ChangelogPage from "./pages/ChangelogPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
