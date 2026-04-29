@@ -166,7 +166,7 @@ export function AuthorizedPickupsModal({ open, onOpenChange, criancaId, criancaN
     setEditId(p.id);
     setShowForm(true);
     setPhotoFile(null);
-    setPhotoPreview(p.foto_url || null);
+    setPhotoPreview(p.foto_url ? (p.foto_url.startsWith('http') ? p.foto_url : signedUrls[p.foto_url] || null) : null);
   };
 
   const handleDelete = async (id: string) => {
