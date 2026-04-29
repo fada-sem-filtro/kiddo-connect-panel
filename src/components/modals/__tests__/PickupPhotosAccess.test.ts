@@ -20,12 +20,11 @@ const createMockClient = (signed: SignedResult[]) => {
     error: null,
   }));
   const getPublicUrl = vi.fn();
+  const from = vi.fn((_bucket: string) => ({ createSignedUrls, getPublicUrl }));
   return {
     createSignedUrls,
     getPublicUrl,
-    storage: {
-      from: vi.fn(() => ({ createSignedUrls, getPublicUrl })),
-    },
+    storage: { from },
   };
 };
 
