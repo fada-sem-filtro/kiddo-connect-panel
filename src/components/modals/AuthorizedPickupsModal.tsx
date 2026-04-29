@@ -37,6 +37,21 @@ export function AuthorizedPickupsModal({ open, onOpenChange, criancaId, criancaN
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const [signedUrls, setSignedUrls] = useState<Record<string, string>>({});
+
+  const resolveSignedUrls = async (rows: AuthorizedPerson[]) => {
+    const paths = rows.map(r => r.foto_url).filter((p): p is string => !!p && !p.startsWith('http'));
+    if (paths.length === 0) return;
+    const { data } = await supabase.storage
+      .from('authorized-pickups-photos')
+      .createSignedUrls(paths, 3600);
+    if (data) {
+      const map: Record<string, string> = {};
+      data.forEach((d, i) => { if (d.signedUrl) map[paths[i]] = d.signedUrl; });
+      setSignedUrls(prev => ({ ...prev, ...map }));
+    }
+  };
+
   const fetchPersons = async () => {
     setLoading(true);
     const { data } = await supabase
@@ -44,7 +59,10 @@ export function AuthorizedPickupsModal({ open, onOpenChange, criancaId, criancaN
       .select('*')
       .eq('crianca_id', criancaId)
       .order('nome');
-    if (data) setPersons(data);
+    if (data) {
+      setPersons(data);
+      resolveSignedUrls(data);
+    }
     setLoading(false);
   };
 
