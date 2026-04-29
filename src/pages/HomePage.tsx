@@ -400,17 +400,34 @@ export default function HomePage() {
               {
                 version: "2.6",
                 date: "Abril 2026",
-                desc: "Auditoria de fotos de autorizados (admin), URLs assinadas por 24h, RLS reforçado em eventos futuros e edge function de orçamento protegida por admin.",
+                title: "Auditoria de fotos e segurança reforçada",
+                items: [
+                  "Tela de auditoria (admin) registrando visualização, envio, alteração e remoção de fotos de autorizados.",
+                  "Fotos de autorizados agora servidas apenas via URL temporária assinada (24h) — bucket privado.",
+                  "RLS reforçado em eventos futuros: cada escola só vê os próprios eventos.",
+                  "Edge function de envio de orçamento agora exige autenticação de admin.",
+                  "Educadores agora abrem direto no painel do educador ao acessar o sistema.",
+                ],
               },
               {
                 version: "2.5",
                 date: "Abril 2026",
-                desc: "Módulo de atividades com média geral automática, boletim restrito ao 1º ano do Fundamental e segmentação rotina/acadêmico por idade.",
+                title: "Painel pedagógico e atividades",
+                items: [
+                  "Módulo de atividades com média geral calculada automaticamente.",
+                  "Boletim restrito ao 1º ano do Fundamental (alunos 6+).",
+                  "Segmentação automática entre rotina e parte acadêmica conforme idade/série.",
+                ],
               },
               {
                 version: "2.4",
                 date: "Março 2026",
-                desc: "Sidebar configurável por escola e perfil (drag and drop), novo perfil Secretaria e seletor global de escola para o admin.",
+                title: "Customização de menu e papel de secretaria",
+                items: [
+                  "Sidebar configurável por escola e perfil, com arrastar e soltar.",
+                  "Novo perfil 'Secretaria', habilitado por escola pelo diretor.",
+                  "Seletor de escola global para o admin facilitando a navegação multi-tenant.",
+                ],
               },
             ].map((v, i) => (
               <Anim key={v.version} delay={i * 0.08}>
@@ -418,12 +435,17 @@ export default function HomePage() {
                   <div className="flex items-center justify-center shrink-0 w-10 h-10 rounded-lg bg-primary/10">
                     <RefreshCw className="w-5 h-5 text-primary" />
                   </div>
-                  <div>
-                    <div className="flex items-center gap-2">
+                  <div className="flex-1">
+                    <div className="flex flex-wrap items-baseline gap-2">
                       <span className="font-bold text-foreground">Versão {v.version}</span>
                       <span className="text-xs text-muted-foreground">— {v.date}</span>
                     </div>
-                    <p className="text-sm text-muted-foreground mt-1">{v.desc}</p>
+                    <p className="text-sm font-medium text-primary mt-0.5">{v.title}</p>
+                    <ul className="mt-2 space-y-1 list-disc list-inside text-sm text-muted-foreground">
+                      {v.items.map((it, idx) => (
+                        <li key={idx}>{it}</li>
+                      ))}
+                    </ul>
                   </div>
                 </div>
               </Anim>
