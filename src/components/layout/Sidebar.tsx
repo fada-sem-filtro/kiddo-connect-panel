@@ -273,6 +273,7 @@ export function Sidebar() {
       adminNavigation.push({ name: "Orçamentos", href: "/admin/orcamentos", icon: MessageSquare });
       adminNavigation.push({ name: "Menu Lateral", href: "/admin/sidebar-config", icon: SlidersHorizontal });
       adminNavigation.push({ name: "Minhas Configurações", href: "/admin/configuracoes", icon: Cog });
+      adminNavigation.push({ name: "Auditoria de Fotos", href: "/admin/auditoria-fotos", icon: ShieldCheck });
     }
     if (role === "admin" || (pedSettings?.gestao_materias_ativo && canView('materias'))) {
       adminNavigation.push({ name: "Matérias", href: `${prefix}/materias`, icon: Library });
