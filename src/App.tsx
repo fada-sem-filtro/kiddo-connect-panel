@@ -53,6 +53,7 @@ import EducadorAtividadesPage from "./pages/EducadorAtividadesPage";
 import ResponsavelAtividadesPage from "./pages/ResponsavelAtividadesPage";
 import SecretariaDashboardPage from "./pages/SecretariaDashboardPage";
 import AdminAuditoriaFotosPage from "./pages/AdminAuditoriaFotosPage";
+import ChangelogPage from "./pages/ChangelogPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -69,6 +70,7 @@ const App = () => (
               <Route path="/" element={<HomePage />} />
               <Route path="/conheca" element={<LandingPage />} />
               <Route path="/sobre" element={<SobrePage />} />
+              <Route path="/changelog" element={<ChangelogPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/reset-password" element={<ResetPasswordPage />} />
               <Route path="/agenda" element={<ProtectedRoute><Index /></ProtectedRoute>} />
