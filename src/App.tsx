@@ -122,6 +122,7 @@ const App = () => (
               <Route path="/diretor/sidebar-config" element={<ProtectedRoute allowedRoles={['diretor']}><SidebarConfigPage /></ProtectedRoute>} />
               <Route path="/admin/configuracoes" element={<ProtectedRoute allowedRoles={['admin']}><AdminSettingsPage /></ProtectedRoute>} />
               <Route path="/admin/suporte" element={<ProtectedRoute allowedRoles={['admin']}><SuportePage /></ProtectedRoute>} />
+              <Route path="/admin/auditoria-fotos" element={<ProtectedRoute allowedRoles={['admin']}><AdminAuditoriaFotosPage /></ProtectedRoute>} />
               {/* Aluno routes */}
               <Route path="/aluno/dashboard" element={<ProtectedRoute allowedRoles={['aluno']}><AlunoDashboardPage /></ProtectedRoute>} />
               <Route path="/aluno/atividades" element={<ProtectedRoute allowedRoles={['aluno']}><AlunoAtividadesPage /></ProtectedRoute>} />
