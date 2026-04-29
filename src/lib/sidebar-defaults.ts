@@ -94,6 +94,7 @@ export const AVAILABLE_ITEMS_BY_ROLE: Record<string, { key: string; defaultLabel
     { key: 'relatorio_modelo', defaultLabel: 'Modelo Relatório', route: '/admin/relatorio-modelo' },
     { key: 'relatorio_desempenho', defaultLabel: 'Relatórios Desempenho', route: '/admin/relatorio-desempenho' },
     { key: 'configuracoes', defaultLabel: 'Minhas Configurações', route: '/admin/configuracoes' },
+    { key: 'auditoria_fotos', defaultLabel: 'Auditoria de Fotos', route: '/admin/auditoria-fotos' },
     { key: 'boletos', defaultLabel: 'Boletos', route: '/admin/boletos' },
     { key: 'eventos_resp', defaultLabel: 'Meus Eventos', route: '/responsavel/eventos' },
     { key: 'calendario_resp', defaultLabel: 'Calendário Escolar', route: '/responsavel/calendario' },
