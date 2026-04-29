@@ -1117,6 +1117,42 @@ export type Database = {
           },
         ]
       }
+      pickup_photo_audit: {
+        Row: {
+          action: string
+          authorized_pickup_id: string | null
+          created_at: string
+          crianca_id: string
+          foto_path: string | null
+          id: string
+          user_email: string | null
+          user_id: string | null
+          user_role: string | null
+        }
+        Insert: {
+          action: string
+          authorized_pickup_id?: string | null
+          created_at?: string
+          crianca_id: string
+          foto_path?: string | null
+          id?: string
+          user_email?: string | null
+          user_id?: string | null
+          user_role?: string | null
+        }
+        Update: {
+          action?: string
+          authorized_pickup_id?: string | null
+          created_at?: string
+          crianca_id?: string
+          foto_path?: string | null
+          id?: string
+          user_email?: string | null
+          user_id?: string | null
+          user_role?: string | null
+        }
+        Relationships: []
+      }
       presencas: {
         Row: {
           created_at: string
@@ -1733,6 +1769,14 @@ export type Database = {
       is_responsavel_of_crianca: {
         Args: { _crianca_id: string; _user_id: string }
         Returns: boolean
+      }
+      log_pickup_photo_view: {
+        Args: {
+          _authorized_pickup_id: string
+          _crianca_id: string
+          _foto_path: string
+        }
+        Returns: undefined
       }
       move_to_dlq: {
         Args: {
