@@ -37,6 +37,21 @@ export function AuthorizedPickupsModal({ open, onOpenChange, criancaId, criancaN
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const [signedUrls, setSignedUrls] = useState<Record<string, string>>({});
+
+  const resolveSignedUrls = async (rows: AuthorizedPerson[]) => {
+    const paths = rows.map(r => r.foto_url).filter((p): p is string => !!p && !p.startsWith('http'));
+    if (paths.length === 0) return;
+    const { data } = await supabase.storage
+      .from('authorized-pickups-photos')
+      .createSignedUrls(paths, 3600);
+    if (data) {
+      const map: Record<string, string> = {};
+      data.forEach((d, i) => { if (d.signedUrl) map[paths[i]] = d.signedUrl; });
+      setSignedUrls(prev => ({ ...prev, ...map }));
+    }
+  };
+
   const fetchPersons = async () => {
     setLoading(true);
     const { data } = await supabase
@@ -44,7 +59,10 @@ export function AuthorizedPickupsModal({ open, onOpenChange, criancaId, criancaN
       .select('*')
       .eq('crianca_id', criancaId)
       .order('nome');
-    if (data) setPersons(data);
+    if (data) {
+      setPersons(data);
+      resolveSignedUrls(data);
+    }
     setLoading(false);
   };
 
@@ -73,9 +91,9 @@ export function AuthorizedPickupsModal({ open, onOpenChange, criancaId, criancaN
 
   const uploadPhoto = async (personId: string): Promise<string | null> => {
     if (!photoFile) return null;
-    const ext = photoFile.name.split('.').pop();
+    const ext = (photoFile.name.split('.').pop() || 'jpg').toLowerCase();
     const path = `${criancaId}/${personId}.${ext}`;
-    
+
     const { error } = await supabase.storage
       .from('authorized-pickups-photos')
       .upload(path, photoFile, { upsert: true });
@@ -85,11 +103,8 @@ export function AuthorizedPickupsModal({ open, onOpenChange, criancaId, criancaN
       return null;
     }
 
-    const { data: urlData } = supabase.storage
-      .from('authorized-pickups-photos')
-      .getPublicUrl(path);
-
-    return urlData.publicUrl + '?t=' + Date.now();
+    // Store the storage path; we resolve to signed URLs at read time.
+    return path;
   };
 
   const handleSave = async () => {
@@ -151,7 +166,7 @@ export function AuthorizedPickupsModal({ open, onOpenChange, criancaId, criancaN
     setEditId(p.id);
     setShowForm(true);
     setPhotoFile(null);
-    setPhotoPreview(p.foto_url || null);
+    setPhotoPreview(p.foto_url ? (p.foto_url.startsWith('http') ? p.foto_url : signedUrls[p.foto_url] || null) : null);
   };
 
   const handleDelete = async (id: string) => {
@@ -183,7 +198,7 @@ export function AuthorizedPickupsModal({ open, onOpenChange, criancaId, criancaN
               {persons.map((p) => (
                 <div key={p.id} className="flex items-center gap-3 p-3 rounded-xl border border-border bg-muted/30">
                   <Avatar className="w-10 h-10">
-                    <AvatarImage src={p.foto_url || undefined} />
+                    <AvatarImage src={(p.foto_url && (p.foto_url.startsWith('http') ? p.foto_url : signedUrls[p.foto_url])) || undefined} />
                     <AvatarFallback><User className="w-4 h-4" /></AvatarFallback>
                   </Avatar>
                   <div className="flex-1 min-w-0">

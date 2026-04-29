@@ -67,11 +67,25 @@ export function PickupModal({ open, onOpenChange, crianca, onConfirm, loading }:
       .select('id, nome, foto_url')
       .eq('crianca_id', crianca.id);
 
+    // Resolve signed URLs for storage paths
+    const paths = (autorizados || [])
+      .map(a => a.foto_url)
+      .filter((p): p is string => !!p && !p.startsWith('http'));
+    const signedMap: Record<string, string> = {};
+    if (paths.length > 0) {
+      const { data: signed } = await supabase.storage
+        .from('authorized-pickups-photos')
+        .createSignedUrls(paths, 3600);
+      signed?.forEach((s, i) => { if (s.signedUrl) signedMap[paths[i]] = s.signedUrl; });
+    }
+
     const autPessoas: PickupPerson[] = (autorizados || []).map(a => ({
       id: `aut_${a.id}`,
       nome: a.nome,
       tipo: 'autorizado' as const,
-      foto_url: a.foto_url,
+      foto_url: a.foto_url
+        ? (a.foto_url.startsWith('http') ? a.foto_url : signedMap[a.foto_url] || null)
+        : null,
     }));
 
     setPessoas([...respPessoas, ...autPessoas]);
