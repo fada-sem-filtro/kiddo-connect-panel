@@ -63,14 +63,26 @@ serve(async (req) => {
 
     // If RESEND_API_KEY is available, send via Resend
     if (RESEND_API_KEY) {
+      // HTML-escape user-supplied values to prevent HTML/script injection in outbound email
+      const escapeHtml = (s: string) =>
+        String(s)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+
+      const safeNome = escapeHtml(nome || "Cliente");
+      const safeConteudo = escapeHtml(conteudo);
+
       const htmlBody = `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <div style="background: linear-gradient(135deg, #F8BBD0, #F48FB1); padding: 20px; border-radius: 12px 12px 0 0; text-align: center;">
             <h1 style="color: white; margin: 0; font-size: 24px;">🌸 Agenda Fleur</h1>
           </div>
           <div style="background: #ffffff; padding: 24px; border: 1px solid #f0f0f0; border-top: none; border-radius: 0 0 12px 12px;">
-            <p style="font-size: 16px; color: #333;">Olá ${nome || 'Cliente'},</p>
-            <div style="font-size: 14px; color: #555; line-height: 1.6; white-space: pre-wrap;">${conteudo}</div>
+            <p style="font-size: 16px; color: #333;">Olá ${safeNome},</p>
+            <div style="font-size: 14px; color: #555; line-height: 1.6; white-space: pre-wrap;">${safeConteudo}</div>
             <hr style="border: none; border-top: 1px solid #eee; margin: 24px 0;" />
             <p style="font-size: 12px; color: #999;">Atenciosamente,<br/>Equipe Agenda Fleur</p>
           </div>
