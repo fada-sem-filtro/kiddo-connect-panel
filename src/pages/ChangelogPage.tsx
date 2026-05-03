@@ -22,6 +22,21 @@ const TYPE_META: Record<EntryType, { label: string; icon: typeof Sparkles; class
 
 const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "2.6.2",
+    date: "Maio 2026",
+    title: "Permissões granulares na interface e blindagem de segurança",
+    highlights: [
+      { type: "fix", text: "Botões de criar, editar e excluir respeitam as permissões do perfil." },
+      {
+        type: "improvement",
+        text: "Permissões aplicadas em Alunos, Turmas, Corpo Docente, Usuários, Recados, Eventos, Calendário, Feriados, Matérias, Grade de Aulas, Boletim, Atividades Pedagógicas e Relatórios.",
+      },
+      { type: "security", text: "Uploads de anexos restritos à pasta do próprio usuário no bucket de recados." },
+      { type: "security", text: "Realtime com escopo por identidade, escola, turma e aluno." },
+      { type: "security", text: "Função de envio de orçamentos endurecida com validação adicional contra abuso." },
+    ],
+  },
+  {
     version: "2.6",
     date: "Abril 2026",
     title: "Auditoria dos dados, política LGPD e segurança reforçada",
