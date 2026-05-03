@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { useUserPermissions } from '@/hooks/useUserPermissions';
 
 interface EventoFuturoDb {
   id: string;
@@ -25,6 +26,10 @@ interface EventoFuturoDb {
 }
 
 export default function CalendarioAdminPage() {
+  const { canCreate, canEdit, canDelete } = useUserPermissions();
+  const podeCriar = canCreate('calendario');
+  const podeEditar = canEdit('calendario');
+  const podeExcluir = canDelete('calendario');
   const [eventos, setEventos] = useState<EventoFuturoDb[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -74,10 +79,12 @@ export default function CalendarioAdminPage() {
               <p className="text-muted-foreground">Gerencie eventos futuros e programações</p>
             </div>
           </div>
-          <Button onClick={() => setIsModalOpen(true)} className="kawaii-btn rounded-2xl">
-            <Plus className="w-4 h-4 mr-2" />
-            Novo Evento
-          </Button>
+          {podeCriar && (
+            <Button onClick={() => setIsModalOpen(true)} className="kawaii-btn rounded-2xl">
+              <Plus className="w-4 h-4 mr-2" />
+              Novo Evento
+            </Button>
+          )}
         </div>
 
         {loading ? (
@@ -87,10 +94,12 @@ export default function CalendarioAdminPage() {
             <CardContent className="py-12 text-center">
               <span className="text-5xl block mb-4">📆</span>
               <p className="text-muted-foreground">Nenhum evento programado</p>
-              <Button variant="outline" className="mt-4 rounded-2xl" onClick={() => setIsModalOpen(true)}>
-                <Plus className="w-4 h-4 mr-2" />
-                Adicionar primeiro evento
-              </Button>
+              {podeCriar && (
+                <Button variant="outline" className="mt-4 rounded-2xl" onClick={() => setIsModalOpen(true)}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Adicionar primeiro evento
+                </Button>
+              )}
             </CardContent>
           </Card>
         ) : (
@@ -121,14 +130,18 @@ export default function CalendarioAdminPage() {
                       )}
                     </div>
                     <div className="flex gap-2 flex-shrink-0">
-                      <Button variant="ghost" size="icon" className="rounded-xl hover:bg-primary/10"
-                        onClick={() => { setEditingEvento(evento); setIsModalOpen(true); }}>
-                        <Pencil className="w-4 h-4" />
-                      </Button>
-                      <Button variant="ghost" size="icon" className="rounded-xl hover:bg-destructive/10 hover:text-destructive"
-                        onClick={() => setDeleteId(evento.id)}>
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
+                      {podeEditar && (
+                        <Button variant="ghost" size="icon" className="rounded-xl hover:bg-primary/10"
+                          onClick={() => { setEditingEvento(evento); setIsModalOpen(true); }}>
+                          <Pencil className="w-4 h-4" />
+                        </Button>
+                      )}
+                      {podeExcluir && (
+                        <Button variant="ghost" size="icon" className="rounded-xl hover:bg-destructive/10 hover:text-destructive"
+                          onClick={() => setDeleteId(evento.id)}>
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      )}
                     </div>
                   </div>
                 </CardContent>

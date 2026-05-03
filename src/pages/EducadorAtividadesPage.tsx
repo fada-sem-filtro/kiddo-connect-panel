@@ -15,6 +15,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
+import { useUserPermissions } from '@/hooks/useUserPermissions';
 
 interface QuestaoForm {
   id?: string;
@@ -28,6 +29,10 @@ interface QuestaoForm {
 
 export default function EducadorAtividadesPage() {
   const { user } = useAuth();
+  const { canCreate, canEdit, canDelete } = useUserPermissions();
+  const podeCriar = canCreate('atividades_pedagogicas');
+  const podeEditar = canEdit('atividades_pedagogicas');
+  const podeExcluir = canDelete('atividades_pedagogicas');
   const [turmas, setTurmas] = useState<any[]>([]);
   const [atividades, setAtividades] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -305,9 +310,11 @@ export default function EducadorAtividadesPage() {
             <BookOpen className="w-6 h-6 text-primary" />
             Atividades Pedagógicas
           </h1>
-          <Button onClick={openCreate} className="rounded-2xl gap-2">
-            <Plus className="w-4 h-4" /> Nova Atividade
-          </Button>
+          {podeCriar && (
+            <Button onClick={openCreate} className="rounded-2xl gap-2">
+              <Plus className="w-4 h-4" /> Nova Atividade
+            </Button>
+          )}
         </div>
 
         <div className="flex gap-2 flex-wrap">
@@ -349,26 +356,30 @@ export default function EducadorAtividadesPage() {
                       <Button size="sm" variant="outline" className="rounded-xl h-8 w-8 p-0" onClick={() => openCorrecao(atv)} title="Correções">
                         <Eye className="w-4 h-4" />
                       </Button>
-                      <Button size="sm" variant="outline" className="rounded-xl h-8 w-8 p-0" onClick={() => openEdit(atv)} title="Editar">
-                        <Pencil className="w-4 h-4" />
-                      </Button>
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button size="sm" variant="outline" className="rounded-xl h-8 w-8 p-0 text-destructive" title="Excluir">
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>Excluir atividade?</AlertDialogTitle>
-                            <AlertDialogDescription>Todas as entregas e respostas dos alunos serão removidas permanentemente.</AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                            <AlertDialogAction onClick={() => handleDelete(atv.id)}>Excluir</AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
+                      {podeEditar && (
+                        <Button size="sm" variant="outline" className="rounded-xl h-8 w-8 p-0" onClick={() => openEdit(atv)} title="Editar">
+                          <Pencil className="w-4 h-4" />
+                        </Button>
+                      )}
+                      {podeExcluir && (
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button size="sm" variant="outline" className="rounded-xl h-8 w-8 p-0 text-destructive" title="Excluir">
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Excluir atividade?</AlertDialogTitle>
+                              <AlertDialogDescription>Todas as entregas e respostas dos alunos serão removidas permanentemente.</AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                              <AlertDialogAction onClick={() => handleDelete(atv.id)}>Excluir</AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      )}
                     </div>
                   </div>
                 </CardContent>

@@ -20,6 +20,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { useAdminSchoolSelector, AdminSchoolSelector } from '@/components/admin/AdminSchoolSelector';
+import { useUserPermissions } from '@/hooks/useUserPermissions';
 
 interface CriancaRow {
   id: string;
@@ -38,6 +39,10 @@ export default function CriancasDbPage() {
   const { role, userCreche } = useAuth();
   const { effectiveCrecheId, selectedCrecheId, setSelectedCrecheId, creches, isAdmin } = useAdminSchoolSelector();
   const isDiretor = role === 'diretor';
+  const { canCreate, canEdit, canDelete } = useUserPermissions();
+  const podeCriar = canCreate('alunos');
+  const podeEditar = canEdit('alunos');
+  const podeExcluir = canDelete('alunos');
   const [criancas, setCriancas] = useState<CriancaRow[]>([]);
   const [turmas, setTurmas] = useState<{ id: string; nome: string; creche_id: string }[]>([]);
   const [search, setSearch] = useState('');
@@ -182,7 +187,7 @@ export default function CriancasDbPage() {
             </h1>
             <p className="text-muted-foreground">Gerencie o cadastro dos alunos</p>
           </div>
-          {effectiveCrecheId && (
+          {effectiveCrecheId && podeCriar && (
             <Button onClick={() => setIsModalOpen(true)}>
               <Plus className="w-4 h-4 mr-2" />
               Novo Aluno
@@ -290,17 +295,21 @@ export default function CriancasDbPage() {
                                 <KeyRound className="w-4 h-4" />
                               </Button>
                             )}
-                            <Button variant="ghost" size="icon" onClick={() => handleEdit(crianca)}>
-                              <Edit className="w-4 h-4" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="text-destructive hover:text-destructive"
-                              onClick={() => handleDelete(crianca)}
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
+                            {podeEditar && (
+                              <Button variant="ghost" size="icon" onClick={() => handleEdit(crianca)}>
+                                <Edit className="w-4 h-4" />
+                              </Button>
+                            )}
+                            {podeExcluir && (
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="text-destructive hover:text-destructive"
+                                onClick={() => handleDelete(crianca)}
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            )}
                           </div>
                         </TableCell>
                       </TableRow>

@@ -20,6 +20,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Textarea } from '@/components/ui/textarea';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { useUserPermissions } from '@/hooks/useUserPermissions';
 import { toast } from 'sonner';
 import type { RecadoDb } from '@/pages/RecadosPage';
 
@@ -66,6 +67,9 @@ function AnexoFoto({ url, tipo }: { url: string; tipo?: string | null }) {
 
 export function RecadoThread({ recado, onChanged }: RecadoThreadProps) {
   const { user, profile } = useAuth();
+  const { canEdit, canDelete } = useUserPermissions();
+  const podeEditar = canEdit('recados');
+  const podeExcluir = canDelete('recados');
   const [isReplying, setIsReplying] = useState(false);
   const [replyText, setReplyText] = useState('');
   const [replyFile, setReplyFile] = useState<File | null>(null);
@@ -208,15 +212,19 @@ export function RecadoThread({ recado, onChanged }: RecadoThreadProps) {
                 </div>
                 <p className="text-xs text-muted-foreground mt-0.5">{formatDate(recado.created_at)}</p>
               </div>
-              {user?.id === recado.remetente_user_id && (
+              {user?.id === recado.remetente_user_id && (podeEditar || podeExcluir) && (
                 <div className="flex gap-1">
-                  <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setIsEditing(!isEditing)}>
-                    <Edit className="w-4 h-4" />
-                  </Button>
-                  <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive"
-                    onClick={() => { setDeleteTargetId(recado.id); setIsDeleteDialogOpen(true); }}>
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
+                  {podeEditar && (
+                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setIsEditing(!isEditing)}>
+                      <Edit className="w-4 h-4" />
+                    </Button>
+                  )}
+                  {podeExcluir && (
+                    <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive"
+                      onClick={() => { setDeleteTargetId(recado.id); setIsDeleteDialogOpen(true); }}>
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  )}
                 </div>
               )}
             </div>
@@ -330,7 +338,7 @@ export function RecadoThread({ recado, onChanged }: RecadoThreadProps) {
                             <AnexoFoto url={(resp as any).anexo_url} tipo={(resp as any).anexo_tipo} />
                           )}
                         </div>
-                        {user?.id === resp.remetente_user_id && (
+                        {user?.id === resp.remetente_user_id && podeExcluir && (
                           <Button variant="ghost" size="icon" className="h-6 w-6 text-destructive hover:text-destructive"
                             onClick={() => { setDeleteTargetId(resp.id); setIsDeleteDialogOpen(true); }}>
                             <Trash2 className="w-3 h-3" />

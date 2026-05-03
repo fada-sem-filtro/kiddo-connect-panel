@@ -13,6 +13,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { useAdminSchoolSelector, AdminSchoolSelector } from '@/components/admin/AdminSchoolSelector';
+import { useUserPermissions } from '@/hooks/useUserPermissions';
 
 interface Modelo { id: string; nome: string; descricao: string | null; }
 interface Secao { id: string; titulo: string; descricao: string | null; ordem: number; }
@@ -44,7 +45,9 @@ export default function RelatorioDesempenhoPage() {
   const [saving, setSaving] = useState(false);
   const [tipoPeriodo, setTipoPeriodo] = useState('bimestral');
 
-  const canEdit = role === 'admin' || role === 'educador' || role === 'diretor';
+  const { canCreate, canEdit: canEditPerm } = useUserPermissions();
+  const baseCanEdit = role === 'admin' || role === 'educador' || role === 'diretor';
+  const canEdit = baseCanEdit && (canCreate('relatorio_desempenho') || canEditPerm('relatorio_desempenho'));
   const PERIODOS = getPeriodos(tipoPeriodo);
 
   useEffect(() => {

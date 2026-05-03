@@ -24,6 +24,7 @@ import {
 } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { useUserPermissions } from '@/hooks/useUserPermissions';
 
 interface UserWithRole {
   user_id: string;
@@ -60,6 +61,10 @@ export default function UsuariosPage() {
   const isSecretaria = role === 'secretaria';
   const { settings: pedSettings } = usePedagogicalSettings();
   const secretariaEnabled = !!(pedSettings as any)?.modulo_secretaria_ativo;
+  const { canCreate, canEdit, canDelete } = useUserPermissions();
+  const podeCriar = canCreate('usuarios');
+  const podeEditar = canEdit('usuarios');
+  const podeExcluir = canDelete('usuarios');
   const [users, setUsers] = useState<UserWithRole[]>([]);
   const [search, setSearch] = useState('');
   const [roleFilter, setRoleFilter] = useState<string>('all');
@@ -347,10 +352,12 @@ export default function UsuariosPage() {
             </h1>
             <p className="text-muted-foreground">Gerencie os acessos ao sistema</p>
           </div>
-          <Button onClick={openCreate}>
-            <Plus className="w-4 h-4 mr-2" />
-            Novo Usuário
-          </Button>
+          {podeCriar && (
+            <Button onClick={openCreate}>
+              <Plus className="w-4 h-4 mr-2" />
+              Novo Usuário
+            </Button>
+          )}
         </div>
 
         {isAdmin && (
@@ -439,13 +446,17 @@ export default function UsuariosPage() {
                       </TableCell>
                     )}
                     <TableCell className="text-right space-x-1">
-                      <Button variant="ghost" size="icon" onClick={() => openEdit(user)} title="Editar">
-                        <Edit className="w-4 h-4" />
-                      </Button>
-                      <Button variant="ghost" size="icon" onClick={() => setResetTarget(user)} title="Resetar senha">
-                        <KeyRound className="w-4 h-4" />
-                      </Button>
-                      {isAdmin && (
+                      {podeEditar && (
+                        <Button variant="ghost" size="icon" onClick={() => openEdit(user)} title="Editar">
+                          <Edit className="w-4 h-4" />
+                        </Button>
+                      )}
+                      {podeEditar && (
+                        <Button variant="ghost" size="icon" onClick={() => setResetTarget(user)} title="Resetar senha">
+                          <KeyRound className="w-4 h-4" />
+                        </Button>
+                      )}
+                      {isAdmin && podeExcluir && (
                         <Button
                           variant="ghost"
                           size="icon"
