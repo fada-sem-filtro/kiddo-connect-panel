@@ -11,6 +11,7 @@ import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { useUserPermissions } from '@/hooks/useUserPermissions';
 
 interface TurmaInfo {
   id: string;
@@ -34,6 +35,8 @@ interface EventoInfo {
 
 export default function EducadorTurmaPage() {
   const { user, profile } = useAuth();
+  const { canCreate } = useUserPermissions();
+  const podeCriarEvento = canCreate('eventos');
   const [turmas, setTurmas] = useState<TurmaInfo[]>([]);
   const [criancas, setCriancas] = useState<CriancaInfo[]>([]);
   const [eventosHoje, setEventosHoje] = useState<EventoInfo[]>([]);
@@ -214,7 +217,7 @@ export default function EducadorTurmaPage() {
                   </div>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  {(selectedTurmaId === 'all' ? turmas : turmas.filter(t => t.id === selectedTurmaId))
+                  {podeCriarEvento && (selectedTurmaId === 'all' ? turmas : turmas.filter(t => t.id === selectedTurmaId))
                     .filter(turma => !isTurmaFundamental(turma.faixa_etaria))
                     .map(turma => (
                     <Button
@@ -315,7 +318,7 @@ export default function EducadorTurmaPage() {
                       )}
                     </div>
 
-                    {!isTurmaFundamental(turmas.find(t => t.id === crianca.turma_id)?.faixa_etaria) && (
+                    {podeCriarEvento && !isTurmaFundamental(turmas.find(t => t.id === crianca.turma_id)?.faixa_etaria) && (
                       <Button 
                         onClick={() => handleAddEventoIndividual(crianca.id)}
                         className="w-full rounded-2xl bg-gradient-to-r from-kawaii-mint to-kawaii-blue hover:opacity-90 text-foreground font-semibold shadow-md"

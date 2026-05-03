@@ -12,11 +12,14 @@ import { EventDbModal } from '@/components/modals/EventDbModal';
 import { useEventos, EventoDb } from '@/hooks/useEventos';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { useUserPermissions } from '@/hooks/useUserPermissions';
 
 const Index = () => {
   const { role } = useAuth();
 
-  const canCreate = role === 'admin' || role === 'educador' || role === 'diretor';
+  const { canCreate: canCreatePerm } = useUserPermissions();
+  const baseCanCreate = role === 'admin' || role === 'educador' || role === 'diretor';
+  const canCreate = baseCanCreate && canCreatePerm('eventos');
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedCriancaId, setSelectedCriancaId] = useState<string>('all');
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
