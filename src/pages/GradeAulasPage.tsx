@@ -13,6 +13,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { FAIXA_ETARIA_OPTIONS } from '@/types';
 import { useAdminSchoolSelector, AdminSchoolSelector } from '@/components/admin/AdminSchoolSelector';
+import { useUserPermissions } from '@/hooks/useUserPermissions';
 
 interface Turma { id: string; nome: string; faixa_etaria: string | null; }
 interface Materia { id: string; nome: string; }
@@ -55,7 +56,11 @@ export default function GradeAulasPage() {
   const [formInicio, setFormInicio] = useState('08:00');
   const [formFim, setFormFim] = useState('09:00');
 
-  const canEdit = role === 'admin' || role === 'diretor';
+  const { canCreate: canCreateP, canEdit: canEditP, canDelete: canDeleteP } = useUserPermissions();
+  const baseCanEdit = role === 'admin' || role === 'diretor';
+  const podeCriar = baseCanEdit && canCreateP('grade_aulas');
+  const podeExcluir = baseCanEdit && canDeleteP('grade_aulas');
+  const canEdit = baseCanEdit;
 
   useEffect(() => {
     if (!effectiveCrecheId) { setTurmas([]); setMaterias([]); setEducadores([]); setLoading(false); return; }
@@ -184,7 +189,7 @@ export default function GradeAulasPage() {
 
         {selectedTurma ? (
           <>
-            {canEdit && (
+            {podeCriar && (
               <div className="flex justify-end">
                 <Button className="rounded-2xl" onClick={() => setModalOpen(true)}>
                   <Plus className="w-4 h-4 mr-2" /> Adicionar Aula
@@ -220,7 +225,7 @@ export default function GradeAulasPage() {
                                 <p className="text-xs text-muted-foreground">Prof. {getEducadorName(aula.educador_user_id)}</p>
                               </div>
                             </div>
-                            {canEdit && (
+                            {podeExcluir && (
                               <Button variant="ghost" size="icon" className="rounded-xl h-8 w-8 text-destructive" onClick={() => handleDelete(aula.id)}>
                                 <Trash2 className="w-4 h-4" />
                               </Button>

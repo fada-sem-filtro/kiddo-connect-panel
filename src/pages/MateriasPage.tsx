@@ -13,6 +13,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { useAdminSchoolSelector, AdminSchoolSelector } from '@/components/admin/AdminSchoolSelector';
+import { useUserPermissions } from '@/hooks/useUserPermissions';
 
 interface Materia {
   id: string;
@@ -24,6 +25,10 @@ interface Materia {
 export default function MateriasPage() {
   const { role } = useAuth();
   const { effectiveCrecheId, selectedCrecheId, setSelectedCrecheId, creches, isAdmin } = useAdminSchoolSelector();
+  const { canCreate, canEdit, canDelete } = useUserPermissions();
+  const podeCriar = canCreate('materias');
+  const podeEditar = canEdit('materias');
+  const podeExcluir = canDelete('materias');
   const [materias, setMaterias] = useState<Materia[]>([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
@@ -83,7 +88,7 @@ export default function MateriasPage() {
             </h1>
             <p className="text-sm text-muted-foreground mt-1">Gerencie as disciplinas da escola</p>
           </div>
-          {effectiveCrecheId && (
+          {effectiveCrecheId && podeCriar && (
             <Button className="rounded-2xl" onClick={openNew}>
               <Plus className="w-4 h-4 mr-2" /> Nova Matéria
             </Button>
@@ -119,9 +124,9 @@ export default function MateriasPage() {
                     {m.descricao && <p className="text-sm text-muted-foreground mt-1">{m.descricao}</p>}
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
-                    <Switch checked={m.ativo} onCheckedChange={() => handleToggleAtivo(m)} />
-                    <Button variant="ghost" size="icon" className="rounded-xl" onClick={() => openEdit(m)}><Pencil className="w-4 h-4" /></Button>
-                    <Button variant="ghost" size="icon" className="rounded-xl text-destructive" onClick={() => handleDelete(m.id)}><Trash2 className="w-4 h-4" /></Button>
+                    {podeEditar && <Switch checked={m.ativo} onCheckedChange={() => handleToggleAtivo(m)} />}
+                    {podeEditar && <Button variant="ghost" size="icon" className="rounded-xl" onClick={() => openEdit(m)}><Pencil className="w-4 h-4" /></Button>}
+                    {podeExcluir && <Button variant="ghost" size="icon" className="rounded-xl text-destructive" onClick={() => handleDelete(m.id)}><Trash2 className="w-4 h-4" /></Button>}
                   </div>
                 </CardContent>
               </Card>

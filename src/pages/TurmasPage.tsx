@@ -17,6 +17,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { useAdminSchoolSelector, AdminSchoolSelector } from '@/components/admin/AdminSchoolSelector';
+import { useUserPermissions } from '@/hooks/useUserPermissions';
 
 interface TurmaRow {
   id: string;
@@ -32,6 +33,10 @@ interface TurmaRow {
 export default function TurmasPage() {
   const { role, userCreche } = useAuth();
   const { effectiveCrecheId, selectedCrecheId, setSelectedCrecheId, creches, isAdmin } = useAdminSchoolSelector();
+  const { canCreate, canEdit, canDelete } = useUserPermissions();
+  const podeCriar = canCreate('turmas');
+  const podeEditar = canEdit('turmas');
+  const podeExcluir = canDelete('turmas');
   const [turmas, setTurmas] = useState<TurmaRow[]>([]);
   const [allCreches, setAllCreches] = useState<{ id: string; nome: string }[]>([]);
   const [search, setSearch] = useState('');
@@ -136,7 +141,7 @@ export default function TurmasPage() {
             </h1>
             <p className="text-muted-foreground">Gerencie as turmas da escola</p>
           </div>
-          {effectiveCrecheId && (
+          {effectiveCrecheId && podeCriar && (
             <Button onClick={() => setIsModalOpen(true)}>
               <Plus className="w-4 h-4 mr-2" />
               Nova Turma
@@ -229,17 +234,21 @@ export default function TurmasPage() {
                             <Button variant="ghost" size="icon" title="Educadores" onClick={() => setEduModalTurma(turma)}>
                               <Link2 className="w-4 h-4" />
                             </Button>
-                            <Button variant="ghost" size="icon" onClick={() => handleEdit(turma)}>
-                              <Edit className="w-4 h-4" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="text-destructive hover:text-destructive"
-                              onClick={() => handleDelete(turma)}
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
+                            {podeEditar && (
+                              <Button variant="ghost" size="icon" onClick={() => handleEdit(turma)}>
+                                <Edit className="w-4 h-4" />
+                              </Button>
+                            )}
+                            {podeExcluir && (
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="text-destructive hover:text-destructive"
+                                onClick={() => handleDelete(turma)}
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            )}
                           </div>
                         </TableCell>
                       </TableRow>

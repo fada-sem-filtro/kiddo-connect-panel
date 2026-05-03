@@ -7,6 +7,7 @@ import { RecadoModal } from '@/components/modals/RecadoModal';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { useUserPermissions } from '@/hooks/useUserPermissions';
 
 export interface RecadoDb {
   id: string;
@@ -35,8 +36,12 @@ export default function RecadosPage() {
   const [recados, setRecados] = useState<RecadoDb[]>([]);
   const [turmas, setTurmas] = useState<{ id: string; nome: string }[]>([]);
   const [loading, setLoading] = useState(true);
-  const canCreate = role === 'admin' || role === 'educador' || role === 'diretor';
-  const canCreateIndividual = canCreate || role === 'responsavel';
+  const { canCreate: canCreatePerm } = useUserPermissions();
+  const podeCriar = canCreatePerm('recados');
+  const baseCanCreate = role === 'admin' || role === 'educador' || role === 'diretor';
+  const baseCanCreateIndividual = baseCanCreate || role === 'responsavel';
+  const canCreate = baseCanCreate && podeCriar;
+  const canCreateIndividual = baseCanCreateIndividual && podeCriar;
 
   const fetchRecados = useCallback(async () => {
     // Fetch all recados (parents + children)

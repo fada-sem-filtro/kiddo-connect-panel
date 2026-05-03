@@ -14,6 +14,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { useAdminSchoolSelector, AdminSchoolSelector } from '@/components/admin/AdminSchoolSelector';
+import { useUserPermissions } from '@/hooks/useUserPermissions';
 
 interface Modelo { id: string; nome: string; descricao: string | null; ativo: boolean; creche_id: string; }
 interface Secao { id: string; modelo_id: string; titulo: string; descricao: string | null; ordem: number; }
@@ -31,6 +32,10 @@ const ESCALA_OPTIONS = ['Em desenvolvimento', 'Desenvolvido', 'Avançado', 'Não
 export default function RelatorioModeloPage() {
   const { role } = useAuth();
   const { effectiveCrecheId, selectedCrecheId, setSelectedCrecheId, creches, isAdmin } = useAdminSchoolSelector();
+  const { canCreate, canEdit, canDelete } = useUserPermissions();
+  const podeCriar = canCreate('relatorio_modelo');
+  const podeEditar = canEdit('relatorio_modelo');
+  const podeExcluir = canDelete('relatorio_modelo');
   const [modelos, setModelos] = useState<Modelo[]>([]);
   const [selectedModelo, setSelectedModelo] = useState<Modelo | null>(null);
   const [secoes, setSecoes] = useState<Secao[]>([]);
@@ -164,11 +169,13 @@ export default function RelatorioModeloPage() {
           </Card>
         ) : !selectedModelo ? (
           <>
-            <div className="flex justify-end">
-              <Button className="rounded-2xl" onClick={() => setModeloModal(true)}>
-                <Plus className="w-4 h-4 mr-2" /> Novo Modelo
-              </Button>
-            </div>
+            {podeCriar && (
+              <div className="flex justify-end">
+                <Button className="rounded-2xl" onClick={() => setModeloModal(true)}>
+                  <Plus className="w-4 h-4 mr-2" /> Novo Modelo
+                </Button>
+              </div>
+            )}
 
             {modelos.length === 0 ? (
               <Card className="border-2 border-dashed border-muted-foreground/30 rounded-3xl">
@@ -190,9 +197,11 @@ export default function RelatorioModeloPage() {
                             {m.ativo ? 'Ativo' : 'Inativo'}
                           </Badge>
                         </div>
-                        <Button variant="ghost" size="icon" className="text-destructive rounded-xl" onClick={(e) => { e.stopPropagation(); handleDeleteModelo(m.id); }}>
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
+                        {podeExcluir && (
+                          <Button variant="ghost" size="icon" className="text-destructive rounded-xl" onClick={(e) => { e.stopPropagation(); handleDeleteModelo(m.id); }}>
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        )}
                       </div>
                     </CardContent>
                   </Card>
@@ -207,11 +216,13 @@ export default function RelatorioModeloPage() {
               <h2 className="text-lg font-bold text-foreground">{selectedModelo.nome}</h2>
             </div>
 
-            <div className="flex justify-end">
-              <Button className="rounded-2xl" onClick={() => setSecaoModal(true)}>
-                <Plus className="w-4 h-4 mr-2" /> Nova Seção
-              </Button>
-            </div>
+            {podeCriar && (
+              <div className="flex justify-end">
+                <Button className="rounded-2xl" onClick={() => setSecaoModal(true)}>
+                  <Plus className="w-4 h-4 mr-2" /> Nova Seção
+                </Button>
+              </div>
+            )}
 
             {secoes.length === 0 ? (
               <Card className="border-2 border-dashed border-muted-foreground/30 rounded-3xl">
@@ -240,12 +251,16 @@ export default function RelatorioModeloPage() {
                             <Button variant="ghost" size="icon" className="rounded-xl h-8 w-8" disabled={idx === secoes.length - 1} onClick={() => handleMoveSecao(secao, 'down')}>
                               <ChevronDown className="w-4 h-4" />
                             </Button>
-                            <Button variant="ghost" size="icon" className="rounded-xl h-8 w-8 text-primary" onClick={() => { setTargetSecaoId(secao.id); setCampoModal(true); }}>
-                              <Plus className="w-4 h-4" />
-                            </Button>
-                            <Button variant="ghost" size="icon" className="rounded-xl h-8 w-8 text-destructive" onClick={() => handleDeleteSecao(secao.id)}>
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
+                            {podeCriar && (
+                              <Button variant="ghost" size="icon" className="rounded-xl h-8 w-8 text-primary" onClick={() => { setTargetSecaoId(secao.id); setCampoModal(true); }}>
+                                <Plus className="w-4 h-4" />
+                              </Button>
+                            )}
+                            {podeExcluir && (
+                              <Button variant="ghost" size="icon" className="rounded-xl h-8 w-8 text-destructive" onClick={() => handleDeleteSecao(secao.id)}>
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            )}
                           </div>
                         </div>
 
@@ -260,9 +275,11 @@ export default function RelatorioModeloPage() {
                                     {campo.obrigatorio && <Badge className="rounded-lg text-xs bg-destructive/10 text-destructive border-destructive/20">Obrigatório</Badge>}
                                   </div>
                                 </div>
-                                <Button variant="ghost" size="icon" className="rounded-xl h-7 w-7 text-destructive" onClick={() => handleDeleteCampo(campo.id)}>
-                                  <Trash2 className="w-3 h-3" />
-                                </Button>
+                                {podeExcluir && (
+                                  <Button variant="ghost" size="icon" className="rounded-xl h-7 w-7 text-destructive" onClick={() => handleDeleteCampo(campo.id)}>
+                                    <Trash2 className="w-3 h-3" />
+                                  </Button>
+                                )}
                               </div>
                             ))}
                           </div>

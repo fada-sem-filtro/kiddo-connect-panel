@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { useUserPermissions } from '@/hooks/useUserPermissions';
 
 interface FeriadoDb {
   id: string;
@@ -22,6 +23,10 @@ interface FeriadoDb {
 }
 
 export default function FeriadosPage() {
+  const { canCreate, canEdit, canDelete } = useUserPermissions();
+  const podeCriar = canCreate('feriados');
+  const podeEditar = canEdit('feriados');
+  const podeExcluir = canDelete('feriados');
   const [feriados, setFeriados] = useState<FeriadoDb[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -71,10 +76,12 @@ export default function FeriadosPage() {
               <p className="text-muted-foreground">Gerencie os feriados do calendário escolar</p>
             </div>
           </div>
-          <Button onClick={() => setIsModalOpen(true)} className="kawaii-btn rounded-2xl">
-            <Plus className="w-4 h-4 mr-2" />
-            Novo Feriado
-          </Button>
+          {podeCriar && (
+            <Button onClick={() => setIsModalOpen(true)} className="kawaii-btn rounded-2xl">
+              <Plus className="w-4 h-4 mr-2" />
+              Novo Feriado
+            </Button>
+          )}
         </div>
 
         {loading ? (
@@ -84,10 +91,12 @@ export default function FeriadosPage() {
             <CardContent className="py-12 text-center">
               <span className="text-5xl block mb-4">🎊</span>
               <p className="text-muted-foreground">Nenhum feriado cadastrado</p>
-              <Button variant="outline" className="mt-4 rounded-2xl" onClick={() => setIsModalOpen(true)}>
-                <Plus className="w-4 h-4 mr-2" />
-                Adicionar primeiro feriado
-              </Button>
+              {podeCriar && (
+                <Button variant="outline" className="mt-4 rounded-2xl" onClick={() => setIsModalOpen(true)}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Adicionar primeiro feriado
+                </Button>
+              )}
             </CardContent>
           </Card>
         ) : (
@@ -114,12 +123,16 @@ export default function FeriadosPage() {
                       </p>
                     </div>
                     <div className="flex gap-2">
-                      <Button variant="ghost" size="icon" className="rounded-xl hover:bg-primary/10" onClick={() => handleEdit(feriado)}>
-                        <Pencil className="w-4 h-4" />
-                      </Button>
-                      <Button variant="ghost" size="icon" className="rounded-xl hover:bg-destructive/10 hover:text-destructive" onClick={() => setDeleteId(feriado.id)}>
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
+                      {podeEditar && (
+                        <Button variant="ghost" size="icon" className="rounded-xl hover:bg-primary/10" onClick={() => handleEdit(feriado)}>
+                          <Pencil className="w-4 h-4" />
+                        </Button>
+                      )}
+                      {podeExcluir && (
+                        <Button variant="ghost" size="icon" className="rounded-xl hover:bg-destructive/10 hover:text-destructive" onClick={() => setDeleteId(feriado.id)}>
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      )}
                     </div>
                   </div>
                 </CardContent>

@@ -14,6 +14,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { useAdminSchoolSelector, AdminSchoolSelector } from '@/components/admin/AdminSchoolSelector';
+import { useUserPermissions } from '@/hooks/useUserPermissions';
 import { FAIXA_ETARIA_OPTIONS } from '@/types';
 
 interface Turma { id: string; nome: string; faixa_etaria: string | null; }
@@ -47,7 +48,11 @@ export default function BoletimPage() {
   const [formObservacoes, setFormObservacoes] = useState('');
   const [formPeriodo, setFormPeriodo] = useState('');
 
-  const isReadOnly = role === 'responsavel';
+  const { canCreate, canEdit: canEditPerm, canDelete } = useUserPermissions();
+  const podeCriar = canCreate('boletim');
+  const podeEditar = canEditPerm('boletim');
+  const podeExcluir = canDelete('boletim');
+  const isReadOnly = role === 'responsavel' || (!podeCriar && !podeEditar && !podeExcluir);
 
   // Get periods from school config
   const [tipoPeriodo, setTipoPeriodo] = useState('bimestral');
@@ -189,7 +194,7 @@ export default function BoletimPage() {
 
             {selectedCrianca ? (
               <>
-                {!isReadOnly && (
+                {podeCriar && (
                   <div className="flex justify-end">
                     <Button className="rounded-2xl" onClick={openNew}><Plus className="w-4 h-4 mr-2" /> Adicionar Nota</Button>
                   </div>
@@ -224,8 +229,8 @@ export default function BoletimPage() {
                             {!isReadOnly && (
                               <TableCell>
                                 <div className="flex gap-1">
-                                  <Button variant="ghost" size="icon" className="rounded-xl h-8 w-8" onClick={() => openEdit(b)}><Pencil className="w-3.5 h-3.5" /></Button>
-                                  <Button variant="ghost" size="icon" className="rounded-xl h-8 w-8 text-destructive" onClick={() => handleDelete(b.id)}><Trash2 className="w-3.5 h-3.5" /></Button>
+                                  {podeEditar && <Button variant="ghost" size="icon" className="rounded-xl h-8 w-8" onClick={() => openEdit(b)}><Pencil className="w-3.5 h-3.5" /></Button>}
+                                  {podeExcluir && <Button variant="ghost" size="icon" className="rounded-xl h-8 w-8 text-destructive" onClick={() => handleDelete(b.id)}><Trash2 className="w-3.5 h-3.5" /></Button>}
                                 </div>
                               </TableCell>
                             )}
