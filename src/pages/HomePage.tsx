@@ -398,6 +398,18 @@ export default function HomePage() {
           <div className="space-y-4">
             {[
               {
+                version: "2.6.2",
+                date: "Maio 2026",
+                title: "Permissões granulares na interface e blindagem de segurança",
+                items: [
+                  "Botões de criar, editar e excluir respeitam as permissões do perfil.",
+                  "Permissões aplicadas em Alunos, Turmas, Corpo Docente, Usuários, Recados, Eventos, Calendário, Feriados, Matérias, Grade de Aulas, Boletim, Atividades Pedagógicas e Relatórios.",
+                  "Uploads de anexos restritos à pasta do próprio usuário no bucket de recados.",
+                  "Realtime com escopo por identidade, escola, turma e aluno.",
+                  "Função de envio de orçamentos endurecida com validação adicional contra abuso.",
+                ],
+              },
+              {
                 version: "2.6",
                 date: "Abril 2026",
                 title: "Auditoria dos dados, política LGPD e segurança reforçada",
