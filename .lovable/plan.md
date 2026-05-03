@@ -1,40 +1,23 @@
+# Atualização do Changelog — v2.7
 
-## Módulo de Boletos e Cobranças
+Adicionar uma nova entrada no topo de `src/pages/ChangelogPage.tsx` documentando as funcionalidades e melhorias entregues mais recentemente.
 
-### 1. Banco de Dados (Migration)
-Criar tabela `boletos` com os campos:
-- **Básicos**: criança_id, turma_id, creche_id, valor, vencimento, status (pendente/pago/vencido/cancelado), descricao
-- **Desconto/multa/juros**: desconto_antecipacao (%), data_limite_desconto, multa_atraso (%), juros_dia (%)
-- **Parcelamento**: parcela_atual, total_parcelas, referencia (ex: "Mensalidade Março 2026")
-- **Dados bancários**: linha_digitavel, codigo_barras, nosso_numero
-- **Extras**: observacoes (campo livre para informações adicionais), data_pagamento, educador_user_id (quem registrou)
-- RLS: Admin total, Diretor por escola, Secretaria por escola, Responsável visualiza dos filhos
+## Nova entrada
 
-Adicionar coluna `modulo_boletos_ativo` na tabela `configuracoes_pedagogicas`
+**Versão:** 2.6.2 — Maio 2026  
+**Título:** Permissões granulares na interface e blindagem de segurança
 
-Adicionar módulo `boletos` na tabela `permissoes_perfil` para os perfis secretaria e diretor
+**Itens:**
 
-### 2. Páginas e Telas
-- **ConfiguracoesPedagogicasPage**: Adicionar toggle "Módulo de Boletos"
-- **BoletoPage** (admin/diretor/secretaria): Listagem de boletos com filtros por turma, aluno, status e período
-- **BoletoModal**: Criar/editar boleto com todos os campos
-- **Responsável**: Visualizar boletos dos filhos com botão "Copiar linha digitável"
+- **Correção** — Botões de criar, editar e excluir  respeitam as permissões.
+- **Melhoria** — Permissões aplicadas em Alunos, Turmas, Corpo Docente, Usuários, Recados, Eventos, Calendário, Feriados, Matérias, Grade de Aulas, Boletim, Atividades Pedagógicas e Relatórios.
+- **Segurança** — Uploads de anexos restritos à pasta do próprio usuário no bucket de recados.
+- **Segurança** — Realtime com escopo por identidade, escola, turma e aluno.
+- **Segurança** — Função de envio de orçamentos endurecida com validação adicional contra abuso.
 
-### 3. Navegação
-- Adicionar rotas protegidas para `/boletos`, `/secretaria/boletos`, `/diretor/boletos`
-- Adicionar ao sidebar de admin, diretor e secretaria (condicionado à permissão)
-- Adicionar atalho no dashboard da secretaria e do diretor
+## Detalhes técnicos
 
-### 4. Permissões
-- Admin ativa o módulo via Configurações Pedagógicas
-- Diretor gerencia boletos da sua escola
-- Secretaria gerencia boletos (se permitido pelo diretor via permissões)
-- Responsável visualiza e copia linha digitável
-
-### 5. Integração bancária (preparação)
-- Estrutura preparada para receber API de banco futuramente
-- Campos bancários preenchidos manualmente por enquanto
-- Sem edge function de integração neste momento
-
-### ⚠️ Correção pendente
-- Corrigir erro de build em `usePresencas.ts` antes de prosseguir
+- Único arquivo editado: `src/pages/ChangelogPage.tsx`.
+- Inserir o objeto da v2.7 como primeiro elemento do array `CHANGELOG`, mantendo a v2.6 e demais versões intactas logo abaixo.
+- Reaproveitar os tipos existentes (`feature`, `improvement`, `security`) — sem necessidade de alterar `TYPE_M`
+  &nbsp;
