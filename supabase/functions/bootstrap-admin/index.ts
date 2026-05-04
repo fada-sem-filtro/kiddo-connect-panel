@@ -14,6 +14,26 @@ serve(async (req) => {
   try {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const bootstrapSecret = Deno.env.get('BOOTSTRAP_SECRET');
+
+    // Require a server-side secret to call this function at all.
+    if (!bootstrapSecret) {
+      return new Response(JSON.stringify({ error: 'Bootstrap is disabled. BOOTSTRAP_SECRET is not configured.' }), {
+        status: 403,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    const body = await req.json();
+    const { email, password, nome, bootstrap_secret } = body ?? {};
+
+    if (!bootstrap_secret || bootstrap_secret !== bootstrapSecret) {
+      return new Response(JSON.stringify({ error: 'Forbidden' }), {
+        status: 403,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
     const adminClient = createClient(supabaseUrl, serviceRoleKey);
 
     // Check if any admin exists - if yes, refuse
@@ -29,8 +49,6 @@ serve(async (req) => {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
-
-    const { email, password, nome } = await req.json();
 
     const { data: newUser, error: createError } = await adminClient.auth.admin.createUser({
       email,
