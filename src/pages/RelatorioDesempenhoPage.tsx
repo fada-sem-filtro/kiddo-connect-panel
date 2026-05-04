@@ -46,8 +46,8 @@ export default function RelatorioDesempenhoPage() {
   const [tipoPeriodo, setTipoPeriodo] = useState('bimestral');
 
   const { canCreate, canEdit: canEditPerm } = useUserPermissions();
-  const baseCanEdit = role === 'admin' || role === 'educador' || role === 'diretor';
-  const canEdit = baseCanEdit && (canCreate('relatorio_desempenho') || canEditPerm('relatorio_desempenho'));
+  // Admin sempre pode; demais perfis seguem permissões configuradas para o módulo relatorio_desempenho.
+  const canEdit = role === 'admin' || canCreate('relatorio_desempenho') || canEditPerm('relatorio_desempenho');
   const PERIODOS = getPeriodos(tipoPeriodo);
 
   useEffect(() => {

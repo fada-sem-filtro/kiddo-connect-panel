@@ -38,10 +38,10 @@ export default function RecadosPage() {
   const [loading, setLoading] = useState(true);
   const { canCreate: canCreatePerm } = useUserPermissions();
   const podeCriar = canCreatePerm('recados');
-  const baseCanCreate = role === 'admin' || role === 'educador' || role === 'diretor';
-  const baseCanCreateIndividual = baseCanCreate || role === 'responsavel';
-  const canCreate = baseCanCreate && podeCriar;
-  const canCreateIndividual = baseCanCreateIndividual && podeCriar;
+  // Admin sempre pode; demais perfis dependem da permissão configurada.
+  const isAdminRole = role === 'admin';
+  const canCreate = isAdminRole || podeCriar;
+  const canCreateIndividual = isAdminRole || podeCriar;
 
   const fetchRecados = useCallback(async () => {
     // Fetch all recados (parents + children)

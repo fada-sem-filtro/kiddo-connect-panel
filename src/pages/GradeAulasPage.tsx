@@ -57,10 +57,11 @@ export default function GradeAulasPage() {
   const [formFim, setFormFim] = useState('09:00');
 
   const { canCreate: canCreateP, canEdit: canEditP, canDelete: canDeleteP } = useUserPermissions();
-  const baseCanEdit = role === 'admin' || role === 'diretor';
-  const podeCriar = baseCanEdit && canCreateP('grade_aulas');
-  const podeExcluir = baseCanEdit && canDeleteP('grade_aulas');
-  const canEdit = baseCanEdit;
+  // Admin sempre pode; demais perfis seguem as permissões configuradas pelo admin para o módulo grade_aulas.
+  const isAdminRole = role === 'admin';
+  const podeCriar = isAdminRole || canCreateP('grade_aulas');
+  const podeExcluir = isAdminRole || canDeleteP('grade_aulas');
+  const canEdit = isAdminRole || canEditP('grade_aulas') || canCreateP('grade_aulas');
 
   useEffect(() => {
     if (!effectiveCrecheId) { setTurmas([]); setMaterias([]); setEducadores([]); setLoading(false); return; }
