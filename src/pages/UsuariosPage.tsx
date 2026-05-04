@@ -456,7 +456,7 @@ export default function UsuariosPage() {
                           <KeyRound className="w-4 h-4" />
                         </Button>
                       )}
-                      {isAdmin && podeExcluir && (
+                      {podeExcluir && (
                         <Button
                           variant="ghost"
                           size="icon"
