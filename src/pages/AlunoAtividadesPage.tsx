@@ -10,6 +10,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { BookOpen, Clock, CheckCircle, Upload, Image, Send, ArrowLeft, Camera } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { useSignedStorageUrl } from '@/lib/storage-urls';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
