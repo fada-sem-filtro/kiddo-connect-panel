@@ -174,8 +174,8 @@ export default function EducadorAtividadesPage() {
     const path = `questoes/${turmaId}/${Date.now()}_${qIdx}.${ext}`;
     const { error } = await supabase.storage.from('atividades-arquivos').upload(path, file);
     if (error) { toast.error('Erro ao enviar imagem'); return; }
-    const { data } = supabase.storage.from('atividades-arquivos').getPublicUrl(path);
-    updateQuestao(qIdx, 'imagem_url', data.publicUrl);
+    // Store storage path; viewer resolves via signed URL.
+    updateQuestao(qIdx, 'imagem_url', path);
   };
 
   const handleSave = async () => {
