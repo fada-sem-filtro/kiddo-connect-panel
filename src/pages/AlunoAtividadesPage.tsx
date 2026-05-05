@@ -66,15 +66,22 @@ export default function AlunoAtividadesPage() {
       .eq('atividade_id', atv.id)
       .order('ordem');
 
+    const isGraded = entrega?.status === 'avaliada';
     const questoesWithOpcoes = await Promise.all(
       (qs || []).map(async (q: any) => {
         if (q.tipo === 'multipla_escolha') {
-          const { data: ops } = await supabase
-            .from('atividade_opcoes')
-            .select('*')
-            .eq('questao_id', q.id)
-            .order('ordem');
-          return { ...q, opcoes: ops || [] };
+          if (isGraded) {
+            // After grading, show full options including is_correta
+            const { data: ops } = await supabase
+              .from('atividade_opcoes')
+              .select('*')
+              .eq('questao_id', q.id)
+              .order('ordem');
+            return { ...q, opcoes: ops || [] };
+          }
+          // Before grading: use safe RPC that hides is_correta
+          const { data: ops } = await supabase.rpc('get_opcoes_for_quiz', { _questao_id: q.id });
+          return { ...q, opcoes: (ops || []).map((o: any) => ({ ...o, is_correta: false })) };
         }
         return { ...q, opcoes: [] };
       })
