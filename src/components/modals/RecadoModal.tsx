@@ -41,8 +41,8 @@ async function uploadAnexo(file: File, userId: string): Promise<{ url: string; t
   const path = `${userId}/${Date.now()}.${ext}`;
   const { error } = await supabase.storage.from('recado-anexos').upload(path, file);
   if (error) throw error;
-  const { data: { publicUrl } } = supabase.storage.from('recado-anexos').getPublicUrl(path);
-  return { url: publicUrl, tipo: file.type };
+  // Store the storage path; display layer resolves it via signed URL.
+  return { url: path, tipo: file.type };
 }
 
 export function RecadoModal({ open, onOpenChange, mode, onSaved }: RecadoModalProps) {
