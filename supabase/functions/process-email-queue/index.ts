@@ -29,6 +29,7 @@ Deno.serve(async (req) => {
   const apiKey = Deno.env.get('LOVABLE_API_KEY')
   const supabaseUrl = Deno.env.get('SUPABASE_URL')
   const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
+  const processSecret = Deno.env.get('PROCESS_EMAIL_SECRET')
 
   if (!apiKey || !supabaseUrl || !supabaseServiceKey) {
     console.error('Missing required environment variables')
@@ -38,8 +39,17 @@ Deno.serve(async (req) => {
     )
   }
 
-  // Auth: verify_jwt = true in config.toml — Supabase gateway validates the
-  // service role JWT from the pg_cron Authorization header before this runs.
+  // Auth: require either the service-role key or PROCESS_EMAIL_SECRET as bearer token.
+  // verify_jwt = false in config.toml, so we enforce auth in-code.
+  const authHeader = req.headers.get('Authorization') || ''
+  const bearer = authHeader.replace(/^Bearer\s+/i, '').trim()
+  const allowedTokens = [supabaseServiceKey, processSecret].filter(Boolean) as string[]
+  if (!bearer || !allowedTokens.includes(bearer)) {
+    return new Response(
+      JSON.stringify({ error: 'Unauthorized' }),
+      { status: 401, headers: { 'Content-Type': 'application/json' } }
+    )
+  }
 
   const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
