@@ -261,7 +261,7 @@ export default function AlunoAtividadesPage() {
                   </div>
 
                   {q.imagem_url && (
-                    <img src={q.imagem_url} alt="Questão" className="rounded-xl max-h-48 object-contain" />
+                    <AtividadeImg pathOrUrl={q.imagem_url} alt="Questão" className="rounded-xl max-h-48 object-contain" />
                   )}
 
                   {q.tipo === 'texto' && (
