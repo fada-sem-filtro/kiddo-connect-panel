@@ -124,8 +124,8 @@ export default function AlunoAtividadesPage() {
     const path = `respostas/${crianca.id}/${questaoId}_${Date.now()}.${ext}`;
     const { error } = await supabase.storage.from('atividades-arquivos').upload(path, file);
     if (error) { toast.error('Erro ao enviar foto'); return; }
-    const { data: urlData } = supabase.storage.from('atividades-arquivos').getPublicUrl(path);
-    handleRespostaChange(questaoId, 'foto_url', urlData.publicUrl);
+    // Store storage path; viewer resolves via signed URL.
+    handleRespostaChange(questaoId, 'foto_url', path);
     toast.success('Foto enviada!');
   };
 
