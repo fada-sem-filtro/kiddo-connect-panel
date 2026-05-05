@@ -10,9 +10,16 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { BookOpen, Clock, CheckCircle, Upload, Image, Send, ArrowLeft, Camera } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { useSignedStorageUrl } from '@/lib/storage-urls';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
+
+function AtividadeImg({ pathOrUrl, alt, className }: { pathOrUrl: string | null | undefined; alt: string; className?: string }) {
+  const url = useSignedStorageUrl('atividades-arquivos', pathOrUrl);
+  if (!url) return null;
+  return <img src={url} alt={alt} className={className} />;
+}
 
 export default function AlunoAtividadesPage() {
   const { user } = useAuth();
@@ -124,8 +131,8 @@ export default function AlunoAtividadesPage() {
     const path = `respostas/${crianca.id}/${questaoId}_${Date.now()}.${ext}`;
     const { error } = await supabase.storage.from('atividades-arquivos').upload(path, file);
     if (error) { toast.error('Erro ao enviar foto'); return; }
-    const { data: urlData } = supabase.storage.from('atividades-arquivos').getPublicUrl(path);
-    handleRespostaChange(questaoId, 'foto_url', urlData.publicUrl);
+    // Store storage path; viewer resolves via signed URL.
+    handleRespostaChange(questaoId, 'foto_url', path);
     toast.success('Foto enviada!');
   };
 
@@ -254,7 +261,7 @@ export default function AlunoAtividadesPage() {
                   </div>
 
                   {q.imagem_url && (
-                    <img src={q.imagem_url} alt="Questão" className="rounded-xl max-h-48 object-contain" />
+                    <AtividadeImg pathOrUrl={q.imagem_url} alt="Questão" className="rounded-xl max-h-48 object-contain" />
                   )}
 
                   {q.tipo === 'texto' && (
@@ -290,7 +297,7 @@ export default function AlunoAtividadesPage() {
                   {q.tipo === 'upload_foto' && (
                     <div className="space-y-2">
                       {respostas[q.id]?.foto_url && (
-                        <img src={respostas[q.id].foto_url} alt="Resposta" className="rounded-xl max-h-48 object-contain border" />
+                        <AtividadeImg pathOrUrl={respostas[q.id].foto_url} alt="Resposta" className="rounded-xl max-h-48 object-contain border" />
                       )}
                       {!isReadOnly && (
                         <div>

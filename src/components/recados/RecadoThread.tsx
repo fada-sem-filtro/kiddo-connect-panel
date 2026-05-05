@@ -19,6 +19,7 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Textarea } from '@/components/ui/textarea';
 import { supabase } from '@/integrations/supabase/client';
+import { useSignedStorageUrl } from '@/lib/storage-urls';
 import { useAuth } from '@/contexts/AuthContext';
 import { useUserPermissions } from '@/hooks/useUserPermissions';
 import { toast } from 'sonner';
@@ -34,7 +35,8 @@ interface RecadoThreadProps {
 
 function AnexoFoto({ url, tipo }: { url: string; tipo?: string | null }) {
   const [fullscreen, setFullscreen] = useState(false);
-  if (!url || !tipo?.startsWith('image/')) return null;
+  const signedUrl = useSignedStorageUrl('recado-anexos', url);
+  if (!url || !tipo?.startsWith('image/') || !signedUrl) return null;
 
   return (
     <>
@@ -43,7 +45,7 @@ function AnexoFoto({ url, tipo }: { url: string; tipo?: string | null }) {
         onClick={() => setFullscreen(true)}
       >
         <img
-          src={url}
+          src={signedUrl}
           alt="Foto anexada"
           className="max-w-xs max-h-48 rounded-xl border-2 border-border object-cover transition-transform group-hover:scale-[1.02] shadow-sm"
           loading="lazy"
@@ -55,7 +57,7 @@ function AnexoFoto({ url, tipo }: { url: string; tipo?: string | null }) {
       <Dialog open={fullscreen} onOpenChange={setFullscreen}>
         <DialogContent className="max-w-4xl p-2 bg-background/95">
           <img
-            src={url}
+            src={signedUrl}
             alt="Foto anexada"
             className="w-full h-auto max-h-[80vh] object-contain rounded-lg"
           />
@@ -129,8 +131,8 @@ export function RecadoThread({ recado, onChanged }: RecadoThreadProps) {
         const path = `${user.id}/${Date.now()}.${ext}`;
         const { error: upErr } = await supabase.storage.from('recado-anexos').upload(path, replyFile);
         if (upErr) throw upErr;
-        const { data: { publicUrl } } = supabase.storage.from('recado-anexos').getPublicUrl(path);
-        payload.anexo_url = publicUrl;
+        // Store the storage path; the viewer resolves a signed URL on display.
+        payload.anexo_url = path;
         payload.anexo_tipo = replyFile.type;
       }
 

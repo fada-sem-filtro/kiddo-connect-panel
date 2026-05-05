@@ -16,6 +16,13 @@ import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { useUserPermissions } from '@/hooks/useUserPermissions';
+import { useSignedStorageUrl } from '@/lib/storage-urls';
+
+function AtividadeImg({ pathOrUrl, alt, className }: { pathOrUrl: string | null | undefined; alt: string; className?: string }) {
+  const url = useSignedStorageUrl('atividades-arquivos', pathOrUrl);
+  if (!url) return null;
+  return <img src={url} alt={alt} className={className} />;
+}
 
 interface QuestaoForm {
   id?: string;
@@ -174,8 +181,8 @@ export default function EducadorAtividadesPage() {
     const path = `questoes/${turmaId}/${Date.now()}_${qIdx}.${ext}`;
     const { error } = await supabase.storage.from('atividades-arquivos').upload(path, file);
     if (error) { toast.error('Erro ao enviar imagem'); return; }
-    const { data } = supabase.storage.from('atividades-arquivos').getPublicUrl(path);
-    updateQuestao(qIdx, 'imagem_url', data.publicUrl);
+    // Store storage path; viewer resolves via signed URL.
+    updateQuestao(qIdx, 'imagem_url', path);
   };
 
   const handleSave = async () => {
@@ -475,7 +482,7 @@ export default function EducadorAtividadesPage() {
 
                     {/* Image upload */}
                     <div>
-                      {q.imagem_url && <img src={q.imagem_url} alt="" className="rounded-lg max-h-32 object-contain mb-2" />}
+                      {q.imagem_url && <AtividadeImg pathOrUrl={q.imagem_url} alt="" className="rounded-lg max-h-32 object-contain mb-2" />}
                       <Label htmlFor={`img-${qIdx}`} className="cursor-pointer inline-flex items-center gap-1 text-xs text-primary hover:underline">
                         <Image className="w-3 h-3" /> {q.imagem_url ? 'Trocar imagem' : 'Adicionar imagem'}
                       </Label>
@@ -580,7 +587,7 @@ export default function EducadorAtividadesPage() {
                         </div>
                       )}
                       {q.tipo === 'upload_foto' && resp?.foto_url && (
-                        <img src={resp.foto_url} alt="Resposta" className="rounded-lg max-h-48 object-contain" />
+                        <AtividadeImg pathOrUrl={resp.foto_url} alt="Resposta" className="rounded-lg max-h-48 object-contain" />
                       )}
                     </CardContent>
                   </Card>
