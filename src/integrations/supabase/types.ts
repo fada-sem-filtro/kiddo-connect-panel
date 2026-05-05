@@ -810,6 +810,7 @@ export type Database = {
       eventos_futuros: {
         Row: {
           created_at: string
+          creche_id: string
           data_fim: string | null
           data_inicio: string
           descricao: string | null
@@ -819,6 +820,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          creche_id: string
           data_fim?: string | null
           data_inicio: string
           descricao?: string | null
@@ -828,6 +830,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          creche_id?: string
           data_fim?: string | null
           data_inicio?: string
           descricao?: string | null
@@ -848,6 +851,7 @@ export type Database = {
       feriados: {
         Row: {
           created_at: string
+          creche_id: string | null
           data: string
           id: string
           nome: string
@@ -855,6 +859,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          creche_id?: string | null
           data: string
           id?: string
           nome: string
@@ -862,6 +867,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          creche_id?: string | null
           data?: string
           id?: string
           nome?: string
