@@ -1740,6 +1740,15 @@ export type Database = {
         Args: { _user_id: string }
         Returns: string[]
       }
+      get_opcoes_for_quiz: {
+        Args: { _questao_id: string }
+        Returns: {
+          id: string
+          ordem: number
+          questao_id: string
+          texto: string
+        }[]
+      }
       get_turma_ids_for_responsavel: {
         Args: { _user_id: string }
         Returns: string[]
