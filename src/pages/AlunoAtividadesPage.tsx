@@ -297,7 +297,7 @@ export default function AlunoAtividadesPage() {
                   {q.tipo === 'upload_foto' && (
                     <div className="space-y-2">
                       {respostas[q.id]?.foto_url && (
-                        <img src={respostas[q.id].foto_url} alt="Resposta" className="rounded-xl max-h-48 object-contain border" />
+                        <AtividadeImg pathOrUrl={respostas[q.id].foto_url} alt="Resposta" className="rounded-xl max-h-48 object-contain border" />
                       )}
                       {!isReadOnly && (
                         <div>
