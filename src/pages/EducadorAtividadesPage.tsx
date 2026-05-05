@@ -482,7 +482,7 @@ export default function EducadorAtividadesPage() {
 
                     {/* Image upload */}
                     <div>
-                      {q.imagem_url && <img src={q.imagem_url} alt="" className="rounded-lg max-h-32 object-contain mb-2" />}
+                      {q.imagem_url && <AtividadeImg pathOrUrl={q.imagem_url} alt="" className="rounded-lg max-h-32 object-contain mb-2" />}
                       <Label htmlFor={`img-${qIdx}`} className="cursor-pointer inline-flex items-center gap-1 text-xs text-primary hover:underline">
                         <Image className="w-3 h-3" /> {q.imagem_url ? 'Trocar imagem' : 'Adicionar imagem'}
                       </Label>
