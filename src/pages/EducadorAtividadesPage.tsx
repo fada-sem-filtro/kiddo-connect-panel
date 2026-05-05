@@ -169,8 +169,9 @@ export default function EducadorAtividadesPage() {
   };
 
   const handleUploadImagem = async (qIdx: number, file: File) => {
+    if (!turmaId) { toast.error('Selecione a turma antes de enviar imagens'); return; }
     const ext = file.name.split('.').pop();
-    const path = `questoes/${Date.now()}_${qIdx}.${ext}`;
+    const path = `questoes/${turmaId}/${Date.now()}_${qIdx}.${ext}`;
     const { error } = await supabase.storage.from('atividades-arquivos').upload(path, file);
     if (error) { toast.error('Erro ao enviar imagem'); return; }
     const { data } = supabase.storage.from('atividades-arquivos').getPublicUrl(path);
