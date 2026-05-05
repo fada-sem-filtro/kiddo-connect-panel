@@ -64,22 +64,13 @@ export default function SuportePage() {
     if (!selectedMsg || !replyContent.trim() || !user) return;
     setSending(true);
     try {
-      // Update status to respondido
-      await supabase
-        .from('suporte_mensagens')
-        .update({ status: 'respondido' })
-        .eq('id', selectedMsg.id);
-
-      // Also create a recado for the user so they see it in Recados
-      // Use the support requester's user_id as remetente so RLS allows them to see it
-      await supabase.from('recados').insert({
-        conteudo: replyContent.trim(),
-        remetente_user_id: selectedMsg.user_id,
-        remetente_nome: '🛟 Suporte',
-        titulo: `Re: ${selectedMsg.assunto}`,
-        crianca_id: null,
-        turma_id: null,
+      // Cria o recado de suporte via RPC SECURITY DEFINER (também marca como respondido)
+      const { error: rpcError } = await supabase.rpc('send_suporte_reply', {
+        _suporte_id: selectedMsg.id,
+        _titulo: `Re: ${selectedMsg.assunto}`,
+        _conteudo: replyContent.trim(),
       });
+      if (rpcError) throw rpcError;
 
       // Send email via edge function
       const emailBody = `
