@@ -35,7 +35,8 @@ interface RecadoThreadProps {
 
 function AnexoFoto({ url, tipo }: { url: string; tipo?: string | null }) {
   const [fullscreen, setFullscreen] = useState(false);
-  if (!url || !tipo?.startsWith('image/')) return null;
+  const signedUrl = useSignedStorageUrl('recado-anexos', url);
+  if (!url || !tipo?.startsWith('image/') || !signedUrl) return null;
 
   return (
     <>
@@ -44,7 +45,7 @@ function AnexoFoto({ url, tipo }: { url: string; tipo?: string | null }) {
         onClick={() => setFullscreen(true)}
       >
         <img
-          src={url}
+          src={signedUrl}
           alt="Foto anexada"
           className="max-w-xs max-h-48 rounded-xl border-2 border-border object-cover transition-transform group-hover:scale-[1.02] shadow-sm"
           loading="lazy"
@@ -56,7 +57,7 @@ function AnexoFoto({ url, tipo }: { url: string; tipo?: string | null }) {
       <Dialog open={fullscreen} onOpenChange={setFullscreen}>
         <DialogContent className="max-w-4xl p-2 bg-background/95">
           <img
-            src={url}
+            src={signedUrl}
             alt="Foto anexada"
             className="w-full h-auto max-h-[80vh] object-contain rounded-lg"
           />
