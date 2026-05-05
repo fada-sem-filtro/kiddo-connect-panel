@@ -129,8 +129,8 @@ export function RecadoThread({ recado, onChanged }: RecadoThreadProps) {
         const path = `${user.id}/${Date.now()}.${ext}`;
         const { error: upErr } = await supabase.storage.from('recado-anexos').upload(path, replyFile);
         if (upErr) throw upErr;
-        const { data: { publicUrl } } = supabase.storage.from('recado-anexos').getPublicUrl(path);
-        payload.anexo_url = publicUrl;
+        // Store the storage path; the viewer resolves a signed URL on display.
+        payload.anexo_url = path;
         payload.anexo_tipo = replyFile.type;
       }
 
