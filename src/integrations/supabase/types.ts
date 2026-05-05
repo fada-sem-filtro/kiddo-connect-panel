@@ -1810,6 +1810,10 @@ export type Database = {
           read_ct: number
         }[]
       }
+      send_suporte_reply: {
+        Args: { _conteudo: string; _suporte_id: string; _titulo: string }
+        Returns: string
+      }
     }
     Enums: {
       app_role:
