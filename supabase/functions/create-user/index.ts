@@ -126,6 +126,28 @@ serve(async (req) => {
       });
     }
 
+    // Cross-tenant guard: non-admin callers may only create users in their own creche
+    if (!hasAdmin && creche_id) {
+      const { data: callerMemberships } = await userClient
+        .from('creche_membros')
+        .select('creche_id')
+        .eq('user_id', callingUser.id);
+      const allowed = (callerMemberships || []).some((m: any) => m.creche_id === creche_id);
+      if (!allowed) {
+        return new Response(JSON.stringify({ error: 'Forbidden: cannot create users in another school' }), {
+          status: 403,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+    }
+
+    if (!hasAdmin && !creche_id) {
+      return new Response(JSON.stringify({ error: 'creche_id is required' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
     const adminClient = createClient(supabaseUrl, serviceRoleKey);
 
     const defaultPassword = 'fleur@2026';
