@@ -15,6 +15,12 @@ import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 
+function AtividadeImg({ pathOrUrl, alt, className }: { pathOrUrl: string | null | undefined; alt: string; className?: string }) {
+  const url = useSignedStorageUrl('atividades-arquivos', pathOrUrl);
+  if (!url) return null;
+  return <img src={url} alt={alt} className={className} />;
+}
+
 export default function AlunoAtividadesPage() {
   const { user } = useAuth();
   const [crianca, setCrianca] = useState<any>(null);
