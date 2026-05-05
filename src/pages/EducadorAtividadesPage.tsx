@@ -587,7 +587,7 @@ export default function EducadorAtividadesPage() {
                         </div>
                       )}
                       {q.tipo === 'upload_foto' && resp?.foto_url && (
-                        <img src={resp.foto_url} alt="Resposta" className="rounded-lg max-h-48 object-contain" />
+                        <AtividadeImg pathOrUrl={resp.foto_url} alt="Resposta" className="rounded-lg max-h-48 object-contain" />
                       )}
                     </CardContent>
                   </Card>
