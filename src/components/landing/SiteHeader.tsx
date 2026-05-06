@@ -48,6 +48,11 @@ export function SiteHeader({ onOrcamentoClick, showSobre = true, showConheca = t
                 </Button>
               </Link>
             )}
+            <Link to="/blog">
+              <Button variant="ghost" size="sm" className="text-xs sm:text-sm px-2 sm:px-3">
+                Blog
+              </Button>
+            </Link>
             {onOrcamentoClick && (
               <Button
                 variant="outline"

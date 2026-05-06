@@ -55,6 +55,12 @@ import SecretariaDashboardPage from "./pages/SecretariaDashboardPage";
 import AdminAuditoriaFotosPage from "./pages/AdminAuditoriaFotosPage";
 import ChangelogPage from "./pages/ChangelogPage";
 import NotFound from "./pages/NotFound";
+import BlogListPage from "./pages/blog/BlogListPage";
+import BlogPostPage from "./pages/blog/BlogPostPage";
+import AdminBlogListPage from "./pages/admin/blog/AdminBlogListPage";
+import AdminBlogEditorPage from "./pages/admin/blog/AdminBlogEditorPage";
+import AdminBlogCategoriasPage from "./pages/admin/blog/AdminBlogCategoriasPage";
+import AdminBlogTagsPage from "./pages/admin/blog/AdminBlogTagsPage";
 
 const queryClient = new QueryClient();
 
@@ -71,6 +77,12 @@ const App = () => (
               <Route path="/conheca" element={<LandingPage />} />
               <Route path="/sobre" element={<SobrePage />} />
               <Route path="/changelog" element={<ChangelogPage />} />
+              <Route path="/blog" element={<BlogListPage />} />
+              <Route path="/blog/:slug" element={<BlogPostPage />} />
+              <Route path="/admin/blog" element={<ProtectedRoute allowedRoles={['admin']}><AdminBlogListPage /></ProtectedRoute>} />
+              <Route path="/admin/blog/categorias" element={<ProtectedRoute allowedRoles={['admin']}><AdminBlogCategoriasPage /></ProtectedRoute>} />
+              <Route path="/admin/blog/tags" element={<ProtectedRoute allowedRoles={['admin']}><AdminBlogTagsPage /></ProtectedRoute>} />
+              <Route path="/admin/blog/:id" element={<ProtectedRoute allowedRoles={['admin']}><AdminBlogEditorPage /></ProtectedRoute>} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/reset-password" element={<ResetPasswordPage />} />
               <Route path="/agenda" element={<ProtectedRoute><Index /></ProtectedRoute>} />
