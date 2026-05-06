@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://agendafleur.app/sitemap.xml
+Sitemap: https://takzcbagxjydlkzenprr.supabase.co/functions/v1/sitemap-xml

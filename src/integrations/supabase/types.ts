@@ -281,6 +281,161 @@ export type Database = {
           },
         ]
       }
+      blog_categorias: {
+        Row: {
+          created_at: string
+          descricao: string | null
+          id: string
+          nome: string
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          nome: string
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          nome?: string
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      blog_post_tags: {
+        Row: {
+          post_id: string
+          tag_id: string
+        }
+        Insert: {
+          post_id: string
+          tag_id: string
+        }
+        Update: {
+          post_id?: string
+          tag_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "blog_post_tags_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "blog_posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "blog_post_tags_tag_id_fkey"
+            columns: ["tag_id"]
+            isOneToOne: false
+            referencedRelation: "blog_tags"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      blog_posts: {
+        Row: {
+          autor_nome: string | null
+          autor_user_id: string | null
+          capa_alt: string | null
+          capa_url: string | null
+          categoria_id: string | null
+          conteudo: string
+          created_at: string
+          id: string
+          meta_description: string | null
+          meta_title: string | null
+          palavra_chave_principal: string | null
+          palavras_chave_secundarias: string[]
+          published_at: string | null
+          reading_time: number
+          resumo: string | null
+          slug: string
+          status: string
+          titulo: string
+          updated_at: string
+          views: number
+        }
+        Insert: {
+          autor_nome?: string | null
+          autor_user_id?: string | null
+          capa_alt?: string | null
+          capa_url?: string | null
+          categoria_id?: string | null
+          conteudo?: string
+          created_at?: string
+          id?: string
+          meta_description?: string | null
+          meta_title?: string | null
+          palavra_chave_principal?: string | null
+          palavras_chave_secundarias?: string[]
+          published_at?: string | null
+          reading_time?: number
+          resumo?: string | null
+          slug: string
+          status?: string
+          titulo: string
+          updated_at?: string
+          views?: number
+        }
+        Update: {
+          autor_nome?: string | null
+          autor_user_id?: string | null
+          capa_alt?: string | null
+          capa_url?: string | null
+          categoria_id?: string | null
+          conteudo?: string
+          created_at?: string
+          id?: string
+          meta_description?: string | null
+          meta_title?: string | null
+          palavra_chave_principal?: string | null
+          palavras_chave_secundarias?: string[]
+          published_at?: string | null
+          reading_time?: number
+          resumo?: string | null
+          slug?: string
+          status?: string
+          titulo?: string
+          updated_at?: string
+          views?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "blog_posts_categoria_id_fkey"
+            columns: ["categoria_id"]
+            isOneToOne: false
+            referencedRelation: "blog_categorias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      blog_tags: {
+        Row: {
+          created_at: string
+          id: string
+          nome: string
+          slug: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          nome: string
+          slug: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          nome?: string
+          slug?: string
+        }
+        Relationships: []
+      }
       boletins: {
         Row: {
           avaliacao: number | null

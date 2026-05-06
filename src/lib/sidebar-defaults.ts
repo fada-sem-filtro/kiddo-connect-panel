@@ -98,6 +98,7 @@ export const AVAILABLE_ITEMS_BY_ROLE: Record<string, { key: string; defaultLabel
     { key: 'boletos', defaultLabel: 'Boletos', route: '/admin/boletos' },
     { key: 'eventos_resp', defaultLabel: 'Meus Eventos', route: '/responsavel/eventos' },
     { key: 'calendario_resp', defaultLabel: 'Calendário Escolar', route: '/responsavel/calendario' },
+    { key: 'blog', defaultLabel: 'Blog', route: '/admin/blog' },
   ],
   diretor: [
     { key: 'dashboard', defaultLabel: 'Dashboard', route: '/diretor/dashboard' },
@@ -310,6 +311,7 @@ export function getDefaultConfig(perfil: string): SidebarConfig {
           { key: 'configuracoes', label: 'Minhas Configurações', ordem: 17, visible: true },
           { key: 'auditoria_fotos', label: 'Auditoria de Fotos', ordem: 18, visible: true },
           { key: 'boletos', label: 'Boletos', ordem: 19, visible: true },
+          { key: 'blog', label: 'Blog', ordem: 20, visible: true },
         ],
       },
       {
