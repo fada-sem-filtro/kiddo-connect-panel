@@ -79,6 +79,7 @@ const ICON_MAP: Record<string, typeof Calendar> = {
   calendario_aluno: CalendarDays,
   presencas: ClipboardList,
   boletos: Receipt,
+  blog: FileText,
 };
 
 export function Sidebar() {
@@ -274,6 +275,7 @@ export function Sidebar() {
       adminNavigation.push({ name: "Orçamentos", href: "/admin/orcamentos", icon: MessageSquare });
       adminNavigation.push({ name: "Menu Lateral", href: "/admin/sidebar-config", icon: SlidersHorizontal });
       adminNavigation.push({ name: "Minhas Configurações", href: "/admin/configuracoes", icon: Cog });
+      adminNavigation.push({ name: "Blog", href: "/admin/blog", icon: FileText });
     }
     if (role === "admin" && canView('auditoria_fotos')) {
       adminNavigation.push({ name: "Auditoria de Fotos", href: "/admin/auditoria-fotos", icon: ShieldCheck });
