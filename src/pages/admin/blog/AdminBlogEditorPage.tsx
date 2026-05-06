@@ -74,7 +74,7 @@ export default function AdminBlogEditorPage() {
         setPalavraChave(data.palavra_chave_principal || '');
         setPalavrasSec(data.palavras_chave_secundarias || []);
         setCategoriaId(data.categoria_id || '');
-        setStatus(data.status);
+        setStatus(data.status as 'rascunho' | 'publicado');
         const { data: pt } = await supabase.from('blog_post_tags').select('tag_id').eq('post_id', id);
         setTagIds((pt || []).map((r: any) => r.tag_id));
       }
