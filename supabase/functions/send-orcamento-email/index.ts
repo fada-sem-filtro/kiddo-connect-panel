@@ -98,7 +98,7 @@ serve(async (req) => {
         body: JSON.stringify({
           from: "Agenda Fleur <contato@agendafleur.app>",
           to: [to],
-          subject: subject || "Resposta ao seu orçamento - Agenda Fleur",
+          subject: subject || "Apresentação do Sistema Escolar - Agenda Fleur",
           html: htmlBody,
         }),
       });
