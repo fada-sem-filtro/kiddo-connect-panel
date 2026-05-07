@@ -207,7 +207,7 @@ export default function HomePage() {
                   className="text-base sm:text-lg px-8 py-6 w-full sm:w-auto border-2"
                   onClick={() => setOrcamentoOpen(true)}
                 >
-                  Solicitar orçamento
+                  Conhecer a plataforma
                 </Button>
               </motion.div>
             </div>
@@ -489,7 +489,7 @@ export default function HomePage() {
                 className="text-base sm:text-lg px-8 py-6 w-full sm:w-auto border-2"
                 onClick={() => setOrcamentoOpen(true)}
               >
-                Solicitar orçamento
+                Conhecer a plataforma
               </Button>
             </motion.div>
           </div>
@@ -525,7 +525,7 @@ export default function HomePage() {
               onClick={() => setOrcamentoOpen(true)}
               className="text-muted-foreground hover:text-primary transition-colors"
             >
-              Solicitar orçamento
+              Conhecer a plataforma
             </button>
             <a
               href="mailto:contato@agendafleur.app"
@@ -542,7 +542,7 @@ export default function HomePage() {
 
       {/* ─── MODALS ─── */}
       <ContactModal open={demoOpen} onOpenChange={setDemoOpen} title="Solicitar demonstração" />
-      <ContactModal open={orcamentoOpen} onOpenChange={setOrcamentoOpen} title="Solicitar orçamento" />
+      <ContactModal open={orcamentoOpen} onOpenChange={setOrcamentoOpen} title="Conhecer a plataforma" />
     </div>
   );
 }
