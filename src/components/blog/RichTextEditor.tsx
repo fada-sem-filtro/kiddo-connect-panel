@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 interface Props {
   value: string;
