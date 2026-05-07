@@ -76,103 +76,42 @@ serve(async (req) => {
       const safeConteudo = escapeHtml(conteudo);
 
       const htmlBody = `
-  <div style="
-    font-family: Arial, sans-serif;
-    background-color: #f8fafc;
-    padding: 32px 16px;
-  ">
-
-    <div style="
-      max-width: 600px;
-      margin: 0 auto;
-      background: #ffffff;
-      border-radius: 20px;
-      overflow: hidden;
-      border: 1px solid #eef2f7;
-      box-shadow: 0 4px 20px rgba(15, 23, 42, 0.06);
-    ">
-
-      <!-- Header -->
-      <div style="
-        background: linear-gradient(135deg, #ffffff 0%, #fdf2f8 100%);
-        padding: 28px 24px;
-        text-align: center;
-        border-bottom: 1px solid #f1f5f9;
-      ">
-
-        <div style="
-          display: inline-flex;
-          align-items: center;
-          gap: 10px;
-        ">
-
-          <img 
-            src="https://agendafleur.app/logo-fleur-2.webp"
-            alt="Agenda Fleur"
-            style="
-              width: 32px;
-              height: 32px;
-              object-fit: contain;
-            "
-          />
-
-          <h1 style="
-            margin: 0;
-            font-size: 24px;
-            font-weight: 700;
-            color: #0f172a;
-            letter-spacing: -0.5px;
-          ">
-            Agenda Fleur
-          </h1>
-
-        </div>
-
-      </div>
-
-      <!-- Content -->
-      <div style="padding: 32px 24px;">
-
-        <p style="
-          margin-top: 0;
-          font-size: 16px;
-          color: #334155;
-          line-height: 1.6;
-        ">
-          Olá ${safeNome},
-        </p>
-
-        <div style="
-          font-size: 15px;
-          color: #475569;
-          line-height: 1.8;
-          white-space: pre-wrap;
-        ">
-          ${safeConteudo}
-        </div>
-
-        <!-- Divider -->
-        <div style="
-          height: 1px;
-          background: #e2e8f0;
-          margin: 32px 0 24px;
-        "></div>
-
-        <!-- Footer -->
-        <p style="
-          margin: 0;
-          font-size: 13px;
-          color: #94a3b8;
-          line-height: 1.6;
-        ">
-          Atenciosamente,<br/>
-          <strong style="color: #64748b;">Equipe Agenda Fleur</strong>
-        </p>
-
+  <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+    
+    <div style="background: rgb(53, 195, 227); padding: 20px; border-radius: 12px 12px 0 0; text-align: center;">
+      
+      <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+        <img 
+          src="https://agendafleur.app/logo-fleur-2.webp" 
+          alt="Agenda Fleur"
+          style="width: 24px; height: 24px; object-fit: contain;"
+        />
+        
+        <h1 style="color: white; margin: 0; font-size: 24px; font-weight: bold;">
+          Agenda Fleur
+        </h1>
       </div>
 
     </div>
 
+    <div style="background: #ffffff; padding: 24px; border: 1px solid #f0f0f0; border-top: none; border-radius: 0 0 12px 12px;">
+      
+      <p style="font-size: 16px; color: #333;">
+        Olá ${safeNome},
+      </p>
+
+      <div style="font-size: 14px; color: #555; line-height: 1.6; white-space: pre-wrap;">
+        ${safeConteudo}
+      </div>
+
+      <hr style="border: none; border-top: 1px solid #eee; margin: 24px 0;" />
+
+      <p style="font-size: 12px; color: #999;">
+        Atenciosamente,<br/>
+        Equipe Agenda Fleur
+      </p>
+
+    </div>
   </div>
 `;
 
