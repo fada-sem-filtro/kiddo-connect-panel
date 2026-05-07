@@ -254,42 +254,6 @@ export default function HomePage() {
               Tudo organizado para professores, coordenação e responsáveis.
             </p>
           </Anim>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {[
-              {
-                icon: FileText,
-                text: "Agenda esquecida pelos alunos",
-              },
-              {
-                icon: MessageSquare,
-                text: "Falta de controle das comunicações",
-              },
-              {
-                icon: ClipboardList,
-                text: "Muito trabalho manual da secretaria",
-              },
-              {
-                icon: Users,
-                text: "Dificuldade de acompanhar informações dos alunos",
-              },
-            ].map((p, i) => (
-              <Anim key={p.text} delay={i * 0.08}>
-                <div className="flex items-start gap-4 p-5 rounded-xl bg-card border border-border shadow-sm">
-                  <div className="p-2 rounded-lg bg-destructive/10">
-                    <p.icon className="w-5 h-5 text-destructive" />
-                  </div>
-                  <span className="text-foreground font-medium">{p.text}</span>
-                </div>
-              </Anim>
-            ))}
-          </div>
-
-          <Anim className="text-center">
-            <p className="text-primary font-semibold text-lg">
-              A Agenda Fleur resolve esses desafios com uma solução digital simples.
-            </p>
-          </Anim>
         </div>
       </section>
 
@@ -298,7 +262,7 @@ export default function HomePage() {
         <div className="max-w-5xl mx-auto space-y-10">
           <Anim className="text-center space-y-3">
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold">
-              Uma solução moderna para a comunicação escolar
+              Uma experiência mais próxima, organizada e acolhedora.
             </h2>
           </Anim>
 
@@ -306,23 +270,23 @@ export default function HomePage() {
             {[
               {
                 icon: MessageSquare,
-                title: "Comunicação centralizada",
-                desc: "Centralize recados, avisos e informações importantes em um único lugar.",
+                title: "Comunicação em tempo real",
+                desc: "Envie comunicados, registros e atualizações importantes diretamente para as famílias.",
               },
               {
                 icon: ClipboardList,
-                title: "Mais organização",
-                desc: "Acompanhe tudo de forma simples e organizada.",
+                title: "Rotina infantil organizada",
+                desc: "Registre alimentação, sono, higiene, atividades pedagógicas e acontecimentos do dia.",
               },
               {
                 icon: Shield,
-                title: "Mais segurança",
-                desc: "Histórico completo das comunicações da escola.",
+                title: "Mais confiança para os responsáveis",
+                desc: "As famílias acompanham a rotina da criança com transparência e segurança.",
               },
               {
                 icon: Zap,
-                title: "Menos papel",
-                desc: "Reduza custos e modernize a rotina da instituição.",
+                title: "Menos papel e menos WhatsApp",
+                desc: "Centralize a comunicação escolar em um único lugar.",
               },
             ].map((b, i) => (
               <Anim key={b.title} delay={i * 0.08}>
