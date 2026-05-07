@@ -237,16 +237,21 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ─── SECTION 2: PROBLEMA ─── */}
+      {/* ─── SECTION 2: MAIS QUE UMA AGENDA DIGITAL ─── */}
       <section className="py-16 md:py-24 px-4 bg-muted/30">
         <div className="max-w-4xl mx-auto space-y-10">
           <Anim className="text-center space-y-4">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold">
-              A agenda de papel já não atende mais a rotina das escolas.
-            </h2>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold">Sua escola merece mais do que uma agenda.</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Comunicação perdida, agendas esquecidas e excesso de trabalho manual são problemas comuns na rotina
-              escolar.
+              A comunicação entre escola e família influencia diretamente a confiança dos pais, o engajamento familiar e
+              a percepção de qualidade da instituição.
+            </p>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Com a Agenda Fleur, sua escola centraliza comunicados, registros pedagógicos, fotos, alimentação, sono,
+              atividades e rotina escolar em um único ambiente simples e intuitivo.
+            </p>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Tudo organizado para professores, coordenação e responsáveis.
             </p>
           </Anim>
 
