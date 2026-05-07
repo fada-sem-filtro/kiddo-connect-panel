@@ -81,10 +81,7 @@ serve(async (req) => {
     <div style="background: rgb(53, 195, 227); padding: 20px; border-radius: 12px 12px 0 0; text-align: center;">
       
       <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
-        <img 
-          src="https://agendafleur.app/logo-fleur-2.webp" 
-          alt="Agenda Fleur"
-          style="width: 24px; height: 24px; object-fit: contain;"
+        <img src="https://agendafleur.app/logo-fleur-2.webp" alt="Agenda Fleur" style="width: 24px; height: 24px; object-fit: contain;"
         />
         
         <h1 style="color: white; margin: 0; font-size: 24px; font-weight: bold;">
