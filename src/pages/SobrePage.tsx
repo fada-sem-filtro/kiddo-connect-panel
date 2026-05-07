@@ -195,10 +195,13 @@ export default function SobrePage() {
           </AnimSection>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {funcionalidades.map((f, i) => (
-              <AnimSection key={f.text} delay={i * 0.05}>
-                <div className="flex items-start gap-3 bg-card rounded-xl border border-border p-4 shadow-sm hover:shadow-md transition-shadow">
+              <AnimSection key={f.title} delay={i * 0.03}>
+                <div className="flex items-start gap-3 bg-card rounded-xl border border-border p-4 shadow-sm hover:shadow-md transition-shadow h-full">
                   <f.icon className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                  <span className="text-foreground font-medium">{f.text}</span>
+                  <div>
+                    <p className="text-foreground font-semibold text-sm">{f.title}</p>
+                    <p className="text-muted-foreground text-xs mt-0.5">{f.desc}</p>
+                  </div>
                 </div>
               </AnimSection>
             ))}
