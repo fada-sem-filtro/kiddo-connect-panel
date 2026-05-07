@@ -52,6 +52,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import logoFleur from "@/assets/logo-fleur-2.webp";
+import { SYSTEM_FEATURES as features } from "@/lib/system-features";
 
 /* ── Reusable animated wrapper ── */
 function AnimSection({
