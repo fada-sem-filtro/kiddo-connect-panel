@@ -181,8 +181,6 @@ const benefits = [
   { icon: BarChart3, title: "Acompanhamento acadêmico", desc: "Boletins e relatórios de desempenho" },
 ];
 
-import { SYSTEM_FEATURES as features } from "@/lib/system-features";
-
 const profiles = [
   {
     icon: UserCog,
