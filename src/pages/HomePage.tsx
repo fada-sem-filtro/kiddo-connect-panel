@@ -400,11 +400,11 @@ export default function HomePage() {
               {
                 version: "2.6.3",
                 date: "Maio 2026",
-                title: "Blog com SEO avançado, site público unificado e suporte aprimorado",
+                title: "Blog avançado, site público unificado e suporte aprimorado",
                 items: [
                   "Novo Blog público com listagem, categorias, tags e CMS administrativo completo.",
                   "Cabeçalho público unificado nas páginas Início, Sobre, Conheça e Blog.",
-                  "Sitemap dinâmico, JSON-LD e meta tags otimizadas para SEO.",
+                  "Sitemap dinâmico, JSON-LD e meta tags otimizadas.",
                   "Mensagens de suporte agora aparecem nos Recados de quem abriu o chamado.",
                 ],
               },
