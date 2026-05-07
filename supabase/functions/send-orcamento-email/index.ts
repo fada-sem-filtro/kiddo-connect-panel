@@ -76,18 +76,44 @@ serve(async (req) => {
       const safeConteudo = escapeHtml(conteudo);
 
       const htmlBody = `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-          <div style="background: linear-gradient(135deg, #F8BBD0, #F48FB1); padding: 20px; border-radius: 12px 12px 0 0; text-align: center;">
-            <h1 style="color: white; margin: 0; font-size: 24px;">🌸 Agenda Fleur</h1>
-          </div>
-          <div style="background: #ffffff; padding: 24px; border: 1px solid #f0f0f0; border-top: none; border-radius: 0 0 12px 12px;">
-            <p style="font-size: 16px; color: #333;">Olá ${safeNome},</p>
-            <div style="font-size: 14px; color: #555; line-height: 1.6; white-space: pre-wrap;">${safeConteudo}</div>
-            <hr style="border: none; border-top: 1px solid #eee; margin: 24px 0;" />
-            <p style="font-size: 12px; color: #999;">Atenciosamente,<br/>Equipe Agenda Fleur</p>
-          </div>
-        </div>
-      `;
+  <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+    
+    <div style="background: rgb(53, 195, 227); padding: 20px; border-radius: 12px 12px 0 0; text-align: center;">
+      
+      <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+        <img 
+          src="https://agendafleur.app/logo-fleur-2.webp" 
+          alt="Agenda Fleur"
+          style="width: 24px; height: 24px; object-fit: contain;"
+        />
+        
+        <h1 style="color: white; margin: 0; font-size: 24px; font-weight: bold;">
+          Agenda Fleur
+        </h1>
+      </div>
+
+    </div>
+
+    <div style="background: #ffffff; padding: 24px; border: 1px solid #f0f0f0; border-top: none; border-radius: 0 0 12px 12px;">
+      
+      <p style="font-size: 16px; color: #333;">
+        Olá ${safeNome},
+      </p>
+
+      <div style="font-size: 14px; color: #555; line-height: 1.6; white-space: pre-wrap;">
+        ${safeConteudo}
+      </div>
+
+      <hr style="border: none; border-top: 1px solid #eee; margin: 24px 0;" />
+
+      <p style="font-size: 12px; color: #999;">
+        Atenciosamente,<br/>
+        Equipe Agenda Fleur
+      </p>
+
+    </div>
+  </div>
+`;
 
       const res = await fetch("https://api.resend.com/emails", {
         method: "POST",
