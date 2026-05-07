@@ -204,12 +204,7 @@ export const SYSTEM_FEATURES: SystemFeature[] = [
   {
     icon: Newspaper,
     title: "Blog com CMS",
-    desc: "Editor de artigos com categorias, tags, mídia e SEO avançado.",
-  },
-  {
-    icon: Search,
-    title: "SEO técnico",
-    desc: "Sitemap dinâmico, JSON-LD, Open Graph e meta tags otimizadas.",
+    desc: "Editor de artigos com categorias, tags e mídias.",
   },
   {
     icon: Heart,
