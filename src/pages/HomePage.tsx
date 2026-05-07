@@ -171,7 +171,7 @@ export default function HomePage() {
         <div className="relative max-w-5xl mx-auto text-center space-y-8">
           <Anim>
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight">
-              A agenda escolar digital que custa <span className="text-primary">menos que a agenda de papel.</span>
+              A plataforma que fortalece a relação entre <span className="text-primary">escola e família.</span>
             </h1>
           </Anim>
 
