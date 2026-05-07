@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 interface Props {
   value: string;
@@ -38,6 +38,15 @@ export function RichTextEditor({ value, onChange }: Props) {
     },
     onUpdate: ({ editor }) => onChange(editor.getHTML()),
   });
+
+  // Sync external value changes (e.g. when editing an existing post loads async)
+  useEffect(() => {
+    if (!editor) return;
+    const current = editor.getHTML();
+    if ((value || '') !== current) {
+      editor.commands.setContent(value || '', { emitUpdate: false });
+    }
+  }, [value, editor]);
 
   if (!editor) return null;
 
