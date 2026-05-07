@@ -398,7 +398,7 @@ export default function HomePage() {
           <div className="space-y-4">
             {[
               {
-                version: "2.7",
+                version: "2.6.3",
                 date: "Maio 2026",
                 title: "Blog com SEO avançado, site público unificado e suporte aprimorado",
                 items: [
