@@ -361,7 +361,8 @@ export default function LandingPage() {
             transition={{ duration: 0.5, delay: 0.4 }}
             className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto"
           >
-            Conecte professores, responsáveis e alunos em tempo real com registros pedagógicos, atividades, alimentação, sono, fotos e comunicados.
+            Conecte professores, responsáveis e alunos em tempo real com registros pedagógicos, atividades, alimentação,
+            sono, fotos e comunicados.
           </motion.p>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -398,7 +399,9 @@ export default function LandingPage() {
       <section className="py-16 md:py-24 px-4 bg-muted/40">
         <div className="max-w-6xl mx-auto space-y-10">
           <AnimSection className="text-center max-w-2xl mx-auto space-y-3">
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground">Comunicação em tempo real entre escola e responsáveis</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground">
+              Comunicação em tempo real entre escola e responsáveis
+            </h2>
             <p className="text-muted-foreground">
               Muitas escolas ainda utilizam planilhas, processos manuais ou sistemas limitados para organizar suas
               atividades pedagógicas.
@@ -424,9 +427,7 @@ export default function LandingPage() {
       <section className="py-16 md:py-24 px-4">
         <div className="max-w-6xl mx-auto space-y-10">
           <AnimSection className="text-center max-w-2xl mx-auto space-y-3">
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground">
-              Registros pedagógicos completos
-            </h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground">Registros pedagógicos completos</h2>
             <p className="text-muted-foreground">
               Nosso sistema centraliza todas as informações acadêmicas e administrativas da escola, permitindo uma
               gestão mais organizada, eficiente e profissional.
@@ -454,7 +455,9 @@ export default function LandingPage() {
       <section id="funcionalidades" className="py-16 md:py-24 px-4 bg-muted/40">
         <div className="max-w-6xl mx-auto space-y-10">
           <AnimSection className="text-center space-y-3">
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground">Sistema de gestão escolar simples e moderno</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground">
+              Sistema de gestão escolar simples e moderno
+            </h2>
             <p className="text-muted-foreground">Tudo o que sua escola precisa em uma única plataforma</p>
           </AnimSection>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -677,13 +680,35 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* FOOTER */}
+      {/* ─── FOOTER ─── */}
       <footer className="py-6 px-4 border-t border-border">
         <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-xs text-muted-foreground">Copyright © 2026 - Desenvolvido por Fleur Tech Solutions.</p>
           <div className="flex items-center gap-4 text-xs">
-            <Link to="/sobre" className="text-muted-foreground hover:text-primary transition-colors">Sobre</Link>
-            <Link to="/login" className="text-muted-foreground hover:text-primary transition-colors">Entrar</Link>
+            <Link to="/sobre" className="text-muted-foreground hover:text-primary transition-colors">
+              Sobre
+            </Link>
+            <Link to="/conheca" className="text-muted-foreground hover:text-primary transition-colors">
+              Conheça o sistema
+            </Link>
+            <Link to="/changelog" className="text-muted-foreground hover:text-primary transition-colors">
+              Novidades
+            </Link>
+            <button
+              onClick={() => setOrcamentoOpen(true)}
+              className="text-muted-foreground hover:text-primary transition-colors"
+            >
+              Solicitar orçamento
+            </button>
+            <a
+              href="mailto:contato@agendafleur.app"
+              className="text-muted-foreground hover:text-primary transition-colors"
+            >
+              Contato
+            </a>
+            <Link to="/login" className="text-muted-foreground hover:text-primary transition-colors">
+              Entrar
+            </Link>
           </div>
         </div>
       </footer>
