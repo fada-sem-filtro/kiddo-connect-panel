@@ -78,13 +78,13 @@ serve(async (req) => {
       const htmlBody = `
   <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
     
-    <div style="background: rgb(53, 195, 227); padding: 20px; border-radius: 12px 12px 0 0; text-align: center;">
+    <div style="background: rgb(218, 227, 231); padding: 20px; border-radius: 12px 12px 0 0; text-align: center;">
       
       <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
         <img src="https://agendafleur.app/logo-fleur-2.webp" alt="Agenda Fleur" style="width: 24px; height: 24px; object-fit: contain;"
         />
         
-        <h1 style="color: white; margin: 0; font-size: 24px; font-weight: bold;">
+        <h1 style="color: black; margin: 0; font-size: 24px; font-weight: bold;">
           Agenda Fleur
         </h1>
       </div>
