@@ -103,6 +103,24 @@ serve(async (req) => {
 
       <hr style="border: none; border-top: 1px solid #eee; margin: 24px 0;" />
 
+      <a 
+  href="https://agendafleur.app/conheca"
+  target="_blank"
+  style="
+    display: inline-block;
+    margin-top: 16px;
+    padding: 12px 20px;
+    background: #ec4899;
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+  "
+>
+  Conhecer a Plataforma
+</a>
+
       <p style="font-size: 12px; color: #999;">
         Atenciosamente,<br/>
         Equipe Agenda Fleur
