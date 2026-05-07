@@ -435,7 +435,7 @@ export default function HomePage() {
       <section className="py-20 md:py-28 px-4 bg-gradient-to-br from-primary/10 via-primary/5 to-accent/10">
         <Anim className="max-w-3xl mx-auto text-center space-y-6">
           <h2 className="text-3xl md:text-5xl font-extrabold">
-            Leve sua escola para o <span className="text-primary">digital</span>
+            A experiência digital que <span className="text-primary">aproxima famílias da sua escola.</span>
           </h2>
           <p className="text-lg text-muted-foreground max-w-xl mx-auto">
             Solicite uma demonstração ou peça um orçamento e descubra como a Agenda Fleur pode ajudar sua escola.
