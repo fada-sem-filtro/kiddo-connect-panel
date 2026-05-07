@@ -224,23 +224,38 @@ export default function ChangelogPage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-border py-8 px-4">
-        <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-muted-foreground">
-          <p>Copyright © 2026 - Desenvolvido por Raissa.</p>
-          <div className="flex items-center gap-4">
-            <Link to="/" className="hover:text-primary transition-colors">
-              Início
-            </Link>
-            <Link to="/sobre" className="hover:text-primary transition-colors">
+      {/* ─── FOOTER ─── */}
+      <footer className="py-6 px-4 border-t border-border">
+        <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+          <p className="text-xs text-muted-foreground">Copyright © 2026 - Desenvolvido por Fleur Tech Solutions.</p>
+          <div className="flex items-center gap-4 text-xs">
+            <Link to="/sobre" className="text-muted-foreground hover:text-primary transition-colors">
               Sobre
             </Link>
-            <Link to="/login" className="hover:text-primary transition-colors">
+            <Link to="/conheca" className="text-muted-foreground hover:text-primary transition-colors">
+              Conheça o sistema
+            </Link>
+            <Link to="/changelog" className="text-muted-foreground hover:text-primary transition-colors">
+              Novidades
+            </Link>
+            <button
+              onClick={() => setOrcamentoOpen(true)}
+              className="text-muted-foreground hover:text-primary transition-colors"
+            >
+              Solicitar orçamento
+            </button>
+            <a
+              href="mailto:contato@agendafleur.app"
+              className="text-muted-foreground hover:text-primary transition-colors"
+            >
+              Contato
+            </a>
+            <Link to="/login" className="text-muted-foreground hover:text-primary transition-colors">
               Entrar
             </Link>
           </div>
         </div>
       </footer>
-    </div>
+
   );
 }
