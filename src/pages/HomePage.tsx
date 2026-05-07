@@ -432,26 +432,6 @@ export default function HomePage() {
                   "Educadores agora abrem direto no painel do educador ao acessar o sistema.",
                 ],
               },
-              {
-                version: "2.5",
-                date: "Abril 2026",
-                title: "Painel pedagógico e atividades",
-                items: [
-                  "Módulo de atividades com média geral calculada automaticamente.",
-                  "Boletim restrito ao 1º ano do Fundamental (alunos 6+).",
-                  "Segmentação automática entre rotina e parte acadêmica conforme idade/série.",
-                ],
-              },
-              {
-                version: "2.4",
-                date: "Março 2026",
-                title: "Customização de menu e papel de secretaria",
-                items: [
-                  "Sidebar configurável por escola e perfil, com arrastar e soltar.",
-                  "Novo perfil 'Secretaria', habilitado por escola pelo diretor.",
-                  "Seletor de escola global para o admin facilitando a navegação multi-tenant.",
-                ],
-              },
             ].map((v, i) => (
               <Anim key={v.version} delay={i * 0.08}>
                 <div className="flex items-start gap-4 p-5 rounded-xl bg-card border border-border shadow-sm">
