@@ -177,7 +177,7 @@ export default function HomePage() {
 
           <Anim delay={0.1}>
             <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-              Modernize a comunicação da sua escola e centralize tudo em um único sistema.
+              Comunicação escolar simples, acolhedora e organizada para creches e escolas.
             </p>
           </Anim>
 
