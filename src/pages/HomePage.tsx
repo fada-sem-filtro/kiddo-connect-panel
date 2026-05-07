@@ -183,8 +183,8 @@ export default function HomePage() {
 
           <Anim delay={0.1}>
             <p className="text-base text-muted-foreground max-w-xl mx-auto">
-              Com a Agenda Fleur sua escola substitui a agenda de papel por uma solução digital simples, rápida e
-              eficiente.
+              A Agenda Fleur ajuda sua escola a aproximar famílias, valorizar o trabalho pedagógico e substituir a
+              agenda de papel por uma experiência digital moderna.
             </p>
           </Anim>
 
