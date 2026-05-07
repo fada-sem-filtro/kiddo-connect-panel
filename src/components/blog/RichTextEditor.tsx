@@ -39,6 +39,15 @@ export function RichTextEditor({ value, onChange }: Props) {
     onUpdate: ({ editor }) => onChange(editor.getHTML()),
   });
 
+  // Sync external value changes (e.g. when editing an existing post loads async)
+  useEffect(() => {
+    if (!editor) return;
+    const current = editor.getHTML();
+    if ((value || '') !== current) {
+      editor.commands.setContent(value || '', { emitUpdate: false });
+    }
+  }, [value, editor]);
+
   if (!editor) return null;
 
   const addLink = () => {
