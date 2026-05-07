@@ -22,18 +22,39 @@ const TYPE_META: Record<EntryType, { label: string; icon: typeof Sparkles; class
 
 const CHANGELOG: ChangelogEntry[] = [
   {
-    version: "2.7",
+    version: "2.6.3",
     date: "Maio 2026",
     title: "Blog com SEO avançado, site público unificado e suporte aprimorado",
     highlights: [
-      { type: "feature", text: "Novo Blog público em /blog com listagem, categorias, tags e páginas de artigo otimizadas para SEO." },
-      { type: "feature", text: "CMS administrativo do Blog com editor rico (TipTap), upload de imagens, slug automático, palavras-chave e preview do snippet do Google." },
-      { type: "feature", text: "Sitemap.xml dinâmico e robots.txt atualizados, com JSON-LD (Article/Blog), Open Graph e meta tags otimizadas." },
-      { type: "improvement", text: "Cabeçalho público unificado em todas as páginas (Início, Sobre, Conheça, Blog), com menu mobile e destaque da rota ativa." },
-      { type: "improvement", text: "Catálogo único de funcionalidades reaproveitado nas páginas Sobre e Conheça para sempre refletir o sistema atual." },
+      {
+        type: "feature",
+        text: "Novo Blog público em /blog com listagem, categorias, tags e páginas de artigo otimizadas para SEO.",
+      },
+      {
+        type: "feature",
+        text: "CMS administrativo do Blog com editor rico (TipTap), upload de imagens, slug automático, palavras-chave e preview do snippet do Google.",
+      },
+      {
+        type: "feature",
+        text: "Sitemap.xml dinâmico e robots.txt atualizados, com JSON-LD (Article/Blog), Open Graph e meta tags otimizadas.",
+      },
+      {
+        type: "improvement",
+        text: "Cabeçalho público unificado em todas as páginas (Início, Sobre, Conheça, Blog), com menu mobile e destaque da rota ativa.",
+      },
+      {
+        type: "improvement",
+        text: "Catálogo único de funcionalidades reaproveitado nas páginas Sobre e Conheça para sempre refletir o sistema atual.",
+      },
       { type: "fix", text: "Mensagens de suporte agora aparecem corretamente nos Recados de quem abriu o chamado." },
-      { type: "fix", text: "Editor do Blog passou a sincronizar o conteúdo carregado, evitando salvar artigos em branco ao editar." },
-      { type: "security", text: "Bucket de imagens do Blog com listagem restrita a administradores; URLs públicas continuam funcionando para leitura." },
+      {
+        type: "fix",
+        text: "Editor do Blog passou a sincronizar o conteúdo carregado, evitando salvar artigos em branco ao editar.",
+      },
+      {
+        type: "security",
+        text: "Bucket de imagens do Blog com listagem restrita a administradores; URLs públicas continuam funcionando para leitura.",
+      },
     ],
   },
   {
