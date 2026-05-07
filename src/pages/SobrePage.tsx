@@ -31,22 +31,7 @@ function AnimSection({
   );
 }
 
-const funcionalidades = [
-  { icon: ClipboardList, text: "Registro de alimentação, sono e higiene" },
-  { icon: BookOpen, text: "Atividades pedagógicas e avaliações online" },
-  { icon: Camera, text: "Envio de fotos das atividades" },
-  { icon: MessageSquare, text: "Recados e comunicação escola-família" },
-  { icon: Bell, text: "Notificações em tempo real" },
-  { icon: Calendar, text: "Calendário escolar e eventos" },
-  { icon: BarChart3, text: "Boletins e relatórios de desempenho" },
-  { icon: GraduationCap, text: "Grade de aulas e matérias" },
-  { icon: Users, text: "Gestão de turmas, alunos e educadores" },
-  { icon: Shield, text: "Controle de presenças e retiradas autorizadas" },
-  { icon: Briefcase, text: "Módulo Secretaria com permissões configuráveis" },
-  { icon: Settings, text: "Permissões por perfil definidas pelo diretor" },
-  { icon: FileText, text: "Modelos de relatório personalizáveis" },
-  { icon: Heart, text: "Suporte integrado direto no sistema" },
-];
+const funcionalidades = SYSTEM_FEATURES;
 
 const publicoAlvo = [
   "Creches",
