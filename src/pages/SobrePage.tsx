@@ -263,14 +263,32 @@ export default function SobrePage() {
         </div>
       </section>
 
-      {/* FOOTER */}
+      {/* ─── FOOTER ─── */}
       <footer className="py-6 px-4 border-t border-border">
         <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-xs text-muted-foreground">Copyright © 2026 - Desenvolvido por Fleur Tech Solutions.</p>
           <div className="flex items-center gap-4 text-xs">
-            <Link to="/conheca" className="text-muted-foreground hover:text-primary transition-colors">
-              Conheça
+            <Link to="/sobre" className="text-muted-foreground hover:text-primary transition-colors">
+              Sobre
             </Link>
+            <Link to="/conheca" className="text-muted-foreground hover:text-primary transition-colors">
+              Conheça o sistema
+            </Link>
+            <Link to="/changelog" className="text-muted-foreground hover:text-primary transition-colors">
+              Novidades
+            </Link>
+            <button
+              onClick={() => setOrcamentoOpen(true)}
+              className="text-muted-foreground hover:text-primary transition-colors"
+            >
+              Solicitar orçamento
+            </button>
+            <a
+              href="mailto:contato@agendafleur.app"
+              className="text-muted-foreground hover:text-primary transition-colors"
+            >
+              Contato
+            </a>
             <Link to="/login" className="text-muted-foreground hover:text-primary transition-colors">
               Entrar
             </Link>
