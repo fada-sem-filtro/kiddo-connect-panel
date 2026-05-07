@@ -2,30 +2,9 @@ import { useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { SiteHeader } from "@/components/landing/SiteHeader";
 import { motion, useInView } from "framer-motion";
-import {
-  ArrowRight,
-  Heart,
-  BookOpen,
-  Users,
-  Shield,
-  Camera,
-  Bell,
-  Calendar,
-  ClipboardList,
-  GraduationCap,
-  BarChart3,
-  MessageSquare,
-  Star,
-  School,
-  Baby,
-  Briefcase,
-  FileText,
-  Settings,
-  Mail,
-  CheckCircle2,
-} from "lucide-react";
+import { ArrowRight, Star, Mail, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import logoFleur from "@/assets/logo-fleur-2.webp";
+import { SYSTEM_FEATURES } from "@/lib/system-features";
 
 /* ── Animated section wrapper ── */
 function AnimSection({
@@ -52,22 +31,7 @@ function AnimSection({
   );
 }
 
-const funcionalidades = [
-  { icon: ClipboardList, text: "Registro de alimentação, sono e higiene" },
-  { icon: BookOpen, text: "Atividades pedagógicas e avaliações online" },
-  { icon: Camera, text: "Envio de fotos das atividades" },
-  { icon: MessageSquare, text: "Recados e comunicação escola-família" },
-  { icon: Bell, text: "Notificações em tempo real" },
-  { icon: Calendar, text: "Calendário escolar e eventos" },
-  { icon: BarChart3, text: "Boletins e relatórios de desempenho" },
-  { icon: GraduationCap, text: "Grade de aulas e matérias" },
-  { icon: Users, text: "Gestão de turmas, alunos e educadores" },
-  { icon: Shield, text: "Controle de presenças e retiradas autorizadas" },
-  { icon: Briefcase, text: "Módulo Secretaria com permissões configuráveis" },
-  { icon: Settings, text: "Permissões por perfil definidas pelo diretor" },
-  { icon: FileText, text: "Modelos de relatório personalizáveis" },
-  { icon: Heart, text: "Suporte integrado direto no sistema" },
-];
+const funcionalidades = SYSTEM_FEATURES;
 
 const publicoAlvo = [
   "Creches",
@@ -231,10 +195,13 @@ export default function SobrePage() {
           </AnimSection>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {funcionalidades.map((f, i) => (
-              <AnimSection key={f.text} delay={i * 0.05}>
-                <div className="flex items-start gap-3 bg-card rounded-xl border border-border p-4 shadow-sm hover:shadow-md transition-shadow">
+              <AnimSection key={f.title} delay={i * 0.03}>
+                <div className="flex items-start gap-3 bg-card rounded-xl border border-border p-4 shadow-sm hover:shadow-md transition-shadow h-full">
                   <f.icon className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                  <span className="text-foreground font-medium">{f.text}</span>
+                  <div>
+                    <p className="text-foreground font-semibold text-sm">{f.title}</p>
+                    <p className="text-muted-foreground text-xs mt-0.5">{f.desc}</p>
+                  </div>
                 </div>
               </AnimSection>
             ))}

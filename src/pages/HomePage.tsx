@@ -398,6 +398,17 @@ export default function HomePage() {
           <div className="space-y-4">
             {[
               {
+                version: "2.7",
+                date: "Maio 2026",
+                title: "Blog com SEO avançado, site público unificado e suporte aprimorado",
+                items: [
+                  "Novo Blog público com listagem, categorias, tags e CMS administrativo completo.",
+                  "Cabeçalho público unificado nas páginas Início, Sobre, Conheça e Blog.",
+                  "Sitemap dinâmico, JSON-LD e meta tags otimizadas para SEO.",
+                  "Mensagens de suporte agora aparecem nos Recados de quem abriu o chamado.",
+                ],
+              },
+              {
                 version: "2.6.2",
                 date: "Maio 2026",
                 title: "Permissões granulares na interface e blindagem de segurança",
