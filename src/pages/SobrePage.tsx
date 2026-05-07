@@ -2,30 +2,9 @@ import { useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { SiteHeader } from "@/components/landing/SiteHeader";
 import { motion, useInView } from "framer-motion";
-import {
-  ArrowRight,
-  Heart,
-  BookOpen,
-  Users,
-  Shield,
-  Camera,
-  Bell,
-  Calendar,
-  ClipboardList,
-  GraduationCap,
-  BarChart3,
-  MessageSquare,
-  Star,
-  School,
-  Baby,
-  Briefcase,
-  FileText,
-  Settings,
-  Mail,
-  CheckCircle2,
-} from "lucide-react";
+import { ArrowRight, Star, Mail, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import logoFleur from "@/assets/logo-fleur-2.webp";
+import { SYSTEM_FEATURES } from "@/lib/system-features";
 
 /* ── Animated section wrapper ── */
 function AnimSection({
