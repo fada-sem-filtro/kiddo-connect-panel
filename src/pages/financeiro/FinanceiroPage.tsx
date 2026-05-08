@@ -287,12 +287,13 @@ export default function FinanceiroPage() {
   );
 }
 
-function SubscriptionsList({ crecheId, criancas, refreshKey }: { crecheId: string | null; criancas: any[]; refreshKey?: number }) {
+function SubscriptionsList({ crecheId, criancas, refreshKey, connected, onNew }: { crecheId: string | null; criancas: any[]; refreshKey?: number; connected?: boolean; onNew?: () => void }) {
   const [subs, setSubs] = useState<any[]>([]);
   const [reloadTick, setReloadTick] = useState(0);
   const [editing, setEditing] = useState<any>(null);
   const [confirmCancel, setConfirmCancel] = useState<any>(null);
   const [busy, setBusy] = useState(false);
+  const [syncing, setSyncing] = useState(false);
 
   const reload = async () => {
     if (!crecheId) return;
@@ -300,6 +301,19 @@ function SubscriptionsList({ crecheId, criancas, refreshKey }: { crecheId: strin
     setSubs(data || []);
   };
   useEffect(() => { reload(); }, [crecheId, reloadTick, refreshKey]);
+
+  const syncWithAsaas = async () => {
+    if (!crecheId) return;
+    setSyncing(true);
+    const { data, error } = await supabase.functions.invoke("asaas-sync-subscriptions", { body: { creche_id: crecheId } });
+    setSyncing(false);
+    if (error || data?.error) {
+      toast({ title: "Erro ao sincronizar", description: data?.error || error?.message, variant: "destructive" });
+      return;
+    }
+    toast({ title: "Sincronizado com Asaas", description: `${data?.upserted ?? 0} atualizadas, ${data?.deactivated ?? 0} desativadas.` });
+    setReloadTick(t => t + 1);
+  };
 
   const cancelSub = async () => {
     if (!confirmCancel) return;
@@ -314,7 +328,30 @@ function SubscriptionsList({ crecheId, criancas, refreshKey }: { crecheId: strin
     setReloadTick(t => t + 1);
   };
 
-  if (!subs.length) return <p className="text-sm text-muted-foreground">Nenhuma recorrência cadastrada.</p>;
+  return (
+    <>
+      <div className="flex justify-end gap-2">
+        <Button
+          variant="outline"
+          onClick={syncWithAsaas}
+          disabled={!connected || syncing || !crecheId}
+          className="rounded-xl"
+          title="Sincronizar com Asaas"
+        >
+          {syncing ? <Loader2 className="w-4 h-4 mr-1.5 animate-spin" /> : <RefreshCw className="w-4 h-4 mr-1.5" />}
+          Atualizar
+        </Button>
+        {onNew && (
+          <Button onClick={onNew} disabled={!connected} className="rounded-xl">
+            <Repeat className="w-4 h-4 mr-1.5" />Nova recorrência
+          </Button>
+        )}
+      </div>
+
+      {!subs.length ? (
+        <p className="text-sm text-muted-foreground">Nenhuma recorrência cadastrada.</p>
+      ) : (
+
 
   return (
     <>
