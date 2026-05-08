@@ -223,8 +223,8 @@ export function Sidebar() {
       if (pedSettings?.atividades_avaliacoes_ativo && (role === "admin" || canView('atividades_aluno'))) {
         responsavelNavigation.push({ name: "Atividades do Aluno", href: "/responsavel/atividades", icon: BookOpen });
       }
-      if ((pedSettings as any)?.modulo_boletos_ativo && (role === "admin" || canView('boletos'))) {
-        responsavelNavigation.push({ name: "Boletos", href: "/responsavel/boletos", icon: Receipt });
+      if (role === "admin" || canView('financeiro')) {
+        responsavelNavigation.push({ name: "Financeiro", href: "/responsavel/financeiro", icon: Receipt });
       }
     }
   }
