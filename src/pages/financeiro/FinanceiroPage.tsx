@@ -351,42 +351,40 @@ function SubscriptionsList({ crecheId, criancas, refreshKey, connected, onNew }:
       {!subs.length ? (
         <p className="text-sm text-muted-foreground">Nenhuma recorrência cadastrada.</p>
       ) : (
+        <div className="space-y-2">
+          {subs.map(s => {
+            const child = criancas.find(c => c.id === s.crianca_id);
+            const inactive = s.status === "INACTIVE" || s.status === "CANCELED";
+            return (
+              <Card key={s.id} className={`rounded-xl border ${inactive ? "opacity-60" : ""}`}>
+                <CardContent className="p-3 flex flex-col md:flex-row md:items-center justify-between gap-2">
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium truncate">{s.description || "Recorrência"}</p>
+                    <p className="text-xs text-muted-foreground">{child?.nome || "—"} • {s.cycle} • próx. {format(new Date(s.next_due_date), "dd/MM/yyyy")}</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Badge className={`rounded-lg ${inactive ? "bg-gray-500/10 text-gray-700" : "bg-blue-500/10 text-blue-700"}`}>{s.status}</Badge>
+                    <span className="font-bold">{fmtBRL(s.value)}</span>
+                  </div>
+                  <div className="flex gap-1">
+                    {!inactive && (
+                      <>
+                        <Button size="sm" variant="outline" className="rounded-lg" onClick={() => setEditing(s)} title="Editar">
+                          <Pencil className="w-3.5 h-3.5" />
+                        </Button>
+                        <Button size="sm" variant="outline" className="rounded-lg text-red-600 hover:text-red-700" onClick={() => setConfirmCancel(s)} title="Cancelar recorrência">
+                          <X className="w-3.5 h-3.5" />
+                        </Button>
+                      </>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+      )}
 
-
-  return (
-    <>
-      <div className="space-y-2">
-        {subs.map(s => {
-          const child = criancas.find(c => c.id === s.crianca_id);
-          const inactive = s.status === "INACTIVE" || s.status === "CANCELED";
-          return (
-            <Card key={s.id} className={`rounded-xl border ${inactive ? "opacity-60" : ""}`}>
-              <CardContent className="p-3 flex flex-col md:flex-row md:items-center justify-between gap-2">
-                <div className="flex-1 min-w-0">
-                  <p className="font-medium truncate">{s.description || "Recorrência"}</p>
-                  <p className="text-xs text-muted-foreground">{child?.nome || "—"} • {s.cycle} • próx. {format(new Date(s.next_due_date), "dd/MM/yyyy")}</p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Badge className={`rounded-lg ${inactive ? "bg-gray-500/10 text-gray-700" : "bg-blue-500/10 text-blue-700"}`}>{s.status}</Badge>
-                  <span className="font-bold">{fmtBRL(s.value)}</span>
-                </div>
-                <div className="flex gap-1">
-                  {!inactive && (
-                    <>
-                      <Button size="sm" variant="outline" className="rounded-lg" onClick={() => setEditing(s)} title="Editar">
-                        <Pencil className="w-3.5 h-3.5" />
-                      </Button>
-                      <Button size="sm" variant="outline" className="rounded-lg text-red-600 hover:text-red-700" onClick={() => setConfirmCancel(s)} title="Cancelar recorrência">
-                        <X className="w-3.5 h-3.5" />
-                      </Button>
-                    </>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          );
-        })}
-      </div>
 
       {editing && (
         <EditarRecorrenciaModal
