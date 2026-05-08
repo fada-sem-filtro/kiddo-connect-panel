@@ -294,6 +294,9 @@ function SubscriptionsList({ crecheId, criancas, refreshKey, connected, onNew }:
   const [confirmCancel, setConfirmCancel] = useState<any>(null);
   const [busy, setBusy] = useState(false);
   const [syncing, setSyncing] = useState(false);
+  const [lastSync, setLastSync] = useState<{ at: string; upserted: number; deactivated: number; skipped?: number } | null>(null);
+
+  const syncStorageKey = crecheId ? `asaas:lastSync:${crecheId}` : null;
 
   const reload = async () => {
     if (!crecheId) return;
@@ -301,6 +304,14 @@ function SubscriptionsList({ crecheId, criancas, refreshKey, connected, onNew }:
     setSubs(data || []);
   };
   useEffect(() => { reload(); }, [crecheId, reloadTick, refreshKey]);
+
+  useEffect(() => {
+    if (!syncStorageKey) { setLastSync(null); return; }
+    try {
+      const raw = localStorage.getItem(syncStorageKey);
+      setLastSync(raw ? JSON.parse(raw) : null);
+    } catch { setLastSync(null); }
+  }, [syncStorageKey]);
 
   const syncWithAsaas = async () => {
     if (!crecheId) return;
@@ -311,7 +322,17 @@ function SubscriptionsList({ crecheId, criancas, refreshKey, connected, onNew }:
       toast({ title: "Erro ao sincronizar", description: data?.error || error?.message, variant: "destructive" });
       return;
     }
-    toast({ title: "Sincronizado com Asaas", description: `${data?.upserted ?? 0} atualizadas, ${data?.deactivated ?? 0} desativadas.` });
+    const result = {
+      at: new Date().toISOString(),
+      upserted: data?.upserted ?? 0,
+      deactivated: data?.deactivated ?? 0,
+      skipped: data?.skipped ?? 0,
+    };
+    setLastSync(result);
+    if (syncStorageKey) {
+      try { localStorage.setItem(syncStorageKey, JSON.stringify(result)); } catch { /* ignore */ }
+    }
+    toast({ title: "Sincronizado com Asaas", description: `${result.upserted} atualizadas, ${result.deactivated} desativadas.` });
     setReloadTick(t => t + 1);
   };
 
@@ -330,22 +351,38 @@ function SubscriptionsList({ crecheId, criancas, refreshKey, connected, onNew }:
 
   return (
     <>
-      <div className="flex justify-end gap-2">
-        <Button
-          variant="outline"
-          onClick={syncWithAsaas}
-          disabled={!connected || syncing || !crecheId}
-          className="rounded-xl"
-          title="Sincronizar com Asaas"
-        >
-          {syncing ? <Loader2 className="w-4 h-4 mr-1.5 animate-spin" /> : <RefreshCw className="w-4 h-4 mr-1.5" />}
-          Atualizar
-        </Button>
-        {onNew && (
-          <Button onClick={onNew} disabled={!connected} className="rounded-xl">
-            <Repeat className="w-4 h-4 mr-1.5" />Nova recorrência
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+        <div className="text-xs text-muted-foreground">
+          {lastSync ? (
+            <span>
+              Última sincronização: <b className="text-foreground">{format(new Date(lastSync.at), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}</b>
+              {" • "}
+              <span className="text-blue-600">{lastSync.upserted} atualizada{lastSync.upserted === 1 ? "" : "s"}</span>
+              {" • "}
+              <span className="text-gray-600">{lastSync.deactivated} desativada{lastSync.deactivated === 1 ? "" : "s"}</span>
+              {lastSync.skipped ? <> {" • "}<span className="text-amber-600">{lastSync.skipped} ignorada{lastSync.skipped === 1 ? "" : "s"}</span></> : null}
+            </span>
+          ) : (
+            <span>Nunca sincronizado com o Asaas.</span>
+          )}
+        </div>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            onClick={syncWithAsaas}
+            disabled={!connected || syncing || !crecheId}
+            className="rounded-xl"
+            title="Sincronizar com Asaas"
+          >
+            {syncing ? <Loader2 className="w-4 h-4 mr-1.5 animate-spin" /> : <RefreshCw className="w-4 h-4 mr-1.5" />}
+            Atualizar
           </Button>
-        )}
+          {onNew && (
+            <Button onClick={onNew} disabled={!connected} className="rounded-xl">
+              <Repeat className="w-4 h-4 mr-1.5" />Nova recorrência
+            </Button>
+          )}
+        </div>
       </div>
 
       {!subs.length ? (
