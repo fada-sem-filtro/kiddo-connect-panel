@@ -121,7 +121,7 @@ export function Sidebar() {
     materias: 'gestao_materias_ativo',
     relatorio_desempenho: 'relatorio_desempenho_ativo',
     relatorio_modelo: 'relatorio_desempenho_ativo',
-    boletos: 'modulo_boletos_ativo',
+    financeiro: 'modulo_boletos_ativo',
   };
 
   const isItemEnabledByPedSettings = (key: string): boolean => {
@@ -223,8 +223,8 @@ export function Sidebar() {
       if (pedSettings?.atividades_avaliacoes_ativo && (role === "admin" || canView('atividades_aluno'))) {
         responsavelNavigation.push({ name: "Atividades do Aluno", href: "/responsavel/atividades", icon: BookOpen });
       }
-      if ((pedSettings as any)?.modulo_boletos_ativo && (role === "admin" || canView('boletos'))) {
-        responsavelNavigation.push({ name: "Boletos", href: "/responsavel/boletos", icon: Receipt });
+      if (role === "admin" || canView('financeiro')) {
+        responsavelNavigation.push({ name: "Financeiro", href: "/responsavel/financeiro", icon: Receipt });
       }
     }
   }
@@ -297,8 +297,8 @@ export function Sidebar() {
       adminNavigation.push({ name: "Permissões Secretaria", href: "/diretor/permissoes", icon: Shield });
       adminNavigation.push({ name: "Menu Lateral", href: "/diretor/sidebar-config", icon: SlidersHorizontal });
     }
-    if (role === "admin" || ((pedSettings as any)?.modulo_boletos_ativo && canView('boletos'))) {
-      adminNavigation.push({ name: "Boletos", href: `${prefix}/boletos`, icon: Receipt });
+    if (role === "admin" || canView('financeiro')) {
+      adminNavigation.push({ name: "Financeiro", href: `${prefix}/financeiro`, icon: Receipt });
     }
   }
 

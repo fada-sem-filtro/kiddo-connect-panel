@@ -14,6 +14,47 @@ export type Database = {
   }
   public: {
     Tables: {
+      asaas_webhook_logs: {
+        Row: {
+          asaas_payment_id: string | null
+          creche_id: string | null
+          error: string | null
+          event: string
+          id: string
+          payload: Json
+          processed: boolean
+          received_at: string
+        }
+        Insert: {
+          asaas_payment_id?: string | null
+          creche_id?: string | null
+          error?: string | null
+          event: string
+          id?: string
+          payload: Json
+          processed?: boolean
+          received_at?: string
+        }
+        Update: {
+          asaas_payment_id?: string | null
+          creche_id?: string | null
+          error?: string | null
+          event?: string
+          id?: string
+          payload?: Json
+          processed?: boolean
+          received_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "asaas_webhook_logs_creche_id_fkey"
+            columns: ["creche_id"]
+            isOneToOne: false
+            referencedRelation: "creches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       atividade_entregas: {
         Row: {
           aluno_crianca_id: string
@@ -500,106 +541,6 @@ export type Database = {
           },
         ]
       }
-      boletos: {
-        Row: {
-          codigo_barras: string | null
-          created_at: string
-          creche_id: string
-          crianca_id: string
-          data_limite_desconto: string | null
-          data_pagamento: string | null
-          desconto_antecipacao: number | null
-          descricao: string | null
-          id: string
-          juros_dia: number | null
-          linha_digitavel: string | null
-          multa_atraso: number | null
-          nosso_numero: string | null
-          observacoes: string | null
-          parcela_atual: number | null
-          referencia: string | null
-          registrado_por_user_id: string
-          status: string
-          total_parcelas: number | null
-          turma_id: string
-          updated_at: string
-          valor: number
-          vencimento: string
-        }
-        Insert: {
-          codigo_barras?: string | null
-          created_at?: string
-          creche_id: string
-          crianca_id: string
-          data_limite_desconto?: string | null
-          data_pagamento?: string | null
-          desconto_antecipacao?: number | null
-          descricao?: string | null
-          id?: string
-          juros_dia?: number | null
-          linha_digitavel?: string | null
-          multa_atraso?: number | null
-          nosso_numero?: string | null
-          observacoes?: string | null
-          parcela_atual?: number | null
-          referencia?: string | null
-          registrado_por_user_id: string
-          status?: string
-          total_parcelas?: number | null
-          turma_id: string
-          updated_at?: string
-          valor: number
-          vencimento: string
-        }
-        Update: {
-          codigo_barras?: string | null
-          created_at?: string
-          creche_id?: string
-          crianca_id?: string
-          data_limite_desconto?: string | null
-          data_pagamento?: string | null
-          desconto_antecipacao?: number | null
-          descricao?: string | null
-          id?: string
-          juros_dia?: number | null
-          linha_digitavel?: string | null
-          multa_atraso?: number | null
-          nosso_numero?: string | null
-          observacoes?: string | null
-          parcela_atual?: number | null
-          referencia?: string | null
-          registrado_por_user_id?: string
-          status?: string
-          total_parcelas?: number | null
-          turma_id?: string
-          updated_at?: string
-          valor?: number
-          vencimento?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "boletos_creche_id_fkey"
-            columns: ["creche_id"]
-            isOneToOne: false
-            referencedRelation: "creches"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "boletos_crianca_id_fkey"
-            columns: ["crianca_id"]
-            isOneToOne: false
-            referencedRelation: "criancas"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "boletos_turma_id_fkey"
-            columns: ["turma_id"]
-            isOneToOne: false
-            referencedRelation: "turmas"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       configuracoes_pedagogicas: {
         Row: {
           atividades_avaliacoes_ativo: boolean
@@ -1030,6 +971,125 @@ export type Database = {
         }
         Relationships: []
       }
+      financial_customers: {
+        Row: {
+          asaas_customer_id: string
+          cpf_cnpj: string | null
+          created_at: string
+          creche_id: string
+          crianca_id: string | null
+          email: string | null
+          id: string
+          name: string
+          phone: string | null
+          responsavel_user_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          asaas_customer_id: string
+          cpf_cnpj?: string | null
+          created_at?: string
+          creche_id: string
+          crianca_id?: string | null
+          email?: string | null
+          id?: string
+          name: string
+          phone?: string | null
+          responsavel_user_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          asaas_customer_id?: string
+          cpf_cnpj?: string | null
+          created_at?: string
+          creche_id?: string
+          crianca_id?: string | null
+          email?: string | null
+          id?: string
+          name?: string
+          phone?: string | null
+          responsavel_user_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "financial_customers_creche_id_fkey"
+            columns: ["creche_id"]
+            isOneToOne: false
+            referencedRelation: "creches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "financial_customers_crianca_id_fkey"
+            columns: ["crianca_id"]
+            isOneToOne: false
+            referencedRelation: "criancas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      financial_settings: {
+        Row: {
+          asaas_account_email: string | null
+          asaas_account_name: string | null
+          asaas_api_key_encrypted: string | null
+          asaas_api_key_iv: string | null
+          asaas_api_key_last4: string | null
+          asaas_api_key_tag: string | null
+          asaas_connected: boolean
+          asaas_environment: string
+          asaas_last_validation: string | null
+          asaas_webhook_id: string | null
+          asaas_webhook_token: string
+          created_at: string
+          creche_id: string
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          asaas_account_email?: string | null
+          asaas_account_name?: string | null
+          asaas_api_key_encrypted?: string | null
+          asaas_api_key_iv?: string | null
+          asaas_api_key_last4?: string | null
+          asaas_api_key_tag?: string | null
+          asaas_connected?: boolean
+          asaas_environment?: string
+          asaas_last_validation?: string | null
+          asaas_webhook_id?: string | null
+          asaas_webhook_token?: string
+          created_at?: string
+          creche_id: string
+          id?: string
+          updated_at?: string
+        }
+        Update: {
+          asaas_account_email?: string | null
+          asaas_account_name?: string | null
+          asaas_api_key_encrypted?: string | null
+          asaas_api_key_iv?: string | null
+          asaas_api_key_last4?: string | null
+          asaas_api_key_tag?: string | null
+          asaas_connected?: boolean
+          asaas_environment?: string
+          asaas_last_validation?: string | null
+          asaas_webhook_id?: string | null
+          asaas_webhook_token?: string
+          created_at?: string
+          creche_id?: string
+          id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "financial_settings_creche_id_fkey"
+            columns: ["creche_id"]
+            isOneToOne: true
+            referencedRelation: "creches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       grade_aulas: {
         Row: {
           created_at: string
@@ -1077,6 +1137,104 @@ export type Database = {
             columns: ["turma_id"]
             isOneToOne: false
             referencedRelation: "turmas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      invoices: {
+        Row: {
+          asaas_payment_id: string
+          bank_slip_url: string | null
+          created_at: string
+          creche_id: string
+          crianca_id: string | null
+          customer_id: string
+          description: string | null
+          due_date: string
+          external_reference: string | null
+          id: string
+          invoice_url: string | null
+          net_value: number | null
+          payment_method: string
+          pix_copy_paste: string | null
+          pix_expires_at: string | null
+          pix_qrcode: string | null
+          status: string
+          subscription_id: string | null
+          updated_at: string
+          value: number
+        }
+        Insert: {
+          asaas_payment_id: string
+          bank_slip_url?: string | null
+          created_at?: string
+          creche_id: string
+          crianca_id?: string | null
+          customer_id: string
+          description?: string | null
+          due_date: string
+          external_reference?: string | null
+          id?: string
+          invoice_url?: string | null
+          net_value?: number | null
+          payment_method?: string
+          pix_copy_paste?: string | null
+          pix_expires_at?: string | null
+          pix_qrcode?: string | null
+          status?: string
+          subscription_id?: string | null
+          updated_at?: string
+          value: number
+        }
+        Update: {
+          asaas_payment_id?: string
+          bank_slip_url?: string | null
+          created_at?: string
+          creche_id?: string
+          crianca_id?: string | null
+          customer_id?: string
+          description?: string | null
+          due_date?: string
+          external_reference?: string | null
+          id?: string
+          invoice_url?: string | null
+          net_value?: number | null
+          payment_method?: string
+          pix_copy_paste?: string | null
+          pix_expires_at?: string | null
+          pix_qrcode?: string | null
+          status?: string
+          subscription_id?: string | null
+          updated_at?: string
+          value?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoices_creche_id_fkey"
+            columns: ["creche_id"]
+            isOneToOne: false
+            referencedRelation: "creches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoices_crianca_id_fkey"
+            columns: ["crianca_id"]
+            isOneToOne: false
+            referencedRelation: "criancas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoices_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "financial_customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoices_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "subscriptions"
             referencedColumns: ["id"]
           },
         ]
@@ -1230,6 +1388,60 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      payments: {
+        Row: {
+          created_at: string
+          creche_id: string
+          id: string
+          invoice_id: string
+          net_value: number | null
+          paid_at: string
+          payment_method: string | null
+          status: string
+          transaction_id: string | null
+          value: number
+        }
+        Insert: {
+          created_at?: string
+          creche_id: string
+          id?: string
+          invoice_id: string
+          net_value?: number | null
+          paid_at?: string
+          payment_method?: string | null
+          status?: string
+          transaction_id?: string | null
+          value: number
+        }
+        Update: {
+          created_at?: string
+          creche_id?: string
+          id?: string
+          invoice_id?: string
+          net_value?: number | null
+          paid_at?: string
+          payment_method?: string | null
+          status?: string
+          transaction_id?: string | null
+          value?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_creche_id_fkey"
+            columns: ["creche_id"]
+            isOneToOne: false
+            referencedRelation: "creches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       permissoes_perfil: {
         Row: {
@@ -1728,6 +1940,76 @@ export type Database = {
           },
         ]
       }
+      subscriptions: {
+        Row: {
+          asaas_subscription_id: string
+          billing_type: string
+          created_at: string
+          creche_id: string
+          crianca_id: string | null
+          customer_id: string
+          cycle: string
+          description: string | null
+          id: string
+          next_due_date: string | null
+          status: string
+          updated_at: string
+          value: number
+        }
+        Insert: {
+          asaas_subscription_id: string
+          billing_type?: string
+          created_at?: string
+          creche_id: string
+          crianca_id?: string | null
+          customer_id: string
+          cycle: string
+          description?: string | null
+          id?: string
+          next_due_date?: string | null
+          status?: string
+          updated_at?: string
+          value: number
+        }
+        Update: {
+          asaas_subscription_id?: string
+          billing_type?: string
+          created_at?: string
+          creche_id?: string
+          crianca_id?: string | null
+          customer_id?: string
+          cycle?: string
+          description?: string | null
+          id?: string
+          next_due_date?: string | null
+          status?: string
+          updated_at?: string
+          value?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscriptions_creche_id_fkey"
+            columns: ["creche_id"]
+            isOneToOne: false
+            referencedRelation: "creches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "subscriptions_crianca_id_fkey"
+            columns: ["crianca_id"]
+            isOneToOne: false
+            referencedRelation: "criancas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "subscriptions_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "financial_customers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       suporte_mensagens: {
         Row: {
           assunto: string
@@ -1926,6 +2208,10 @@ export type Database = {
       }
       is_educador_of_turma: {
         Args: { _turma_id: string; _user_id: string }
+        Returns: boolean
+      }
+      is_financeiro_admin: {
+        Args: { _creche_id: string; _user_id: string }
         Returns: boolean
       }
       is_in_same_creche: {
