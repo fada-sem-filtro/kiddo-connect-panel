@@ -4,8 +4,14 @@
 import { createClient, SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { decryptApiKey, encryptApiKey, serviceClient } from "./asaas.ts";
 
-export const INTER_BASE_URL = "https://cdpj.partners.bancointer.com.br";
+export const INTER_BASE_URL_PROD = "https://cdpj.partners.bancointer.com.br";
+export const INTER_BASE_URL_SANDBOX = "https://cdpj-sandbox.partners.uatinter.co";
+export const INTER_BASE_URL = INTER_BASE_URL_PROD; // default fallback
 export const INTER_CERT_BUCKET = "inter-certificates";
+
+export function interBaseUrl(env?: string | null): string {
+  return env === "sandbox" ? INTER_BASE_URL_SANDBOX : INTER_BASE_URL_PROD;
+}
 
 export const INTER_SCOPES = [
   "boleto-cobranca.read",
