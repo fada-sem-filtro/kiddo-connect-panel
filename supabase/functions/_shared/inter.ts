@@ -34,6 +34,7 @@ export interface InterAccount {
   key: string; // PEM
   conta_corrente?: string | null;
   webhook_secret: string;
+  environment?: string | null;
 }
 
 // ---------- Storage helpers ----------
@@ -116,6 +117,7 @@ export async function getCrecheInter(crecheId: string): Promise<InterAccount | n
     key,
     conta_corrente: data.conta_corrente,
     webhook_secret: data.webhook_secret,
+    environment: data.environment,
   };
 }
 
@@ -143,7 +145,7 @@ export async function getInterToken(account: InterAccount): Promise<string> {
   });
 
   // @ts-ignore client option is supported in Deno fetch
-  const res = await fetch(`${INTER_BASE_URL}/oauth/v2/token`, {
+  const res = await fetch(`${interBaseUrl(account.environment)}/oauth/v2/token`, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: body.toString(),
@@ -177,7 +179,7 @@ export async function interFetch(
   if (account.conta_corrente) headers["x-conta-corrente"] = account.conta_corrente;
 
   // @ts-ignore client option
-  const res = await fetch(`${INTER_BASE_URL}${path}`, { ...init, headers, client });
+  const res = await fetch(`${interBaseUrl(account.environment)}${path}`, { ...init, headers, client });
   const text = await res.text();
   let data: any = null;
   try { data = text ? JSON.parse(text) : null; } catch { /* keep raw */ }
