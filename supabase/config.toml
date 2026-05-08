@@ -13,3 +13,5 @@ project_id = "takzcbagxjydlkzenprr"
     verify_jwt = false
   [functions.send-orcamento-email]
     verify_jwt = false
+  [functions.inter-webhook]
+    verify_jwt = false
