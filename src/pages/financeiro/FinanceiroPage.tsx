@@ -15,6 +15,7 @@ import { LogsInterTab } from "./LogsInterTab";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useFinancialProvider } from "@/hooks/useFinancialProvider";
 import { toast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -31,8 +32,10 @@ const STATUS_LABEL: Record<string, { label: string; color: string }> = {
 const fmtBRL = (v: number) => `R$ ${Number(v).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`;
 
 export default function FinanceiroPage() {
-  const { profile } = useAuth();
+  const { profile, role } = useAuth();
+  const isAdmin = role === "admin";
   const [crecheId, setCrecheId] = useState<string | null>(null);
+  const { provider, environment } = useFinancialProvider(crecheId);
   const [settings, setSettings] = useState<any>(null);
   const [invoices, setInvoices] = useState<any[]>([]);
   const [payments, setPayments] = useState<any[]>([]);
