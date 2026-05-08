@@ -287,38 +287,152 @@ export default function FinanceiroPage() {
   );
 }
 
-function SubscriptionsList({ crecheId, criancas }: { crecheId: string | null; criancas: any[] }) {
+function SubscriptionsList({ crecheId, criancas, refreshKey }: { crecheId: string | null; criancas: any[]; refreshKey?: number }) {
   const [subs, setSubs] = useState<any[]>([]);
-  useEffect(() => {
-    (async () => {
-      if (!crecheId) return;
-      const { data } = await supabase.from("subscriptions").select("*").eq("creche_id", crecheId).order("next_due_date");
-      setSubs(data || []);
-    })();
-  }, [crecheId]);
+  const [reloadTick, setReloadTick] = useState(0);
+  const [editing, setEditing] = useState<any>(null);
+  const [confirmCancel, setConfirmCancel] = useState<any>(null);
+  const [busy, setBusy] = useState(false);
+
+  const reload = async () => {
+    if (!crecheId) return;
+    const { data } = await supabase.from("subscriptions").select("*").eq("creche_id", crecheId).order("next_due_date");
+    setSubs(data || []);
+  };
+  useEffect(() => { reload(); }, [crecheId, reloadTick, refreshKey]);
+
+  const cancelSub = async () => {
+    if (!confirmCancel) return;
+    setBusy(true);
+    const { data, error } = await supabase.functions.invoke("asaas-update-subscription", {
+      body: { creche_id: crecheId, subscription_id: confirmCancel.id, action: "cancel" },
+    });
+    setBusy(false);
+    setConfirmCancel(null);
+    if (error || data?.error) { toast({ title: "Erro", description: data?.error || error?.message, variant: "destructive" }); return; }
+    toast({ title: "Recorrência cancelada" });
+    setReloadTick(t => t + 1);
+  };
+
   if (!subs.length) return <p className="text-sm text-muted-foreground">Nenhuma recorrência cadastrada.</p>;
+
   return (
-    <div className="space-y-2">
-      {subs.map(s => {
-        const child = criancas.find(c => c.id === s.crianca_id);
-        return (
-          <Card key={s.id} className="rounded-xl border">
-            <CardContent className="p-3 flex justify-between items-center">
-              <div>
-                <p className="font-medium">{s.description || "Recorrência"}</p>
-                <p className="text-xs text-muted-foreground">{child?.nome || "—"} • {s.cycle} • próx. {format(new Date(s.next_due_date), "dd/MM/yyyy")}</p>
-              </div>
-              <div className="flex items-center gap-2">
-                <Badge className="bg-blue-500/10 text-blue-700 rounded-lg">{s.status}</Badge>
-                <span className="font-bold">{fmtBRL(s.value)}</span>
-              </div>
-            </CardContent>
-          </Card>
-        );
-      })}
-    </div>
+    <>
+      <div className="space-y-2">
+        {subs.map(s => {
+          const child = criancas.find(c => c.id === s.crianca_id);
+          const inactive = s.status === "INACTIVE" || s.status === "CANCELED";
+          return (
+            <Card key={s.id} className={`rounded-xl border ${inactive ? "opacity-60" : ""}`}>
+              <CardContent className="p-3 flex flex-col md:flex-row md:items-center justify-between gap-2">
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium truncate">{s.description || "Recorrência"}</p>
+                  <p className="text-xs text-muted-foreground">{child?.nome || "—"} • {s.cycle} • próx. {format(new Date(s.next_due_date), "dd/MM/yyyy")}</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Badge className={`rounded-lg ${inactive ? "bg-gray-500/10 text-gray-700" : "bg-blue-500/10 text-blue-700"}`}>{s.status}</Badge>
+                  <span className="font-bold">{fmtBRL(s.value)}</span>
+                </div>
+                <div className="flex gap-1">
+                  {!inactive && (
+                    <>
+                      <Button size="sm" variant="outline" className="rounded-lg" onClick={() => setEditing(s)} title="Editar">
+                        <Pencil className="w-3.5 h-3.5" />
+                      </Button>
+                      <Button size="sm" variant="outline" className="rounded-lg text-red-600 hover:text-red-700" onClick={() => setConfirmCancel(s)} title="Cancelar recorrência">
+                        <X className="w-3.5 h-3.5" />
+                      </Button>
+                    </>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          );
+        })}
+      </div>
+
+      {editing && (
+        <EditarRecorrenciaModal
+          open={!!editing}
+          onClose={() => setEditing(null)}
+          crecheId={crecheId}
+          subscription={editing}
+          onSaved={() => { setEditing(null); setReloadTick(t => t + 1); }}
+        />
+      )}
+
+      <AlertDialog open={!!confirmCancel} onOpenChange={(o) => !o && setConfirmCancel(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Cancelar recorrência?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Esta ação irá cancelar a recorrência <b>{confirmCancel?.description || ""}</b> no Asaas. Novas cobranças deixarão de ser geradas. Cobranças já emitidas não são afetadas.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={busy}>Voltar</AlertDialogCancel>
+            <AlertDialogAction onClick={cancelSub} disabled={busy} className="bg-red-600 hover:bg-red-700">
+              {busy ? <Loader2 className="w-4 h-4 animate-spin" /> : "Cancelar recorrência"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 }
+
+function EditarRecorrenciaModal({ open, onClose, crecheId, subscription, onSaved }: any) {
+  const [value, setValue] = useState(String(subscription.value ?? ""));
+  const [nextDue, setNextDue] = useState(subscription.next_due_date || "");
+  const [cycle, setCycle] = useState(subscription.cycle || "MONTHLY");
+  const [description, setDescription] = useState(subscription.description || "");
+  const [busy, setBusy] = useState(false);
+
+  const save = async () => {
+    setBusy(true);
+    const { data, error } = await supabase.functions.invoke("asaas-update-subscription", {
+      body: {
+        creche_id: crecheId, subscription_id: subscription.id, action: "update",
+        value: Number(value), next_due_date: nextDue, cycle, description,
+      },
+    });
+    setBusy(false);
+    if (error || data?.error) { toast({ title: "Erro", description: data?.error || error?.message, variant: "destructive" }); return; }
+    toast({ title: "Recorrência atualizada!" });
+    onSaved();
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onClose}>
+      <DialogContent className="max-w-lg">
+        <DialogHeader><DialogTitle>Editar recorrência</DialogTitle></DialogHeader>
+        <div className="space-y-3">
+          <div className="grid grid-cols-2 gap-2">
+            <div><Label>Valor (R$)</Label><Input type="number" value={value} onChange={e => setValue(e.target.value)} /></div>
+            <div><Label>Próximo vencimento</Label><Input type="date" value={nextDue} onChange={e => setNextDue(e.target.value)} /></div>
+          </div>
+          <div><Label>Frequência</Label>
+            <Select value={cycle} onValueChange={setCycle}>
+              <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="MONTHLY">Mensal</SelectItem>
+                <SelectItem value="QUARTERLY">Trimestral</SelectItem>
+                <SelectItem value="YEARLY">Anual</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div><Label>Descrição</Label><Input value={description} onChange={e => setDescription(e.target.value)} /></div>
+          <p className="text-xs text-muted-foreground">A forma de pagamento não pode ser alterada após a criação. Para mudar, cancele e crie uma nova recorrência.</p>
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={onClose} disabled={busy}>Fechar</Button>
+          <Button onClick={save} disabled={busy || !value || !nextDue}>{busy ? <Loader2 className="w-4 h-4 animate-spin" /> : "Salvar"}</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 
 function NovaRecorrenciaModal({ open, onClose, crecheId, criancas, onCreated }: any) {
   const [criancaId, setCriancaId] = useState("");
