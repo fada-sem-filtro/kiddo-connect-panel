@@ -997,11 +997,14 @@ export type Database = {
           encrypted_client_secret: string | null
           environment: string
           id: string
+          last_auth_at: string | null
+          last_auth_error: string | null
           last_error: string | null
           last_validation: string | null
           private_key_path: string | null
           provider: Database["public"]["Enums"]["financial_provider"]
           updated_at: string
+          webhook_registered_at: string | null
           webhook_secret: string
         }
         Insert: {
@@ -1017,11 +1020,14 @@ export type Database = {
           encrypted_client_secret?: string | null
           environment?: string
           id?: string
+          last_auth_at?: string | null
+          last_auth_error?: string | null
           last_error?: string | null
           last_validation?: string | null
           private_key_path?: string | null
           provider: Database["public"]["Enums"]["financial_provider"]
           updated_at?: string
+          webhook_registered_at?: string | null
           webhook_secret?: string
         }
         Update: {
@@ -1037,11 +1043,14 @@ export type Database = {
           encrypted_client_secret?: string | null
           environment?: string
           id?: string
+          last_auth_at?: string | null
+          last_auth_error?: string | null
           last_error?: string | null
           last_validation?: string | null
           private_key_path?: string | null
           provider?: Database["public"]["Enums"]["financial_provider"]
           updated_at?: string
+          webhook_registered_at?: string | null
           webhook_secret?: string
         }
         Relationships: [
@@ -1115,6 +1124,7 @@ export type Database = {
         Row: {
           amount: number
           boleto_linha_digitavel: string | null
+          boleto_pdf_path: string | null
           boleto_pdf_url: string | null
           cancelled_at: string | null
           created_at: string
@@ -1131,6 +1141,8 @@ export type Database = {
           pix_copy_paste: string | null
           pix_expires_at: string | null
           pix_qrcode: string | null
+          pix_qrcode_image: string | null
+          pix_txid: string | null
           provider: Database["public"]["Enums"]["financial_provider"]
           raw_payload: Json | null
           status: string
@@ -1139,6 +1151,7 @@ export type Database = {
         Insert: {
           amount: number
           boleto_linha_digitavel?: string | null
+          boleto_pdf_path?: string | null
           boleto_pdf_url?: string | null
           cancelled_at?: string | null
           created_at?: string
@@ -1155,6 +1168,8 @@ export type Database = {
           pix_copy_paste?: string | null
           pix_expires_at?: string | null
           pix_qrcode?: string | null
+          pix_qrcode_image?: string | null
+          pix_txid?: string | null
           provider: Database["public"]["Enums"]["financial_provider"]
           raw_payload?: Json | null
           status?: string
@@ -1163,6 +1178,7 @@ export type Database = {
         Update: {
           amount?: number
           boleto_linha_digitavel?: string | null
+          boleto_pdf_path?: string | null
           boleto_pdf_url?: string | null
           cancelled_at?: string | null
           created_at?: string
@@ -1179,6 +1195,8 @@ export type Database = {
           pix_copy_paste?: string | null
           pix_expires_at?: string | null
           pix_qrcode?: string | null
+          pix_qrcode_image?: string | null
+          pix_txid?: string | null
           provider?: Database["public"]["Enums"]["financial_provider"]
           raw_payload?: Json | null
           status?: string
@@ -1405,6 +1423,50 @@ export type Database = {
             columns: ["turma_id"]
             isOneToOne: false
             referencedRelation: "turmas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inter_audit_logs: {
+        Row: {
+          action: string
+          created_at: string
+          creche_id: string
+          error: string | null
+          http_status: number | null
+          id: string
+          payload: Json | null
+          request_id: string | null
+          status: string
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          creche_id: string
+          error?: string | null
+          http_status?: number | null
+          id?: string
+          payload?: Json | null
+          request_id?: string | null
+          status: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          creche_id?: string
+          error?: string | null
+          http_status?: number | null
+          id?: string
+          payload?: Json | null
+          request_id?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inter_audit_logs_creche_id_fkey"
+            columns: ["creche_id"]
+            isOneToOne: false
+            referencedRelation: "creches"
             referencedColumns: ["id"]
           },
         ]
