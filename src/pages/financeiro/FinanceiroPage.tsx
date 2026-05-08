@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Receipt, Plug, Wallet, AlertTriangle, BarChart3, Send, RefreshCw, Copy, CheckCircle2, Loader2, Bell, X, Download, Repeat, Unplug, Pencil, Building2 } from "lucide-react";
 import { BancoInterTab } from "./BancoInterTab";
 import { CobrancasInterTab } from "./CobrancasInterTab";
+import { LogsInterTab } from "./LogsInterTab";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
