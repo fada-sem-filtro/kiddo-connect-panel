@@ -628,6 +628,10 @@ export type Database = {
           created_at: string
           email: string | null
           endereco: string | null
+          financial_environment: string | null
+          financial_provider:
+            | Database["public"]["Enums"]["financial_provider"]
+            | null
           id: string
           logo_url: string | null
           nome: string
@@ -639,6 +643,10 @@ export type Database = {
           created_at?: string
           email?: string | null
           endereco?: string | null
+          financial_environment?: string | null
+          financial_provider?:
+            | Database["public"]["Enums"]["financial_provider"]
+            | null
           id?: string
           logo_url?: string | null
           nome: string
@@ -650,6 +658,10 @@ export type Database = {
           created_at?: string
           email?: string | null
           endereco?: string | null
+          financial_environment?: string | null
+          financial_provider?:
+            | Database["public"]["Enums"]["financial_provider"]
+            | null
           id?: string
           logo_url?: string | null
           nome?: string
