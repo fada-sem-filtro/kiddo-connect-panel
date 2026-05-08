@@ -321,7 +321,9 @@ export function SidebarConfigEditor({ crecheId, perfil, isAdmin = false }: { cre
   };
 
   const usedKeys = new Set(config.flatMap(s => s.items.map(i => i.key)));
-  const availableItems = (AVAILABLE_ITEMS_BY_ROLE[perfil] || []).filter(i => !usedKeys.has(i.key));
+  const availableItems = (AVAILABLE_ITEMS_BY_ROLE[perfil] || [])
+    .filter(i => !usedKeys.has(i.key))
+    .filter(i => isItemEnabledByModules(i.key, moduleFilter));
 
   const addItemToSection = (sectionIdx: number, key: string) => {
     const available = AVAILABLE_ITEMS_BY_ROLE[perfil]?.find(i => i.key === key);
