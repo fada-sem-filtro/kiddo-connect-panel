@@ -132,6 +132,7 @@ export default function FinanceiroPage() {
           <TabsList className="flex flex-wrap gap-1 h-auto bg-muted/50 p-1 rounded-2xl">
             <TabsTrigger value="dashboard" className="rounded-xl"><BarChart3 className="w-4 h-4 mr-1.5" />Dashboard</TabsTrigger>
             <TabsTrigger value="cobrancas" className="rounded-xl"><Receipt className="w-4 h-4 mr-1.5" />Cobranças</TabsTrigger>
+            <TabsTrigger value="recorrencias" className="rounded-xl"><Repeat className="w-4 h-4 mr-1.5" />Recorrências</TabsTrigger>
             <TabsTrigger value="inadimplencia" className="rounded-xl"><AlertTriangle className="w-4 h-4 mr-1.5" />Inadimplência</TabsTrigger>
             <TabsTrigger value="integracao" className="rounded-xl"><Plug className="w-4 h-4 mr-1.5" />Integração Asaas</TabsTrigger>
           </TabsList>
