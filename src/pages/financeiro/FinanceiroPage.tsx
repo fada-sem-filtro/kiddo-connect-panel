@@ -264,6 +264,9 @@ export default function FinanceiroPage() {
           <TabsContent value="inter-cobrancas" className="mt-4">
             <CobrancasInterTab crecheId={crecheId} criancas={criancas} />
           </TabsContent>
+          <TabsContent value="inter-logs" className="mt-4">
+            <LogsInterTab crecheId={crecheId} />
+          </TabsContent>
         </Tabs>
       </div>
 
