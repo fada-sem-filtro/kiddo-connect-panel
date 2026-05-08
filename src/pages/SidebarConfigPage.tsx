@@ -76,6 +76,7 @@ export default function SidebarConfigPage() {
                 <SidebarConfigEditor
                   crecheId={effectiveCrecheId!}
                   perfil={p.value}
+                  isAdmin={isAdmin}
                 />
               </TabsContent>
             ))}
