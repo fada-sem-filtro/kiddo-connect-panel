@@ -74,9 +74,43 @@ export default function FinanceiroPage() {
   const taxa = adj.length ? (adj.filter(i => i.eff === "OVERDUE").length / adj.length) * 100 : 0;
   const filtered = adj.filter(i => filterStatus === "all" ? true : i.eff === filterStatus);
 
+  const [confirmCancel, setConfirmCancel] = useState<string | null>(null);
+  const [acting, setActing] = useState<string | null>(null);
+  const [showSubModal, setShowSubModal] = useState(false);
+
   const copyPix = async (txt: string) => {
     await navigator.clipboard.writeText(txt);
     toast({ title: "Pix copiado!", description: "Cole no app do banco para pagar." });
+  };
+
+  const resendNotif = async (invoiceId: string) => {
+    setActing(invoiceId);
+    const { data, error } = await supabase.functions.invoke("asaas-resend-notification", { body: { creche_id: crecheId, invoice_id: invoiceId } });
+    setActing(null);
+    if (error || data?.error) { toast({ title: "Erro", description: data?.error || error?.message, variant: "destructive" }); return; }
+    toast({ title: "Notificação reenviada!", description: "O cliente foi notificado por email/SMS." });
+  };
+
+  const cancelInvoice = async (invoiceId: string) => {
+    setActing(invoiceId);
+    const { data, error } = await supabase.functions.invoke("asaas-cancel-payment", { body: { creche_id: crecheId, invoice_id: invoiceId } });
+    setActing(null);
+    setConfirmCancel(null);
+    if (error || data?.error) { toast({ title: "Erro", description: data?.error || error?.message, variant: "destructive" }); return; }
+    toast({ title: "Cobrança cancelada" });
+    load();
+  };
+
+  const exportCSV = (rows: any[], filename: string) => {
+    const header = ["Aluno", "Descrição", "Valor", "Vencimento", "Status", "Método"];
+    const lines = rows.map(r => {
+      const child = criancas.find(c => c.id === r.crianca_id);
+      return [child?.nome || "", r.description || "", r.value, r.due_date, r.eff || r.status, r.payment_method].map(v => `"${String(v ?? "").replace(/"/g, '""')}"`).join(",");
+    });
+    const csv = [header.join(","), ...lines].join("\n");
+    const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a"); a.href = url; a.download = filename; a.click(); URL.revokeObjectURL(url);
   };
 
   return (
