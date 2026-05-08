@@ -323,6 +323,9 @@ export function getDefaultConfig(perfil: string): SidebarConfig {
         ],
       },
     ];
+  }
+
+  return [];
 }
 
 // Mapping of sidebar item keys -> required pedagogical module flag.
