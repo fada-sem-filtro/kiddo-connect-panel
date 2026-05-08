@@ -2157,53 +2157,7 @@ export type Database = {
       }
     }
     Views: {
-      financial_settings_safe: {
-        Row: {
-          asaas_account_email: string | null
-          asaas_account_name: string | null
-          asaas_api_key_last4: string | null
-          asaas_connected: boolean | null
-          asaas_environment: string | null
-          asaas_last_validation: string | null
-          created_at: string | null
-          creche_id: string | null
-          id: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          asaas_account_email?: string | null
-          asaas_account_name?: string | null
-          asaas_api_key_last4?: string | null
-          asaas_connected?: boolean | null
-          asaas_environment?: string | null
-          asaas_last_validation?: string | null
-          created_at?: string | null
-          creche_id?: string | null
-          id?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          asaas_account_email?: string | null
-          asaas_account_name?: string | null
-          asaas_api_key_last4?: string | null
-          asaas_connected?: boolean | null
-          asaas_environment?: string | null
-          asaas_last_validation?: string | null
-          created_at?: string | null
-          creche_id?: string | null
-          id?: string | null
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "financial_settings_creche_id_fkey"
-            columns: ["creche_id"]
-            isOneToOne: true
-            referencedRelation: "creches"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
+      [_ in never]: never
     }
     Functions: {
       can_access_crianca: {
