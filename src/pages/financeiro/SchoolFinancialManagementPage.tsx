@@ -152,13 +152,11 @@ export default function SchoolFinancialManagementPage() {
             <DashboardFinanceiroTab crecheId={crecheId} />
           </TabsContent>
 
-          <TabsContent value="resumo" className="mt-4 space-y-3">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-              <SummaryCard title="Provider ativo" value={provider ? (provider === "inter" ? "Banco Inter PJ" : "Asaas") : "Nenhum"} icon={<Plug className="w-4 h-4" />} />
-              <SummaryCard title="Ambiente" value={env || "—"} icon={<ShieldAlert className="w-4 h-4" />} />
-              <SummaryCard title="Última sincronização" value={lastSync ? format(new Date(lastSync), "dd/MM/yyyy HH:mm", { locale: ptBR }) : "—"} icon={<RefreshCw className="w-4 h-4" />} />
-            </div>
-          </TabsContent>
+          {provider === "inter" && (
+            <TabsContent value="extrato" className="mt-4">
+              <ExtratoInterTab crecheId={crecheId} />
+            </TabsContent>
+          )}
 
           <TabsContent value="provider" className="mt-4 space-y-4">
             <Card className="rounded-2xl border-2">
@@ -206,10 +204,23 @@ export default function SchoolFinancialManagementPage() {
             {provider === "inter" && (
               <>
                 <BancoInterTab crecheId={crecheId} />
-                <Button variant="outline" onClick={validateInter} disabled={validating} className="rounded-xl">
-                  {validating ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <RefreshCw className="w-4 h-4 mr-2" />}
-                  Testar conexão Inter
-                </Button>
+                <div className="flex flex-wrap gap-2">
+                  <Button variant="outline" onClick={validateInter} disabled={validating} className="rounded-xl">
+                    {validating ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <RefreshCw className="w-4 h-4 mr-2" />}
+                    Testar conexão Inter
+                  </Button>
+                  <Button variant="outline" onClick={async () => {
+                    const { data, error } = await supabase.functions.invoke("inter-register-webhook", { body: { creche_id: crecheId } });
+                    if (error || (data as any)?.error) {
+                      toast({ title: "Falha ao registrar webhook", description: error?.message || (data as any)?.error, variant: "destructive" });
+                    } else {
+                      toast({ title: "Webhook registrado no Banco Inter" });
+                      await load();
+                    }
+                  }} className="rounded-xl">
+                    <Webhook className="w-4 h-4 mr-2" /> Registrar webhook
+                  </Button>
+                </div>
               </>
             )}
             {!provider && (
