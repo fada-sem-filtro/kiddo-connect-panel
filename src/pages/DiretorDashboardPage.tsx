@@ -11,7 +11,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { usePedagogicalSettings } from '@/hooks/usePedagogicalSettings';
 import { useNavigate } from 'react-router-dom';
-import FinanceiroDashboard from '@/components/financeiro/FinanceiroDashboard';
+
 
 interface TurmaComCriancas {
   id: string;
