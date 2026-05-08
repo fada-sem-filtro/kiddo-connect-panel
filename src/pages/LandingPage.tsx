@@ -325,6 +325,11 @@ export default function LandingPage() {
     return () => window.removeEventListener("beforeinstallprompt", handler);
   }, []);
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("orcamento") === "1") setContactOpen(true);
+  }, []);
+
   const handleInstall = async () => {
     if (!deferredPrompt) return;
     deferredPrompt.prompt();
@@ -695,7 +700,7 @@ export default function LandingPage() {
               Novidades
             </Link>
             <button
-              onClick={() => setOrcamentoOpen(true)}
+              onClick={() => setContactOpen(true)}
               className="text-muted-foreground hover:text-primary transition-colors"
             >
               Solicitar orçamento
