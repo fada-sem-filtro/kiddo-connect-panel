@@ -34,8 +34,14 @@ Deno.serve(async (req) => {
         method: "PUT", body: JSON.stringify(payload),
       });
       if (!res.ok) return json({ error: "Falha ao atualizar recorrência", details: res.data }, 400);
+      if (billing_type === "PIX" && res.data.billingType && res.data.billingType !== "PIX") {
+        return json({
+          error: "Sua conta Asaas não tem PIX habilitado. Cadastre uma chave Pix no Asaas ou escolha Boleto/Cliente escolhe.",
+        }, 400);
+      }
       await svc.from("subscriptions").update({
-        value: res.data.value, next_due_date: res.data.nextDueDate, cycle: res.data.cycle, description: res.data.description,
+        value: res.data.value, next_due_date: res.data.nextDueDate, cycle: res.data.cycle,
+        description: res.data.description, billing_type: res.data.billingType || billing_type,
       }).eq("id", subscription_id);
       return json({ ok: true, subscription: res.data });
     }
