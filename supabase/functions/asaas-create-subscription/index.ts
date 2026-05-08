@@ -48,10 +48,21 @@ Deno.serve(async (req) => {
     });
     if (!sRes.ok) return json({ error: "Falha ao criar recorrência", details: sRes.data }, 400);
 
+    // Detect PIX downgrade: Asaas accepts request but returns UNDEFINED when account has no Pix key configured.
+    if (billing_type === "PIX" && sRes.data.billingType && sRes.data.billingType !== "PIX") {
+      // Roll back: cancel the just-created subscription on Asaas to avoid a "ghost" UNDEFINED recurrence.
+      await asaasFetch(cred.apiKey, cred.env, `/subscriptions/${sRes.data.id}`, { method: "DELETE" });
+      return json({
+        error: "Sua conta Asaas não tem PIX habilitado. Cadastre uma chave Pix no Asaas ou escolha Boleto/Cliente escolhe.",
+      }, 400);
+    }
+
     const sub = await svc.from("subscriptions").insert({
       creche_id, customer_id: customerRow.id, crianca_id: crianca_id || null,
       asaas_subscription_id: sRes.data.id, value: sRes.data.value, cycle: sRes.data.cycle,
-      next_due_date: sRes.data.nextDueDate, description: sRes.data.description, status: sRes.data.status || "ACTIVE",
+      next_due_date: sRes.data.nextDueDate, description: sRes.data.description,
+      billing_type: sRes.data.billingType || billing_type,
+      status: sRes.data.status || "ACTIVE",
     }).select().single();
 
     return json({ ok: true, subscription: sub.data });
