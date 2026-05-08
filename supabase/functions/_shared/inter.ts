@@ -4,8 +4,14 @@
 import { createClient, SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { decryptApiKey, encryptApiKey, serviceClient } from "./asaas.ts";
 
-export const INTER_BASE_URL = "https://cdpj.partners.bancointer.com.br";
+export const INTER_BASE_URL_PROD = "https://cdpj.partners.bancointer.com.br";
+export const INTER_BASE_URL_SANDBOX = "https://cdpj-sandbox.partners.uatinter.co";
+export const INTER_BASE_URL = INTER_BASE_URL_PROD; // default fallback
 export const INTER_CERT_BUCKET = "inter-certificates";
+
+export function interBaseUrl(env?: string | null): string {
+  return env === "sandbox" ? INTER_BASE_URL_SANDBOX : INTER_BASE_URL_PROD;
+}
 
 export const INTER_SCOPES = [
   "boleto-cobranca.read",
@@ -28,6 +34,7 @@ export interface InterAccount {
   key: string; // PEM
   conta_corrente?: string | null;
   webhook_secret: string;
+  environment?: string | null;
 }
 
 // ---------- Storage helpers ----------
@@ -110,6 +117,7 @@ export async function getCrecheInter(crecheId: string): Promise<InterAccount | n
     key,
     conta_corrente: data.conta_corrente,
     webhook_secret: data.webhook_secret,
+    environment: data.environment,
   };
 }
 
@@ -137,7 +145,7 @@ export async function getInterToken(account: InterAccount): Promise<string> {
   });
 
   // @ts-ignore client option is supported in Deno fetch
-  const res = await fetch(`${INTER_BASE_URL}/oauth/v2/token`, {
+  const res = await fetch(`${interBaseUrl(account.environment)}/oauth/v2/token`, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: body.toString(),
@@ -171,7 +179,7 @@ export async function interFetch(
   if (account.conta_corrente) headers["x-conta-corrente"] = account.conta_corrente;
 
   // @ts-ignore client option
-  const res = await fetch(`${INTER_BASE_URL}${path}`, { ...init, headers, client });
+  const res = await fetch(`${interBaseUrl(account.environment)}${path}`, { ...init, headers, client });
   const text = await res.text();
   let data: any = null;
   try { data = text ? JSON.parse(text) : null; } catch { /* keep raw */ }
