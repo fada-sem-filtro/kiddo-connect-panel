@@ -450,10 +450,24 @@ function IntegracaoAsaas({ crecheId, settings, onChange }: { crecheId: string | 
           <Input type="password" value={apiKey} onChange={(e) => setApiKey(e.target.value)} placeholder="$aact_..." className="rounded-xl" />
           <p className="text-xs text-muted-foreground">Encontre sua chave em: Asaas → Integrações → Chave de API. A chave é criptografada (AES-256-GCM) antes de salvar e nunca exposta no frontend.</p>
         </div>
-        <Button onClick={connect} disabled={busy || !apiKey} className="rounded-xl">
-          {busy ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <RefreshCw className="w-4 h-4 mr-2" />}
-          {settings?.asaas_connected ? "Reconectar" : "Conectar e validar"}
-        </Button>
+        <div className="flex gap-2">
+          <Button onClick={connect} disabled={busy || !apiKey} className="rounded-xl">
+            {busy ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <RefreshCw className="w-4 h-4 mr-2" />}
+            {settings?.asaas_connected ? "Reconectar" : "Conectar e validar"}
+          </Button>
+          {settings?.asaas_connected && (
+            <Button variant="outline" disabled={busy} onClick={async () => {
+              setBusy(true);
+              const { data, error } = await supabase.functions.invoke("asaas-disconnect", { body: { creche_id: crecheId } });
+              setBusy(false);
+              if (error || data?.error) { toast({ title: "Erro", description: data?.error || error?.message, variant: "destructive" }); return; }
+              toast({ title: "Desconectado", description: "A integração foi removida." });
+              onChange();
+            }} className="rounded-xl text-red-600 hover:text-red-700">
+              <Unplug className="w-4 h-4 mr-2" />Desconectar
+            </Button>
+          )}
+        </div>
       </CardContent>
     </Card>
   );
