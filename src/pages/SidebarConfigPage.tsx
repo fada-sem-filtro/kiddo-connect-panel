@@ -521,16 +521,19 @@ export function SidebarConfigEditor({ crecheId, perfil, isAdmin = false }: { cre
               onAddItem={key => addItemToSection(sIdx, key)}
             >
               <SortableContext items={sectionItemIds} strategy={verticalListSortingStrategy}>
-                {section.items.map((item, iIdx) => (
-                  <SortableItem
-                    key={itemId(section.id, item.key)}
-                    item={item}
-                    sectionId={section.id}
-                    onToggleVisibility={() => toggleItemVisibility(sIdx, iIdx)}
-                    onUpdateLabel={label => updateItemLabel(sIdx, iIdx, label)}
-                    onRemove={() => removeItem(sIdx, iIdx)}
-                  />
-                ))}
+                {section.items.map((item, iIdx) => {
+                  if (!isItemEnabledByModules(item.key, moduleFilter)) return null;
+                  return (
+                    <SortableItem
+                      key={itemId(section.id, item.key)}
+                      item={item}
+                      sectionId={section.id}
+                      onToggleVisibility={() => toggleItemVisibility(sIdx, iIdx)}
+                      onUpdateLabel={label => updateItemLabel(sIdx, iIdx, label)}
+                      onRemove={() => removeItem(sIdx, iIdx)}
+                    />
+                  );
+                })}
               </SortableContext>
             </DroppableSection>
           );
