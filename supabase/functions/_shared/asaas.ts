@@ -90,10 +90,9 @@ export async function getAuthUser(req: Request): Promise<{ userId: string; clien
     Deno.env.get("SUPABASE_ANON_KEY")!,
     { global: { headers: { Authorization: auth } } },
   );
-  const token = auth.replace("Bearer ", "");
-  const { data, error } = await client.auth.getClaims(token);
-  if (error || !data?.claims?.sub) return null;
-  return { userId: data.claims.sub as string, client };
+  const { data, error } = await client.auth.getUser();
+  if (error || !data?.user?.id) return null;
+  return { userId: data.user.id, client };
 }
 
 // Verify the user is admin or diretor/secretaria of the given creche.
