@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { AdminSchoolSelector, useAdminSchoolSelector } from '@/components/admin/AdminSchoolSelector';
 import { useAdminSidebarConfig } from '@/hooks/useSidebarConfig';
-import { SidebarConfig, SidebarSectionConfig, SidebarItemConfig, AVAILABLE_ITEMS_BY_ROLE, getDefaultConfig } from '@/lib/sidebar-defaults';
+import { SidebarConfig, SidebarSectionConfig, SidebarItemConfig, AVAILABLE_ITEMS_BY_ROLE, getDefaultConfig, isItemEnabledByModules, PedagogicalModules } from '@/lib/sidebar-defaults';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
