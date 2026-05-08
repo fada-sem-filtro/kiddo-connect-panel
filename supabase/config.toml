@@ -15,3 +15,5 @@ project_id = "takzcbagxjydlkzenprr"
     verify_jwt = false
   [functions.inter-webhook]
     verify_jwt = false
+  [functions.financial-auto-sync]
+    verify_jwt = false
