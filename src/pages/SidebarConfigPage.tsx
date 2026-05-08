@@ -233,10 +233,28 @@ function DroppableSection({
   );
 }
 
-export function SidebarConfigEditor({ crecheId, perfil }: { crecheId: string; perfil: string }) {
+export function SidebarConfigEditor({ crecheId, perfil, isAdmin = false }: { crecheId: string; perfil: string; isAdmin?: boolean }) {
   const { config, setConfig, loading, saving, saveConfig } = useAdminSidebarConfig(crecheId, perfil);
   const [editingSectionId, setEditingSectionId] = useState<string | null>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [modules, setModules] = useState<PedagogicalModules | null>(null);
+
+  useEffect(() => {
+    if (!crecheId) { setModules(null); return; }
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase
+        .from('configuracoes_pedagogicas')
+        .select('modulo_boletos_ativo, modulo_secretaria_ativo, atividades_avaliacoes_ativo, grade_aulas_ativo, gestao_materias_ativo, relatorio_desempenho_ativo, boletim_ativo')
+        .eq('creche_id', crecheId)
+        .maybeSingle();
+      if (!cancelled) setModules((data as PedagogicalModules) || null);
+    })();
+    return () => { cancelled = true; };
+  }, [crecheId]);
+
+  // Admins see everything; non-admins see only items enabled by school modules.
+  const moduleFilter = isAdmin ? null : modules;
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
