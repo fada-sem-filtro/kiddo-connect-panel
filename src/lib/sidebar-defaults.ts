@@ -218,7 +218,6 @@ export function getDefaultConfig(perfil: string): SidebarConfig {
           { key: 'calendario', label: 'Calendário', ordem: 5, visible: true },
           { key: 'relatorios', label: 'Relatórios', ordem: 6, visible: true },
           { key: 'relatorio_aluno', label: 'Relatório Aluno', ordem: 7, visible: true },
-          { key: 'pedagogico', label: 'Config. Pedagógicas', ordem: 8, visible: true },
           { key: 'materias', label: 'Matérias', ordem: 9, visible: true },
           { key: 'boletim', label: 'Boletim', ordem: 10, visible: true },
           { key: 'grade_aulas', label: 'Grade de Aulas', ordem: 11, visible: true },
