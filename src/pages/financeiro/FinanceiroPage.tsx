@@ -125,25 +125,40 @@ export default function FinanceiroPage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl md:text-3xl font-bold flex items-center gap-2"><Wallet className="w-7 h-7 text-primary" />Financeiro</h1>
-            <p className="text-sm text-muted-foreground">Mensalidades, cobranças e integração Asaas</p>
+            <p className="text-sm text-muted-foreground">
+              {provider === "inter" ? "Mensalidades, cobranças e PIX via Banco Inter PJ"
+                : provider === "asaas" ? "Mensalidades, cobranças e PIX via Asaas"
+                : "Provider financeiro ainda não definido pelo administrador"}
+            </p>
           </div>
-          {settings?.asaas_connected ? (
-            <Badge className="bg-green-500/10 text-green-700 rounded-lg"><CheckCircle2 className="w-3.5 h-3.5 mr-1" />Asaas conectado ({settings.asaas_environment})</Badge>
+          {provider === "inter" ? (
+            <Badge className="bg-orange-500/10 text-orange-700 rounded-lg"><CheckCircle2 className="w-3.5 h-3.5 mr-1" />Banco Inter PJ {environment ? `(${environment})` : ""}</Badge>
+          ) : provider === "asaas" ? (
+            settings?.asaas_connected ? (
+              <Badge className="bg-green-500/10 text-green-700 rounded-lg"><CheckCircle2 className="w-3.5 h-3.5 mr-1" />Asaas conectado ({settings.asaas_environment})</Badge>
+            ) : (
+              <Badge className="bg-yellow-500/10 text-yellow-700 rounded-lg"><AlertTriangle className="w-3.5 h-3.5 mr-1" />Asaas não configurado</Badge>
+            )
           ) : (
-            <Badge className="bg-yellow-500/10 text-yellow-700 rounded-lg"><AlertTriangle className="w-3.5 h-3.5 mr-1" />Asaas não configurado</Badge>
+            <Badge className="bg-muted text-muted-foreground rounded-lg"><AlertTriangle className="w-3.5 h-3.5 mr-1" />Sem provider</Badge>
           )}
         </div>
 
         <Tabs value={tab} onValueChange={setTab}>
           <TabsList className="flex flex-wrap gap-1 h-auto bg-muted/50 p-1 rounded-2xl">
             <TabsTrigger value="dashboard" className="rounded-xl"><BarChart3 className="w-4 h-4 mr-1.5" />Dashboard</TabsTrigger>
-            <TabsTrigger value="cobrancas" className="rounded-xl"><Receipt className="w-4 h-4 mr-1.5" />Cobranças</TabsTrigger>
-            <TabsTrigger value="recorrencias" className="rounded-xl"><Repeat className="w-4 h-4 mr-1.5" />Recorrências</TabsTrigger>
-            <TabsTrigger value="inadimplencia" className="rounded-xl"><AlertTriangle className="w-4 h-4 mr-1.5" />Inadimplência</TabsTrigger>
-            <TabsTrigger value="integracao" className="rounded-xl"><Plug className="w-4 h-4 mr-1.5" />Integração Asaas</TabsTrigger>
-            <TabsTrigger value="inter-cobrancas" className="rounded-xl"><Receipt className="w-4 h-4 mr-1.5" />Cobranças Inter</TabsTrigger>
-            <TabsTrigger value="inter" className="rounded-xl"><Building2 className="w-4 h-4 mr-1.5" />Banco Inter</TabsTrigger>
-            <TabsTrigger value="inter-logs" className="rounded-xl"><AlertTriangle className="w-4 h-4 mr-1.5" />Logs Inter</TabsTrigger>
+            {provider === "asaas" && <>
+              <TabsTrigger value="cobrancas" className="rounded-xl"><Receipt className="w-4 h-4 mr-1.5" />Cobranças</TabsTrigger>
+              <TabsTrigger value="recorrencias" className="rounded-xl"><Repeat className="w-4 h-4 mr-1.5" />Recorrências</TabsTrigger>
+              <TabsTrigger value="inadimplencia" className="rounded-xl"><AlertTriangle className="w-4 h-4 mr-1.5" />Inadimplência</TabsTrigger>
+              {isAdmin && <TabsTrigger value="integracao" className="rounded-xl"><Plug className="w-4 h-4 mr-1.5" />Integração Asaas</TabsTrigger>}
+            </>}
+            {provider === "inter" && <>
+              <TabsTrigger value="inter-cobrancas" className="rounded-xl"><Receipt className="w-4 h-4 mr-1.5" />Cobranças</TabsTrigger>
+              <TabsTrigger value="inadimplencia" className="rounded-xl"><AlertTriangle className="w-4 h-4 mr-1.5" />Inadimplência</TabsTrigger>
+              {isAdmin && <TabsTrigger value="inter" className="rounded-xl"><Building2 className="w-4 h-4 mr-1.5" />Integração Inter</TabsTrigger>}
+              <TabsTrigger value="inter-logs" className="rounded-xl"><AlertTriangle className="w-4 h-4 mr-1.5" />Logs</TabsTrigger>
+            </>}
           </TabsList>
 
           {/* DASHBOARD */}
