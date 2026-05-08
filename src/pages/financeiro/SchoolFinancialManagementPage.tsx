@@ -7,9 +7,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
 import {
   ArrowLeft, Building2, Wallet, Plug, Receipt, ScrollText, ShieldAlert,
-  CheckCircle2, AlertTriangle, Loader2, RefreshCw,
+  CheckCircle2, AlertTriangle, Loader2, RefreshCw, Save,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
@@ -29,12 +31,15 @@ export default function SchoolFinancialManagementPage() {
   const [inter, setInter] = useState<any>(null);
   const [criancas, setCriancas] = useState<any[]>([]);
   const [validating, setValidating] = useState(false);
+  const [savingProvider, setSavingProvider] = useState(false);
+  const [draftProvider, setDraftProvider] = useState<Provider>(null);
+  const [draftEnv, setDraftEnv] = useState<string>("production");
 
   const load = async () => {
     if (!crecheId) return;
     setLoading(true);
     const [c, s, i, k] = await Promise.all([
-      supabase.from("creches").select("id, nome, endereco, telefone, email, logo_url").eq("id", crecheId).maybeSingle(),
+      supabase.from("creches").select("id, nome, endereco, telefone, email, logo_url, financial_provider, financial_environment").eq("id", crecheId).maybeSingle(),
       supabase.from("financial_settings").select("asaas_api_key_last4, asaas_environment, asaas_connected, asaas_account_name, asaas_account_email, asaas_last_validation").eq("creche_id", crecheId).maybeSingle(),
       supabase.from("vw_financial_accounts_safe" as any).select("*").eq("creche_id", crecheId).eq("provider", "inter").maybeSingle(),
       supabase.from("criancas").select("id, nome, turma_id, turmas!inner(creche_id)").eq("turmas.creche_id", crecheId).order("nome"),
@@ -43,14 +48,29 @@ export default function SchoolFinancialManagementPage() {
     setAsaas(s.data);
     setInter(i.data);
     setCriancas(k.data || []);
+    setDraftProvider(((c.data as any)?.financial_provider as Provider) ?? null);
+    setDraftEnv(((c.data as any)?.financial_environment as string) || "production");
     setLoading(false);
   };
 
   useEffect(() => { load(); }, [crecheId]);
 
-  const provider: Provider = inter?.connected ? "inter" : asaas?.asaas_connected ? "asaas" : null;
-  const env = provider === "inter" ? (inter?.environment || "production") : provider === "asaas" ? asaas?.asaas_environment : null;
+  const provider: Provider = ((creche as any)?.financial_provider as Provider) ?? null;
+  const env = (creche as any)?.financial_environment
+    || (provider === "inter" ? (inter?.environment || "production") : provider === "asaas" ? asaas?.asaas_environment : null);
   const lastSync = provider === "inter" ? inter?.last_validation : provider === "asaas" ? asaas?.asaas_last_validation : null;
+
+  const saveProvider = async () => {
+    setSavingProvider(true);
+    const { error } = await supabase
+      .from("creches")
+      .update({ financial_provider: draftProvider as any, financial_environment: draftEnv })
+      .eq("id", crecheId);
+    setSavingProvider(false);
+    if (error) { toast({ title: "Erro ao salvar provider", description: error.message, variant: "destructive" }); return; }
+    toast({ title: "Provider financeiro atualizado" });
+    await load();
+  };
 
   const validateInter = async () => {
     setValidating(true);
@@ -64,6 +84,8 @@ export default function SchoolFinancialManagementPage() {
       toast({ title: "Erro", description: e.message, variant: "destructive" });
     } finally { setValidating(false); }
   };
+
+  const dirty = draftProvider !== provider || draftEnv !== ((creche as any)?.financial_environment || "production");
 
   return (
     <MainLayout>
@@ -132,22 +154,78 @@ export default function SchoolFinancialManagementPage() {
           </TabsContent>
 
           <TabsContent value="provider" className="mt-4 space-y-4">
-            <AsaasProviderCard data={asaas} />
-            <BancoInterTab crecheId={crecheId} />
+            <Card className="rounded-2xl border-2">
+              <CardHeader>
+                <CardTitle className="text-base flex items-center gap-2">
+                  <Plug className="w-5 h-5 text-primary" /> Provider financeiro da escola
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <p className="text-sm text-muted-foreground">
+                  Apenas o administrador master pode definir qual provider a escola utiliza. Diretor e Secretaria
+                  apenas operam o provider já configurado.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div className="md:col-span-2">
+                    <Label className="text-xs">Provider</Label>
+                    <Select value={draftProvider ?? "none"} onValueChange={(v) => setDraftProvider(v === "none" ? null : (v as Provider))}>
+                      <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="none">Nenhum (desativar módulo)</SelectItem>
+                        <SelectItem value="asaas">Asaas</SelectItem>
+                        <SelectItem value="inter">Banco Inter PJ</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label className="text-xs">Ambiente</Label>
+                    <Select value={draftEnv} onValueChange={setDraftEnv}>
+                      <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="sandbox">Sandbox</SelectItem>
+                        <SelectItem value="production">Produção</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <Button onClick={saveProvider} disabled={!dirty || savingProvider} className="rounded-xl">
+                  {savingProvider ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+                  Salvar provider
+                </Button>
+              </CardContent>
+            </Card>
+
+            {provider === "asaas" && <AsaasProviderCard data={asaas} />}
             {provider === "inter" && (
-              <Button variant="outline" onClick={validateInter} disabled={validating} className="rounded-xl">
-                {validating ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <RefreshCw className="w-4 h-4 mr-2" />}
-                Testar conexão Inter
-              </Button>
+              <>
+                <BancoInterTab crecheId={crecheId} />
+                <Button variant="outline" onClick={validateInter} disabled={validating} className="rounded-xl">
+                  {validating ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <RefreshCw className="w-4 h-4 mr-2" />}
+                  Testar conexão Inter
+                </Button>
+              </>
+            )}
+            {!provider && (
+              <Alert className="rounded-2xl">
+                <AlertTriangle className="h-4 w-4" />
+                <AlertTitle>Nenhum provider selecionado</AlertTitle>
+                <AlertDescription>Selecione um provider acima para configurar credenciais e habilitar cobranças.</AlertDescription>
+              </Alert>
             )}
           </TabsContent>
 
           <TabsContent value="cobrancas" className="mt-4">
-            <CobrancasInterTab crecheId={crecheId} criancas={criancas} />
+            {provider === "inter"
+              ? <CobrancasInterTab crecheId={crecheId} criancas={criancas} />
+              : provider === "asaas"
+                ? <Alert className="rounded-2xl"><AlertDescription>As cobranças Asaas são gerenciadas no menu Financeiro da escola (Diretor/Secretaria).</AlertDescription></Alert>
+                : <Alert className="rounded-2xl"><AlertDescription>Configure um provider primeiro.</AlertDescription></Alert>}
           </TabsContent>
 
           <TabsContent value="logs" className="mt-4">
-            <LogsInterTab crecheId={crecheId} />
+            {provider === "inter"
+              ? <LogsInterTab crecheId={crecheId} />
+              : <Alert className="rounded-2xl"><AlertDescription>Logs disponíveis apenas para o provider Banco Inter PJ.</AlertDescription></Alert>}
           </TabsContent>
         </Tabs>
       </div>
@@ -156,8 +234,8 @@ export default function SchoolFinancialManagementPage() {
 }
 
 function ProviderBadge({ provider }: { provider: Provider }) {
-  if (provider === "inter") return <Badge className="bg-orange-500/10 text-orange-700 rounded-lg"><CheckCircle2 className="w-3.5 h-3.5 mr-1" />Banco Inter conectado</Badge>;
-  if (provider === "asaas") return <Badge className="bg-green-500/10 text-green-700 rounded-lg"><CheckCircle2 className="w-3.5 h-3.5 mr-1" />Asaas conectado</Badge>;
+  if (provider === "inter") return <Badge className="bg-orange-500/10 text-orange-700 rounded-lg"><CheckCircle2 className="w-3.5 h-3.5 mr-1" />Banco Inter PJ</Badge>;
+  if (provider === "asaas") return <Badge className="bg-green-500/10 text-green-700 rounded-lg"><CheckCircle2 className="w-3.5 h-3.5 mr-1" />Asaas</Badge>;
   return <Badge className="bg-yellow-500/10 text-yellow-700 rounded-lg"><AlertTriangle className="w-3.5 h-3.5 mr-1" />Não configurado</Badge>;
 }
 
