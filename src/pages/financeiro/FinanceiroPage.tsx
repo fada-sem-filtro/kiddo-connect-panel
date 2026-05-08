@@ -254,6 +254,14 @@ export default function FinanceiroPage() {
           <TabsContent value="integracao" className="mt-4">
             <IntegracaoAsaas crecheId={crecheId} settings={settings} onChange={load} />
           </TabsContent>
+
+          {/* BANCO INTER */}
+          <TabsContent value="inter" className="mt-4">
+            <BancoInterTab crecheId={crecheId} />
+          </TabsContent>
+          <TabsContent value="inter-cobrancas" className="mt-4">
+            <CobrancasInterTab crecheId={crecheId} criancas={criancas} />
+          </TabsContent>
         </Tabs>
       </div>
 
