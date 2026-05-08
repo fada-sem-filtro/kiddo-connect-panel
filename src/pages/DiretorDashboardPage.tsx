@@ -249,13 +249,17 @@ export default function DiretorDashboardPage() {
           </Card>
         </div>
 
-        {/* Dashboard Financeiro */}
-        {pedSettings?.modulo_boletos_ativo && userCreche && (
-          <FinanceiroDashboard
-            crecheId={userCreche.id}
-            turmas={turmas.map(t => ({ id: t.id, nome: t.nome }))}
-            prefix="/diretor"
-          />
+        {/* Acesso rápido ao Financeiro */}
+        {userCreche && (
+          <Card className="rounded-2xl border-2 border-border bg-gradient-to-br from-primary/5 to-primary/10">
+            <CardContent className="p-5 flex items-center justify-between">
+              <div>
+                <h3 className="font-bold text-foreground flex items-center gap-2"><Receipt className="w-5 h-5 text-primary" />Financeiro</h3>
+                <p className="text-sm text-muted-foreground">Mensalidades, cobranças e dashboard Asaas</p>
+              </div>
+              <Button onClick={() => navigate('/diretor/financeiro')} className="rounded-xl">Abrir</Button>
+            </CardContent>
+          </Card>
         )}
 
         {/* Real-time Presence */}
