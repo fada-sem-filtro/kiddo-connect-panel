@@ -164,11 +164,11 @@ const App = () => (
               <Route path="/secretaria/relatorio-desempenho" element={<ProtectedRoute allowedRoles={['secretaria']}><RelatorioDesempenhoPage /></ProtectedRoute>} />
               <Route path="/secretaria/presencas" element={<ProtectedRoute allowedRoles={['secretaria']}><Index /></ProtectedRoute>} />
               <Route path="/secretaria/eventos" element={<ProtectedRoute allowedRoles={['secretaria']}><Index /></ProtectedRoute>} />
-              <Route path="/secretaria/boletos" element={<ProtectedRoute allowedRoles={['secretaria']}><BoletosPage /></ProtectedRoute>} />
-              {/* Boletos routes */}
-              <Route path="/admin/boletos" element={<ProtectedRoute allowedRoles={['admin']}><BoletosPage /></ProtectedRoute>} />
-              <Route path="/diretor/boletos" element={<ProtectedRoute allowedRoles={['diretor']}><BoletosPage /></ProtectedRoute>} />
-              <Route path="/responsavel/boletos" element={<ProtectedRoute allowedRoles={['responsavel']}><BoletosPage /></ProtectedRoute>} />
+              <Route path="/secretaria/financeiro" element={<ProtectedRoute allowedRoles={['secretaria']}><FinanceiroPage /></ProtectedRoute>} />
+              {/* Financeiro routes */}
+              <Route path="/admin/financeiro" element={<ProtectedRoute allowedRoles={['admin']}><AdminFinanceiroGlobalPage /></ProtectedRoute>} />
+              <Route path="/diretor/financeiro" element={<ProtectedRoute allowedRoles={['diretor']}><FinanceiroPage /></ProtectedRoute>} />
+              
               <Route path="*" element={<NotFound />} />
             </Routes>
           </NotificationProvider>
