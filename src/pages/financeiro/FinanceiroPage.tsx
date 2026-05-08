@@ -15,6 +15,7 @@ import { LogsInterTab } from "./LogsInterTab";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useFinancialProvider } from "@/hooks/useFinancialProvider";
 import { toast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -31,8 +32,10 @@ const STATUS_LABEL: Record<string, { label: string; color: string }> = {
 const fmtBRL = (v: number) => `R$ ${Number(v).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`;
 
 export default function FinanceiroPage() {
-  const { profile } = useAuth();
+  const { profile, role } = useAuth();
+  const isAdmin = role === "admin";
   const [crecheId, setCrecheId] = useState<string | null>(null);
+  const { provider, environment } = useFinancialProvider(crecheId);
   const [settings, setSettings] = useState<any>(null);
   const [invoices, setInvoices] = useState<any[]>([]);
   const [payments, setPayments] = useState<any[]>([]);
@@ -122,25 +125,40 @@ export default function FinanceiroPage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl md:text-3xl font-bold flex items-center gap-2"><Wallet className="w-7 h-7 text-primary" />Financeiro</h1>
-            <p className="text-sm text-muted-foreground">Mensalidades, cobranças e integração Asaas</p>
+            <p className="text-sm text-muted-foreground">
+              {provider === "inter" ? "Mensalidades, cobranças e PIX via Banco Inter PJ"
+                : provider === "asaas" ? "Mensalidades, cobranças e PIX via Asaas"
+                : "Provider financeiro ainda não definido pelo administrador"}
+            </p>
           </div>
-          {settings?.asaas_connected ? (
-            <Badge className="bg-green-500/10 text-green-700 rounded-lg"><CheckCircle2 className="w-3.5 h-3.5 mr-1" />Asaas conectado ({settings.asaas_environment})</Badge>
+          {provider === "inter" ? (
+            <Badge className="bg-orange-500/10 text-orange-700 rounded-lg"><CheckCircle2 className="w-3.5 h-3.5 mr-1" />Banco Inter PJ {environment ? `(${environment})` : ""}</Badge>
+          ) : provider === "asaas" ? (
+            settings?.asaas_connected ? (
+              <Badge className="bg-green-500/10 text-green-700 rounded-lg"><CheckCircle2 className="w-3.5 h-3.5 mr-1" />Asaas conectado ({settings.asaas_environment})</Badge>
+            ) : (
+              <Badge className="bg-yellow-500/10 text-yellow-700 rounded-lg"><AlertTriangle className="w-3.5 h-3.5 mr-1" />Asaas não configurado</Badge>
+            )
           ) : (
-            <Badge className="bg-yellow-500/10 text-yellow-700 rounded-lg"><AlertTriangle className="w-3.5 h-3.5 mr-1" />Asaas não configurado</Badge>
+            <Badge className="bg-muted text-muted-foreground rounded-lg"><AlertTriangle className="w-3.5 h-3.5 mr-1" />Sem provider</Badge>
           )}
         </div>
 
         <Tabs value={tab} onValueChange={setTab}>
           <TabsList className="flex flex-wrap gap-1 h-auto bg-muted/50 p-1 rounded-2xl">
             <TabsTrigger value="dashboard" className="rounded-xl"><BarChart3 className="w-4 h-4 mr-1.5" />Dashboard</TabsTrigger>
-            <TabsTrigger value="cobrancas" className="rounded-xl"><Receipt className="w-4 h-4 mr-1.5" />Cobranças</TabsTrigger>
-            <TabsTrigger value="recorrencias" className="rounded-xl"><Repeat className="w-4 h-4 mr-1.5" />Recorrências</TabsTrigger>
-            <TabsTrigger value="inadimplencia" className="rounded-xl"><AlertTriangle className="w-4 h-4 mr-1.5" />Inadimplência</TabsTrigger>
-            <TabsTrigger value="integracao" className="rounded-xl"><Plug className="w-4 h-4 mr-1.5" />Integração Asaas</TabsTrigger>
-            <TabsTrigger value="inter-cobrancas" className="rounded-xl"><Receipt className="w-4 h-4 mr-1.5" />Cobranças Inter</TabsTrigger>
-            <TabsTrigger value="inter" className="rounded-xl"><Building2 className="w-4 h-4 mr-1.5" />Banco Inter</TabsTrigger>
-            <TabsTrigger value="inter-logs" className="rounded-xl"><AlertTriangle className="w-4 h-4 mr-1.5" />Logs Inter</TabsTrigger>
+            {provider === "asaas" && <>
+              <TabsTrigger value="cobrancas" className="rounded-xl"><Receipt className="w-4 h-4 mr-1.5" />Cobranças</TabsTrigger>
+              <TabsTrigger value="recorrencias" className="rounded-xl"><Repeat className="w-4 h-4 mr-1.5" />Recorrências</TabsTrigger>
+              <TabsTrigger value="inadimplencia" className="rounded-xl"><AlertTriangle className="w-4 h-4 mr-1.5" />Inadimplência</TabsTrigger>
+              {isAdmin && <TabsTrigger value="integracao" className="rounded-xl"><Plug className="w-4 h-4 mr-1.5" />Integração Asaas</TabsTrigger>}
+            </>}
+            {provider === "inter" && <>
+              <TabsTrigger value="inter-cobrancas" className="rounded-xl"><Receipt className="w-4 h-4 mr-1.5" />Cobranças</TabsTrigger>
+              <TabsTrigger value="inadimplencia" className="rounded-xl"><AlertTriangle className="w-4 h-4 mr-1.5" />Inadimplência</TabsTrigger>
+              {isAdmin && <TabsTrigger value="inter" className="rounded-xl"><Building2 className="w-4 h-4 mr-1.5" />Integração Inter</TabsTrigger>}
+              <TabsTrigger value="inter-logs" className="rounded-xl"><AlertTriangle className="w-4 h-4 mr-1.5" />Logs</TabsTrigger>
+            </>}
           </TabsList>
 
           {/* DASHBOARD */}
@@ -252,21 +270,29 @@ export default function FinanceiroPage() {
               })}
           </TabsContent>
 
-          {/* INTEGRAÇÃO */}
-          <TabsContent value="integracao" className="mt-4">
-            <IntegracaoAsaas crecheId={crecheId} settings={settings} onChange={load} />
-          </TabsContent>
+          {/* INTEGRAÇÃO ASAAS — admin only */}
+          {isAdmin && provider === "asaas" && (
+            <TabsContent value="integracao" className="mt-4">
+              <IntegracaoAsaas crecheId={crecheId} settings={settings} onChange={load} />
+            </TabsContent>
+          )}
 
-          {/* BANCO INTER */}
-          <TabsContent value="inter" className="mt-4">
-            <BancoInterTab crecheId={crecheId} />
-          </TabsContent>
-          <TabsContent value="inter-cobrancas" className="mt-4">
-            <CobrancasInterTab crecheId={crecheId} criancas={criancas} />
-          </TabsContent>
-          <TabsContent value="inter-logs" className="mt-4">
-            <LogsInterTab crecheId={crecheId} />
-          </TabsContent>
+          {/* BANCO INTER — credential config admin only; cobranças/logs visible to all roles */}
+          {isAdmin && provider === "inter" && (
+            <TabsContent value="inter" className="mt-4">
+              <BancoInterTab crecheId={crecheId} />
+            </TabsContent>
+          )}
+          {provider === "inter" && (
+            <>
+              <TabsContent value="inter-cobrancas" className="mt-4">
+                <CobrancasInterTab crecheId={crecheId} criancas={criancas} />
+              </TabsContent>
+              <TabsContent value="inter-logs" className="mt-4">
+                <LogsInterTab crecheId={crecheId} />
+              </TabsContent>
+            </>
+          )}
         </Tabs>
       </div>
 
