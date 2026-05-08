@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label";
 import {
   ArrowLeft, Building2, Wallet, Plug, Receipt, ScrollText, ShieldAlert,
-  CheckCircle2, AlertTriangle, Loader2, RefreshCw, Save,
+  CheckCircle2, AlertTriangle, Loader2, RefreshCw, Save, BarChart3, Webhook,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
@@ -20,6 +20,8 @@ import { ptBR } from "date-fns/locale";
 import { BancoInterTab } from "./BancoInterTab";
 import { CobrancasInterTab } from "./CobrancasInterTab";
 import { LogsInterTab } from "./LogsInterTab";
+import { ExtratoInterTab } from "./ExtratoInterTab";
+import { DashboardFinanceiroTab } from "./DashboardFinanceiroTab";
 
 type Provider = "asaas" | "inter" | null;
 
@@ -137,13 +139,18 @@ export default function SchoolFinancialManagementPage() {
           </AlertDescription>
         </Alert>
 
-        <Tabs defaultValue="resumo">
+        <Tabs defaultValue="dashboard">
           <TabsList className="flex flex-wrap gap-1 h-auto bg-muted/50 p-1 rounded-2xl">
-            <TabsTrigger value="resumo" className="rounded-xl"><Wallet className="w-4 h-4 mr-1.5" />Resumo</TabsTrigger>
+            <TabsTrigger value="dashboard" className="rounded-xl"><BarChart3 className="w-4 h-4 mr-1.5" />Dashboard</TabsTrigger>
             <TabsTrigger value="provider" className="rounded-xl"><Plug className="w-4 h-4 mr-1.5" />Provider</TabsTrigger>
             <TabsTrigger value="cobrancas" className="rounded-xl"><Receipt className="w-4 h-4 mr-1.5" />Cobranças</TabsTrigger>
+            {provider === "inter" && <TabsTrigger value="extrato" className="rounded-xl"><Wallet className="w-4 h-4 mr-1.5" />Extrato</TabsTrigger>}
             <TabsTrigger value="logs" className="rounded-xl"><ScrollText className="w-4 h-4 mr-1.5" />Logs</TabsTrigger>
           </TabsList>
+
+          <TabsContent value="dashboard" className="mt-4">
+            <DashboardFinanceiroTab crecheId={crecheId} />
+          </TabsContent>
 
           <TabsContent value="resumo" className="mt-4 space-y-3">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
