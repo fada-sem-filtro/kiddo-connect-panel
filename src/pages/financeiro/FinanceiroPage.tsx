@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Receipt, Plug, Wallet, AlertTriangle, BarChart3, Send, RefreshCw, Copy, CheckCircle2, Loader2, Bell, X, Download, Repeat, Unplug, Pencil, Building2 } from "lucide-react";
 import { BancoInterTab } from "./BancoInterTab";
 import { CobrancasInterTab } from "./CobrancasInterTab";
+import { LogsInterTab } from "./LogsInterTab";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -139,6 +140,7 @@ export default function FinanceiroPage() {
             <TabsTrigger value="integracao" className="rounded-xl"><Plug className="w-4 h-4 mr-1.5" />Integração Asaas</TabsTrigger>
             <TabsTrigger value="inter-cobrancas" className="rounded-xl"><Receipt className="w-4 h-4 mr-1.5" />Cobranças Inter</TabsTrigger>
             <TabsTrigger value="inter" className="rounded-xl"><Building2 className="w-4 h-4 mr-1.5" />Banco Inter</TabsTrigger>
+            <TabsTrigger value="inter-logs" className="rounded-xl"><AlertTriangle className="w-4 h-4 mr-1.5" />Logs Inter</TabsTrigger>
           </TabsList>
 
           {/* DASHBOARD */}
@@ -261,6 +263,9 @@ export default function FinanceiroPage() {
           </TabsContent>
           <TabsContent value="inter-cobrancas" className="mt-4">
             <CobrancasInterTab crecheId={crecheId} criancas={criancas} />
+          </TabsContent>
+          <TabsContent value="inter-logs" className="mt-4">
+            <LogsInterTab crecheId={crecheId} />
           </TabsContent>
         </Tabs>
       </div>
