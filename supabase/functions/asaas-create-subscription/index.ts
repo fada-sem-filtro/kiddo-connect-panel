@@ -9,6 +9,7 @@ Deno.serve(async (req) => {
     const body = await req.json();
     const { creche_id, crianca_id, customer, value, next_due_date, cycle, billing_type, description } = body || {};
     if (!creche_id || !value || !next_due_date || !cycle || !billing_type) return json({ error: "Parâmetros inválidos" }, 400);
+    if (Number(value) < 5) return json({ error: "O valor mínimo da recorrência é R$ 5,00." }, 400);
     if (!(await ensureFinanceAdmin(auth.userId, creche_id))) return json({ error: "Forbidden" }, 403);
 
     const cred = await getCrecheAsaas(creche_id);
