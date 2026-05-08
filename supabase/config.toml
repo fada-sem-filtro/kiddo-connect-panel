@@ -17,3 +17,11 @@ project_id = "takzcbagxjydlkzenprr"
     verify_jwt = false
   [functions.financial-auto-sync]
     verify_jwt = false
+  [functions.saas-inter-webhook]
+    verify_jwt = false
+  [functions.saas-inter-sync-invoices]
+    verify_jwt = false
+  [functions.saas-generate-monthly-invoices]
+    verify_jwt = false
+  [functions.saas-mark-overdue]
+    verify_jwt = false
