@@ -297,8 +297,8 @@ export function Sidebar() {
       adminNavigation.push({ name: "Permissões Secretaria", href: "/diretor/permissoes", icon: Shield });
       adminNavigation.push({ name: "Menu Lateral", href: "/diretor/sidebar-config", icon: SlidersHorizontal });
     }
-    if (role === "admin" || ((pedSettings as any)?.modulo_boletos_ativo && canView('boletos'))) {
-      adminNavigation.push({ name: "Boletos", href: `${prefix}/boletos`, icon: Receipt });
+    if (role === "admin" || canView('financeiro')) {
+      adminNavigation.push({ name: "Financeiro", href: `${prefix}/financeiro`, icon: Receipt });
     }
   }
 
