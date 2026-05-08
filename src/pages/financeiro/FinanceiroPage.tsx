@@ -140,6 +140,7 @@ export default function FinanceiroPage() {
             <TabsTrigger value="integracao" className="rounded-xl"><Plug className="w-4 h-4 mr-1.5" />Integração Asaas</TabsTrigger>
             <TabsTrigger value="inter-cobrancas" className="rounded-xl"><Receipt className="w-4 h-4 mr-1.5" />Cobranças Inter</TabsTrigger>
             <TabsTrigger value="inter" className="rounded-xl"><Building2 className="w-4 h-4 mr-1.5" />Banco Inter</TabsTrigger>
+            <TabsTrigger value="inter-logs" className="rounded-xl"><AlertTriangle className="w-4 h-4 mr-1.5" />Logs Inter</TabsTrigger>
           </TabsList>
 
           {/* DASHBOARD */}
