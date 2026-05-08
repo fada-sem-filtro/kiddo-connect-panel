@@ -32,6 +32,7 @@ import MateriasPage from "./pages/MateriasPage";
 import BoletimPage from "./pages/BoletimPage";
 import FinanceiroPage from "./pages/financeiro/FinanceiroPage";
 import AdminFinanceiroGlobalPage from "./pages/financeiro/AdminFinanceiroGlobalPage";
+import SchoolFinancialManagementPage from "./pages/financeiro/SchoolFinancialManagementPage";
 import ResponsavelDesempenhoPage from "./pages/ResponsavelDesempenhoPage";
 import GradeAulasPage from "./pages/GradeAulasPage";
 import AgendaEducadorPage from "./pages/AgendaEducadorPage";
@@ -167,6 +168,7 @@ const App = () => (
               <Route path="/secretaria/financeiro" element={<ProtectedRoute allowedRoles={['secretaria']}><FinanceiroPage /></ProtectedRoute>} />
               {/* Financeiro routes */}
               <Route path="/admin/financeiro" element={<ProtectedRoute allowedRoles={['admin']}><AdminFinanceiroGlobalPage /></ProtectedRoute>} />
+              <Route path="/admin/creches/:crecheId/financeiro" element={<ProtectedRoute allowedRoles={['admin']}><SchoolFinancialManagementPage /></ProtectedRoute>} />
               <Route path="/diretor/financeiro" element={<ProtectedRoute allowedRoles={['diretor']}><FinanceiroPage /></ProtectedRoute>} />
               
               <Route path="*" element={<NotFound />} />

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Plus, Search, Edit, Trash2, Eye, Building2, Users } from 'lucide-react';
+import { Plus, Search, Building2 } from 'lucide-react';
+import { SchoolActionsDropdown } from '@/components/admin/SchoolActionsDropdown';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -171,22 +172,12 @@ export default function CrechesPage() {
                       <Badge variant="secondary">{creche.membros_count} membros</Badge>
                     </TableCell>
                     <TableCell className="text-right">
-                      <div className="flex justify-end gap-1">
-                        <Button variant="ghost" size="icon" title="Membros" onClick={() => handleMembros(creche)}>
-                          <Users className="w-4 h-4" />
-                        </Button>
-                        <Button variant="ghost" size="icon" title="Editar" onClick={() => handleEdit(creche)}>
-                          <Edit className="w-4 h-4" />
-                        </Button>
-                        <Button
-                          variant="ghost" size="icon"
-                          className="text-destructive hover:text-destructive"
-                          title="Excluir"
-                          onClick={() => handleDelete(creche)}
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </div>
+                      <SchoolActionsDropdown
+                        crecheId={creche.id}
+                        onEdit={() => handleEdit(creche)}
+                        onMembros={() => handleMembros(creche)}
+                        onDelete={() => handleDelete(creche)}
+                      />
                     </TableCell>
                   </TableRow>
                 ))
