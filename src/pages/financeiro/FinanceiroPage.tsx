@@ -219,12 +219,12 @@ export default function FinanceiroPage() {
 
           {/* RECORRÊNCIAS */}
           <TabsContent value="recorrencias" className="space-y-3 mt-4">
-            <div className="flex justify-end">
-              <Button onClick={() => setShowSubModal(true)} disabled={!settings?.asaas_connected} className="rounded-xl">
-                <Repeat className="w-4 h-4 mr-1.5" />Nova recorrência
-              </Button>
-            </div>
-            <SubscriptionsList crecheId={crecheId} criancas={criancas} />
+            <SubscriptionsList
+              crecheId={crecheId}
+              criancas={criancas}
+              connected={!!settings?.asaas_connected}
+              onNew={() => setShowSubModal(true)}
+            />
           </TabsContent>
 
           {/* INADIMPLÊNCIA */}
