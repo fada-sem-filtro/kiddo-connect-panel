@@ -700,7 +700,7 @@ export default function LandingPage() {
               Novidades
             </Link>
             <button
-              onClick={() => setOrcamentoOpen(true)}
+              onClick={() => setContactOpen(true)}
               className="text-muted-foreground hover:text-primary transition-colors"
             >
               Solicitar orçamento

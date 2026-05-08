@@ -136,7 +136,7 @@ export default function BlogListPage() {
               Novidades
             </Link>
             <button
-              onClick={() => setOrcamentoOpen(true)}
+              onClick={() => { window.location.href = "/?orcamento=1"; }}
               className="text-muted-foreground hover:text-primary transition-colors"
             >
               Solicitar orçamento
