@@ -2173,6 +2173,297 @@ export type Database = {
           },
         ]
       }
+      saas_financial_account: {
+        Row: {
+          certificate_path: string | null
+          client_id: string | null
+          client_secret_iv: string | null
+          client_secret_tag: string | null
+          connected: boolean
+          conta_corrente: string | null
+          created_at: string
+          encrypted_client_secret: string | null
+          environment: string
+          id: string
+          last_error: string | null
+          last_validation: string | null
+          private_key_path: string | null
+          provider: string
+          updated_at: string
+          webhook_secret: string
+        }
+        Insert: {
+          certificate_path?: string | null
+          client_id?: string | null
+          client_secret_iv?: string | null
+          client_secret_tag?: string | null
+          connected?: boolean
+          conta_corrente?: string | null
+          created_at?: string
+          encrypted_client_secret?: string | null
+          environment?: string
+          id?: string
+          last_error?: string | null
+          last_validation?: string | null
+          private_key_path?: string | null
+          provider?: string
+          updated_at?: string
+          webhook_secret?: string
+        }
+        Update: {
+          certificate_path?: string | null
+          client_id?: string | null
+          client_secret_iv?: string | null
+          client_secret_tag?: string | null
+          connected?: boolean
+          conta_corrente?: string | null
+          created_at?: string
+          encrypted_client_secret?: string | null
+          environment?: string
+          id?: string
+          last_error?: string | null
+          last_validation?: string | null
+          private_key_path?: string | null
+          provider?: string
+          updated_at?: string
+          webhook_secret?: string
+        }
+        Relationships: []
+      }
+      saas_invoices: {
+        Row: {
+          amount: number
+          boleto_pdf_url: string | null
+          cancelled_at: string | null
+          created_at: string
+          creche_id: string
+          description: string | null
+          due_date: string
+          external_id: string | null
+          id: string
+          invoice_number: string | null
+          linha_digitavel: string | null
+          paid_at: string | null
+          pix_copy_paste: string | null
+          pix_qrcode: string | null
+          raw_payload: Json | null
+          status: string
+          subscription_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          boleto_pdf_url?: string | null
+          cancelled_at?: string | null
+          created_at?: string
+          creche_id: string
+          description?: string | null
+          due_date: string
+          external_id?: string | null
+          id?: string
+          invoice_number?: string | null
+          linha_digitavel?: string | null
+          paid_at?: string | null
+          pix_copy_paste?: string | null
+          pix_qrcode?: string | null
+          raw_payload?: Json | null
+          status?: string
+          subscription_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          boleto_pdf_url?: string | null
+          cancelled_at?: string | null
+          created_at?: string
+          creche_id?: string
+          description?: string | null
+          due_date?: string
+          external_id?: string | null
+          id?: string
+          invoice_number?: string | null
+          linha_digitavel?: string | null
+          paid_at?: string | null
+          pix_copy_paste?: string | null
+          pix_qrcode?: string | null
+          raw_payload?: Json | null
+          status?: string
+          subscription_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "saas_invoices_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "saas_subscriptions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      saas_plans: {
+        Row: {
+          active: boolean
+          code: string
+          created_at: string
+          features: Json
+          id: string
+          monthly_price: number
+          name: string
+          ordem: number
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          code: string
+          created_at?: string
+          features?: Json
+          id?: string
+          monthly_price?: number
+          name: string
+          ordem?: number
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          code?: string
+          created_at?: string
+          features?: Json
+          id?: string
+          monthly_price?: number
+          name?: string
+          ordem?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      saas_subscriptions: {
+        Row: {
+          cancelled_at: string | null
+          created_at: string
+          creche_id: string
+          due_day: number
+          id: string
+          monthly_amount: number
+          next_billing_date: string | null
+          notes: string | null
+          plan_id: string
+          start_date: string
+          status: string
+          trial_ends_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          cancelled_at?: string | null
+          created_at?: string
+          creche_id: string
+          due_day?: number
+          id?: string
+          monthly_amount?: number
+          next_billing_date?: string | null
+          notes?: string | null
+          plan_id: string
+          start_date?: string
+          status?: string
+          trial_ends_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          cancelled_at?: string | null
+          created_at?: string
+          creche_id?: string
+          due_day?: number
+          id?: string
+          monthly_amount?: number
+          next_billing_date?: string | null
+          notes?: string | null
+          plan_id?: string
+          start_date?: string
+          status?: string
+          trial_ends_at?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "saas_subscriptions_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "saas_plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      saas_transactions: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          invoice_id: string | null
+          paid_at: string
+          raw_payload: Json | null
+          status: string
+          transaction_type: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          invoice_id?: string | null
+          paid_at?: string
+          raw_payload?: Json | null
+          status?: string
+          transaction_type?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          invoice_id?: string | null
+          paid_at?: string
+          raw_payload?: Json | null
+          status?: string
+          transaction_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "saas_transactions_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "saas_invoices"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      saas_webhook_logs: {
+        Row: {
+          error: string | null
+          event: string
+          external_id: string | null
+          id: string
+          payload: Json
+          processed: boolean
+          received_at: string
+        }
+        Insert: {
+          error?: string | null
+          event: string
+          external_id?: string | null
+          id?: string
+          payload: Json
+          processed?: boolean
+          received_at?: string
+        }
+        Update: {
+          error?: string | null
+          event?: string
+          external_id?: string | null
+          id?: string
+          payload?: Json
+          processed?: boolean
+          received_at?: string
+        }
+        Relationships: []
+      }
       sidebar_config: {
         Row: {
           config: Json

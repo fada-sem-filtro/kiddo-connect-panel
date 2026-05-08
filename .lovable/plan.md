@@ -1,114 +1,109 @@
-# Módulo Financeiro Multi-Provider — Banco Inter PJ
+# Financeiro SaaS Agenda Fleur — Banco Inter PJ
 
-Adicionar Banco Inter como provider alternativo ao Asaas (que continua intacto). Cada escola escolhe seu provider; toda movimentação financeira ocorre direto na conta da escola.
+## Objetivo
+Criar um módulo administrativo (acessível somente ao admin master) para cobrar as mensalidades SaaS das escolas usando a conta Banco Inter PJ da própria Agenda Fleur. Totalmente isolado do módulo financeiro existente das escolas (Asaas/Inter por escola).
 
-## 1. Arquitetura
+## Princípio de isolamento
+- Tabelas com prefixo `saas_*` (não reaproveitar `financial_*`)
+- Edge functions com prefixo `saas-inter-*` (não reaproveitar `inter-*`)
+- Bucket de certificados separado: `saas-inter-certificates`
+- Provider/credenciais únicas e globais (1 conta Inter PJ da plataforma)
+- Acesso restrito a `role = admin`
 
-```text
-financial_provider (enum: 'asaas' | 'inter')
-       │
-       ├── Asaas (já implementado, intocado)
-       └── Inter (novo)
-              ├── OAuth2 Client Credentials + mTLS
-              ├── Cobranças (Boleto/PIX)
-              ├── Webhook
-              └── Sync periódico
-```
+---
 
-Provider abstrato em `_shared/financial-provider.ts` com interface unificada (`createInvoice`, `getInvoice`, `cancelInvoice`, `registerWebhook`). Implementações: `AsaasProvider` (wrapper do código atual) e `InterProvider` (novo).
+## 1. Banco de dados (migration)
 
-## 2. Banco de dados (1 migration)
+### Tabelas
+- **`saas_financial_account`** — única linha (singleton) com a conta Inter PJ da Agenda Fleur
+  - `provider` ('inter'), `client_id`, `encrypted_client_secret` (bytea), `client_secret_iv`, `client_secret_tag`, `certificate_path`, `private_key_path`, `conta_corrente`, `environment` (sandbox/production), `webhook_secret` (uuid), `connected` (bool), `last_validation`, `last_error`
+- **`saas_plans`** — catálogo de planos
+  - `code` (trial/basico/premium/enterprise), `name`, `monthly_price`, `features` (jsonb), `active`
+- **`saas_subscriptions`** — assinatura por escola
+  - `creche_id` (FK creches), `plan_id` (FK saas_plans), `status` (active/trialing/past_due/canceled), `start_date`, `next_billing_date`, `trial_ends_at`, `monthly_amount`, `due_day` (1-28)
+- **`saas_invoices`** — mensalidades emitidas
+  - `subscription_id`, `creche_id`, `external_id` (Inter), `invoice_number`, `amount`, `due_date`, `status` (PENDING/A_RECEBER/RECEBIDO/ATRASADO/CANCELADO), `pix_qrcode`, `pix_copy_paste`, `boleto_pdf_url`, `linha_digitavel`, `paid_at`, `cancelled_at`, `raw_payload` (jsonb)
+- **`saas_transactions`** — pagamentos confirmados
+  - `invoice_id`, `transaction_type` (PAYMENT/REFUND), `amount`, `status`, `raw_payload`, `paid_at`
+- **`saas_webhook_logs`** — auditoria
+  - `event`, `external_id`, `payload` (jsonb), `processed`, `error`, `received_at`
 
-**Novas tabelas (RLS por `creche_id`, função `is_financeiro_admin` reutilizada):**
+### RLS
+Todas as tabelas: somente `has_role(auth.uid(), 'admin')` para ALL. `saas_webhook_logs` e `saas_invoices` aceitam INSERT do service role (webhook).
 
-- `financial_accounts` — credenciais por escola
-  - `creche_id`, `provider` ('inter'|'asaas'), `client_id`, `encrypted_client_secret`, `client_secret_iv`, `client_secret_tag`, `certificate_path` (storage), `private_key_path` (storage), `webhook_secret`, `account_name`, `connected`, `last_validation`, `environment` ('production'|'sandbox')
-  - Único por `(creche_id, provider)`
+### Seeds
+Inserir 4 planos padrão (Trial R$0, Básico, Premium, Enterprise).
 
-- `financial_invoices` — cobranças unificadas (independente de provider)
-  - `creche_id`, `crianca_id`, `provider`, `external_id`, `nosso_numero`, `amount`, `due_date`, `status`, `payment_method`, `pix_qrcode`, `pix_copy_paste`, `boleto_pdf_url`, `boleto_linha_digitavel`, `paid_at`, `description`
+---
 
-- `financial_transactions` — eventos de pagamento
-  - `creche_id`, `invoice_id`, `transaction_type`, `amount`, `status`, `raw_payload`, `paid_at`
+## 2. Storage
+Bucket privado **`saas-inter-certificates`** com política: somente service role lê/escreve.
 
-- `financial_webhook_logs` — auditoria
-  - `creche_id`, `provider`, `event`, `external_id`, `payload`, `processed`, `error`, `received_at`
-  - Unique `(provider, event, external_id)` para idempotência
+---
 
-**Storage privado:** bucket `inter-certificates` (private). Path: `{creche_id}/cert.crt` e `{creche_id}/key.key`. RLS: só admin/diretor da escola lê/escreve. Edge functions usam service role.
+## 3. Edge Functions (prefixo `saas-inter-*`)
+- `saas-inter-connect` — admin salva client_id/secret + uploads de .crt/.key (criptografa secret com `ENCRYPTION_KEY` AES-256-GCM, salva certs no bucket)
+- `saas-inter-status` — testa OAuth2 + mTLS, retorna `connected` + `last_validation`
+- `saas-inter-disconnect` — limpa credenciais
+- `saas-inter-create-invoice` — gera cobrança Inter (PIX + boleto) para uma `saas_invoice`
+- `saas-inter-get-invoice` — consulta detalhe (status, QR, PDF)
+- `saas-inter-cancel-invoice` — cancela cobrança no Inter
+- `saas-inter-sync-invoices` — varre invoices abertas e atualiza status
+- `saas-inter-webhook` — recebe callbacks do Inter (verify_jwt=false, validado por `webhook_secret` na URL); grava em `saas_webhook_logs` e atualiza invoice + cria transaction
+- `saas-generate-monthly-invoices` — job: para cada subscription `active`, cria `saas_invoice` do mês corrente e dispara `saas-inter-create-invoice`
+- `saas-billing-reminders` — job: envia lembretes (3 dias antes / vencidas) via Resend
+- `saas-mark-overdue` — job: marca invoices vencidas + bloqueia escolas inadimplentes
 
-**Reuso:** mantemos `invoices`, `payments`, `subscriptions`, `financial_settings` do Asaas como estão. As novas tabelas são paralelas para Inter; UI futuramente unifica via `provider`.
+### Shared
+`supabase/functions/_shared/saas-inter.ts` — cópia adaptada de `_shared/inter.ts` mas lê de `saas_financial_account` (singleton). Não importar do shared antigo para garantir isolamento.
 
-## 3. Edge Functions (todas com `verify_jwt = false` + validação manual via `getUser`)
+---
 
-- `inter-connect` — recebe client_id, client_secret, certificado e chave (multipart). Valida via `POST /oauth/v2/token` com mTLS. Salva certificados em storage privado, criptografa secret AES-256-GCM com `ENCRYPTION_KEY`, registra webhook.
-- `inter-disconnect` — remove webhook, apaga certificados do storage, marca `connected=false`.
-- `inter-status` — testa conexão.
-- `inter-create-invoice` — cria cobrança (Boleto/PIX) via `POST /cobranca/v3/cobrancas`, busca PIX QR Code, persiste em `financial_invoices`.
-- `inter-get-invoice` — sincroniza status de uma cobrança.
-- `inter-cancel-invoice` — cancela cobrança.
-- `inter-sync-invoices` — varre cobranças pendentes e atualiza status (fallback do webhook).
-- `inter-webhook` — público, valida `webhook_secret` por escola via path token, processa eventos `RECEBIDO`/`CANCELADO`/`EXPIRADO`, idempotente.
+## 4. Cron jobs (pg_cron + pg_net)
+- `saas-generate-invoices` — diário 03:00
+- `saas-billing-reminders` — diário 09:00
+- `saas-mark-overdue` — diário 00:30
+- `saas-inter-sync` — a cada 30 min
 
-**Shared:** `_shared/inter.ts` com:
-- `getInterToken(account)` — OAuth2 Client Credentials com cache (TTL 50min)
-- `interFetch(account, path, init)` — fetch com mTLS usando `Deno.createHttpClient` + `caCerts` + cliente cert (via `Deno.env`-loaded PEM)
-- `decryptSecret(account)` / `encryptSecret(value)`
-- `loadCertFromStorage(creche_id)` / `saveCertToStorage(creche_id, cert, key)`
+---
 
-**Limitação técnica importante:** Deno Edge Runtime tem suporte a mTLS via `Deno.createHttpClient({ cert, key })`. Isso é estável no edge runtime do Supabase. Se houver problema, fallback é usar `fetch` com `Deno.createHttpClient` + cliente HTTP customizado.
+## 5. Frontend (admin)
 
-## 4. Jobs agendados (pg_cron, sem Redis/BullMQ)
+### Rotas
+- `/admin/saas-financeiro` — dashboard principal com tabs
 
-- `inter_sync_daily` — diariamente às 03:00 chama `inter-sync-invoices` para todas escolas conectadas.
-- `inter_overdue_check` — diariamente às 04:00 marca invoices vencidas como `OVERDUE`.
-- (Geração mensal e régua de cobrança seguem como ações manuais nesta fase para não introduzir efeitos colaterais.)
+### Sidebar
+Adicionar grupo "Administração → Financeiro SaaS" para `role=admin` com itens: Dashboard, Escolas, Mensalidades, Cobranças, Inadimplência, Relatórios, Banco Inter PJ.
 
-## 5. Frontend
+### Páginas/Tabs
+- **Dashboard**: cards (MRR, receita mês, recebido, em aberto, taxa inadimplência), gráfico de receita 6 meses, top inadimplentes
+- **Escolas**: tabela com plano, status assinatura, próxima cobrança, ações (alterar plano, suspender, gerar cobrança avulsa)
+- **Mensalidades** (subscriptions): criar/editar assinatura por escola, definir plano + dia de vencimento
+- **Cobranças** (invoices): tabela com filtros, modal com QR/PIX/Boleto, botões cancelar/sincronizar/reprocessar
+- **Inadimplência**: lista de escolas com invoices vencidas, ação enviar lembrete
+- **Relatórios**: exportar CSV de invoices/transactions por período
+- **Banco Inter PJ**: configuração (client_id, secret, upload .crt/.key, ambiente, testar conexão) + logs de webhook
 
-Atualizar `src/pages/financeiro/FinanceiroPage.tsx`:
-- Nova aba **"Banco Inter"** ao lado de **"Integração Asaas"**.
-- Indicador visual de qual provider está ativo na escola (ou ambos).
+### Componentes reutilizados
+shadcn/ui (Card, Table, Tabs, Dialog, Badge), lucide-icons, padrão visual do `SchoolFinancialManagementPage`.
 
-Novos componentes em `src/pages/financeiro/`:
-- `IntegracaoInterPage.tsx` (ou aba) — formulário: client_id, client_secret, upload `.crt`, upload `.key`, ambiente. Botões validar/desconectar. Mostra status conexão e nome conta.
-- `InterCobrancasPage.tsx` — lista `financial_invoices` do provider Inter, ações: ver boleto PDF, copiar PIX copia-e-cola, mostrar QR, cancelar, sincronizar.
-- `NovaCobrancaInterModal.tsx` — selecionar aluno, valor, vencimento, descrição, tipo (Boleto/PIX/Boleto+PIX).
+---
 
-Sidebar: adicionar entradas "Banco Inter" e "Cobranças Inter" sob Financeiro (toggle pelo módulo pedagógico).
+## 6. Bloqueio de funcionalidades premium
+Hook `useSaasSubscription(creche_id)` retorna `{ status, isOverdue, plan }`. Componentes premium checam e exibem badge/aviso quando `status in ('past_due','canceled')`.
 
-## 6. Segurança
+---
 
-- Certificados em **storage privado** (`inter-certificates`), nunca em coluna do banco.
-- Apenas service role (edge functions) lê os certificados; signed URLs nunca expostas.
-- `client_secret` criptografado AES-256-GCM com `ENCRYPTION_KEY` já existente.
-- `webhook_secret` único por escola — validado em todo POST de webhook.
-- RLS: `financial_accounts.encrypted_*` e `*_path` filtrados via view `vw_financial_accounts_safe` (frontend nunca vê valores sensíveis).
-- Logs nunca incluem secret/cert/key.
-- Idempotência webhook via unique index.
+## 7. Segredos necessários
+Já existentes: `ENCRYPTION_KEY`, `RESEND_API_KEY`, `SUPABASE_SERVICE_ROLE_KEY`. Não há novos secrets — credenciais Inter ficam no DB cifradas.
 
-## 7. Detalhes técnicos
+---
 
-- API base produção: `https://cdpj.partners.bancointer.com.br`
-- Sandbox: não público — produção apenas. Campo `environment` mantido para futuro.
-- Scopes OAuth: `boleto-cobranca.read boleto-cobranca.write webhook-cobranca.read webhook-cobranca.write pix.cob.read pix.cob.write`
-- Webhook URL pública: `https://takzcbagxjydlkzenprr.supabase.co/functions/v1/inter-webhook?token={webhook_secret}`
-- Inter exige `x-conta-corrente` em alguns endpoints — campo opcional `conta_corrente` em `financial_accounts`.
+## Entregáveis
+1. Migration (tabelas + RLS + seeds + bucket)
+2. 10 edge functions com config.toml atualizado
+3. Cron jobs agendados
+4. 7 páginas/tabs no admin + sidebar
+5. Hook de bloqueio premium
 
-## 8. Limitações desta fase
-
-- **Régua de cobrança automática (lembretes/escalation)**: não implementada agora — Inter já dispara seus próprios e-mails de boleto. Pode ser fase futura via pg_cron + Resend.
-- **Geração mensal automática de mensalidades**: não automatizada; fica para fase 2 (precisa de definição de planos por aluno, valor variável, etc.).
-- **Split/multi-conta**: não suportado (e nem solicitado).
-- **Sandbox Inter**: API Inter é só produção; testes exigem conta real PJ.
-- **Tamanho do certificado**: validamos < 100KB no upload.
-
-## 9. Ordem de execução
-
-1. Migration: tabelas + bucket `inter-certificates` + RLS + view safe.
-2. `_shared/inter.ts` + `_shared/financial-provider.ts`.
-3. Edge functions Inter (8 funções).
-4. Cron jobs.
-5. Frontend: aba Inter + cobranças + modal nova cobrança.
-6. Sidebar updates.
-7. Atualizar `system-features.ts` e memória.
+Tempo estimado: ~30 arquivos novos/editados.
