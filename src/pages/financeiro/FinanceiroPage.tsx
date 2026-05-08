@@ -262,7 +262,136 @@ export default function FinanceiroPage() {
           onCreated={() => { setShowNewModal(false); load(); }}
         />
       )}
+      {showSubModal && crecheId && (
+        <NovaRecorrenciaModal
+          open={showSubModal}
+          onClose={() => setShowSubModal(false)}
+          crecheId={crecheId}
+          criancas={criancas}
+          onCreated={() => { setShowSubModal(false); load(); }}
+        />
+      )}
+      <AlertDialog open={!!confirmCancel} onOpenChange={(o) => !o && setConfirmCancel(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Cancelar cobrança?</AlertDialogTitle>
+            <AlertDialogDescription>Esta ação irá cancelar a cobrança no Asaas. O cliente será notificado. Não pode ser desfeita.</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Voltar</AlertDialogCancel>
+            <AlertDialogAction onClick={() => confirmCancel && cancelInvoice(confirmCancel)} className="bg-red-600 hover:bg-red-700">Cancelar cobrança</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </MainLayout>
+  );
+}
+
+function SubscriptionsList({ crecheId, criancas }: { crecheId: string | null; criancas: any[] }) {
+  const [subs, setSubs] = useState<any[]>([]);
+  useEffect(() => {
+    (async () => {
+      if (!crecheId) return;
+      const { data } = await supabase.from("subscriptions").select("*").eq("creche_id", crecheId).order("next_due_date");
+      setSubs(data || []);
+    })();
+  }, [crecheId]);
+  if (!subs.length) return <p className="text-sm text-muted-foreground">Nenhuma recorrência cadastrada.</p>;
+  return (
+    <div className="space-y-2">
+      {subs.map(s => {
+        const child = criancas.find(c => c.id === s.crianca_id);
+        return (
+          <Card key={s.id} className="rounded-xl border">
+            <CardContent className="p-3 flex justify-between items-center">
+              <div>
+                <p className="font-medium">{s.description || "Recorrência"}</p>
+                <p className="text-xs text-muted-foreground">{child?.nome || "—"} • {s.cycle} • próx. {format(new Date(s.next_due_date), "dd/MM/yyyy")}</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <Badge className="bg-blue-500/10 text-blue-700 rounded-lg">{s.status}</Badge>
+                <span className="font-bold">{fmtBRL(s.value)}</span>
+              </div>
+            </CardContent>
+          </Card>
+        );
+      })}
+    </div>
+  );
+}
+
+function NovaRecorrenciaModal({ open, onClose, crecheId, criancas, onCreated }: any) {
+  const [criancaId, setCriancaId] = useState("");
+  const [name, setName] = useState(""); const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState(""); const [cpf, setCpf] = useState("");
+  const [value, setValue] = useState(""); const [nextDue, setNextDue] = useState("");
+  const [cycle, setCycle] = useState("MONTHLY"); const [billingType, setBillingType] = useState("PIX");
+  const [description, setDescription] = useState(""); const [busy, setBusy] = useState(false);
+
+  const submit = async () => {
+    setBusy(true);
+    const { data, error } = await supabase.functions.invoke("asaas-create-subscription", {
+      body: {
+        creche_id: crecheId, crianca_id: criancaId || null,
+        customer: { name, email, phone, cpf_cnpj: cpf },
+        value: Number(value), next_due_date: nextDue, cycle, billing_type: billingType, description,
+      },
+    });
+    setBusy(false);
+    if (error || data?.error) { toast({ title: "Erro", description: data?.error || error?.message, variant: "destructive" }); return; }
+    toast({ title: "Recorrência criada!", description: "As cobranças serão geradas automaticamente." });
+    onCreated();
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onClose}>
+      <DialogContent className="max-w-lg">
+        <DialogHeader><DialogTitle>Nova recorrência</DialogTitle></DialogHeader>
+        <div className="space-y-3">
+          <div><Label>Aluno (opcional)</Label>
+            <Select value={criancaId} onValueChange={setCriancaId}>
+              <SelectTrigger className="rounded-xl"><SelectValue placeholder="Selecione" /></SelectTrigger>
+              <SelectContent>{criancas.map((c: any) => <SelectItem key={c.id} value={c.id}>{c.nome}</SelectItem>)}</SelectContent>
+            </Select>
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <div><Label>Nome do responsável</Label><Input value={name} onChange={e => setName(e.target.value)} /></div>
+            <div><Label>CPF/CNPJ</Label><Input value={cpf} onChange={e => setCpf(e.target.value)} /></div>
+            <div><Label>Email</Label><Input value={email} onChange={e => setEmail(e.target.value)} /></div>
+            <div><Label>Telefone</Label><Input value={phone} onChange={e => setPhone(e.target.value)} /></div>
+            <div><Label>Valor (R$)</Label><Input type="number" value={value} onChange={e => setValue(e.target.value)} /></div>
+            <div><Label>Próximo vencimento</Label><Input type="date" value={nextDue} onChange={e => setNextDue(e.target.value)} /></div>
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <div><Label>Frequência</Label>
+              <Select value={cycle} onValueChange={setCycle}>
+                <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="MONTHLY">Mensal</SelectItem>
+                  <SelectItem value="QUARTERLY">Trimestral</SelectItem>
+                  <SelectItem value="YEARLY">Anual</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div><Label>Forma de pagamento</Label>
+              <Select value={billingType} onValueChange={setBillingType}>
+                <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="PIX">PIX</SelectItem>
+                  <SelectItem value="BOLETO">Boleto</SelectItem>
+                  <SelectItem value="UNDEFINED">Cliente escolhe</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <div><Label>Descrição</Label><Input value={description} onChange={e => setDescription(e.target.value)} placeholder="Mensalidade escolar 2026" /></div>
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={onClose}>Fechar</Button>
+          <Button onClick={submit} disabled={busy || !name || !cpf || !value || !nextDue}>{busy ? <Loader2 className="w-4 h-4 animate-spin" /> : "Criar recorrência"}</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 
