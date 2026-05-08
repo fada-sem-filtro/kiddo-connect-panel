@@ -112,7 +112,7 @@ export const AVAILABLE_ITEMS_BY_ROLE: Record<string, { key: string; defaultLabel
     { key: 'calendario', defaultLabel: 'Calendário', route: '/diretor/calendario' },
     { key: 'relatorios', defaultLabel: 'Relatórios', route: '/relatorios' },
     { key: 'relatorio_aluno', defaultLabel: 'Relatório Aluno', route: '/relatorios/aluno' },
-    { key: 'pedagogico', defaultLabel: 'Config. Pedagógicas', route: '/diretor/pedagogico' },
+    
     { key: 'materias', defaultLabel: 'Matérias', route: '/diretor/materias' },
     { key: 'boletim', defaultLabel: 'Boletim', route: '/diretor/boletim' },
     { key: 'grade_aulas', defaultLabel: 'Grade de Aulas', route: '/diretor/grade-aulas' },
