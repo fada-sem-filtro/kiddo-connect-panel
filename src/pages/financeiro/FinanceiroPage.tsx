@@ -171,6 +171,9 @@ export default function FinanceiroPage() {
                   <SelectItem value="CONFIRMED">Confirmados</SelectItem>
                 </SelectContent>
               </Select>
+              <Button variant="outline" onClick={() => exportCSV(filtered, `cobrancas_${today}.csv`)} className="rounded-xl">
+                <Download className="w-4 h-4 mr-1.5" />Exportar CSV
+              </Button>
               <Button onClick={() => setShowNewModal(true)} disabled={!settings?.asaas_connected} className="rounded-xl ml-auto">
                 <Send className="w-4 h-4 mr-1.5" />Nova cobrança
               </Button>
@@ -181,6 +184,7 @@ export default function FinanceiroPage() {
                 {filtered.map(inv => {
                   const child = criancas.find(c => c.id === inv.crianca_id);
                   const stat = STATUS_LABEL[inv.eff] || { label: inv.eff, color: "bg-gray-500/10 text-gray-700" };
+                  const isFinal = ["RECEIVED", "CONFIRMED", "REFUNDED", "DELETED"].includes(inv.status);
                   return (
                     <Card key={inv.id} className="rounded-xl border">
                       <CardContent className="p-3 flex flex-col md:flex-row md:items-center justify-between gap-2">
@@ -192,15 +196,35 @@ export default function FinanceiroPage() {
                           <Badge className={`${stat.color} rounded-lg`}>{stat.label}</Badge>
                           <span className="font-bold">{fmtBRL(inv.value)}</span>
                         </div>
-                        <div className="flex gap-1">
+                        <div className="flex gap-1 flex-wrap">
                           {inv.invoice_url && <Button size="sm" variant="outline" className="rounded-lg" asChild><a href={inv.invoice_url} target="_blank">Ver</a></Button>}
-                          {inv.pix_copy_paste && <Button size="sm" variant="outline" className="rounded-lg" onClick={() => copyPix(inv.pix_copy_paste)}><Copy className="w-3.5 h-3.5" /></Button>}
+                          {inv.pix_copy_paste && <Button size="sm" variant="outline" className="rounded-lg" onClick={() => copyPix(inv.pix_copy_paste)} title="Copiar Pix"><Copy className="w-3.5 h-3.5" /></Button>}
+                          {!isFinal && (
+                            <>
+                              <Button size="sm" variant="outline" className="rounded-lg" onClick={() => resendNotif(inv.id)} disabled={acting === inv.id} title="Reenviar notificação">
+                                {acting === inv.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Bell className="w-3.5 h-3.5" />}
+                              </Button>
+                              <Button size="sm" variant="outline" className="rounded-lg text-red-600 hover:text-red-700" onClick={() => setConfirmCancel(inv.id)} title="Cancelar cobrança">
+                                <X className="w-3.5 h-3.5" />
+                              </Button>
+                            </>
+                          )}
                         </div>
                       </CardContent>
                     </Card>
                   );
                 })}
               </div>}
+          </TabsContent>
+
+          {/* RECORRÊNCIAS */}
+          <TabsContent value="recorrencias" className="space-y-3 mt-4">
+            <div className="flex justify-end">
+              <Button onClick={() => setShowSubModal(true)} disabled={!settings?.asaas_connected} className="rounded-xl">
+                <Repeat className="w-4 h-4 mr-1.5" />Nova recorrência
+              </Button>
+            </div>
+            <SubscriptionsList crecheId={crecheId} criancas={criancas} />
           </TabsContent>
 
           {/* INADIMPLÊNCIA */}
