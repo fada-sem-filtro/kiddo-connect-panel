@@ -8,7 +8,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Receipt, Plug, Wallet, AlertTriangle, BarChart3, Send, RefreshCw, Copy, CheckCircle2, Loader2 } from "lucide-react";
+import { Receipt, Plug, Wallet, AlertTriangle, BarChart3, Send, RefreshCw, Copy, CheckCircle2, Loader2, Bell, X, Download, Repeat, Unplug } from "lucide-react";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/hooks/use-toast";
@@ -73,9 +74,43 @@ export default function FinanceiroPage() {
   const taxa = adj.length ? (adj.filter(i => i.eff === "OVERDUE").length / adj.length) * 100 : 0;
   const filtered = adj.filter(i => filterStatus === "all" ? true : i.eff === filterStatus);
 
+  const [confirmCancel, setConfirmCancel] = useState<string | null>(null);
+  const [acting, setActing] = useState<string | null>(null);
+  const [showSubModal, setShowSubModal] = useState(false);
+
   const copyPix = async (txt: string) => {
     await navigator.clipboard.writeText(txt);
     toast({ title: "Pix copiado!", description: "Cole no app do banco para pagar." });
+  };
+
+  const resendNotif = async (invoiceId: string) => {
+    setActing(invoiceId);
+    const { data, error } = await supabase.functions.invoke("asaas-resend-notification", { body: { creche_id: crecheId, invoice_id: invoiceId } });
+    setActing(null);
+    if (error || data?.error) { toast({ title: "Erro", description: data?.error || error?.message, variant: "destructive" }); return; }
+    toast({ title: "Notificação reenviada!", description: "O cliente foi notificado por email/SMS." });
+  };
+
+  const cancelInvoice = async (invoiceId: string) => {
+    setActing(invoiceId);
+    const { data, error } = await supabase.functions.invoke("asaas-cancel-payment", { body: { creche_id: crecheId, invoice_id: invoiceId } });
+    setActing(null);
+    setConfirmCancel(null);
+    if (error || data?.error) { toast({ title: "Erro", description: data?.error || error?.message, variant: "destructive" }); return; }
+    toast({ title: "Cobrança cancelada" });
+    load();
+  };
+
+  const exportCSV = (rows: any[], filename: string) => {
+    const header = ["Aluno", "Descrição", "Valor", "Vencimento", "Status", "Método"];
+    const lines = rows.map(r => {
+      const child = criancas.find(c => c.id === r.crianca_id);
+      return [child?.nome || "", r.description || "", r.value, r.due_date, r.eff || r.status, r.payment_method].map(v => `"${String(v ?? "").replace(/"/g, '""')}"`).join(",");
+    });
+    const csv = [header.join(","), ...lines].join("\n");
+    const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a"); a.href = url; a.download = filename; a.click(); URL.revokeObjectURL(url);
   };
 
   return (
@@ -97,6 +132,7 @@ export default function FinanceiroPage() {
           <TabsList className="flex flex-wrap gap-1 h-auto bg-muted/50 p-1 rounded-2xl">
             <TabsTrigger value="dashboard" className="rounded-xl"><BarChart3 className="w-4 h-4 mr-1.5" />Dashboard</TabsTrigger>
             <TabsTrigger value="cobrancas" className="rounded-xl"><Receipt className="w-4 h-4 mr-1.5" />Cobranças</TabsTrigger>
+            <TabsTrigger value="recorrencias" className="rounded-xl"><Repeat className="w-4 h-4 mr-1.5" />Recorrências</TabsTrigger>
             <TabsTrigger value="inadimplencia" className="rounded-xl"><AlertTriangle className="w-4 h-4 mr-1.5" />Inadimplência</TabsTrigger>
             <TabsTrigger value="integracao" className="rounded-xl"><Plug className="w-4 h-4 mr-1.5" />Integração Asaas</TabsTrigger>
           </TabsList>
@@ -135,6 +171,9 @@ export default function FinanceiroPage() {
                   <SelectItem value="CONFIRMED">Confirmados</SelectItem>
                 </SelectContent>
               </Select>
+              <Button variant="outline" onClick={() => exportCSV(filtered, `cobrancas_${today}.csv`)} className="rounded-xl">
+                <Download className="w-4 h-4 mr-1.5" />Exportar CSV
+              </Button>
               <Button onClick={() => setShowNewModal(true)} disabled={!settings?.asaas_connected} className="rounded-xl ml-auto">
                 <Send className="w-4 h-4 mr-1.5" />Nova cobrança
               </Button>
@@ -145,6 +184,7 @@ export default function FinanceiroPage() {
                 {filtered.map(inv => {
                   const child = criancas.find(c => c.id === inv.crianca_id);
                   const stat = STATUS_LABEL[inv.eff] || { label: inv.eff, color: "bg-gray-500/10 text-gray-700" };
+                  const isFinal = ["RECEIVED", "CONFIRMED", "REFUNDED", "DELETED"].includes(inv.status);
                   return (
                     <Card key={inv.id} className="rounded-xl border">
                       <CardContent className="p-3 flex flex-col md:flex-row md:items-center justify-between gap-2">
@@ -156,15 +196,35 @@ export default function FinanceiroPage() {
                           <Badge className={`${stat.color} rounded-lg`}>{stat.label}</Badge>
                           <span className="font-bold">{fmtBRL(inv.value)}</span>
                         </div>
-                        <div className="flex gap-1">
+                        <div className="flex gap-1 flex-wrap">
                           {inv.invoice_url && <Button size="sm" variant="outline" className="rounded-lg" asChild><a href={inv.invoice_url} target="_blank">Ver</a></Button>}
-                          {inv.pix_copy_paste && <Button size="sm" variant="outline" className="rounded-lg" onClick={() => copyPix(inv.pix_copy_paste)}><Copy className="w-3.5 h-3.5" /></Button>}
+                          {inv.pix_copy_paste && <Button size="sm" variant="outline" className="rounded-lg" onClick={() => copyPix(inv.pix_copy_paste)} title="Copiar Pix"><Copy className="w-3.5 h-3.5" /></Button>}
+                          {!isFinal && (
+                            <>
+                              <Button size="sm" variant="outline" className="rounded-lg" onClick={() => resendNotif(inv.id)} disabled={acting === inv.id} title="Reenviar notificação">
+                                {acting === inv.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Bell className="w-3.5 h-3.5" />}
+                              </Button>
+                              <Button size="sm" variant="outline" className="rounded-lg text-red-600 hover:text-red-700" onClick={() => setConfirmCancel(inv.id)} title="Cancelar cobrança">
+                                <X className="w-3.5 h-3.5" />
+                              </Button>
+                            </>
+                          )}
                         </div>
                       </CardContent>
                     </Card>
                   );
                 })}
               </div>}
+          </TabsContent>
+
+          {/* RECORRÊNCIAS */}
+          <TabsContent value="recorrencias" className="space-y-3 mt-4">
+            <div className="flex justify-end">
+              <Button onClick={() => setShowSubModal(true)} disabled={!settings?.asaas_connected} className="rounded-xl">
+                <Repeat className="w-4 h-4 mr-1.5" />Nova recorrência
+              </Button>
+            </div>
+            <SubscriptionsList crecheId={crecheId} criancas={criancas} />
           </TabsContent>
 
           {/* INADIMPLÊNCIA */}
@@ -202,7 +262,136 @@ export default function FinanceiroPage() {
           onCreated={() => { setShowNewModal(false); load(); }}
         />
       )}
+      {showSubModal && crecheId && (
+        <NovaRecorrenciaModal
+          open={showSubModal}
+          onClose={() => setShowSubModal(false)}
+          crecheId={crecheId}
+          criancas={criancas}
+          onCreated={() => { setShowSubModal(false); load(); }}
+        />
+      )}
+      <AlertDialog open={!!confirmCancel} onOpenChange={(o) => !o && setConfirmCancel(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Cancelar cobrança?</AlertDialogTitle>
+            <AlertDialogDescription>Esta ação irá cancelar a cobrança no Asaas. O cliente será notificado. Não pode ser desfeita.</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Voltar</AlertDialogCancel>
+            <AlertDialogAction onClick={() => confirmCancel && cancelInvoice(confirmCancel)} className="bg-red-600 hover:bg-red-700">Cancelar cobrança</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </MainLayout>
+  );
+}
+
+function SubscriptionsList({ crecheId, criancas }: { crecheId: string | null; criancas: any[] }) {
+  const [subs, setSubs] = useState<any[]>([]);
+  useEffect(() => {
+    (async () => {
+      if (!crecheId) return;
+      const { data } = await supabase.from("subscriptions").select("*").eq("creche_id", crecheId).order("next_due_date");
+      setSubs(data || []);
+    })();
+  }, [crecheId]);
+  if (!subs.length) return <p className="text-sm text-muted-foreground">Nenhuma recorrência cadastrada.</p>;
+  return (
+    <div className="space-y-2">
+      {subs.map(s => {
+        const child = criancas.find(c => c.id === s.crianca_id);
+        return (
+          <Card key={s.id} className="rounded-xl border">
+            <CardContent className="p-3 flex justify-between items-center">
+              <div>
+                <p className="font-medium">{s.description || "Recorrência"}</p>
+                <p className="text-xs text-muted-foreground">{child?.nome || "—"} • {s.cycle} • próx. {format(new Date(s.next_due_date), "dd/MM/yyyy")}</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <Badge className="bg-blue-500/10 text-blue-700 rounded-lg">{s.status}</Badge>
+                <span className="font-bold">{fmtBRL(s.value)}</span>
+              </div>
+            </CardContent>
+          </Card>
+        );
+      })}
+    </div>
+  );
+}
+
+function NovaRecorrenciaModal({ open, onClose, crecheId, criancas, onCreated }: any) {
+  const [criancaId, setCriancaId] = useState("");
+  const [name, setName] = useState(""); const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState(""); const [cpf, setCpf] = useState("");
+  const [value, setValue] = useState(""); const [nextDue, setNextDue] = useState("");
+  const [cycle, setCycle] = useState("MONTHLY"); const [billingType, setBillingType] = useState("PIX");
+  const [description, setDescription] = useState(""); const [busy, setBusy] = useState(false);
+
+  const submit = async () => {
+    setBusy(true);
+    const { data, error } = await supabase.functions.invoke("asaas-create-subscription", {
+      body: {
+        creche_id: crecheId, crianca_id: criancaId || null,
+        customer: { name, email, phone, cpf_cnpj: cpf },
+        value: Number(value), next_due_date: nextDue, cycle, billing_type: billingType, description,
+      },
+    });
+    setBusy(false);
+    if (error || data?.error) { toast({ title: "Erro", description: data?.error || error?.message, variant: "destructive" }); return; }
+    toast({ title: "Recorrência criada!", description: "As cobranças serão geradas automaticamente." });
+    onCreated();
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onClose}>
+      <DialogContent className="max-w-lg">
+        <DialogHeader><DialogTitle>Nova recorrência</DialogTitle></DialogHeader>
+        <div className="space-y-3">
+          <div><Label>Aluno (opcional)</Label>
+            <Select value={criancaId} onValueChange={setCriancaId}>
+              <SelectTrigger className="rounded-xl"><SelectValue placeholder="Selecione" /></SelectTrigger>
+              <SelectContent>{criancas.map((c: any) => <SelectItem key={c.id} value={c.id}>{c.nome}</SelectItem>)}</SelectContent>
+            </Select>
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <div><Label>Nome do responsável</Label><Input value={name} onChange={e => setName(e.target.value)} /></div>
+            <div><Label>CPF/CNPJ</Label><Input value={cpf} onChange={e => setCpf(e.target.value)} /></div>
+            <div><Label>Email</Label><Input value={email} onChange={e => setEmail(e.target.value)} /></div>
+            <div><Label>Telefone</Label><Input value={phone} onChange={e => setPhone(e.target.value)} /></div>
+            <div><Label>Valor (R$)</Label><Input type="number" value={value} onChange={e => setValue(e.target.value)} /></div>
+            <div><Label>Próximo vencimento</Label><Input type="date" value={nextDue} onChange={e => setNextDue(e.target.value)} /></div>
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <div><Label>Frequência</Label>
+              <Select value={cycle} onValueChange={setCycle}>
+                <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="MONTHLY">Mensal</SelectItem>
+                  <SelectItem value="QUARTERLY">Trimestral</SelectItem>
+                  <SelectItem value="YEARLY">Anual</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div><Label>Forma de pagamento</Label>
+              <Select value={billingType} onValueChange={setBillingType}>
+                <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="PIX">PIX</SelectItem>
+                  <SelectItem value="BOLETO">Boleto</SelectItem>
+                  <SelectItem value="UNDEFINED">Cliente escolhe</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <div><Label>Descrição</Label><Input value={description} onChange={e => setDescription(e.target.value)} placeholder="Mensalidade escolar 2026" /></div>
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={onClose}>Fechar</Button>
+          <Button onClick={submit} disabled={busy || !name || !cpf || !value || !nextDue}>{busy ? <Loader2 className="w-4 h-4 animate-spin" /> : "Criar recorrência"}</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -261,10 +450,24 @@ function IntegracaoAsaas({ crecheId, settings, onChange }: { crecheId: string | 
           <Input type="password" value={apiKey} onChange={(e) => setApiKey(e.target.value)} placeholder="$aact_..." className="rounded-xl" />
           <p className="text-xs text-muted-foreground">Encontre sua chave em: Asaas → Integrações → Chave de API. A chave é criptografada (AES-256-GCM) antes de salvar e nunca exposta no frontend.</p>
         </div>
-        <Button onClick={connect} disabled={busy || !apiKey} className="rounded-xl">
-          {busy ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <RefreshCw className="w-4 h-4 mr-2" />}
-          {settings?.asaas_connected ? "Reconectar" : "Conectar e validar"}
-        </Button>
+        <div className="flex gap-2">
+          <Button onClick={connect} disabled={busy || !apiKey} className="rounded-xl">
+            {busy ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <RefreshCw className="w-4 h-4 mr-2" />}
+            {settings?.asaas_connected ? "Reconectar" : "Conectar e validar"}
+          </Button>
+          {settings?.asaas_connected && (
+            <Button variant="outline" disabled={busy} onClick={async () => {
+              setBusy(true);
+              const { data, error } = await supabase.functions.invoke("asaas-disconnect", { body: { creche_id: crecheId } });
+              setBusy(false);
+              if (error || data?.error) { toast({ title: "Erro", description: data?.error || error?.message, variant: "destructive" }); return; }
+              toast({ title: "Desconectado", description: "A integração foi removida." });
+              onChange();
+            }} className="rounded-xl text-red-600 hover:text-red-700">
+              <Unplug className="w-4 h-4 mr-2" />Desconectar
+            </Button>
+          )}
+        </div>
       </CardContent>
     </Card>
   );
