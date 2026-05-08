@@ -9,6 +9,11 @@ Deno.serve(async (req) => {
     const body = await req.json();
     const { creche_id, crianca_id, customer, value, due_date, billing_type, description } = body || {};
     if (!creche_id || !value || !due_date || !billing_type) return json({ error: "Parâmetros inválidos" }, 400);
+    // Garantir que dueDate não seja anterior a hoje (timezone America/Sao_Paulo)
+    const todayBR = new Date(new Date().toLocaleString("en-US", { timeZone: "America/Sao_Paulo" }));
+    const todayStr = `${todayBR.getFullYear()}-${String(todayBR.getMonth() + 1).padStart(2, "0")}-${String(todayBR.getDate()).padStart(2, "0")}`;
+    let dueDateFinal = String(due_date);
+    if (dueDateFinal < todayStr) dueDateFinal = todayStr;
     if (!(await ensureFinanceAdmin(auth.userId, creche_id))) return json({ error: "Forbidden" }, 403);
 
     const cred = await getCrecheAsaas(creche_id);
