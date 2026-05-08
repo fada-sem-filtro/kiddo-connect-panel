@@ -47,7 +47,7 @@ Deno.serve(async (req) => {
         customer: customerRow.asaas_customer_id,
         billingType: billing_type,
         value: Number(value),
-        dueDate: due_date,
+        dueDate: dueDateFinal,
         description,
       }),
     });
