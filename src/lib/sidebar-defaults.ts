@@ -323,7 +323,52 @@ export function getDefaultConfig(perfil: string): SidebarConfig {
         ],
       },
     ];
-  }
+}
 
-  return [];
+// Mapping of sidebar item keys -> required pedagogical module flag.
+// Only keys present here are gated; unlisted keys are always available.
+export const ITEM_MODULE_REQUIREMENTS: Record<string, keyof PedagogicalModules> = {
+  atividades_pedagogicas: 'atividades_avaliacoes_ativo',
+  atividades: 'atividades_avaliacoes_ativo',
+  atividades_aluno: 'atividades_avaliacoes_ativo',
+  boletim: 'boletim_ativo',
+  grade_aulas: 'grade_aulas_ativo',
+  materias: 'gestao_materias_ativo',
+  relatorio_desempenho: 'relatorio_desempenho_ativo',
+  relatorio_modelo: 'relatorio_desempenho_ativo',
+  financeiro: 'modulo_boletos_ativo',
+};
+
+export interface PedagogicalModules {
+  modulo_boletos_ativo: boolean;
+  modulo_secretaria_ativo: boolean;
+  atividades_avaliacoes_ativo: boolean;
+  grade_aulas_ativo: boolean;
+  gestao_materias_ativo: boolean;
+  relatorio_desempenho_ativo: boolean;
+  boletim_ativo: boolean;
+}
+
+export function isItemEnabledByModules(key: string, modules: PedagogicalModules | null | undefined): boolean {
+  if (!modules) return true;
+  const flag = ITEM_MODULE_REQUIREMENTS[key];
+  if (!flag) return true;
+  return Boolean(modules[flag]);
+}
+
+export function filterAvailableItemsByModules<T extends { key: string }>(
+  items: T[],
+  modules: PedagogicalModules | null | undefined,
+): T[] {
+  return items.filter(i => isItemEnabledByModules(i.key, modules));
+}
+
+export function filterConfigByModules(
+  config: SidebarConfig,
+  modules: PedagogicalModules | null | undefined,
+): SidebarConfig {
+  return config.map(section => ({
+    ...section,
+    items: section.items.filter(it => isItemEnabledByModules(it.key, modules)),
+  }));
 }
