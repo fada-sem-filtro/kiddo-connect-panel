@@ -498,6 +498,12 @@ export function SidebarConfigEditor({ crecheId, perfil, isAdmin = false }: { cre
         </Button>
       </div>
 
+      {!isAdmin && (
+        <div className="text-xs text-muted-foreground bg-muted/30 border border-border/50 rounded-xl px-3 py-2">
+          Apenas itens habilitados nos módulos pedagógicos da sua escola aparecem aqui. Para liberar mais opções, ative os módulos correspondentes em <b>Configurações Pedagógicas</b> (acesso do administrador).
+        </div>
+      )}
+
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
