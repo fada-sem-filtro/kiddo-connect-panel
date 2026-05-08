@@ -121,7 +121,7 @@ export function Sidebar() {
     materias: 'gestao_materias_ativo',
     relatorio_desempenho: 'relatorio_desempenho_ativo',
     relatorio_modelo: 'relatorio_desempenho_ativo',
-    boletos: 'modulo_boletos_ativo',
+    financeiro: 'modulo_boletos_ativo',
   };
 
   const isItemEnabledByPedSettings = (key: string): boolean => {
