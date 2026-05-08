@@ -1,11 +1,11 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
-import { corsHeaders, json, serviceClient, getUser } from "../_shared/asaas.ts";
+import { corsHeaders, json, serviceClient, getAuthUser, ensureFinanceAdmin } from "../_shared/asaas.ts";
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   try {
-    const user = await getUser(req);
-    if (!user) return json({ error: "unauthorized" }, 401);
+    const auth = await getAuthUser(req);
+    if (!auth) return json({ error: "unauthorized" }, 401);
 
     const { log_id } = await req.json();
     if (!log_id) return json({ error: "missing log_id" }, 400);
@@ -15,6 +15,9 @@ Deno.serve(async (req) => {
       .select("*").eq("id", log_id).maybeSingle();
     if (logErr || !log) return json({ error: "log not found" }, 404);
     if (log.provider !== "inter") return json({ error: "only inter logs can be reprocessed here" }, 400);
+    if (log.creche_id && !(await ensureFinanceAdmin(auth.userId, log.creche_id))) {
+      return json({ error: "forbidden" }, 403);
+    }
 
     const ev = log.payload || {};
     const externalId = ev.codigoSolicitacao || ev.codigo_solicitacao || log.external_id;
