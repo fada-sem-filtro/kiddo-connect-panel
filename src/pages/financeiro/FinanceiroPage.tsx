@@ -270,21 +270,29 @@ export default function FinanceiroPage() {
               })}
           </TabsContent>
 
-          {/* INTEGRAÇÃO */}
-          <TabsContent value="integracao" className="mt-4">
-            <IntegracaoAsaas crecheId={crecheId} settings={settings} onChange={load} />
-          </TabsContent>
+          {/* INTEGRAÇÃO ASAAS — admin only */}
+          {isAdmin && provider === "asaas" && (
+            <TabsContent value="integracao" className="mt-4">
+              <IntegracaoAsaas crecheId={crecheId} settings={settings} onChange={load} />
+            </TabsContent>
+          )}
 
-          {/* BANCO INTER */}
-          <TabsContent value="inter" className="mt-4">
-            <BancoInterTab crecheId={crecheId} />
-          </TabsContent>
-          <TabsContent value="inter-cobrancas" className="mt-4">
-            <CobrancasInterTab crecheId={crecheId} criancas={criancas} />
-          </TabsContent>
-          <TabsContent value="inter-logs" className="mt-4">
-            <LogsInterTab crecheId={crecheId} />
-          </TabsContent>
+          {/* BANCO INTER — credential config admin only; cobranças/logs visible to all roles */}
+          {isAdmin && provider === "inter" && (
+            <TabsContent value="inter" className="mt-4">
+              <BancoInterTab crecheId={crecheId} />
+            </TabsContent>
+          )}
+          {provider === "inter" && (
+            <>
+              <TabsContent value="inter-cobrancas" className="mt-4">
+                <CobrancasInterTab crecheId={crecheId} criancas={criancas} />
+              </TabsContent>
+              <TabsContent value="inter-logs" className="mt-4">
+                <LogsInterTab crecheId={crecheId} />
+              </TabsContent>
+            </>
+          )}
         </Tabs>
       </div>
 
