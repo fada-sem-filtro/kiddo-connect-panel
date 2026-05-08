@@ -971,6 +971,77 @@ export type Database = {
         }
         Relationships: []
       }
+      financial_accounts: {
+        Row: {
+          account_name: string | null
+          certificate_path: string | null
+          client_id: string | null
+          client_secret_iv: string | null
+          client_secret_tag: string | null
+          connected: boolean
+          conta_corrente: string | null
+          created_at: string
+          creche_id: string
+          encrypted_client_secret: string | null
+          environment: string
+          id: string
+          last_error: string | null
+          last_validation: string | null
+          private_key_path: string | null
+          provider: Database["public"]["Enums"]["financial_provider"]
+          updated_at: string
+          webhook_secret: string
+        }
+        Insert: {
+          account_name?: string | null
+          certificate_path?: string | null
+          client_id?: string | null
+          client_secret_iv?: string | null
+          client_secret_tag?: string | null
+          connected?: boolean
+          conta_corrente?: string | null
+          created_at?: string
+          creche_id: string
+          encrypted_client_secret?: string | null
+          environment?: string
+          id?: string
+          last_error?: string | null
+          last_validation?: string | null
+          private_key_path?: string | null
+          provider: Database["public"]["Enums"]["financial_provider"]
+          updated_at?: string
+          webhook_secret?: string
+        }
+        Update: {
+          account_name?: string | null
+          certificate_path?: string | null
+          client_id?: string | null
+          client_secret_iv?: string | null
+          client_secret_tag?: string | null
+          connected?: boolean
+          conta_corrente?: string | null
+          created_at?: string
+          creche_id?: string
+          encrypted_client_secret?: string | null
+          environment?: string
+          id?: string
+          last_error?: string | null
+          last_validation?: string | null
+          private_key_path?: string | null
+          provider?: Database["public"]["Enums"]["financial_provider"]
+          updated_at?: string
+          webhook_secret?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "financial_accounts_creche_id_fkey"
+            columns: ["creche_id"]
+            isOneToOne: false
+            referencedRelation: "creches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       financial_customers: {
         Row: {
           asaas_customer_id: string
@@ -1021,6 +1092,96 @@ export type Database = {
           },
           {
             foreignKeyName: "financial_customers_crianca_id_fkey"
+            columns: ["crianca_id"]
+            isOneToOne: false
+            referencedRelation: "criancas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      financial_invoices: {
+        Row: {
+          amount: number
+          boleto_linha_digitavel: string | null
+          boleto_pdf_url: string | null
+          cancelled_at: string | null
+          created_at: string
+          created_by: string | null
+          creche_id: string
+          crianca_id: string | null
+          description: string | null
+          due_date: string
+          external_id: string | null
+          id: string
+          nosso_numero: string | null
+          paid_at: string | null
+          payment_method: string | null
+          pix_copy_paste: string | null
+          pix_expires_at: string | null
+          pix_qrcode: string | null
+          provider: Database["public"]["Enums"]["financial_provider"]
+          raw_payload: Json | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          boleto_linha_digitavel?: string | null
+          boleto_pdf_url?: string | null
+          cancelled_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          creche_id: string
+          crianca_id?: string | null
+          description?: string | null
+          due_date: string
+          external_id?: string | null
+          id?: string
+          nosso_numero?: string | null
+          paid_at?: string | null
+          payment_method?: string | null
+          pix_copy_paste?: string | null
+          pix_expires_at?: string | null
+          pix_qrcode?: string | null
+          provider: Database["public"]["Enums"]["financial_provider"]
+          raw_payload?: Json | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          boleto_linha_digitavel?: string | null
+          boleto_pdf_url?: string | null
+          cancelled_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          creche_id?: string
+          crianca_id?: string | null
+          description?: string | null
+          due_date?: string
+          external_id?: string | null
+          id?: string
+          nosso_numero?: string | null
+          paid_at?: string | null
+          payment_method?: string | null
+          pix_copy_paste?: string | null
+          pix_expires_at?: string | null
+          pix_qrcode?: string | null
+          provider?: Database["public"]["Enums"]["financial_provider"]
+          raw_payload?: Json | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "financial_invoices_creche_id_fkey"
+            columns: ["creche_id"]
+            isOneToOne: false
+            referencedRelation: "creches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "financial_invoices_crianca_id_fkey"
             columns: ["crianca_id"]
             isOneToOne: false
             referencedRelation: "criancas"
@@ -1085,6 +1246,101 @@ export type Database = {
             foreignKeyName: "financial_settings_creche_id_fkey"
             columns: ["creche_id"]
             isOneToOne: true
+            referencedRelation: "creches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      financial_transactions: {
+        Row: {
+          amount: number | null
+          created_at: string
+          creche_id: string
+          id: string
+          invoice_id: string | null
+          paid_at: string | null
+          raw_payload: Json | null
+          status: string | null
+          transaction_type: string
+        }
+        Insert: {
+          amount?: number | null
+          created_at?: string
+          creche_id: string
+          id?: string
+          invoice_id?: string | null
+          paid_at?: string | null
+          raw_payload?: Json | null
+          status?: string | null
+          transaction_type: string
+        }
+        Update: {
+          amount?: number | null
+          created_at?: string
+          creche_id?: string
+          id?: string
+          invoice_id?: string | null
+          paid_at?: string | null
+          raw_payload?: Json | null
+          status?: string | null
+          transaction_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "financial_transactions_creche_id_fkey"
+            columns: ["creche_id"]
+            isOneToOne: false
+            referencedRelation: "creches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "financial_transactions_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "financial_invoices"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      financial_webhook_logs: {
+        Row: {
+          creche_id: string | null
+          error: string | null
+          event: string | null
+          external_id: string | null
+          id: string
+          payload: Json | null
+          processed: boolean
+          provider: Database["public"]["Enums"]["financial_provider"]
+          received_at: string
+        }
+        Insert: {
+          creche_id?: string | null
+          error?: string | null
+          event?: string | null
+          external_id?: string | null
+          id?: string
+          payload?: Json | null
+          processed?: boolean
+          provider: Database["public"]["Enums"]["financial_provider"]
+          received_at?: string
+        }
+        Update: {
+          creche_id?: string | null
+          error?: string | null
+          event?: string | null
+          external_id?: string | null
+          id?: string
+          payload?: Json | null
+          processed?: boolean
+          provider?: Database["public"]["Enums"]["financial_provider"]
+          received_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "financial_webhook_logs_creche_id_fkey"
+            columns: ["creche_id"]
+            isOneToOne: false
             referencedRelation: "creches"
             referencedColumns: ["id"]
           },
@@ -2157,7 +2413,71 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      vw_financial_accounts_safe: {
+        Row: {
+          account_name: string | null
+          client_id: string | null
+          connected: boolean | null
+          conta_corrente: string | null
+          created_at: string | null
+          creche_id: string | null
+          environment: string | null
+          has_certificate: boolean | null
+          has_private_key: boolean | null
+          has_secret: boolean | null
+          id: string | null
+          last_error: string | null
+          last_validation: string | null
+          provider: Database["public"]["Enums"]["financial_provider"] | null
+          updated_at: string | null
+          webhook_secret: string | null
+        }
+        Insert: {
+          account_name?: string | null
+          client_id?: string | null
+          connected?: boolean | null
+          conta_corrente?: string | null
+          created_at?: string | null
+          creche_id?: string | null
+          environment?: string | null
+          has_certificate?: never
+          has_private_key?: never
+          has_secret?: never
+          id?: string | null
+          last_error?: string | null
+          last_validation?: string | null
+          provider?: Database["public"]["Enums"]["financial_provider"] | null
+          updated_at?: string | null
+          webhook_secret?: string | null
+        }
+        Update: {
+          account_name?: string | null
+          client_id?: string | null
+          connected?: boolean | null
+          conta_corrente?: string | null
+          created_at?: string | null
+          creche_id?: string | null
+          environment?: string | null
+          has_certificate?: never
+          has_private_key?: never
+          has_secret?: never
+          id?: string | null
+          last_error?: string | null
+          last_validation?: string | null
+          provider?: Database["public"]["Enums"]["financial_provider"] | null
+          updated_at?: string | null
+          webhook_secret?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "financial_accounts_creche_id_fkey"
+            columns: ["creche_id"]
+            isOneToOne: false
+            referencedRelation: "creches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       can_access_crianca: {
@@ -2264,6 +2584,7 @@ export type Database = {
         | "diretor"
         | "aluno"
         | "secretaria"
+      financial_provider: "asaas" | "inter"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -2399,6 +2720,7 @@ export const Constants = {
         "aluno",
         "secretaria",
       ],
+      financial_provider: ["asaas", "inter"],
     },
   },
 } as const
