@@ -1,100 +1,109 @@
-## Plano: Estrutura completa de Blog com SEO avançado
 
-Vou implementar um sistema de blog completo, com CMS no admin e área pública otimizada para SEO, focado em ranquear termos como "agenda escolar digital".
+# Módulo Financeiro Asaas — Plano de Execução
 
-### 1. Banco de dados (Lovable Cloud)
+## 1. Escopo confirmado
+- Remover módulo "Boletos" (páginas, modais, tabela `boletos`, rotas, links sidebar).
+- Criar módulo **Financeiro** com submenus: Dashboard, Mensalidades, Cobranças, Inadimplência, Integração Asaas, Relatórios.
+- Cada escola usa **sua própria** API Key Asaas (multi-tenant). Nenhum valor passa pela Agenda Fleur.
+- Criptografia AES-256-GCM com `ENCRYPTION_KEY` (32 bytes, secret).
+- Webhooks configurados automaticamente via API Asaas, com URL única + token por escola.
 
-Novas tabelas:
-- **blog_categorias**: nome, slug, descrição
-- **blog_tags**: nome, slug
-- **blog_posts**: título, slug (único), conteúdo (HTML rico), resumo, capa_url, capa_alt, meta_title, meta_description, palavra_chave_principal, palavras_chave_secundarias (text[]), categoria_id, status ('rascunho'|'publicado'), autor_user_id, published_at, views, reading_time
-- **blog_post_tags**: relação N:N
+## 2. Banco de dados (migration única)
 
-RLS:
-- Leitura pública de posts publicados, categorias e tags (sem autenticação)
-- Escrita restrita a admins (`has_role admin`)
+**Drop:** tabela `boletos` (e dependências).
 
-Bucket de storage: **blog-imagens** (público, para capas e imagens inline).
+**Novas tabelas (todas com RLS por `creche_id`):**
 
-### 2. Área pública (`/blog` e `/blog/:slug`)
+- `financial_settings` — uma linha por escola
+  - `creche_id` (FK), `asaas_api_key_encrypted` (bytea), `asaas_api_key_iv`, `asaas_api_key_tag`, `asaas_api_key_last4`, `asaas_environment` (`production`|`sandbox`), `asaas_connected` (bool), `asaas_account_name`, `asaas_last_validation`, `asaas_webhook_token` (uuid), `asaas_webhook_id`.
 
-**`/blog`** — listagem:
-- Hero com H1 "Blog Agenda Fleur — Agenda Escolar Digital"
-- Filtros por categoria/tag
-- Cards: capa (lazy load), H2 título, meta description, data, tempo de leitura, "Ler mais"
-- Paginação
-- SEO: title, meta description, canonical, Open Graph, JSON-LD `Blog`
+- `financial_customers` — clientes Asaas espelhados
+  - `creche_id`, `crianca_id` (nullable), `responsavel_user_id` (nullable), `asaas_customer_id`, `name`, `email`, `phone`, `cpf_cnpj`.
 
-**`/blog/:slug`** — artigo:
-- H1 único (título)
-- Subtítulos H2/H3 do conteúdo rico
-- Imagem de capa otimizada com alt
-- Meta info: data, autor, categoria, tags, tempo leitura
-- Conteúdo renderizado (HTML sanitizado)
-- Links internos sugeridos (artigos relacionados pela categoria)
-- CTA final para conversão (Solicitar Orçamento)
-- SEO completo: meta tags dinâmicas, Open Graph, Twitter Card, JSON-LD `Article`, canonical
-- 404 customizado se slug inválido
+- `invoices` — cobranças
+  - `creche_id`, `crianca_id`, `customer_id` (FK financial_customers), `asaas_payment_id`, `description`, `value` numeric, `due_date`, `payment_method` (`PIX`|`BOLETO`|`CREDIT_CARD`|`UNDEFINED`), `status`, `invoice_url`, `bank_slip_url`, `pix_qrcode`, `pix_copy_paste`, `pix_expires_at`, `subscription_id` (nullable), `legacy` bool default false.
 
-Componente reutilizável `<SEOHead>` para gerenciar `<head>` dinamicamente.
+- `payments` — eventos de pagamento confirmados
+  - `creche_id`, `invoice_id`, `paid_at`, `value`, `payment_method`, `status`, `transaction_id`, `net_value`.
 
-### 3. Sitemap dinâmico
+- `subscriptions` — recorrências
+  - `creche_id`, `customer_id`, `crianca_id`, `asaas_subscription_id`, `value`, `cycle` (`MONTHLY`|`QUARTERLY`|`YEARLY`), `next_due_date`, `description`, `status`.
 
-Edge function `sitemap-xml` que gera `/sitemap.xml` incluindo posts publicados (lastmod = updated_at). Atualizar `public/robots.txt` e adicionar rota redirecionando para a function.
+- `asaas_webhook_logs` — auditoria
+  - `creche_id`, `event`, `payload` jsonb, `processed` bool, `error`, `received_at`.
 
-### 4. Área administrativa
+**RLS:** SELECT/INSERT/UPDATE/DELETE só para diretor/secretaria/admin da `creche_id`. `financial_settings.asaas_api_key_*` nunca exposto via SELECT do client (policies bloqueiam colunas sensíveis usando função `get_financial_settings_safe`).
 
-Adicionar no menu lateral (sidebar-defaults para admin) a seção **Blog**:
-- `/admin/blog` — listagem em tabela (título, palavra-chave, status, data, ações)
-- `/admin/blog/novo` — criar
-- `/admin/blog/:id` — editar
-- `/admin/blog/categorias` — CRUD
-- `/admin/blog/tags` — CRUD
+**Funções/triggers:**
+- `is_financeiro_admin(_user_id, _creche_id)` SECURITY DEFINER.
+- Trigger `updated_at` nas novas tabelas.
+- View `vw_financial_settings_safe` expondo só metadados (sem chave).
 
-Editor de artigo:
-- Título + slug editável (auto-gerado a partir do título)
-- Editor WYSIWYG (TipTap — bold, italic, H1/H2/H3, listas, links, alinhamento, imagens inline com upload + alt text)
-- Upload de capa com preview e alt text
-- Aba SEO: meta title, meta description, palavra-chave principal, secundárias (chips), preview do snippet do Google
-- Categoria (select) + Tags (multi-select)
-- Status: rascunho/publicado
-- Botões: Salvar rascunho, Publicar, Visualizar
+## 3. Edge Functions
 
-### 5. Performance & SEO
+Todas com `verify_jwt = false` (Supabase signing-keys), validação manual via `getClaims()` exceto webhook.
 
-- Lazy load de imagens (`loading="lazy"`)
-- `<picture>` com WebP quando possível (usa as imagens já enviadas)
-- Heading hierarchy correta
-- HTML semântico (`<article>`, `<header>`, `<time>`, `<nav>` breadcrumb)
-- URLs limpas via slug
-- Mobile-first (Tailwind)
-- Sanitização do HTML do editor (DOMPurify) antes de renderizar
+- `asaas-connect` — recebe API key + ambiente. Valida no Asaas (`GET /v3/myAccount`), criptografa AES-256-GCM, salva, registra webhook automaticamente (`POST /v3/webhooks`), retorna status. **Nunca** retorna a chave.
+- `asaas-disconnect` — remove webhook na Asaas, limpa colunas sensíveis.
+- `asaas-status` — testa conexão (revalida).
+- `asaas-customer-upsert` — cria/atualiza cliente Asaas a partir de aluno/responsável.
+- `asaas-create-payment` — cria cobrança (PIX/Boleto/Cartão), grava `invoices`, busca QR Code PIX (`GET /v3/payments/{id}/pixQrCode`).
+- `asaas-create-subscription` — recorrência mensal/trimestral/anual.
+- `asaas-cancel-payment` — cancela.
+- `asaas-resend-notification` — `POST /v3/payments/{id}/notifications`.
+- `asaas-webhook` — público; valida `asaas-access-token` header contra `asaas_webhook_token`. Processa `PAYMENT_RECEIVED`, `PAYMENT_CONFIRMED`, `PAYMENT_OVERDUE`, `PAYMENT_DELETED`, `PAYMENT_REFUNDED`. Idempotente (chave: `event + payment.id`). Loga em `asaas_webhook_logs`.
 
-### 6. Detalhes técnicos
+**Service:** `_shared/asaas.ts` com `decryptApiKey()`, `asaasFetch(school, path, init)`.
 
-- Bibliotecas a instalar: `@tiptap/react`, `@tiptap/starter-kit`, `@tiptap/extension-image`, `@tiptap/extension-link`, `@tiptap/extension-text-align`, `dompurify`, `slugify`, `react-helmet-async`
-- `react-helmet-async` para SEO dinâmico (envolver App em `HelmetProvider`)
-- Edge function para sitemap (sem JWT)
-- Adicionar link "Blog" no header público (`SiteHeader`)
+**Secret necessário:** `ENCRYPTION_KEY` (32 bytes base64) — vou solicitar via add_secret.
 
-### Estrutura de arquivos novos
+## 4. Frontend
 
-```
-src/pages/blog/BlogListPage.tsx
-src/pages/blog/BlogPostPage.tsx
-src/pages/admin/blog/AdminBlogListPage.tsx
-src/pages/admin/blog/AdminBlogEditorPage.tsx
-src/pages/admin/blog/AdminBlogCategoriasPage.tsx
-src/pages/admin/blog/AdminBlogTagsPage.tsx
-src/components/blog/PostCard.tsx
-src/components/blog/RichTextEditor.tsx
-src/components/blog/SEOHead.tsx
-src/components/blog/SeoFields.tsx
-src/lib/blog-utils.ts (slugify, reading time, sanitize)
-supabase/functions/sitemap-xml/index.ts
-supabase/migrations/<timestamp>_blog.sql
-```
+Remover: `src/pages/BoletosPage.tsx`, `src/components/modals/BoletoModal.tsx`, `BoletoLoteModal.tsx`, `src/components/financeiro/FinanceiroDashboard.tsx` (será reescrito).
 
-### Confirmação
+Criar em `src/pages/financeiro/`:
+- `FinanceiroDashboardPage.tsx` — KPIs (recebido, pendente, vencido, taxa), gráfico mensal, últimas cobranças, últimos pagamentos.
+- `MensalidadesPage.tsx` — listagem por aluno, filtros (status, turma, mês), gerar mensalidade individual.
+- `CobrancasPage.tsx` — todas invoices com ações: visualizar, copiar Pix, reenviar notificação, cancelar, ver QR.
+- `InadimplenciaPage.tsx` — só vencidos agrupados por aluno/turma com totais.
+- `IntegracaoAsaasPage.tsx` — formulário API key, ambiente, status, botões validar/desconectar/reconectar; mostra `****abcd`.
+- `RelatoriosFinanceirosPage.tsx` — exportar CSV/PDF (recebimentos por período, inadimplência).
 
-Posso iniciar a implementação? Vou começar pela migração do banco (após sua aprovação) e seguir com instalação das libs, edge function de sitemap e telas. Confirma? Alguma preferência sobre o editor (TipTap como proposto está bom)?
+Componentes reutilizáveis: `InvoiceCard`, `PaymentMethodBadge`, `PixQrModal`, `KpiCard`.
+
+Rotas: `/diretor/financeiro/*` e `/admin/financeiro/*`. Atualizar `App.tsx`, sidebar (`sidebar-defaults.ts`, `Sidebar.tsx`).
+
+## 5. Painel Admin Global
+- `/admin/financeiro/escolas` — lista escolas com status integração, última validação, contagem invoices.
+- `/admin/financeiro/webhooks` — logs de webhook (read-only), filtros por escola/evento/erro. **Sem acesso a valores recebidos** além do necessário para diagnóstico.
+
+## 6. Segurança
+- API key descriptografada apenas em memória dentro da edge function.
+- Logs nunca incluem a chave.
+- RLS estrita; admin master usa `has_role('admin')`.
+- Webhook valida token único por escola (HMAC-style header check).
+- Idempotência: unique index em `asaas_webhook_logs(event, (payload->>'payment'->>'id'))`.
+
+## 7. Detalhes técnicos relevantes
+
+- Criptografia: Node Web Crypto (Deno) `crypto.subtle.importKey` + `AES-GCM` 256 bits.
+- IV: 12 bytes random por chave.
+- `ENCRYPTION_KEY` em base64 (44 chars).
+- Recorrência Asaas: usa `/v3/subscriptions`; mensalidades geradas automaticamente pela Asaas e replicadas via webhook.
+- Lembretes/avisos: configurar `notifications` direto no Asaas (eles disparam email/SMS). Não duplicaremos no nosso lado.
+
+## 8. Ordem de execução
+1. Migration (drop boletos + criar novas tabelas/RLS/funções).
+2. Solicitar secret `ENCRYPTION_KEY`.
+3. Criar edge functions + shared service.
+4. Frontend: páginas + rotas + sidebar.
+5. Remover arquivos antigos de boletos.
+6. Atualizar `system-features.ts` e changelog.
+7. QA visual rápido no preview.
+
+## Limitações / pontos de atenção
+- Asaas não permite descobrir `walletId` para split — não usaremos split.
+- Sandbox vs produção: ambiente é por escola; URL base muda (`api.asaas.com` vs `sandbox.asaas.com`).
+- Atualização de status depende do webhook estar entregando — exibiremos botão "Sincronizar" como fallback (`GET /v3/payments?status=...`).
+- Fila/processamento assíncrono pesado **não** será implementado — o webhook é síncrono e idempotente, suficiente até alto volume.
+- Devido ao tamanho, vou implementar em uma única passada; ajustes finos virão por feedback.
