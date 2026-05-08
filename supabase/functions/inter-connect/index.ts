@@ -49,7 +49,17 @@ Deno.serve(async (req) => {
       });
     } catch (e) {
       await deleteCertFromStorage(creche_id);
-      return json({ error: "Falha de conexão mTLS com Banco Inter", details: (e as Error).message }, 400);
+      const msg = (e as Error).message || "";
+      const isUnknownCa = /UnknownCA|unknown ca|bad certificate|certificate required/i.test(msg);
+      return json({
+        error: isUnknownCa
+          ? "Certificado rejeitado pelo Banco Inter (UnknownCA). O Inter não reconhece este certificado como válido."
+          : "Falha de conexão mTLS com Banco Inter",
+        hint: isUnknownCa
+          ? "Baixe o certificado correto em: Internet Banking PJ → Aplicações → [sua app] → Certificado Digital. Use exatamente os arquivos 'Inter API_Cert.crt' e 'Inter API_Key.key' fornecidos pelo Inter (não gere um certificado próprio nem envie o .csr)."
+          : undefined,
+        details: msg,
+      }, 400);
     }
 
     if (!tokenRes.ok) {
