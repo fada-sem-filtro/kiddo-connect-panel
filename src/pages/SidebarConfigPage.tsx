@@ -484,12 +484,16 @@ export function SidebarConfigEditor({ crecheId, perfil, isAdmin = false }: { cre
   return (
     <div className="space-y-4">
       <div className="flex gap-2 justify-end flex-wrap">
-        <Button variant="outline" size="sm" onClick={handleLoadFromDefault} className="rounded-xl gap-2">
-          <Star className="w-4 h-4" /> Carregar Padrão
-        </Button>
-        <Button variant="outline" size="sm" onClick={handleSetAsDefault} className="rounded-xl gap-2 border-primary text-primary hover:bg-primary/10">
-          <Star className="w-4 h-4" /> Definir Padrão
-        </Button>
+        {isAdmin && (
+          <>
+            <Button variant="outline" size="sm" onClick={handleLoadFromDefault} className="rounded-xl gap-2">
+              <Star className="w-4 h-4" /> Carregar Padrão
+            </Button>
+            <Button variant="outline" size="sm" onClick={handleSetAsDefault} className="rounded-xl gap-2 border-primary text-primary hover:bg-primary/10">
+              <Star className="w-4 h-4" /> Definir Padrão
+            </Button>
+          </>
+        )}
         <Button variant="outline" size="sm" onClick={handleReset} className="rounded-xl gap-2">
           <RotateCcw className="w-4 h-4" /> Restaurar Sistema
         </Button>
