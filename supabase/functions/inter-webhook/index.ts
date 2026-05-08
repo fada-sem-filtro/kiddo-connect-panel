@@ -1,5 +1,6 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { corsHeaders, json, serviceClient } from "../_shared/asaas.ts";
+import { auditInter } from "../_shared/inter-audit.ts";
 
 // Banco Inter envia: { codigoSolicitacao, situacao, dataHora, valorTotalRecebido, ... }
 // Public endpoint, sem JWT. Validação por token na URL.
@@ -53,6 +54,7 @@ Deno.serve(async (req) => {
 
       await svc.from("financial_webhook_logs").update({ processed: true })
         .eq("provider", "inter").eq("event", situacao).eq("external_id", externalId);
+      await auditInter(account.creche_id, "webhook", "ok", { payload: { externalId, situacao } });
     }
 
     return json({ ok: true });
