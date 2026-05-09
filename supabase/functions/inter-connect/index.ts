@@ -49,7 +49,7 @@ Deno.serve(async (req) => {
     let tokenRes: Response;
     try {
       // @ts-ignore client option
-      tokenRes = await fetch(`${INTER_BASE_URL}/oauth/v2/token`, {
+      tokenRes = await fetch(`${interBaseUrl(env)}/oauth/v2/token`, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: tokenBody.toString(),
