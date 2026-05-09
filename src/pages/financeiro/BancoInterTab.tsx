@@ -154,8 +154,20 @@ export function BancoInterTab({ crecheId }: Props) {
                   <div>{account.last_validation ? format(new Date(account.last_validation), "dd/MM/yyyy HH:mm", { locale: ptBR }) : "—"}</div>
                 </div>
                 <div>
-                  <Label className="text-xs text-muted-foreground">Certificado</Label>
+                  <Label className="text-xs text-muted-foreground">Certificado mTLS</Label>
                   <div>{account.has_certificate ? "✓ Configurado" : "—"}</div>
+                </div>
+                <div>
+                  <Label className="text-xs text-muted-foreground">Cert. Webhook</Label>
+                  <div>{account.has_webhook_certificate ? "✓ Configurado" : "—"}</div>
+                </div>
+                <div>
+                  <Label className="text-xs text-muted-foreground">Ambiente</Label>
+                  <div>
+                    <Badge variant={account.environment === "sandbox" ? "secondary" : "default"}>
+                      {account.environment === "sandbox" ? "Sandbox" : "Produção"}
+                    </Badge>
+                  </div>
                 </div>
               </div>
 
