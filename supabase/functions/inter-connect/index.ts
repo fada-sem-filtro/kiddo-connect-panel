@@ -3,7 +3,7 @@ import { corsHeaders, json, getAuthUser, ensureFinanceAdmin, serviceClient } fro
 import {
   encryptInterSecret, saveCertToStorage, deleteCertFromStorage,
   pemSanitize, looksLikeCertificate, looksLikePrivateKey,
-  INTER_BASE_URL, INTER_SCOPES,
+  interBaseUrl, INTER_SCOPES, INTER_CERT_BUCKET,
 } from "../_shared/inter.ts";
 
 const PROJECT_ID = Deno.env.get("SUPABASE_URL")!.match(/https:\/\/([^.]+)\./)?.[1];
@@ -16,18 +16,26 @@ Deno.serve(async (req) => {
     if (!auth) return json({ error: "Unauthorized" }, 401);
 
     const body = await req.json();
-    const { creche_id, client_id, client_secret, certificate, private_key, conta_corrente, environment } = body;
+    const { creche_id, client_id, client_secret, certificate, private_key, webhook_certificate, conta_corrente, environment } = body;
 
     if (!creche_id || !client_id || !client_secret || !certificate || !private_key) {
       return json({ error: "Parâmetros obrigatórios ausentes" }, 400);
     }
     if (!(await ensureFinanceAdmin(auth.userId, creche_id))) return json({ error: "Forbidden" }, 403);
 
+    const env = environment === "sandbox" ? "sandbox" : "production";
     const cert = pemSanitize(certificate);
     const key = pemSanitize(private_key);
     if (!looksLikeCertificate(cert)) return json({ error: "Certificado inválido (esperado .crt no formato PEM)" }, 400);
     if (!looksLikePrivateKey(key)) return json({ error: "Chave privada inválida (esperado .key no formato PEM)" }, 400);
     if (cert.length > 100_000 || key.length > 100_000) return json({ error: "Arquivo muito grande (máx 100KB)" }, 400);
+
+    let webhookCertSan: string | null = null;
+    if (webhook_certificate && typeof webhook_certificate === "string" && webhook_certificate.trim()) {
+      webhookCertSan = pemSanitize(webhook_certificate);
+      if (!looksLikeCertificate(webhookCertSan)) return json({ error: "Certificado de webhook inválido (esperado .crt/.cer/.pem no formato PEM)" }, 400);
+      if (webhookCertSan.length > 100_000) return json({ error: "Certificado de webhook muito grande (máx 100KB)" }, 400);
+    }
 
     // Save certs to storage first (needed for mTLS test call)
     const { certPath, keyPath } = await saveCertToStorage(creche_id, cert, key);
@@ -41,7 +49,7 @@ Deno.serve(async (req) => {
     let tokenRes: Response;
     try {
       // @ts-ignore client option
-      tokenRes = await fetch(`${INTER_BASE_URL}/oauth/v2/token`, {
+      tokenRes = await fetch(`${interBaseUrl(env)}/oauth/v2/token`, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: tokenBody.toString(),
@@ -69,15 +77,28 @@ Deno.serve(async (req) => {
     }
     await tokenRes.json();
 
+    // Save webhook auth certificate (optional)
+    let webhookCertPath: string | null = null;
+    if (webhookCertSan) {
+      const svcUp = serviceClient();
+      webhookCertPath = `${creche_id}/webhook.crt`;
+      const up = await svcUp.storage.from(INTER_CERT_BUCKET).upload(
+        webhookCertPath,
+        new Blob([webhookCertSan], { type: "application/x-pem-file" }),
+        { upsert: true, contentType: "application/x-pem-file" },
+      );
+      if (up.error) throw new Error("Falha ao salvar certificado webhook: " + up.error.message);
+    }
+
     // Encrypt secret and persist
     const enc = await encryptInterSecret(client_secret);
     const svc = serviceClient();
 
     const { data: existing } = await svc
-      .from("financial_accounts").select("id, webhook_secret")
+      .from("financial_accounts").select("id, webhook_secret, webhook_certificate_path")
       .eq("creche_id", creche_id).eq("provider", "inter").maybeSingle();
 
-    const payload = {
+    const payload: Record<string, unknown> = {
       creche_id,
       provider: "inter",
       client_id,
@@ -87,12 +108,16 @@ Deno.serve(async (req) => {
       certificate_path: certPath,
       private_key_path: keyPath,
       conta_corrente: conta_corrente || null,
-      environment: environment || "production",
+      environment: env,
       connected: true,
       last_validation: new Date().toISOString(),
+      last_auth_at: new Date().toISOString(),
       last_error: null,
+      last_auth_error: null,
       account_name: "Banco Inter PJ",
     };
+    if (webhookCertPath) payload.webhook_certificate_path = webhookCertPath;
+    else if (existing?.webhook_certificate_path) payload.webhook_certificate_path = existing.webhook_certificate_path;
 
     let accountId: string;
     let webhookSecret: string;

@@ -1004,6 +1004,7 @@ export type Database = {
           private_key_path: string | null
           provider: Database["public"]["Enums"]["financial_provider"]
           updated_at: string
+          webhook_certificate_path: string | null
           webhook_registered_at: string | null
           webhook_secret: string
         }
@@ -1027,6 +1028,7 @@ export type Database = {
           private_key_path?: string | null
           provider: Database["public"]["Enums"]["financial_provider"]
           updated_at?: string
+          webhook_certificate_path?: string | null
           webhook_registered_at?: string | null
           webhook_secret?: string
         }
@@ -1050,6 +1052,7 @@ export type Database = {
           private_key_path?: string | null
           provider?: Database["public"]["Enums"]["financial_provider"]
           updated_at?: string
+          webhook_certificate_path?: string | null
           webhook_registered_at?: string | null
           webhook_secret?: string
         }
@@ -2790,11 +2793,15 @@ export type Database = {
           has_certificate: boolean | null
           has_private_key: boolean | null
           has_secret: boolean | null
+          has_webhook_certificate: boolean | null
           id: string | null
+          last_auth_at: string | null
+          last_auth_error: string | null
           last_error: string | null
           last_validation: string | null
           provider: Database["public"]["Enums"]["financial_provider"] | null
           updated_at: string | null
+          webhook_registered_at: string | null
           webhook_secret: string | null
         }
         Insert: {
@@ -2808,11 +2815,15 @@ export type Database = {
           has_certificate?: never
           has_private_key?: never
           has_secret?: never
+          has_webhook_certificate?: never
           id?: string | null
+          last_auth_at?: string | null
+          last_auth_error?: string | null
           last_error?: string | null
           last_validation?: string | null
           provider?: Database["public"]["Enums"]["financial_provider"] | null
           updated_at?: string | null
+          webhook_registered_at?: string | null
           webhook_secret?: string | null
         }
         Update: {
@@ -2826,11 +2837,15 @@ export type Database = {
           has_certificate?: never
           has_private_key?: never
           has_secret?: never
+          has_webhook_certificate?: never
           id?: string | null
+          last_auth_at?: string | null
+          last_auth_error?: string | null
           last_error?: string | null
           last_validation?: string | null
           provider?: Database["public"]["Enums"]["financial_provider"] | null
           updated_at?: string | null
+          webhook_registered_at?: string | null
           webhook_secret?: string | null
         }
         Relationships: [

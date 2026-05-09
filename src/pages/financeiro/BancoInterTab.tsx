@@ -7,7 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { Building2, CheckCircle2, Loader2, Unplug, Copy, RefreshCw, ShieldAlert } from "lucide-react";
+import { Building2, CheckCircle2, Loader2, Unplug, Copy, RefreshCw, ShieldAlert, ShieldCheck } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { format } from "date-fns";
@@ -27,6 +28,12 @@ export function BancoInterTab({ crecheId }: Props) {
   const [contaCorrente, setContaCorrente] = useState("");
   const [certText, setCertText] = useState("");
   const [keyText, setKeyText] = useState("");
+  const [webhookCertText, setWebhookCertText] = useState("");
+  const [environment, setEnvironment] = useState<"sandbox" | "production">("production");
+
+  const baseUrl = environment === "sandbox"
+    ? "https://cdpj-sandbox.partners.uatinter.co"
+    : "https://cdpj.partners.bancointer.com.br";
 
   const load = async () => {
     if (!crecheId) return;
@@ -64,13 +71,14 @@ export function BancoInterTab({ crecheId }: Props) {
           conta_corrente: contaCorrente.trim() || null,
           certificate: certText,
           private_key: keyText,
-          environment: "production",
+          webhook_certificate: webhookCertText || null,
+          environment,
         },
       });
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).error);
-      toast({ title: "Banco Inter conectado!", description: "Webhook configurado automaticamente." });
-      setClientSecret(""); setCertText(""); setKeyText("");
+      toast({ title: "Banco Inter conectado!", description: `Ambiente: ${environment === "sandbox" ? "Sandbox (homologação)" : "Produção"}` });
+      setClientSecret(""); setCertText(""); setKeyText(""); setWebhookCertText("");
       await load();
     } catch (e: any) {
       toast({ title: "Falha ao conectar", description: e.message, variant: "destructive" });
@@ -146,8 +154,20 @@ export function BancoInterTab({ crecheId }: Props) {
                   <div>{account.last_validation ? format(new Date(account.last_validation), "dd/MM/yyyy HH:mm", { locale: ptBR }) : "—"}</div>
                 </div>
                 <div>
-                  <Label className="text-xs text-muted-foreground">Certificado</Label>
+                  <Label className="text-xs text-muted-foreground">Certificado mTLS</Label>
                   <div>{account.has_certificate ? "✓ Configurado" : "—"}</div>
+                </div>
+                <div>
+                  <Label className="text-xs text-muted-foreground">Cert. Webhook</Label>
+                  <div>{account.has_webhook_certificate ? "✓ Configurado" : "—"}</div>
+                </div>
+                <div>
+                  <Label className="text-xs text-muted-foreground">Ambiente</Label>
+                  <div>
+                    <Badge variant={account.environment === "sandbox" ? "secondary" : "default"}>
+                      {account.environment === "sandbox" ? "Sandbox" : "Produção"}
+                    </Badge>
+                  </div>
                 </div>
               </div>
 
@@ -184,6 +204,19 @@ export function BancoInterTab({ crecheId }: Props) {
                 Crie uma aplicação em <a className="text-primary underline" target="_blank" rel="noreferrer" href="https://developers.inter.co/docs/introducao/como-criar-uma-aplicacao">developers.inter.co</a>,
                 gere o certificado mTLS e cole/envie os arquivos abaixo.
               </p>
+
+              <div>
+                <Label>Ambiente *</Label>
+                <Select value={environment} onValueChange={(v) => setEnvironment(v as "sandbox" | "production")}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="sandbox">Sandbox (homologação)</SelectItem>
+                    <SelectItem value="production">Produção (operações reais)</SelectItem>
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-muted-foreground mt-1 font-mono">{baseUrl}</p>
+              </div>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div>
                   <Label>Client ID *</Label>
@@ -198,7 +231,7 @@ export function BancoInterTab({ crecheId }: Props) {
                   <Input value={contaCorrente} onChange={e => setContaCorrente(e.target.value)} placeholder="0000000000" />
                 </div>
                 <div>
-                  <Label>Certificado (.crt) *</Label>
+                  <Label>Certificado mTLS (.crt) *</Label>
                   <Input type="file" accept=".crt,.pem,.cer" onChange={e => handleFile(e.target.files?.[0], setCertText)} />
                   {certText && <p className="text-xs text-green-600 mt-1">✓ Certificado carregado ({certText.length} bytes)</p>}
                 </div>
@@ -206,6 +239,17 @@ export function BancoInterTab({ crecheId }: Props) {
                   <Label>Chave privada (.key) *</Label>
                   <Input type="file" accept=".key,.pem" onChange={e => handleFile(e.target.files?.[0], setKeyText)} />
                   {keyText && <p className="text-xs text-green-600 mt-1">✓ Chave carregada ({keyText.length} bytes)</p>}
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="flex items-center gap-2">
+                    <ShieldCheck className="w-4 h-4 text-primary" />
+                    Certificado Webhook / Autenticação (opcional)
+                  </Label>
+                  <Input type="file" accept=".crt,.cer,.pem" onChange={e => handleFile(e.target.files?.[0], setWebhookCertText)} />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Utilizado para validar a autenticidade dos webhooks e comunicações oficiais do Banco Inter.
+                  </p>
+                  {webhookCertText && <p className="text-xs text-green-600 mt-1">✓ Certificado webhook carregado ({webhookCertText.length} bytes)</p>}
                 </div>
               </div>
               <details className="text-xs">
