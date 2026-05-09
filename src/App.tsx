@@ -63,6 +63,7 @@ import AdminBlogListPage from "./pages/admin/blog/AdminBlogListPage";
 import AdminBlogEditorPage from "./pages/admin/blog/AdminBlogEditorPage";
 import AdminBlogCategoriasPage from "./pages/admin/blog/AdminBlogCategoriasPage";
 import AdminBlogTagsPage from "./pages/admin/blog/AdminBlogTagsPage";
+import SaasFinanceiroPage from "./pages/admin/SaasFinanceiroPage";
 
 const queryClient = new QueryClient();
 
@@ -85,6 +86,7 @@ const App = () => (
               <Route path="/admin/blog/categorias" element={<ProtectedRoute allowedRoles={['admin']}><AdminBlogCategoriasPage /></ProtectedRoute>} />
               <Route path="/admin/blog/tags" element={<ProtectedRoute allowedRoles={['admin']}><AdminBlogTagsPage /></ProtectedRoute>} />
               <Route path="/admin/blog/:id" element={<ProtectedRoute allowedRoles={['admin']}><AdminBlogEditorPage /></ProtectedRoute>} />
+              <Route path="/admin/financeiro-saas" element={<ProtectedRoute allowedRoles={['admin']}><SaasFinanceiroPage /></ProtectedRoute>} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/reset-password" element={<ResetPasswordPage />} />
               <Route path="/agenda" element={<ProtectedRoute><Index /></ProtectedRoute>} />
