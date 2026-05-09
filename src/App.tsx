@@ -63,6 +63,7 @@ import AdminBlogListPage from "./pages/admin/blog/AdminBlogListPage";
 import AdminBlogEditorPage from "./pages/admin/blog/AdminBlogEditorPage";
 import AdminBlogCategoriasPage from "./pages/admin/blog/AdminBlogCategoriasPage";
 import AdminBlogTagsPage from "./pages/admin/blog/AdminBlogTagsPage";
+import SaasFinanceiroPage from "./pages/admin/SaasFinanceiroPage";
 
 const queryClient = new QueryClient();
 
