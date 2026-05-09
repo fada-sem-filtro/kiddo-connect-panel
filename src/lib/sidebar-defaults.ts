@@ -96,6 +96,7 @@ export const AVAILABLE_ITEMS_BY_ROLE: Record<string, { key: string; defaultLabel
     { key: 'configuracoes', defaultLabel: 'Minhas Configurações', route: '/admin/configuracoes' },
     { key: 'auditoria_fotos', defaultLabel: 'Auditoria de Fotos', route: '/admin/auditoria-fotos' },
     { key: 'financeiro', defaultLabel: 'Financeiro', route: '/admin/financeiro' },
+    { key: 'financeiro_saas', defaultLabel: 'Cobrança Escolas (SaaS)', route: '/admin/financeiro-saas' },
     { key: 'eventos_resp', defaultLabel: 'Meus Eventos', route: '/responsavel/eventos' },
     { key: 'calendario_resp', defaultLabel: 'Calendário Escolar', route: '/responsavel/calendario' },
     { key: 'blog', defaultLabel: 'Blog', route: '/admin/blog' },
