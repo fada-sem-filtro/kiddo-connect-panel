@@ -16,18 +16,26 @@ Deno.serve(async (req) => {
     if (!auth) return json({ error: "Unauthorized" }, 401);
 
     const body = await req.json();
-    const { creche_id, client_id, client_secret, certificate, private_key, conta_corrente, environment } = body;
+    const { creche_id, client_id, client_secret, certificate, private_key, webhook_certificate, conta_corrente, environment } = body;
 
     if (!creche_id || !client_id || !client_secret || !certificate || !private_key) {
       return json({ error: "Parâmetros obrigatórios ausentes" }, 400);
     }
     if (!(await ensureFinanceAdmin(auth.userId, creche_id))) return json({ error: "Forbidden" }, 403);
 
+    const env = environment === "sandbox" ? "sandbox" : "production";
     const cert = pemSanitize(certificate);
     const key = pemSanitize(private_key);
     if (!looksLikeCertificate(cert)) return json({ error: "Certificado inválido (esperado .crt no formato PEM)" }, 400);
     if (!looksLikePrivateKey(key)) return json({ error: "Chave privada inválida (esperado .key no formato PEM)" }, 400);
     if (cert.length > 100_000 || key.length > 100_000) return json({ error: "Arquivo muito grande (máx 100KB)" }, 400);
+
+    let webhookCertSan: string | null = null;
+    if (webhook_certificate && typeof webhook_certificate === "string" && webhook_certificate.trim()) {
+      webhookCertSan = pemSanitize(webhook_certificate);
+      if (!looksLikeCertificate(webhookCertSan)) return json({ error: "Certificado de webhook inválido (esperado .crt/.cer/.pem no formato PEM)" }, 400);
+      if (webhookCertSan.length > 100_000) return json({ error: "Certificado de webhook muito grande (máx 100KB)" }, 400);
+    }
 
     // Save certs to storage first (needed for mTLS test call)
     const { certPath, keyPath } = await saveCertToStorage(creche_id, cert, key);
