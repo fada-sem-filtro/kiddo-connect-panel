@@ -204,6 +204,19 @@ export function BancoInterTab({ crecheId }: Props) {
                 Crie uma aplicação em <a className="text-primary underline" target="_blank" rel="noreferrer" href="https://developers.inter.co/docs/introducao/como-criar-uma-aplicacao">developers.inter.co</a>,
                 gere o certificado mTLS e cole/envie os arquivos abaixo.
               </p>
+
+              <div>
+                <Label>Ambiente *</Label>
+                <Select value={environment} onValueChange={(v) => setEnvironment(v as "sandbox" | "production")}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="sandbox">Sandbox (homologação)</SelectItem>
+                    <SelectItem value="production">Produção (operações reais)</SelectItem>
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-muted-foreground mt-1 font-mono">{baseUrl}</p>
+              </div>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div>
                   <Label>Client ID *</Label>
@@ -218,7 +231,7 @@ export function BancoInterTab({ crecheId }: Props) {
                   <Input value={contaCorrente} onChange={e => setContaCorrente(e.target.value)} placeholder="0000000000" />
                 </div>
                 <div>
-                  <Label>Certificado (.crt) *</Label>
+                  <Label>Certificado mTLS (.crt) *</Label>
                   <Input type="file" accept=".crt,.pem,.cer" onChange={e => handleFile(e.target.files?.[0], setCertText)} />
                   {certText && <p className="text-xs text-green-600 mt-1">✓ Certificado carregado ({certText.length} bytes)</p>}
                 </div>
@@ -226,6 +239,17 @@ export function BancoInterTab({ crecheId }: Props) {
                   <Label>Chave privada (.key) *</Label>
                   <Input type="file" accept=".key,.pem" onChange={e => handleFile(e.target.files?.[0], setKeyText)} />
                   {keyText && <p className="text-xs text-green-600 mt-1">✓ Chave carregada ({keyText.length} bytes)</p>}
+                </div>
+                <div className="md:col-span-2">
+                  <Label className="flex items-center gap-2">
+                    <ShieldCheck className="w-4 h-4 text-primary" />
+                    Certificado Webhook / Autenticação (opcional)
+                  </Label>
+                  <Input type="file" accept=".crt,.cer,.pem" onChange={e => handleFile(e.target.files?.[0], setWebhookCertText)} />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Utilizado para validar a autenticidade dos webhooks e comunicações oficiais do Banco Inter.
+                  </p>
+                  {webhookCertText && <p className="text-xs text-green-600 mt-1">✓ Certificado webhook carregado ({webhookCertText.length} bytes)</p>}
                 </div>
               </div>
               <details className="text-xs">
