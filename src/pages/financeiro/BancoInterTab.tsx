@@ -71,13 +71,14 @@ export function BancoInterTab({ crecheId }: Props) {
           conta_corrente: contaCorrente.trim() || null,
           certificate: certText,
           private_key: keyText,
-          environment: "production",
+          webhook_certificate: webhookCertText || null,
+          environment,
         },
       });
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).error);
-      toast({ title: "Banco Inter conectado!", description: "Webhook configurado automaticamente." });
-      setClientSecret(""); setCertText(""); setKeyText("");
+      toast({ title: "Banco Inter conectado!", description: `Ambiente: ${environment === "sandbox" ? "Sandbox (homologação)" : "Produção"}` });
+      setClientSecret(""); setCertText(""); setKeyText(""); setWebhookCertText("");
       await load();
     } catch (e: any) {
       toast({ title: "Falha ao conectar", description: e.message, variant: "destructive" });
