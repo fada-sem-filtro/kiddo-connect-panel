@@ -28,6 +28,12 @@ export function BancoInterTab({ crecheId }: Props) {
   const [contaCorrente, setContaCorrente] = useState("");
   const [certText, setCertText] = useState("");
   const [keyText, setKeyText] = useState("");
+  const [webhookCertText, setWebhookCertText] = useState("");
+  const [environment, setEnvironment] = useState<"sandbox" | "production">("production");
+
+  const baseUrl = environment === "sandbox"
+    ? "https://cdpj-sandbox.partners.uatinter.co"
+    : "https://cdpj.partners.bancointer.com.br";
 
   const load = async () => {
     if (!crecheId) return;
