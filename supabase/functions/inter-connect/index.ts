@@ -3,7 +3,7 @@ import { corsHeaders, json, getAuthUser, ensureFinanceAdmin, serviceClient } fro
 import {
   encryptInterSecret, saveCertToStorage, deleteCertFromStorage,
   pemSanitize, looksLikeCertificate, looksLikePrivateKey,
-  INTER_BASE_URL, INTER_SCOPES,
+  interBaseUrl, INTER_SCOPES, INTER_CERT_BUCKET,
 } from "../_shared/inter.ts";
 
 const PROJECT_ID = Deno.env.get("SUPABASE_URL")!.match(/https:\/\/([^.]+)\./)?.[1];
