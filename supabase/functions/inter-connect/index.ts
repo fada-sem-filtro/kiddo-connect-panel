@@ -77,15 +77,28 @@ Deno.serve(async (req) => {
     }
     await tokenRes.json();
 
+    // Save webhook auth certificate (optional)
+    let webhookCertPath: string | null = null;
+    if (webhookCertSan) {
+      const svcUp = serviceClient();
+      webhookCertPath = `${creche_id}/webhook.crt`;
+      const up = await svcUp.storage.from(INTER_CERT_BUCKET).upload(
+        webhookCertPath,
+        new Blob([webhookCertSan], { type: "application/x-pem-file" }),
+        { upsert: true, contentType: "application/x-pem-file" },
+      );
+      if (up.error) throw new Error("Falha ao salvar certificado webhook: " + up.error.message);
+    }
+
     // Encrypt secret and persist
     const enc = await encryptInterSecret(client_secret);
     const svc = serviceClient();
 
     const { data: existing } = await svc
-      .from("financial_accounts").select("id, webhook_secret")
+      .from("financial_accounts").select("id, webhook_secret, webhook_certificate_path")
       .eq("creche_id", creche_id).eq("provider", "inter").maybeSingle();
 
-    const payload = {
+    const payload: Record<string, unknown> = {
       creche_id,
       provider: "inter",
       client_id,
@@ -95,12 +108,16 @@ Deno.serve(async (req) => {
       certificate_path: certPath,
       private_key_path: keyPath,
       conta_corrente: conta_corrente || null,
-      environment: environment || "production",
+      environment: env,
       connected: true,
       last_validation: new Date().toISOString(),
+      last_auth_at: new Date().toISOString(),
       last_error: null,
+      last_auth_error: null,
       account_name: "Banco Inter PJ",
     };
+    if (webhookCertPath) payload.webhook_certificate_path = webhookCertPath;
+    else if (existing?.webhook_certificate_path) payload.webhook_certificate_path = existing.webhook_certificate_path;
 
     let accountId: string;
     let webhookSecret: string;
