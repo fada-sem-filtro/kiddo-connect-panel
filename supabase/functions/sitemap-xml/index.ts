@@ -8,22 +8,31 @@ Deno.serve(async () => {
     Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
   );
 
-  const { data: posts } = await supabase
-    .from('blog_posts')
-    .select('slug, updated_at, published_at')
-    .eq('status', 'publicado')
-    .order('published_at', { ascending: false });
+  const [{ data: posts }, { data: cats }] = await Promise.all([
+    supabase
+      .from('blog_posts')
+      .select('slug, updated_at, published_at')
+      .eq('status', 'publicado')
+      .order('published_at', { ascending: false }),
+    supabase
+      .from('blog_categorias')
+      .select('slug, updated_at')
+      .order('nome'),
+  ]);
 
   const staticUrls = [
     { loc: `${SITE}/`, priority: '1.0', changefreq: 'monthly' },
     { loc: `${SITE}/conheca`, priority: '0.9', changefreq: 'monthly' },
     { loc: `${SITE}/sobre`, priority: '0.8', changefreq: 'monthly' },
     { loc: `${SITE}/blog`, priority: '0.9', changefreq: 'weekly' },
-    { loc: `${SITE}/login`, priority: '0.5', changefreq: 'yearly' },
   ];
 
   const urls = [
     ...staticUrls.map(u => `<url><loc>${u.loc}</loc><changefreq>${u.changefreq}</changefreq><priority>${u.priority}</priority></url>`),
+    ...(cats || []).map((c: any) => {
+      const lastmod = (c.updated_at || '').slice(0, 10);
+      return `<url><loc>${SITE}/blog/categoria/${c.slug}</loc>${lastmod ? `<lastmod>${lastmod}</lastmod>` : ''}<changefreq>weekly</changefreq><priority>0.7</priority></url>`;
+    }),
     ...(posts || []).map((p: any) => {
       const lastmod = (p.updated_at || p.published_at || '').slice(0, 10);
       return `<url><loc>${SITE}/blog/${p.slug}</loc><lastmod>${lastmod}</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>`;

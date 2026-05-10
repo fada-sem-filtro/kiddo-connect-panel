@@ -1,4 +1,13 @@
 User-agent: *
 Allow: /
+Allow: /blog
+Allow: /blog/*
+
+Disallow: /admin
+Disallow: /admin/
+Disallow: /dashboard
+Disallow: /login
+Disallow: /reset-password
+Disallow: /api
 
 Sitemap: https://takzcbagxjydlkzenprr.supabase.co/functions/v1/sitemap-xml

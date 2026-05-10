@@ -10,7 +10,8 @@ interface SEOHeadProps {
   modifiedTime?: string;
   author?: string;
   keywords?: string[];
-  jsonLd?: Record<string, any>;
+  jsonLd?: Record<string, any> | Record<string, any>[];
+  rssUrl?: string;
 }
 
 const SITE_URL = 'https://agendafleur.app';
@@ -26,11 +27,14 @@ export function SEOHead({
   author,
   keywords,
   jsonLd,
+  rssUrl,
 }: SEOHeadProps) {
   const fullTitle = title.length > 60 ? title.slice(0, 57) + '…' : title;
   const fullDesc = description ? (description.length > 160 ? description.slice(0, 157) + '…' : description) : undefined;
   const url = canonical?.startsWith('http') ? canonical : `${SITE_URL}${canonical || ''}`;
   const img = image || `${SITE_URL}/icon-512.png`;
+
+  const jsonLdArray = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
 
   return (
     <Helmet>
@@ -38,6 +42,7 @@ export function SEOHead({
       {fullDesc && <meta name="description" content={fullDesc} />}
       {keywords && keywords.length > 0 && <meta name="keywords" content={keywords.filter(Boolean).join(', ')} />}
       <link rel="canonical" href={url} />
+      {rssUrl && <link rel="alternate" type="application/rss+xml" title="Agenda Fleur — Blog" href={rssUrl} />}
 
       {/* Open Graph */}
       <meta property="og:type" content={type} />
@@ -57,9 +62,9 @@ export function SEOHead({
       {fullDesc && <meta name="twitter:description" content={fullDesc} />}
       <meta name="twitter:image" content={img} />
 
-      {jsonLd && (
-        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
-      )}
+      {jsonLdArray.map((obj, i) => (
+        <script key={i} type="application/ld+json">{JSON.stringify(obj)}</script>
+      ))}
     </Helmet>
   );
 }

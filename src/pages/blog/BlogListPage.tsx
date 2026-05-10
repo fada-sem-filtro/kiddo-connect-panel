@@ -34,14 +34,29 @@ export default function BlogListPage() {
 
   const filtered = activeCat ? posts.filter((p) => p.categoria_id === activeCat) : posts;
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Blog",
-    name: "Blog Agenda Fleur",
-    description: "Conteúdo sobre agenda escolar digital, gestão escolar e educação infantil",
-    url: "https://agendafleur.app/blog",
-    publisher: { "@type": "Organization", name: "Agenda Fleur" },
-  };
+  const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string;
+  const rssUrl = `${SUPABASE_URL}/functions/v1/rss-xml`;
+
+  const jsonLd = [
+    {
+      "@context": "https://schema.org",
+      "@type": "Blog",
+      name: "Blog Agenda Fleur",
+      description: "Conteúdo sobre agenda escolar digital, gestão escolar e educação infantil",
+      url: "https://agendafleur.app/blog",
+      publisher: { "@type": "Organization", name: "Agenda Fleur" },
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      itemListElement: posts.slice(0, 20).map((p, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        url: `https://agendafleur.app/blog/${p.slug}`,
+        name: p.titulo,
+      })),
+    },
+  ];
 
   return (
     <div className="min-h-screen bg-background">
@@ -56,6 +71,7 @@ export default function BlogListPage() {
           "comunicação escola família",
         ]}
         jsonLd={jsonLd}
+        rssUrl={rssUrl}
       />
       <SiteHeader />
 

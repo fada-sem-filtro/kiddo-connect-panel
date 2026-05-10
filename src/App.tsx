@@ -59,6 +59,7 @@ import ChangelogPage from "./pages/ChangelogPage";
 import NotFound from "./pages/NotFound";
 import BlogListPage from "./pages/blog/BlogListPage";
 import BlogPostPage from "./pages/blog/BlogPostPage";
+import BlogCategoriaPage from "./pages/blog/BlogCategoriaPage";
 import AdminBlogListPage from "./pages/admin/blog/AdminBlogListPage";
 import AdminBlogEditorPage from "./pages/admin/blog/AdminBlogEditorPage";
 import AdminBlogCategoriasPage from "./pages/admin/blog/AdminBlogCategoriasPage";
@@ -81,6 +82,7 @@ const App = () => (
               <Route path="/sobre" element={<SobrePage />} />
               <Route path="/changelog" element={<ChangelogPage />} />
               <Route path="/blog" element={<BlogListPage />} />
+              <Route path="/blog/categoria/:slug" element={<BlogCategoriaPage />} />
               <Route path="/blog/:slug" element={<BlogPostPage />} />
               <Route path="/admin/blog" element={<ProtectedRoute allowedRoles={['admin']}><AdminBlogListPage /></ProtectedRoute>} />
               <Route path="/admin/blog/categorias" element={<ProtectedRoute allowedRoles={['admin']}><AdminBlogCategoriasPage /></ProtectedRoute>} />
