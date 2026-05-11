@@ -53,6 +53,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import logoFleur from "@/assets/logo-fleur-2.webp";
 import { SYSTEM_FEATURES as features } from "@/lib/system-features";
+import { PublicFooterMeta } from "@/components/consent/PublicFooterMeta";
 
 /* ── Reusable animated wrapper ── */
 function AnimSection({
@@ -716,6 +717,7 @@ export default function LandingPage() {
             </Link>
           </div>
         </div>
+        <div className="max-w-4xl mx-auto"><PublicFooterMeta /></div>
       </footer>
     </div>
   );

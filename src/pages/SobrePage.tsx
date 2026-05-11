@@ -5,6 +5,7 @@ import { motion, useInView } from "framer-motion";
 import { ArrowRight, Star, Mail, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SYSTEM_FEATURES } from "@/lib/system-features";
+import { PublicFooterMeta } from "@/components/consent/PublicFooterMeta";
 
 /* ── Animated section wrapper ── */
 function AnimSection({
@@ -294,6 +295,7 @@ export default function SobrePage() {
             </Link>
           </div>
         </div>
+        <div className="max-w-4xl mx-auto"><PublicFooterMeta /></div>
       </footer>
     </div>
   );

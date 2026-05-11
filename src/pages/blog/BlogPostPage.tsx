@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { buildBreadcrumbJsonLd, extractFaqJsonLd } from "@/lib/blog-utils";
 import NotFound from "@/pages/NotFound";
+import { PublicFooterMeta } from "@/components/consent/PublicFooterMeta";
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string;
 
@@ -217,6 +218,7 @@ export default function BlogPostPage() {
             <Link to="/login" className="text-muted-foreground hover:text-primary transition-colors">Entrar</Link>
           </div>
         </div>
+        <div className="max-w-4xl mx-auto"><PublicFooterMeta /></div>
       </footer>
     </div>
   );

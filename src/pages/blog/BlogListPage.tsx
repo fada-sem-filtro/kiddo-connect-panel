@@ -5,6 +5,7 @@ import { SEOHead } from "@/components/blog/SEOHead";
 import { PostCard } from "@/components/blog/PostCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "react-router-dom";
+import { PublicFooterMeta } from "@/components/consent/PublicFooterMeta";
 
 export default function BlogListPage() {
   const [posts, setPosts] = useState<any[]>([]);
@@ -168,6 +169,7 @@ export default function BlogListPage() {
             </Link>
           </div>
         </div>
+        <div className="max-w-4xl mx-auto"><PublicFooterMeta /></div>
       </footer>
     </div>
   );
