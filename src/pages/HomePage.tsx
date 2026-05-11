@@ -368,6 +368,14 @@ export default function HomePage() {
           <div className="space-y-4">
             {[
               {
+                version: "2.6.4",
+                date: "Maio 2026",
+                title: "PWA com auto-update, LGPD e revisão das páginas públicas",
+                items: [
+                  "Novas páginas públicas: Política de Privacidade e Política de Cookies, em conformidade com a LGPD.",
+                ],
+              },
+              {
                 version: "2.6.3",
                 date: "Maio 2026",
                 title: "Blog avançado, site público unificado e suporte aprimorado",
@@ -388,18 +396,6 @@ export default function HomePage() {
                   "Uploads de anexos restritos à pasta do próprio usuário no bucket de recados.",
                   "Realtime com escopo por identidade, escola, turma e aluno.",
                   "Função de envio de orçamentos endurecida com validação adicional contra abuso.",
-                ],
-              },
-              {
-                version: "2.6",
-                date: "Abril 2026",
-                title: "Auditoria dos dados, política LGPD e segurança reforçada",
-                items: [
-                  "Tela de auditoria (admin) registrando visualização, envio, alteração e remoção de fotos de autorizados.",
-                  "Fotos de autorizados agora servidas apenas via URL temporária assinada (24h) — bucket privado.",
-                  "RLS reforçado em eventos futuros: cada escola só vê os próprios eventos.",
-                  "Edge function de envio de orçamento agora exige autenticação de admin.",
-                  "Educadores agora abrem direto no painel do educador ao acessar o sistema.",
                 ],
               },
             ].map((v, i) => (
@@ -508,7 +504,9 @@ export default function HomePage() {
             </Link>
           </div>
         </div>
-        <div className="max-w-4xl mx-auto"><PublicFooterMeta /></div>
+        <div className="max-w-4xl mx-auto">
+          <PublicFooterMeta />
+        </div>
       </footer>
 
       {/* ─── MODALS ─── */}

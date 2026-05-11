@@ -26,13 +26,27 @@ const CHANGELOG: ChangelogEntry[] = [
     date: "Maio 2026",
     title: "PWA com auto-update, LGPD e revisão das páginas públicas",
     highlights: [
-      { type: "feature", text: "Service Worker profissional com versionamento, limpeza automática de caches antigos e atualização silenciosa para a versão mais recente." },
-      { type: "feature", text: "Modal elegante de 'Nova versão disponível' que aplica a atualização com um único clique, sem precisar limpar cache." },
-      { type: "feature", text: "Sistema completo de consentimento LGPD: banner, central de preferências granulares (Necessários, Funcionais, Analytics, Marketing, Personalização) e botão fixo de 'Preferências de Privacidade'." },
-      { type: "feature", text: "Novas páginas públicas: Política de Privacidade e Política de Cookies, em conformidade com a LGPD." },
-      { type: "improvement", text: "Versão 2.6.4 sincronizada em footer público, painel administrativo, manifest, meta tags e logs internos." },
-      { type: "improvement", text: "Estratégias de cache otimizadas: NetworkFirst para HTML, StaleWhileRevalidate para JS/CSS, CacheFirst para imagens e fontes; APIs nunca são cacheadas." },
-      { type: "security", text: "Scripts de analytics, marketing e personalização só são carregados após consentimento explícito do usuário." },
+      {
+        type: "feature",
+        text: "Service Worker profissional com versionamento, limpeza automática de caches antigos e atualização silenciosa para a versão mais recente.",
+      },
+      {
+        type: "feature",
+        text: "Sistema completo de consentimento LGPD: banner, central de preferências granulares e botão fixo de 'Preferências de Privacidade'.",
+      },
+      {
+        type: "feature",
+        text: "Novas páginas públicas: Política de Privacidade e Política de Cookies, em conformidade com a LGPD.",
+      },
+      {
+        type: "improvement",
+        text: "Versão 2.6.4 sincronizada em footer público, painel administrativo, manifest, meta tags e logs internos.",
+      },
+      { type: "improvement", text: "Estratégias de cache otimizadas." },
+      {
+        type: "security",
+        text: "Scripts de analytics, marketing e personalização só são carregados após consentimento explícito do usuário.",
+      },
     ],
   },
   {
@@ -253,7 +267,9 @@ export default function ChangelogPage() {
               Novidades
             </Link>
             <button
-              onClick={() => { window.location.href = "/?orcamento=1"; }}
+              onClick={() => {
+                window.location.href = "/?orcamento=1";
+              }}
               className="text-muted-foreground hover:text-primary transition-colors"
             >
               Solicitar orçamento
