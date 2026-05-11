@@ -152,7 +152,7 @@ export default function HomePage() {
   const [orcamentoOpen, setOrcamentoOpen] = useState(false);
 
   useEffect(() => {
-    document.title = "Agenda Escolar Digital | Agenda Fleur — A agenda que custa menos que papel";
+    document.title = "Agenda Fleur — Aproximando Escolas e Famílias";
     const meta = document.querySelector('meta[name="description"]');
     if (meta) {
       meta.setAttribute(
