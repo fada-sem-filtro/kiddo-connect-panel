@@ -35,16 +35,32 @@ export function ChangePasswordModal({ open, onSuccess }: ChangePasswordModalProp
 
     setIsLoading(true);
 
-    const { error } = await supabase.auth.updateUser({
-      password,
+    const { error: pwdError } = await supabase.auth.updateUser({ password });
+
+    if (pwdError) {
+      setIsLoading(false);
+      const msg = pwdError.message || '';
+      if (/different from the old password|same.*password/i.test(msg)) {
+        toast.error('A nova senha deve ser diferente da senha atual.');
+      } else if (/should be at least|at least \d+ characters/i.test(msg)) {
+        toast.error('A senha não atende aos requisitos mínimos.');
+      } else if (/weak|pwned|compromised/i.test(msg)) {
+        toast.error('Esta senha é muito comum. Escolha uma senha mais forte.');
+      } else {
+        toast.error(`Erro ao alterar senha: ${msg}`);
+      }
+      return;
+    }
+
+    // Atualiza metadata separadamente para não falhar a troca de senha
+    const { error: metaError } = await supabase.auth.updateUser({
       data: { must_change_password: false },
     });
 
     setIsLoading(false);
 
-    if (error) {
-      toast.error('Erro ao alterar senha');
-      return;
+    if (metaError) {
+      console.error('Erro ao atualizar metadata:', metaError);
     }
 
     toast.success('Senha alterada com sucesso! 🌸');
