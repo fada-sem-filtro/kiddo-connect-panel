@@ -70,31 +70,6 @@ export default function SobrePage() {
         </AnimSection>
       </section>
 
-      {/* INTRODUÇÃO */}
-      <section className="py-16 md:py-20 px-4">
-        <AnimSection className="max-w-3xl mx-auto space-y-6">
-          <article className="prose prose-lg max-w-none text-foreground/90 space-y-4">
-            <p>
-              A Agenda Fleur é uma plataforma de agenda escolar digital desenvolvida para aproximar escolas, creches e
-              famílias através de uma comunicação mais prática, organizada e acolhedora.
-            </p>
-            <p>
-              Com a plataforma, educadores conseguem compartilhar informações importantes da rotina da criança, como
-              alimentação, sono, atividades pedagógicas, fotos, recados e acompanhamentos do dia a dia de forma simples
-              e rápida.
-            </p>
-            <p>
-              Tudo fica centralizado em um único ambiente digital, acessível pelo celular, tablet ou computador,
-              facilitando o acompanhamento das famílias em tempo real.
-            </p>
-            <p>
-              A Agenda Fleur moderniza a tradicional agenda de papel, tornando a comunicação escolar mais eficiente,
-              segura e conectada à rotina das famílias e da escola.
-            </p>
-          </article>
-        </AnimSection>
-      </section>
-
       {/* COMO SURGIU */}
       <section className="py-16 md:py-20 px-4 bg-muted/40">
         <AnimSection className="max-w-3xl mx-auto space-y-6">
