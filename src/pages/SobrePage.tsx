@@ -128,28 +128,28 @@ export default function SobrePage() {
       {/* MISSÃO, VISÃO E VALORES */}
       <section className="py-16 md:py-20 px-4 bg-muted/40">
         <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-8">
-          <AnimSection className="bg-card rounded-2xl border border-border p-8 shadow-sm space-y-4">
+          <AnimSection className="bg-card rounded-3xl border border-border p-8 shadow-sm space-y-4">
             <h2 className="text-2xl md:text-3xl font-bold text-foreground">Nossa missão</h2>
             <p className="text-foreground/90 leading-relaxed">
-              Criar tecnologia simples e acessível que ajude escolas e creches a fortalecer a comunicação com as
-              famílias e registrar o desenvolvimento das crianças de forma organizada, segura e eficiente.
+              Ajudar instituições de ensino a oferecerem uma experiência mais organizada, próxima e eficiente no dia a
+              dia escolar, fortalecendo vínculos, aproximando responsáveis da rotina das crianças e tornando a
+              comunicação mais leve, prática e segura para todos.
             </p>
           </AnimSection>
-          <AnimSection delay={0.15} className="bg-card rounded-2xl border border-border p-8 shadow-sm space-y-4">
+          <AnimSection className="bg-card rounded-3xl border border-border p-8 shadow-sm space-y-4">
             <h2 className="text-2xl md:text-3xl font-bold text-foreground">Nossa visão</h2>
             <p className="text-foreground/90 leading-relaxed">
-              Ser uma das principais plataformas de <strong>agenda escolar digital</strong> do Brasil, ajudando escolas
-              a modernizar sua comunicação e melhorar a experiência de alunos, responsáveis e educadores.
+              Ser referência em comunicação escolar digital, conectando escolas e famílias de forma mais humana, moderna
+              e eficiente. Queremos transformar a rotina da educação infantil através da tecnologia, ajudando
+              instituições de ensino a criarem relações mais próximas, organizadas e participativas com as famílias.
             </p>
           </AnimSection>
-          <AnimSection delay={0.15} className="bg-card rounded-2xl border border-border p-8 shadow-sm space-y-4">
+          <AnimSection className="bg-card rounded-3xl border border-border p-8 shadow-sm space-y-4">
             <h2 className="text-2xl md:text-3xl font-bold text-foreground">Nossos valores</h2>
             <p className="text-foreground/90 leading-relaxed">
-              Acreditamos que uma comunicação próxima transforma a experiência escolar. Por isso, criamos a Agenda Fleur
-              para fortalecer a conexão entre escolas e famílias através de uma comunicação mais humana, organizada e
-              acolhedora. Valorizamos a confiança, o cuidado com cada detalhe da infância, a praticidade na rotina
-              escolar e o uso da tecnologia para aproximar pessoas, gerar tranquilidade para os responsáveis e apoiar o
-              trabalho das instituições de ensino.
+              Valorizamos a confiança, o cuidado com cada detalhe da infância, a praticidade na rotina escolar e o uso
+              da tecnologia para aproximar pessoas, gerar tranquilidade para os responsáveis e apoiar o trabalho das
+              instituições de ensino.
             </p>
           </AnimSection>
         </div>
