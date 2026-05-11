@@ -7,8 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
-
-const APP_VERSION = "2.6.3"; // incrementar +1 a cada update
+import { APP_VERSION } from "@/lib/app-version";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");

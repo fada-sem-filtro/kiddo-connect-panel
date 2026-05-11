@@ -65,8 +65,32 @@ import AdminBlogEditorPage from "./pages/admin/blog/AdminBlogEditorPage";
 import AdminBlogCategoriasPage from "./pages/admin/blog/AdminBlogCategoriasPage";
 import AdminBlogTagsPage from "./pages/admin/blog/AdminBlogTagsPage";
 import SaasFinanceiroPage from "./pages/admin/SaasFinanceiroPage";
+import PoliticaPrivacidadePage from "./pages/PoliticaPrivacidadePage";
+import PoliticaCookiesPage from "./pages/PoliticaCookiesPage";
+import { ConsentProvider } from "@/lib/consent/ConsentContext";
+import { ConsentBanner } from "@/components/consent/ConsentBanner";
+import { ConsentPreferencesModal } from "@/components/consent/ConsentPreferencesModal";
+import { ConsentFloatingButton } from "@/components/consent/ConsentFloatingButton";
+import { UpdateAvailableModal } from "@/components/pwa/UpdateAvailableModal";
+import { useLocation } from "react-router-dom";
 
 const queryClient = new QueryClient();
+
+const PUBLIC_ROUTE_PREFIXES = ["/", "/conheca", "/sobre", "/changelog", "/blog", "/login", "/reset-password", "/politica-privacidade", "/politica-cookies"];
+
+function PublicConsentUI() {
+  const { pathname } = useLocation();
+  const isPublic =
+    pathname === "/" ||
+    PUBLIC_ROUTE_PREFIXES.some((p) => p !== "/" && (pathname === p || pathname.startsWith(p + "/")));
+  if (!isPublic) return null;
+  return (
+    <>
+      <ConsentBanner />
+      <ConsentFloatingButton />
+    </>
+  );
+}
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -74,9 +98,13 @@ const App = () => (
       <BrowserRouter>
         <AuthProvider>
           <NotificationProvider>
-            <Toaster />
-            <Sonner />
-            <Routes>
+            <ConsentProvider>
+              <Toaster />
+              <Sonner />
+              <UpdateAvailableModal />
+              <ConsentPreferencesModal />
+              <PublicConsentUI />
+              <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/conheca" element={<LandingPage />} />
               <Route path="/sobre" element={<SobrePage />} />
@@ -175,8 +203,11 @@ const App = () => (
               <Route path="/admin/creches/:crecheId/financeiro" element={<ProtectedRoute allowedRoles={['admin']}><SchoolFinancialManagementPage /></ProtectedRoute>} />
               <Route path="/diretor/financeiro" element={<ProtectedRoute allowedRoles={['diretor']}><FinanceiroPage /></ProtectedRoute>} />
               
+              <Route path="/politica-privacidade" element={<PoliticaPrivacidadePage />} />
+              <Route path="/politica-cookies" element={<PoliticaCookiesPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
+            </ConsentProvider>
           </NotificationProvider>
         </AuthProvider>
       </BrowserRouter>

@@ -1,117 +1,136 @@
-# Plano — Blog Agenda Fleur: CMS profissional + SEO avançado
+# Plano — Versão 2.6.4 + PWA Pro + LGPD
 
-Objetivo: complementar o blog atual (que já tem `blog_posts`, RichTextEditor TipTap, página pública com SEOHead, JSON-LD Article, sitemap edge function e robots.txt) com correções de editor, SEO Panel completo, preview, schemas extras, RSS, breadcrumbs/categorias SEO e otimização de imagens. **Sem quebrar nada existente.**
+## 1. Sistema de versionamento global
 
-## O que já existe (será preservado)
-- Tabelas `blog_posts`, `blog_categorias`, `blog_tags`, `blog_post_tags` + RLS
-- Editor TipTap (`RichTextEditor.tsx`) com toolbar e upload de imagem
-- Página pública `/blog` e `/blog/:slug` com `SEOHead`, JSON-LD Article, breadcrumb visual, related posts
-- Edge function `sitemap-xml` já dinâmica
-- `robots.txt` já apontando p/ sitemap dinâmico
+Criar `src/lib/app-version.ts`:
+```ts
+export const APP_VERSION = "2.6.4";
+export const APP_VERSION_BUILD = Date.now();
+```
 
-## 1. Correções no editor (RichTextEditor)
-- Trocar `setContent` no `useEffect` para evitar loop / cursor pulando: comparar normalizado e usar guard de "user is typing" (skip sync se editor focused)
-- Adicionar `History`, `Underline`, `TaskList/TaskItem`, `Table`, `Youtube`, `HorizontalRule`, `CodeBlockLowlight` extensions
-- Sanitizar paste (`transformPastedHTML`) removendo estilos inline / classes inválidas
-- Configurar `parseOptions: { preserveWhitespace: 'full' }` e fix mobile (touch handlers)
-- Toolbar sticky + responsiva (scroll horizontal no mobile)
+Sincronizar a versão em:
+- `public/manifest.json` → adicionar `"version": "2.6.4"`
+- `public/service-worker.js` → `CACHE_VERSION = "v2.6.4"`
+- `index.html` → `<meta name="app-version" content="2.6.4">`
+- Footer público (landing/sobre/conheca/blog/login)
+- Painel admin (rodapé do `MainLayout` + `AdminSettingsPage`)
+- `ChangelogPage` → adicionar entry 2.6.4
+- Logs internos (console boot log com versão)
 
-## 2. Editor Visual + HTML (abas)
-Em `AdminBlogEditorPage`, dentro da aba Conteúdo, adicionar sub-tabs **Visual** / **HTML** com `<Textarea>` mono espaçada. Sincronização bidirecional via `editor.commands.setContent(html)`.
+Criar `public/version.json` servido sem cache para detecção de updates:
+```json
+{ "version": "2.6.4", "build": "<timestamp>" }
+```
 
-## 3. Autosave + recuperação
-- Autosave em `localStorage` (chave `blog-draft-{id|new}`) a cada 5s com debounce
-- Autosave em DB (status=rascunho) a cada 30s, somente se houver post id
-- Banner "Recuperar rascunho não salvo?" ao abrir editor se localStorage > DB
+## 2. Service Worker profissional
 
-## 4. Visualização prévia
-Botão "Visualizar" abre Dialog full-screen com toggle desktop/mobile que renderiza um componente `<BlogPostPreview>` reutilizando o mesmo layout/estilos da página pública (extrair render para componente compartilhado `BlogPostView`).
+Reescrever `public/service-worker.js`:
+- `CACHE_VERSION = "afleur-v2.6.4"`
+- `install` → `skipWaiting()` + precache mínimo (só shell offline)
+- `activate` → deletar todos os caches que não batem com versão atual + `clients.claim()`
+- Estratégias por tipo:
+  - HTML/navegação → **NetworkFirst** (timeout 3s, nunca servir stale como default)
+  - JS/CSS estáticos com hash → **StaleWhileRevalidate**
+  - imagens → **CacheFirst** (max 60 entries)
+  - fontes Google → **CacheFirst** longo
+  - APIs Supabase (`/rest/`, `/auth/`, `/functions/`, `/storage/`) → **NEVER cache** (passthrough)
+- Mensagem `SKIP_WAITING` para forçar ativação
+- Manter guard atual de iframe/preview (não registrar no editor)
 
-## 5. SEO Panel lateral
-Novo componente `<BlogSeoPanel>` na lateral (drawer no mobile, sticky aside no desktop) com:
-- SEO title, meta desc, slug, keyword principal (já existem — agrupar)
-- **Score SEO** calculado (presença de keyword em título/H1/primeiro parágrafo/meta/slug/alt; comprimento; links internos)
-- **Score legibilidade** (Flesch adaptado pt-BR)
-- Preview Google (já existe — mover para o painel)
-- Word count, tempo de leitura, densidade da keyword
-- Aviso se ALT da capa vazio
+## 3. Gerenciador de updates (PWA Manager)
 
-## 6/7. Slug + meta tags + OG/Twitter automáticos
-- Já há slugify e fallbacks ao salvar — adicionar verificação de unicidade do slug com sufixo `-2`, `-3`
-- `SEOHead` já gera OG e Twitter — garantir que sempre cair em fallback (título + capa)
+Criar `src/lib/pwa/registerSW.ts`:
+- Registra SW só fora de iframe/preview/dev
+- `addEventListener("controllerchange")` → `window.location.reload()` (uma vez)
+- Polling `version.json` a cada 5min + on focus → se versão difere, força `registration.update()`
 
-## 8. Schema.org expandido
-Atualizar `BlogPostPage` JSON-LD:
-- `@type: BlogPosting` (em vez de Article)
-- Adicionar `BreadcrumbList`
-- Detectar blocos FAQ no HTML (`<details>` ou H3 marcadas) → gerar `FAQPage`
-- Em `BlogListPage` manter `Blog` schema + `ItemList`
+Criar `src/components/pwa/UpdateAvailableModal.tsx`:
+- Detecta `waiting` SW
+- Modal elegante: título "Nova versão disponível" + texto institucional + botão "Atualizar agora"
+- Botão envia `postMessage({type:"SKIP_WAITING"})` ao SW
 
-## 9. Sitemap (já existe)
-- Adicionar URLs de categorias `/blog/categoria/:slug` no `sitemap-xml` edge function
+Integrar em `App.tsx` (montado no root, fora dos layouts).
 
-## 10. robots.txt (já existe)
-- Adicionar `Disallow: /admin /dashboard /login` e manter Sitemap
+## 4. LGPD — Sistema de consentimento
 
-## 11. RSS Feed
-Nova edge function `rss-xml` em `https://…/functions/v1/rss-xml`, exposta via redirect estático. Adicionar `<link rel="alternate" type="application/rss+xml">` no `<head>` do blog.
+Criar arquitetura desacoplada em `src/lib/consent/`:
+- `types.ts` — `ConsentCategories = { necessary, functional, analytics, marketing, personalization }`
+- `consentStorage.ts` — persiste em `localStorage` `agendafleur_consent` com `{ version, date, choices }`. Versão do termo: `CONSENT_VERSION = "1.0.0"`. Expira em 12 meses.
+- `ConsentContext.tsx` — provider React expondo `consent`, `setConsent`, `acceptAll`, `rejectOptional`, `revoke`, `openPreferences`
+- `scriptLoader.ts` — utilitário que só injeta scripts (GA, Meta, Hotjar, Clarity) após consentimento da categoria correspondente
 
-## 12. Links internos automáticos
-Já há "Artigos relacionados". Adicionar bloco "Últimos do blog" no rodapé do post + auto-link de palavra-chave principal apontando para outros posts que a tenham (server-side simples no render do HTML sanitizado).
+Componentes em `src/components/consent/`:
+- `ConsentBanner.tsx` — banner inferior moderno, backdrop-blur, 3 botões: Aceitar todos / Recusar opcionais / Personalizar. Não exibe se já houver consentimento válido.
+- `ConsentPreferencesModal.tsx` — modal com as 5 categorias, switch + descrição/finalidade/exemplo, "Necessários" desabilitado e on. Salva escolhas granulares.
+- `ConsentFloatingButton.tsx` — botão fixo "Preferências de Privacidade" canto inferior esquerdo, só nas páginas públicas.
 
-## 13. Breadcrumbs
-Já visuais. Adicionar `BreadcrumbList` JSON-LD via `SEOHead.jsonLd` array.
+Integração:
+- Provider em `App.tsx`
+- Banner + botão flutuante renderizam só em rotas públicas (detectar via `useLocation`)
+- Páginas novas: `/politica-privacidade` e `/politica-cookies` com conteúdo LGPD pt-BR completo, links no footer e no banner.
 
-## 14. Página de categoria SEO
-Nova rota `/blog/categoria/:slug` (`BlogCategoriaPage`) listando posts da categoria com H1, meta tags, schema CollectionPage, paginação simples.
+## 5. Revisão páginas públicas
 
-## 15. Otimização de imagens
-- No upload (capa + inline): converter para WebP no client via `<canvas>` e comprimir (max 1600px, quality 0.82)
-- Gerar ALT sugerido a partir do nome do arquivo (sanitizado)
-- `loading="lazy"` já presente nas imagens inline; manter
+Páginas existentes a revisar (preservar comportamento, melhorar consistência):
+- `LandingPage`, `SobrePage`, `HomePage`, `LoginPage`, `ResetPasswordPage`, `BlogListPage`, `BlogPostPage`, `BlogCategoriaPage`, `NotFound`
 
-## 16. HTML limpo / sanitização
-`sanitizeHtml` (DOMPurify) já existe. Ajustar config para permitir `iframe[src^="https://www.youtube.com/embed/"]` e `details/summary` para FAQ. Garantir somente 1 H1 (no título da página); rebaixar H1 dentro do conteúdo para H2 ao salvar.
+Padronização:
+- Header já existe (`SiteHeader`). Criar `SiteFooter.tsx` reutilizável: links institucionais, blog, política privacidade, cookies, "Preferências de Privacidade", versão `v2.6.4`, copyright.
+- Aplicar `SiteFooter` em todas as páginas públicas que ainda não têm um footer consistente.
+- Lazy-load de páginas pesadas em `App.tsx` via `React.lazy` (Landing, Blog).
+- `loading="lazy"` + `decoding="async"` em imagens não-críticas; `fetchPriority="high"` no hero LCP.
+- Garantir `prefers-reduced-motion` respeitado em animações.
+- Dark mode: trocar quaisquer cores hardcoded restantes por tokens.
 
-## 17. Performance
-- `<img loading="lazy" decoding="async">` em capas de cards
-- `fetchPriority="high"` apenas na capa do artigo (já está)
-- Code-split do `RichTextEditor` via `React.lazy` no admin
+## 6. Painel admin
 
-## 18. Indexação Google (estrutura)
-- Adicionar botão "Solicitar indexação" no editor (chama edge function `google-indexing-request` que hoje só registra log/audit; pronta para integração futura com Google Indexing API quando credenciais forem fornecidas)
+- `MainLayout` rodapé pequeno: "Agenda Fleur v2.6.4"
+- `AdminSettingsPage` ou `AdminPage` exibir bloco "Versão do sistema: 2.6.4 · build #xxxx · Atualizar agora"
+- Console log no boot: `console.info("[Agenda Fleur] v2.6.4")`
 
-## Arquivos a criar
-- `src/components/blog/BlogPostView.tsx` (render compartilhado)
-- `src/components/blog/BlogSeoPanel.tsx`
-- `src/components/blog/BlogPreviewDialog.tsx`
-- `src/lib/blog-seo.ts` (score, legibilidade, densidade)
-- `src/lib/image-optimize.ts` (canvas WebP)
-- `src/pages/blog/BlogCategoriaPage.tsx`
-- `supabase/functions/rss-xml/index.ts`
-- `supabase/functions/google-indexing-request/index.ts` (stub)
+## 7. SEO/meta
 
-## Arquivos a editar
-- `src/components/blog/RichTextEditor.tsx` (extensions + estabilidade)
-- `src/pages/admin/blog/AdminBlogEditorPage.tsx` (autosave, abas Visual/HTML, painel SEO, preview, slug único)
-- `src/pages/blog/BlogPostPage.tsx` (BlogPosting + BreadcrumbList + FAQ schema, usar BlogPostView)
-- `src/pages/blog/BlogListPage.tsx` (link RSS, ItemList schema)
-- `src/components/blog/SEOHead.tsx` (suportar `jsonLd` array)
-- `src/lib/blog-utils.ts` (slug único, scores)
-- `src/App.tsx` (rota `/blog/categoria/:slug`)
-- `supabase/functions/sitemap-xml/index.ts` (incluir categorias)
-- `public/robots.txt` (Disallow extras)
+- `index.html`: adicionar `<meta name="app-version" content="2.6.4">`
+- Sem alterar títulos/canonicals existentes.
 
-## Banco de dados
-Sem mudanças destrutivas. Apenas (opcional, via migration leve):
-- `blog_posts.last_autosaved_at TIMESTAMPTZ NULL`
-- (não obrigatório — autosave pode usar localStorage + UPDATE comum)
+## 8. Não-objetivos (não tocar)
 
-Vou pular a migration para preservar 100% o esquema atual e usar localStorage + updated_at existente.
+- Banco de dados, RLS, edge functions, integrações financeiras (Inter, Asaas), auth, blog DB, sidebar config, rotas autenticadas — preservados integralmente.
+- CSP via headers HTTP fica fora (não temos controle de servidor); apenas documentar.
 
-## Garantias
-- Nenhuma rota existente removida
-- Nenhuma tabela alterada
-- Layout público mantido (apenas componente extraído)
-- Auth e RLS intocadas
-- Integrações financeiras intocadas
+## Arquivos
+
+**Criar:**
+- `src/lib/app-version.ts`
+- `src/lib/pwa/registerSW.ts`
+- `src/lib/pwa/useUpdateAvailable.ts`
+- `src/components/pwa/UpdateAvailableModal.tsx`
+- `src/lib/consent/types.ts`
+- `src/lib/consent/consentStorage.ts`
+- `src/lib/consent/ConsentContext.tsx`
+- `src/lib/consent/scriptLoader.ts`
+- `src/components/consent/ConsentBanner.tsx`
+- `src/components/consent/ConsentPreferencesModal.tsx`
+- `src/components/consent/ConsentFloatingButton.tsx`
+- `src/components/landing/SiteFooter.tsx`
+- `src/pages/PoliticaPrivacidadePage.tsx`
+- `src/pages/PoliticaCookiesPage.tsx`
+- `public/version.json`
+
+**Editar:**
+- `public/service-worker.js` (reescrita)
+- `public/manifest.json` (version)
+- `index.html` (meta version + boot log)
+- `src/main.tsx` (boot log + register SW)
+- `src/App.tsx` (provider consent + modal update + rotas políticas)
+- `src/components/layout/MainLayout.tsx` (footer versão)
+- `src/pages/AdminSettingsPage.tsx` (bloco versão)
+- `src/pages/ChangelogPage.tsx` (entry 2.6.4)
+- Páginas públicas listadas → adicionar `SiteFooter`
+
+## Critério de pronto
+
+- Versão 2.6.4 visível em footer público, admin, console, manifest, meta tag.
+- Ao publicar, usuários antigos recebem modal "Nova versão" e atualizam com 1 clique; sem precisar limpar cache.
+- Banner LGPD aparece para visitantes sem consentimento; preferências persistem; botão flutuante reabre central.
+- Nenhuma rota autenticada, integração ou tabela alterada.
