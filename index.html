@@ -99,23 +99,7 @@
     <!-- REACT APP -->
     <script type="module" src="/src/main.tsx"></script>
 
-    <!-- SERVICE WORKER REGISTRATION -->
-    <script>
-      if ("serviceWorker" in navigator) {
-        var isInIframe = false;
-        try { isInIframe = window.self !== window.top; } catch(e) { isInIframe = true; }
-        var isPreview = window.location.hostname.indexOf("id-preview--") !== -1 ||
-                        window.location.hostname.indexOf("lovableproject.com") !== -1;
-        if (isPreview || isInIframe) {
-          navigator.serviceWorker.getRegistrations().then(function(regs) {
-            regs.forEach(function(r) { r.unregister(); });
-          });
-        } else {
-          navigator.serviceWorker.register("/service-worker.js").then(function() {
-            console.log("Service Worker registrado");
-          });
-        }
-      }
-    </script>
+    <!-- Service Worker é registrado em src/lib/pwa/registerSW.ts (com versionamento e auto-update) -->
+
   </body>
 </html>
