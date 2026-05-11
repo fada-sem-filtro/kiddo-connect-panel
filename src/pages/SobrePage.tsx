@@ -62,7 +62,7 @@ export default function SobrePage() {
       <section className="py-16 md:py-24 px-4 bg-gradient-to-br from-primary/10 via-primary/5 to-accent/10">
         <AnimSection className="max-w-4xl mx-auto text-center space-y-6">
           <h1 className="text-3xl md:text-5xl font-extrabold leading-tight text-foreground">
-            Agenda Fleur: a agenda escolar digital criada para aproximar escolas e famílias
+            Agenda Fleur: Aproximando Escolas e Famílias através da Comunicação Digital
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Tecnologia simples, acessível e eficiente para transformar a comunicação escolar.
@@ -75,20 +75,21 @@ export default function SobrePage() {
         <AnimSection className="max-w-3xl mx-auto space-y-6">
           <article className="prose prose-lg max-w-none text-foreground/90 space-y-4">
             <p>
-              A Agenda Fleur é um sistema de <strong>agenda escolar digital</strong> criado para facilitar a comunicação
-              entre escolas, creches e responsáveis.
+              A Agenda Fleur é uma plataforma de agenda escolar digital desenvolvida para aproximar escolas, creches e
+              famílias através de uma comunicação mais prática, organizada e acolhedora.
             </p>
             <p>
-              A plataforma permite que educadores registrem informações importantes do dia da criança, como alimentação,
-              sono, atividades pedagógicas, fotos, recados e avaliações.
+              Com a plataforma, educadores conseguem compartilhar informações importantes da rotina da criança, como
+              alimentação, sono, atividades pedagógicas, fotos, recados e acompanhamentos do dia a dia de forma simples
+              e rápida.
             </p>
             <p>
-              Todas as informações ficam organizadas em um único ambiente digital, acessível pelo celular, tablet ou
-              computador.
+              Tudo fica centralizado em um único ambiente digital, acessível pelo celular, tablet ou computador,
+              facilitando o acompanhamento das famílias em tempo real.
             </p>
             <p>
-              A Agenda Fleur substitui a tradicional agenda de papel utilizada por muitas escolas e creches, tornando a
-              comunicação mais rápida, segura e eficiente.
+              A Agenda Fleur moderniza a tradicional agenda de papel, tornando a comunicação escolar mais eficiente,
+              segura e conectada à rotina das famílias e da escola.
             </p>
           </article>
         </AnimSection>
@@ -124,7 +125,7 @@ export default function SobrePage() {
         </AnimSection>
       </section>
 
-      {/* MISSÃO E VISÃO */}
+      {/* MISSÃO, VISÃO E VALORES */}
       <section className="py-16 md:py-20 px-4 bg-muted/40">
         <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-8">
           <AnimSection className="bg-card rounded-2xl border border-border p-8 shadow-sm space-y-4">
@@ -139,6 +140,16 @@ export default function SobrePage() {
             <p className="text-foreground/90 leading-relaxed">
               Ser uma das principais plataformas de <strong>agenda escolar digital</strong> do Brasil, ajudando escolas
               a modernizar sua comunicação e melhorar a experiência de alunos, responsáveis e educadores.
+            </p>
+          </AnimSection>
+          <AnimSection delay={0.15} className="bg-card rounded-2xl border border-border p-8 shadow-sm space-y-4">
+            <h2 className="text-2xl md:text-3xl font-bold text-foreground">Nossos valores</h2>
+            <p className="text-foreground/90 leading-relaxed">
+              Acreditamos que uma comunicação próxima transforma a experiência escolar. Por isso, criamos a Agenda Fleur
+              para fortalecer a conexão entre escolas e famílias através de uma comunicação mais humana, organizada e
+              acolhedora. Valorizamos a confiança, o cuidado com cada detalhe da infância, a praticidade na rotina
+              escolar e o uso da tecnologia para aproximar pessoas, gerar tranquilidade para os responsáveis e apoiar o
+              trabalho das instituições de ensino.
             </p>
           </AnimSection>
         </div>
