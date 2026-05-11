@@ -124,47 +124,6 @@ export default function SobrePage() {
         </AnimSection>
       </section>
 
-      {/* POR QUE É IMPORTANTE */}
-      <section className="py-16 md:py-20 px-4">
-        <AnimSection className="max-w-3xl mx-auto space-y-6">
-          <h2 className="text-2xl md:text-4xl font-bold text-foreground">
-            Por que uma agenda escolar digital é importante
-          </h2>
-          <article className="prose prose-lg max-w-none text-foreground/90 space-y-4">
-            <p>
-              A rotina escolar envolve muitas informações importantes que precisam ser compartilhadas com os
-              responsáveis.
-            </p>
-            <p>
-              Uma <strong>agenda escolar online</strong> permite que as escolas registrem a rotina diária das crianças e
-              mantenham os responsáveis sempre informados sobre o que acontece durante o período escolar.
-            </p>
-            <p>Com uma agenda digital é possível:</p>
-            <ul className="space-y-2 list-none pl-0">
-              {[
-                "Registrar alimentação",
-                "Registrar sono",
-                "Registrar trocas de fralda",
-                "Registrar atividades pedagógicas",
-                "Enviar fotos das atividades",
-                "Compartilhar comunicados da escola",
-                "Acompanhar avaliações",
-                "Manter histórico completo do aluno",
-              ].map((item) => (
-                <li key={item} className="flex items-start gap-2">
-                  <CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
-            <p>
-              Além disso, facilita o trabalho da equipe pedagógica e melhora a transparência na comunicação entre escola
-              e responsáveis.
-            </p>
-          </article>
-        </AnimSection>
-      </section>
-
       {/* MISSÃO E VISÃO */}
       <section className="py-16 md:py-20 px-4 bg-muted/40">
         <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-8">
@@ -279,7 +238,9 @@ export default function SobrePage() {
               Novidades
             </Link>
             <button
-              onClick={() => { window.location.href = "/?orcamento=1"; }}
+              onClick={() => {
+                window.location.href = "/?orcamento=1";
+              }}
               className="text-muted-foreground hover:text-primary transition-colors"
             >
               Solicitar orçamento
@@ -295,7 +256,9 @@ export default function SobrePage() {
             </Link>
           </div>
         </div>
-        <div className="max-w-4xl mx-auto"><PublicFooterMeta /></div>
+        <div className="max-w-4xl mx-auto">
+          <PublicFooterMeta />
+        </div>
       </footer>
     </div>
   );
