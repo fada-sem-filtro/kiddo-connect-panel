@@ -400,35 +400,6 @@ export default function LandingPage() {
           </motion.div>
         </div>
       </section>
-
-      {/* PROBLEMA */}
-      <section className="py-16 md:py-24 px-4 bg-muted/40">
-        <div className="max-w-6xl mx-auto space-y-10">
-          <AnimSection className="text-center max-w-2xl mx-auto space-y-3">
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground">
-              Comunicação em tempo real entre escola e responsáveis
-            </h2>
-            <p className="text-muted-foreground">
-              Muitas escolas ainda utilizam planilhas, processos manuais ou sistemas limitados para organizar suas
-              atividades pedagógicas.
-            </p>
-          </AnimSection>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {problems.map((p, i) => (
-              <AnimCard key={p.title} i={i}>
-                <Card className="border-destructive/20 bg-destructive/5 h-full">
-                  <CardContent className="p-6 text-center space-y-3">
-                    <p.icon className="w-10 h-10 mx-auto text-destructive" />
-                    <h3 className="font-bold text-foreground">{p.title}</h3>
-                    <p className="text-sm text-muted-foreground">{p.desc}</p>
-                  </CardContent>
-                </Card>
-              </AnimCard>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* SOLUÇÃO */}
       <section className="py-16 md:py-24 px-4">
         <div className="max-w-6xl mx-auto space-y-10">
@@ -717,7 +688,9 @@ export default function LandingPage() {
             </Link>
           </div>
         </div>
-        <div className="max-w-4xl mx-auto"><PublicFooterMeta /></div>
+        <div className="max-w-4xl mx-auto">
+          <PublicFooterMeta />
+        </div>
       </footer>
     </div>
   );
