@@ -203,8 +203,11 @@ const App = () => (
               <Route path="/admin/creches/:crecheId/financeiro" element={<ProtectedRoute allowedRoles={['admin']}><SchoolFinancialManagementPage /></ProtectedRoute>} />
               <Route path="/diretor/financeiro" element={<ProtectedRoute allowedRoles={['diretor']}><FinanceiroPage /></ProtectedRoute>} />
               
+              <Route path="/politica-privacidade" element={<PoliticaPrivacidadePage />} />
+              <Route path="/politica-cookies" element={<PoliticaCookiesPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
+            </ConsentProvider>
           </NotificationProvider>
         </AuthProvider>
       </BrowserRouter>
