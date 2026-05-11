@@ -4,6 +4,7 @@ import { ChangePasswordModal } from '@/components/modals/ChangePasswordModal';
 import { SuporteModal } from '@/components/modals/SuporteModal';
 import { useAuth } from '@/contexts/AuthContext';
 import { HelpCircle } from 'lucide-react';
+import { APP_VERSION } from '@/lib/app-version';
 
 interface MainLayoutProps {
   children: ReactNode;
@@ -20,6 +21,9 @@ export function MainLayout({ children }: MainLayoutProps) {
         <div className="p-3 sm:p-4 lg:p-8">
           {children}
         </div>
+        <footer className="lg:pl-0 px-4 pb-4 pt-2 text-center text-[11px] text-muted-foreground">
+          Agenda Fleur · v{APP_VERSION}
+        </footer>
       </main>
 
       {/* Floating support button */}
