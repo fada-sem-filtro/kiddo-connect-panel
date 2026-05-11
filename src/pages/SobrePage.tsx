@@ -144,54 +144,6 @@ export default function SobrePage() {
         </div>
       </section>
 
-      {/* FUNCIONALIDADES */}
-      <section className="py-16 md:py-20 px-4">
-        <div className="max-w-4xl mx-auto space-y-10">
-          <AnimSection className="text-center">
-            <h2 className="text-2xl md:text-4xl font-bold text-foreground">Funcionalidades do sistema</h2>
-            <p className="text-muted-foreground mt-2">
-              Conheça os principais recursos da <strong>agenda digital para creches</strong> e escolas.
-            </p>
-          </AnimSection>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {funcionalidades.map((f, i) => (
-              <AnimSection key={f.title} delay={i * 0.03}>
-                <div className="flex items-start gap-3 bg-card rounded-xl border border-border p-4 shadow-sm hover:shadow-md transition-shadow h-full">
-                  <f.icon className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                  <div>
-                    <p className="text-foreground font-semibold text-sm">{f.title}</p>
-                    <p className="text-muted-foreground text-xs mt-0.5">{f.desc}</p>
-                  </div>
-                </div>
-              </AnimSection>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* PARA QUEM */}
-      <section className="py-16 md:py-20 px-4 bg-muted/40">
-        <div className="max-w-3xl mx-auto space-y-8">
-          <AnimSection className="space-y-3">
-            <h2 className="text-2xl md:text-4xl font-bold text-foreground">Para quem é a Agenda Fleur</h2>
-            <p className="text-foreground/90 leading-relaxed">
-              A Agenda Fleur foi criada para atender instituições de ensino que desejam melhorar a comunicação com as
-              famílias e organizar o registro pedagógico dos alunos. Pode ser utilizada por:
-            </p>
-          </AnimSection>
-          <div className="space-y-3">
-            {publicoAlvo.map((item, i) => (
-              <AnimSection key={item} delay={i * 0.06}>
-                <div className="flex items-center gap-3 bg-card rounded-xl border border-border p-4 shadow-sm">
-                  <Star className="w-5 h-5 text-primary shrink-0" />
-                  <span className="text-foreground font-medium">{item}</span>
-                </div>
-              </AnimSection>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* CTA */}
       <section className="py-20 md:py-28 px-4 bg-gradient-to-br from-primary/10 via-primary/5 to-accent/10">
         <AnimSection className="max-w-3xl mx-auto text-center space-y-6">
