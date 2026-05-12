@@ -96,6 +96,7 @@ export const AVAILABLE_ITEMS_BY_ROLE: Record<string, { key: string; defaultLabel
     { key: 'configuracoes', defaultLabel: 'Minhas Configurações', route: '/admin/configuracoes' },
     { key: 'auditoria_fotos', defaultLabel: 'Auditoria de Fotos', route: '/admin/auditoria-fotos' },
     { key: 'financeiro', defaultLabel: 'Financeiro', route: '/admin/financeiro' },
+    { key: 'financeiro_regua', defaultLabel: 'Régua de Cobrança', route: '/admin/financeiro/regua' },
     { key: 'financeiro_saas', defaultLabel: 'Cobrança Escolas (SaaS)', route: '/admin/financeiro-saas' },
     { key: 'eventos_resp', defaultLabel: 'Meus Eventos', route: '/responsavel/eventos' },
     { key: 'calendario_resp', defaultLabel: 'Calendário Escolar', route: '/responsavel/calendario' },
@@ -122,6 +123,7 @@ export const AVAILABLE_ITEMS_BY_ROLE: Record<string, { key: string; defaultLabel
     { key: 'permissoes', defaultLabel: 'Permissões Secretaria', route: '/diretor/permissoes' },
     { key: 'sidebar_config', defaultLabel: 'Menu Lateral', route: '/diretor/sidebar-config' },
     { key: 'financeiro', defaultLabel: 'Financeiro', route: '/diretor/financeiro' },
+    { key: 'financeiro_regua', defaultLabel: 'Régua de Cobrança', route: '/diretor/financeiro/regua' },
   ],
 };
 

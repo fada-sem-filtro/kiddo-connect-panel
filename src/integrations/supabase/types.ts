@@ -1066,6 +1066,104 @@ export type Database = {
           },
         ]
       }
+      financial_collection_logs: {
+        Row: {
+          channel: string
+          creche_id: string
+          error: string | null
+          id: string
+          invoice_id: string | null
+          payload: Json | null
+          recipient: string | null
+          rule_id: string | null
+          sent_at: string
+          status: string
+        }
+        Insert: {
+          channel: string
+          creche_id: string
+          error?: string | null
+          id?: string
+          invoice_id?: string | null
+          payload?: Json | null
+          recipient?: string | null
+          rule_id?: string | null
+          sent_at?: string
+          status?: string
+        }
+        Update: {
+          channel?: string
+          creche_id?: string
+          error?: string | null
+          id?: string
+          invoice_id?: string | null
+          payload?: Json | null
+          recipient?: string | null
+          rule_id?: string | null
+          sent_at?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "financial_collection_logs_creche_id_fkey"
+            columns: ["creche_id"]
+            isOneToOne: false
+            referencedRelation: "creches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "financial_collection_logs_rule_id_fkey"
+            columns: ["rule_id"]
+            isOneToOne: false
+            referencedRelation: "financial_collection_rules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      financial_collection_rules: {
+        Row: {
+          ativo: boolean
+          channel: string
+          created_at: string
+          creche_id: string
+          id: string
+          stage_offset_days: number
+          template: string
+          titulo: string
+          updated_at: string
+        }
+        Insert: {
+          ativo?: boolean
+          channel?: string
+          created_at?: string
+          creche_id: string
+          id?: string
+          stage_offset_days: number
+          template: string
+          titulo: string
+          updated_at?: string
+        }
+        Update: {
+          ativo?: boolean
+          channel?: string
+          created_at?: string
+          creche_id?: string
+          id?: string
+          stage_offset_days?: number
+          template?: string
+          titulo?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "financial_collection_rules_creche_id_fkey"
+            columns: ["creche_id"]
+            isOneToOne: false
+            referencedRelation: "creches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       financial_customers: {
         Row: {
           asaas_customer_id: string
@@ -1218,6 +1316,47 @@ export type Database = {
             columns: ["crianca_id"]
             isOneToOne: false
             referencedRelation: "criancas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      financial_message_templates: {
+        Row: {
+          ativo: boolean
+          body: string
+          created_at: string
+          creche_id: string
+          id: string
+          tipo: string
+          titulo: string
+          updated_at: string
+        }
+        Insert: {
+          ativo?: boolean
+          body: string
+          created_at?: string
+          creche_id: string
+          id?: string
+          tipo: string
+          titulo: string
+          updated_at?: string
+        }
+        Update: {
+          ativo?: boolean
+          body?: string
+          created_at?: string
+          creche_id?: string
+          id?: string
+          tipo?: string
+          titulo?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "financial_message_templates_creche_id_fkey"
+            columns: ["creche_id"]
+            isOneToOne: false
+            referencedRelation: "creches"
             referencedColumns: ["id"]
           },
         ]
