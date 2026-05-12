@@ -65,6 +65,8 @@ import AdminBlogEditorPage from "./pages/admin/blog/AdminBlogEditorPage";
 import AdminBlogCategoriasPage from "./pages/admin/blog/AdminBlogCategoriasPage";
 import AdminBlogTagsPage from "./pages/admin/blog/AdminBlogTagsPage";
 import SaasFinanceiroPage from "./pages/admin/SaasFinanceiroPage";
+import ResponsavelFinanceiroPage from "./pages/responsavel/ResponsavelFinanceiroPage";
+import ReguaCobrancaPage from "./pages/financeiro/ReguaCobrancaPage";
 import PoliticaPrivacidadePage from "./pages/PoliticaPrivacidadePage";
 import PoliticaCookiesPage from "./pages/PoliticaCookiesPage";
 import { ConsentProvider } from "@/lib/consent/ConsentContext";
@@ -202,6 +204,10 @@ const App = () => (
               <Route path="/admin/financeiro" element={<ProtectedRoute allowedRoles={['admin']}><AdminFinanceiroGlobalPage /></ProtectedRoute>} />
               <Route path="/admin/creches/:crecheId/financeiro" element={<ProtectedRoute allowedRoles={['admin']}><SchoolFinancialManagementPage /></ProtectedRoute>} />
               <Route path="/diretor/financeiro" element={<ProtectedRoute allowedRoles={['diretor']}><FinanceiroPage /></ProtectedRoute>} />
+              <Route path="/responsavel/financeiro" element={<ProtectedRoute allowedRoles={['responsavel']}><ResponsavelFinanceiroPage /></ProtectedRoute>} />
+              <Route path="/diretor/financeiro/regua" element={<ProtectedRoute allowedRoles={['diretor']}><ReguaCobrancaPage /></ProtectedRoute>} />
+              <Route path="/secretaria/financeiro/regua" element={<ProtectedRoute allowedRoles={['secretaria']}><ReguaCobrancaPage /></ProtectedRoute>} />
+              <Route path="/admin/financeiro/regua" element={<ProtectedRoute allowedRoles={['admin']}><ReguaCobrancaPage /></ProtectedRoute>} />
               
               <Route path="/politica-privacidade" element={<PoliticaPrivacidadePage />} />
               <Route path="/politica-cookies" element={<PoliticaCookiesPage />} />
