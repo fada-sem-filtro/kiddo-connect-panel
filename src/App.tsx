@@ -67,6 +67,7 @@ import AdminBlogTagsPage from "./pages/admin/blog/AdminBlogTagsPage";
 import SaasFinanceiroPage from "./pages/admin/SaasFinanceiroPage";
 import ResponsavelFinanceiroPage from "./pages/responsavel/ResponsavelFinanceiroPage";
 import ReguaCobrancaPage from "./pages/financeiro/ReguaCobrancaPage";
+import RelatoriosFinanceirosPage from "./pages/financeiro/RelatoriosFinanceirosPage";
 import PoliticaPrivacidadePage from "./pages/PoliticaPrivacidadePage";
 import PoliticaCookiesPage from "./pages/PoliticaCookiesPage";
 import { ConsentProvider } from "@/lib/consent/ConsentContext";
@@ -207,6 +208,8 @@ const App = () => (
               <Route path="/responsavel/financeiro" element={<ProtectedRoute allowedRoles={['responsavel']}><ResponsavelFinanceiroPage /></ProtectedRoute>} />
               <Route path="/diretor/financeiro/regua" element={<ProtectedRoute allowedRoles={['diretor']}><ReguaCobrancaPage /></ProtectedRoute>} />
               <Route path="/secretaria/financeiro/regua" element={<ProtectedRoute allowedRoles={['secretaria']}><ReguaCobrancaPage /></ProtectedRoute>} />
+              <Route path="/diretor/financeiro/relatorios" element={<ProtectedRoute allowedRoles={['diretor']}><RelatoriosFinanceirosPage /></ProtectedRoute>} />
+              <Route path="/secretaria/financeiro/relatorios" element={<ProtectedRoute allowedRoles={['secretaria']}><RelatoriosFinanceirosPage /></ProtectedRoute>} />
               <Route path="/admin/financeiro/regua" element={<ProtectedRoute allowedRoles={['admin']}><ReguaCobrancaPage /></ProtectedRoute>} />
               
               <Route path="/politica-privacidade" element={<PoliticaPrivacidadePage />} />
