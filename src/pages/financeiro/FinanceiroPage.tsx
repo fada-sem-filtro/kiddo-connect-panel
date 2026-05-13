@@ -12,6 +12,11 @@ import { Receipt, Plug, Wallet, AlertTriangle, BarChart3, Send, RefreshCw, Copy,
 import { BancoInterTab } from "./BancoInterTab";
 import { CobrancasInterTab } from "./CobrancasInterTab";
 import { LogsInterTab } from "./LogsInterTab";
+import { DashboardFinanceiroTab } from "./DashboardFinanceiroTab";
+import { CobrancasUnificadasTab } from "./CobrancasUnificadasTab";
+import { ExtratoUnificadoTab } from "./ExtratoUnificadoTab";
+import { Link } from "react-router-dom";
+import { FileText, Settings2 } from "lucide-react";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
