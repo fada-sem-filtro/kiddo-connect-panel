@@ -12,6 +12,11 @@ import { Receipt, Plug, Wallet, AlertTriangle, BarChart3, Send, RefreshCw, Copy,
 import { BancoInterTab } from "./BancoInterTab";
 import { CobrancasInterTab } from "./CobrancasInterTab";
 import { LogsInterTab } from "./LogsInterTab";
+import { DashboardFinanceiroTab } from "./DashboardFinanceiroTab";
+import { CobrancasUnificadasTab } from "./CobrancasUnificadasTab";
+import { ExtratoUnificadoTab } from "./ExtratoUnificadoTab";
+import { Link } from "react-router-dom";
+import { FileText, Settings2 } from "lucide-react";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -147,39 +152,44 @@ export default function FinanceiroPage() {
         <Tabs value={tab} onValueChange={setTab}>
           <TabsList className="flex flex-wrap gap-1 h-auto bg-muted/50 p-1 rounded-2xl">
             <TabsTrigger value="dashboard" className="rounded-xl"><BarChart3 className="w-4 h-4 mr-1.5" />Dashboard</TabsTrigger>
+            <TabsTrigger value="unificadas" className="rounded-xl"><Receipt className="w-4 h-4 mr-1.5" />Cobranças</TabsTrigger>
+            <TabsTrigger value="extrato" className="rounded-xl"><Wallet className="w-4 h-4 mr-1.5" />Extrato</TabsTrigger>
             {provider === "asaas" && <>
-              <TabsTrigger value="cobrancas" className="rounded-xl"><Receipt className="w-4 h-4 mr-1.5" />Cobranças</TabsTrigger>
+              <TabsTrigger value="cobrancas" className="rounded-xl">Asaas</TabsTrigger>
               <TabsTrigger value="recorrencias" className="rounded-xl"><Repeat className="w-4 h-4 mr-1.5" />Recorrências</TabsTrigger>
               <TabsTrigger value="inadimplencia" className="rounded-xl"><AlertTriangle className="w-4 h-4 mr-1.5" />Inadimplência</TabsTrigger>
               {isAdmin && <TabsTrigger value="integracao" className="rounded-xl"><Plug className="w-4 h-4 mr-1.5" />Integração Asaas</TabsTrigger>}
             </>}
             {provider === "inter" && <>
-              <TabsTrigger value="inter-cobrancas" className="rounded-xl"><Receipt className="w-4 h-4 mr-1.5" />Cobranças</TabsTrigger>
+              <TabsTrigger value="inter-cobrancas" className="rounded-xl">Inter</TabsTrigger>
               <TabsTrigger value="inadimplencia" className="rounded-xl"><AlertTriangle className="w-4 h-4 mr-1.5" />Inadimplência</TabsTrigger>
               {isAdmin && <TabsTrigger value="inter" className="rounded-xl"><Building2 className="w-4 h-4 mr-1.5" />Integração Inter</TabsTrigger>}
               <TabsTrigger value="inter-logs" className="rounded-xl"><AlertTriangle className="w-4 h-4 mr-1.5" />Logs</TabsTrigger>
             </>}
           </TabsList>
 
+          <div className="flex flex-wrap gap-2 mt-3">
+            <Button variant="outline" size="sm" className="rounded-xl" asChild>
+              <Link to={role === "secretaria" ? "/secretaria/financeiro/relatorios" : "/diretor/financeiro/relatorios"}><FileText className="w-4 h-4 mr-1" /> Relatórios mensais</Link>
+            </Button>
+            <Button variant="outline" size="sm" className="rounded-xl" asChild>
+              <Link to={role === "secretaria" ? "/secretaria/financeiro/regua" : "/diretor/financeiro/regua"}><Settings2 className="w-4 h-4 mr-1" /> Régua de cobrança</Link>
+            </Button>
+          </div>
+
           {/* DASHBOARD */}
           <TabsContent value="dashboard" className="space-y-4 mt-4">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              <KpiCard title="Recebido" value={fmtBRL(totalRecebido)} color="text-green-700" />
-              <KpiCard title="Pendente" value={fmtBRL(totalPendente)} color="text-yellow-700" />
-              <KpiCard title="Vencido" value={fmtBRL(totalVencido)} color="text-red-700" />
-              <KpiCard title="Taxa inadimplência" value={`${taxa.toFixed(1)}%`} color="text-foreground" />
-            </div>
-            <Card className="rounded-2xl border-2"><CardHeader><CardTitle className="text-base">Pagamentos recentes</CardTitle></CardHeader>
-              <CardContent className="space-y-2">
-                {payments.length === 0 ? <p className="text-sm text-muted-foreground">Nenhum pagamento registrado.</p> :
-                  payments.slice(0, 10).map(p => (
-                    <div key={p.id} className="flex justify-between p-2 bg-muted/40 rounded-lg text-sm">
-                      <span>{format(new Date(p.paid_at), "dd/MM/yyyy", { locale: ptBR })} • {p.payment_method}</span>
-                      <span className="font-bold text-green-700">{fmtBRL(p.value)}</span>
-                    </div>
-                  ))}
-              </CardContent>
-            </Card>
+            {crecheId && <DashboardFinanceiroTab crecheId={crecheId} />}
+          </TabsContent>
+
+          {/* COBRANÇAS UNIFICADAS */}
+          <TabsContent value="unificadas" className="mt-4">
+            {crecheId && <CobrancasUnificadasTab crecheId={crecheId} criancas={criancas} />}
+          </TabsContent>
+
+          {/* EXTRATO UNIFICADO */}
+          <TabsContent value="extrato" className="mt-4">
+            {crecheId && <ExtratoUnificadoTab crecheId={crecheId} criancas={criancas} />}
           </TabsContent>
 
           {/* COBRANÇAS */}
