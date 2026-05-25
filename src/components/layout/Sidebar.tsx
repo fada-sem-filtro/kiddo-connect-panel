@@ -388,160 +388,166 @@ export function Sidebar() {
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed top-0 left-0 z-40 h-full w-72 bg-card border-r-2 border-border transition-transform duration-300 lg:translate-x-0 shadow-xl",
+          "fixed top-0 left-0 z-40 h-full bg-card border-r-2 border-border shadow-xl",
+          "transition-[width,transform] duration-300 ease-out lg:translate-x-0",
+          // mobile: drawer comportamento atual (w-72)
+          "w-72",
+          // desktop: largura depende do estado colapsado
+          collapsed ? "lg:w-20" : "lg:w-72",
           isOpen ? "translate-x-0" : "-translate-x-full",
         )}
       >
         <div className="flex flex-col h-full">
-          {/* Logo */}
-          <div className="flex items-center justify-between gap-3 px-6 py-5 border-b-2 border-border bg-gradient-to-r from-primary/5 to-secondary/10">
-            <div className="flex items-center gap-3">
-              <div className="flex items-center justify-center w-12 h-12 rounded-2xl shadow-md">
+          {/* Logo + toggle */}
+          <div
+            className={cn(
+              "flex items-center gap-3 border-b-2 border-border bg-gradient-to-r from-primary/5 to-secondary/10 py-5",
+              collapsed ? "lg:justify-center lg:px-2 px-6 justify-between" : "px-6 justify-between",
+            )}
+          >
+            <div className={cn("flex items-center gap-3", collapsed && "lg:gap-0")}>
+              <div className="flex items-center justify-center w-12 h-12 rounded-2xl shadow-md shrink-0">
                 <img src={logoFleur} alt="Fleur" className="w-10 h-10" />
               </div>
-              <div>
+              <div className={cn(collapsed && "lg:hidden")}>
                 <h1 className="text-xl font-bold text-foreground">Agenda Fleur</h1>
                 {userCreche && <p className="text-xs text-primary font-semibold">{userCreche.nome}</p>}
               </div>
             </div>
-            <div className="hidden lg:block">
+            <div className={cn("hidden lg:flex items-center gap-1", collapsed && "lg:hidden")}>
               <NotificationBell />
             </div>
           </div>
 
+          {/* Desktop toggle button (collapse / expand) */}
+          <button
+            type="button"
+            onClick={toggle}
+            aria-label={collapsed ? "Expandir menu lateral" : "Minimizar menu lateral"}
+            title={collapsed ? "Expandir menu" : "Minimizar menu"}
+            className={cn(
+              "hidden lg:flex items-center justify-center mx-auto my-2 h-7 w-7 rounded-full",
+              "border border-border bg-card text-muted-foreground hover:text-foreground hover:bg-muted",
+              "shadow-sm transition-all duration-200",
+            )}
+          >
+            {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
+          </button>
+
           {/* User info */}
           {profile && (
-            <div className="px-6 py-3 border-b border-border bg-muted/30">
+            <div
+              className={cn(
+                "px-6 py-3 border-b border-border bg-muted/30",
+                collapsed && "lg:hidden",
+              )}
+            >
               <p className="text-sm font-semibold text-foreground truncate">{profile.nome}</p>
               <p className="text-xs text-muted-foreground capitalize">{role || ""}</p>
             </div>
           )}
 
           {/* Navigation */}
-          <nav className="flex-1 px-4 py-6 space-y-6 overflow-y-auto scrollbar-thin">
+          <nav
+            className={cn(
+              "flex-1 py-6 space-y-6 overflow-y-auto scrollbar-thin",
+              collapsed ? "lg:px-2 px-4" : "px-4",
+            )}
+          >
             {/* Custom config sections for non-admin roles */}
             {useCustomConfig && customSections.map((section, sIdx) => (
               <div key={sIdx} className="space-y-2">
-                <p className="px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                <p
+                  className={cn(
+                    "px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider",
+                    collapsed && "lg:hidden",
+                  )}
+                >
                   {section.label}
                 </p>
-                {section.items.map((item) => {
-                  const isActive = location.pathname === item.href;
-                  return (
-                    <Link
-                      key={item.href}
-                      to={item.href}
-                      onClick={() => setIsOpen(false)}
-                      className={cn(
-                        "flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold transition-all duration-300",
-                        isActive
-                          ? "bg-gradient-to-r from-primary to-primary/80 text-primary-foreground shadow-lg scale-[1.02]"
-                          : "text-muted-foreground hover:bg-muted hover:text-foreground hover:scale-[1.01]",
-                      )}
-                    >
-                      <item.icon className="w-5 h-5" />
-                      {item.name}
-                    </Link>
-                  );
-                })}
+                {section.items.map((item) => renderLink(item, 'primary'))}
               </div>
             ))}
 
             {/* Default sections when no custom config */}
             {!useCustomConfig && mainNavigation.length > 0 && role !== "admin" && (
               <div className="space-y-2">
-                <p className="px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                <p
+                  className={cn(
+                    "px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider",
+                    collapsed && "lg:hidden",
+                  )}
+                >
                   📚 Principal
                 </p>
-                {mainNavigation.map((item) => {
-                  const isActive = location.pathname === item.href;
-                  return (
-                    <Link
-                      key={item.name}
-                      to={item.href}
-                      onClick={() => setIsOpen(false)}
-                      className={cn(
-                        "flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold transition-all duration-300",
-                        isActive
-                          ? "bg-gradient-to-r from-primary to-primary/80 text-primary-foreground shadow-lg scale-[1.02]"
-                          : "text-muted-foreground hover:bg-muted hover:text-foreground hover:scale-[1.01]",
-                      )}
-                    >
-                      <item.icon className="w-5 h-5" />
-                      {item.name}
-                    </Link>
-                  );
-                })}
+                {mainNavigation.map((item) => renderLink(item, 'primary'))}
               </div>
             )}
 
             {!useCustomConfig && responsavelNavigation.length > 0 && role !== "admin" && (
               <div className="space-y-2">
-                <p className="px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                <p
+                  className={cn(
+                    "px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider",
+                    collapsed && "lg:hidden",
+                  )}
+                >
                   👨‍👩‍👧 Responsável
                 </p>
-                {responsavelNavigation.map((item) => {
-                  const isActive = location.pathname === item.href;
-                  return (
-                    <Link
-                      key={item.name}
-                      to={item.href}
-                      onClick={() => setIsOpen(false)}
-                      className={cn(
-                        "flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold transition-all duration-300",
-                        isActive
-                          ? "bg-gradient-to-r from-kawaii-mint to-kawaii-blue text-foreground shadow-lg scale-[1.02]"
-                          : "text-muted-foreground hover:bg-muted hover:text-foreground hover:scale-[1.01]",
-                      )}
-                    >
-                      <item.icon className="w-5 h-5" />
-                      {item.name}
-                      {isActive && <span className="ml-auto">💕</span>}
-                    </Link>
-                  );
-                })}
+                {responsavelNavigation.map((item) => renderLink(item, 'responsavel'))}
               </div>
             )}
 
             {adminNavigation.length > 0 && (
               <div className="space-y-2">
-                <p className="px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                <p
+                  className={cn(
+                    "px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider",
+                    collapsed && "lg:hidden",
+                  )}
+                >
                   {isDiretor ? "🏫 Gestão" : "⚙️ Administração"}
                 </p>
-                {adminNavigation.map((item) => {
-                  const isActive = location.pathname === item.href;
-                  return (
-                    <Link
-                      key={item.name}
-                      to={item.href}
-                      onClick={() => setIsOpen(false)}
-                      className={cn(
-                        "flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold transition-all duration-300",
-                        isActive
-                          ? "bg-gradient-to-r from-secondary to-secondary/80 text-secondary-foreground shadow-lg scale-[1.02]"
-                          : "text-muted-foreground hover:bg-muted hover:text-foreground hover:scale-[1.01]",
-                      )}
-                    >
-                      <item.icon className="w-5 h-5" />
-                      {item.name}
-                      {isActive && <span className="ml-auto">🌸</span>}
-                    </Link>
-                  );
-                })}
+                {adminNavigation.map((item) => renderLink(item, 'admin'))}
               </div>
             )}
           </nav>
 
           {/* Footer */}
-          <div className="px-4 py-4 border-t-2 border-border bg-muted/30">
-            <Button
-              variant="ghost"
-              className="w-full justify-start text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-2xl"
-              onClick={handleSignOut}
-            >
-              <LogOut className="w-5 h-5 mr-3" />
-              Sair
-            </Button>
+          <div
+            className={cn(
+              "py-4 border-t-2 border-border bg-muted/30",
+              collapsed ? "lg:px-2 px-4" : "px-4",
+            )}
+          >
+            {collapsed ? (
+              <Tooltip delayDuration={120}>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    onClick={handleSignOut}
+                    aria-label="Sair"
+                    className={cn(
+                      "text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-2xl",
+                      "lg:w-full lg:justify-center w-full justify-start",
+                    )}
+                  >
+                    <LogOut className="w-5 h-5 lg:mr-0 mr-3" />
+                    <span className="lg:hidden">Sair</span>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="right" className="hidden lg:block">Sair</TooltipContent>
+              </Tooltip>
+            ) : (
+              <Button
+                variant="ghost"
+                className="w-full justify-start text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-2xl"
+                onClick={handleSignOut}
+              >
+                <LogOut className="w-5 h-5 mr-3" />
+                Sair
+              </Button>
+            )}
           </div>
         </div>
       </aside>
