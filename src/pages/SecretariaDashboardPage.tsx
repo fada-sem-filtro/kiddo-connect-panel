@@ -1,5 +1,6 @@
 import { MainLayout } from '@/components/layout/MainLayout';
 import { useAuth } from '@/contexts/AuthContext';
+import { FinancialAlertsCard } from '@/components/financeiro/FinancialAlertsCard';
 import { useUserPermissions } from '@/hooks/useUserPermissions';
 import { usePedagogicalSettings } from '@/hooks/usePedagogicalSettings';
 import { Card, CardContent } from '@/components/ui/card';
