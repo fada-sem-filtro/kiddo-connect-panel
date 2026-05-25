@@ -307,6 +307,54 @@ export function Sidebar() {
     }
   }
 
+  // Renders a sidebar nav link, collapse-aware + Tooltip on icon-only mode (desktop).
+  const renderLink = (
+    item: NavItem,
+    tone: 'primary' | 'responsavel' | 'admin',
+    keyOverride?: string,
+  ) => {
+    const isActive = location.pathname === item.href;
+    const activeClass =
+      tone === 'primary'
+        ? 'bg-gradient-to-r from-primary to-primary/80 text-primary-foreground shadow-lg scale-[1.02]'
+        : tone === 'responsavel'
+        ? 'bg-gradient-to-r from-kawaii-mint to-kawaii-blue text-foreground shadow-lg scale-[1.02]'
+        : 'bg-gradient-to-r from-secondary to-secondary/80 text-secondary-foreground shadow-lg scale-[1.02]';
+
+    const link = (
+      <Link
+        key={keyOverride || item.href + item.name}
+        to={item.href}
+        onClick={() => setIsOpen(false)}
+        aria-label={item.name}
+        title={collapsed ? item.name : undefined}
+        className={cn(
+          'flex items-center rounded-2xl text-sm font-semibold transition-all duration-300',
+          collapsed ? 'lg:justify-center lg:gap-0 lg:px-0 lg:py-3 gap-3 px-4 py-3' : 'gap-3 px-4 py-3',
+          isActive ? activeClass : 'text-muted-foreground hover:bg-muted hover:text-foreground hover:scale-[1.01]',
+        )}
+      >
+        <item.icon className="w-5 h-5 shrink-0" />
+        <span className={cn('truncate', collapsed && 'lg:hidden')}>{item.name}</span>
+        {isActive && tone !== 'primary' && (
+          <span className={cn('ml-auto', collapsed && 'lg:hidden')}>
+            {tone === 'responsavel' ? '💕' : '🌸'}
+          </span>
+        )}
+      </Link>
+    );
+
+    if (!collapsed) return link;
+    return (
+      <Tooltip key={keyOverride || item.href + item.name} delayDuration={120}>
+        <TooltipTrigger asChild>{link}</TooltipTrigger>
+        <TooltipContent side="right" className="hidden lg:block">
+          {item.name}
+        </TooltipContent>
+      </Tooltip>
+    );
+  };
+
   return (
     <>
       {/* Mobile header */}
