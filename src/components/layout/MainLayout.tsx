@@ -5,6 +5,8 @@ import { SuporteModal } from '@/components/modals/SuporteModal';
 import { useAuth } from '@/contexts/AuthContext';
 import { HelpCircle } from 'lucide-react';
 import { APP_VERSION } from '@/lib/app-version';
+import { useSidebarCollapsed } from '@/hooks/useSidebarCollapsed';
+import { cn } from '@/lib/utils';
 
 interface MainLayoutProps {
   children: ReactNode;
@@ -13,11 +15,17 @@ interface MainLayoutProps {
 export function MainLayout({ children }: MainLayoutProps) {
   const { mustChangePassword, setMustChangePassword } = useAuth();
   const [suporteOpen, setSuporteOpen] = useState(false);
+  const { collapsed } = useSidebarCollapsed();
 
   return (
     <div className="min-h-screen bg-background">
       <Sidebar />
-      <main className="lg:pl-72 pt-14 lg:pt-0">
+      <main
+        className={cn(
+          'pt-14 lg:pt-0 transition-[padding] duration-300 ease-out',
+          collapsed ? 'lg:pl-20' : 'lg:pl-72',
+        )}
+      >
         <div className="p-3 sm:p-4 lg:p-8">
           {children}
         </div>
