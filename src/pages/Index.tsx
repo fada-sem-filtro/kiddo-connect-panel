@@ -13,6 +13,7 @@ import { useEventos, EventoDb } from '@/hooks/useEventos';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useUserPermissions } from '@/hooks/useUserPermissions';
+import { FinancialAlertsCard } from '@/components/financeiro/FinancialAlertsCard';
 
 const Index = () => {
   const { role } = useAuth();
