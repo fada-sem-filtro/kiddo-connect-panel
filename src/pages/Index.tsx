@@ -105,6 +105,8 @@ const Index = () => {
           </div>
         </div>
 
+        {role === 'responsavel' && <FinancialAlertsCard variant="responsavel" />}
+
         <WeekCalendar 
           selectedDate={selectedDate}
           onDateSelect={setSelectedDate}
