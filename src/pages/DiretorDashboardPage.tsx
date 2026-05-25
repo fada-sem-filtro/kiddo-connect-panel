@@ -11,6 +11,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { usePedagogicalSettings } from '@/hooks/usePedagogicalSettings';
 import { useNavigate } from 'react-router-dom';
+import { FinancialAlertsCard } from '@/components/financeiro/FinancialAlertsCard';
 
 
 interface TurmaComCriancas {
