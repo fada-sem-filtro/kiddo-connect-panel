@@ -148,6 +148,10 @@ export default function DiretorDashboardPage() {
           </p>
         </div>
 
+        <FinancialAlertsCard variant="school" crecheId={userCreche?.id} />
+
+
+
         {/* Main Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <Card className="rounded-2xl border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10">
