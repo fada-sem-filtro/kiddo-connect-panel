@@ -1,5 +1,6 @@
 import { MainLayout } from '@/components/layout/MainLayout';
 import { useAuth } from '@/contexts/AuthContext';
+import { FinancialAlertsCard } from '@/components/financeiro/FinancialAlertsCard';
 import { useUserPermissions } from '@/hooks/useUserPermissions';
 import { usePedagogicalSettings } from '@/hooks/usePedagogicalSettings';
 import { Card, CardContent } from '@/components/ui/card';
@@ -18,7 +19,7 @@ interface ShortcutItem {
 }
 
 const SecretariaDashboardPage = () => {
-  const { profile } = useAuth();
+  const { profile, userCreche } = useAuth();
   const { canView, loading: permLoading } = useUserPermissions();
   const { settings: pedSettings, loading: pedLoading } = usePedagogicalSettings();
   const navigate = useNavigate();
@@ -59,6 +60,8 @@ const SecretariaDashboardPage = () => {
             Bem-vindo(a), {profile?.nome || 'Secretaria'}! Acesse as funcionalidades abaixo.
           </p>
         </div>
+
+        <FinancialAlertsCard variant="school" crecheId={userCreche?.id} />
 
         {isLoading ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">

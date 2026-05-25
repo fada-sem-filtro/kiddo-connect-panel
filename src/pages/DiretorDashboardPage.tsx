@@ -11,6 +11,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { usePedagogicalSettings } from '@/hooks/usePedagogicalSettings';
 import { useNavigate } from 'react-router-dom';
+import { FinancialAlertsCard } from '@/components/financeiro/FinancialAlertsCard';
 
 
 interface TurmaComCriancas {
@@ -146,6 +147,10 @@ export default function DiretorDashboardPage() {
             {format(today, "EEEE, dd 'de' MMMM 'de' yyyy", { locale: ptBR })} • {userCreche?.nome}
           </p>
         </div>
+
+        <FinancialAlertsCard variant="school" crecheId={userCreche?.id} />
+
+
 
         {/* Main Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
