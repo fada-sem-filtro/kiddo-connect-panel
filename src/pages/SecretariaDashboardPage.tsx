@@ -19,7 +19,7 @@ interface ShortcutItem {
 }
 
 const SecretariaDashboardPage = () => {
-  const { profile } = useAuth();
+  const { profile, userCreche } = useAuth();
   const { canView, loading: permLoading } = useUserPermissions();
   const { settings: pedSettings, loading: pedLoading } = usePedagogicalSettings();
   const navigate = useNavigate();
