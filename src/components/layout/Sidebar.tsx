@@ -88,6 +88,7 @@ const ICON_MAP: Record<string, typeof Calendar> = {
 
 export function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
+  const { collapsed, toggle } = useSidebarCollapsed();
   const location = useLocation();
   const navigate = useNavigate();
   const { role, profile, signOut, userCreche, isDiretor } = useAuth();
