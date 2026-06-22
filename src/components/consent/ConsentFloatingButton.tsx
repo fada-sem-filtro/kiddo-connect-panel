@@ -3,17 +3,17 @@ import { useConsent } from "@/lib/consent/ConsentContext";
 
 export function ConsentFloatingButton() {
   const { openPreferences, hasDecided } = useConsent();
-  if (!hasDecided) return null; // banner já está visível
+  if (!hasDecided) return null; // banner ainda visível
 
   return (
     <button
       type="button"
       onClick={openPreferences}
       title="Preferências de Privacidade"
-      className="fixed bottom-5 left-5 z-40 inline-flex items-center gap-2 px-3 py-2 rounded-full text-xs font-medium bg-background/90 backdrop-blur border border-border shadow-md hover:bg-muted transition-colors"
+      aria-label="Preferências de Privacidade"
+      className="fixed bottom-3 left-3 z-40 inline-flex items-center justify-center w-8 h-8 rounded-full bg-background/80 backdrop-blur border border-border shadow-sm hover:bg-muted hover:scale-105 transition-all opacity-60 hover:opacity-100"
     >
-      <ShieldCheck className="w-4 h-4 text-primary" />
-      <span className="hidden sm:inline">Preferências de Privacidade</span>
+      <ShieldCheck className="w-3.5 h-3.5 text-primary" />
     </button>
   );
 }
