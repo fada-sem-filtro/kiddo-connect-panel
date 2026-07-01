@@ -45,7 +45,21 @@ create extension if not exists vault;
 
 ## 2. Aplicar schema consolidado
 
-Cole e execute `supabase/schema/schema.sql` no SQL Editor. Ele cria:
+**Opção A — SQL Editor:** cole e execute `supabase/schema/schema.sql`.
+
+**Opção B — via `psql` local** (mais rápido pra arquivos grandes):
+
+```bash
+# Pegue a connection string em: Project Settings → Database → Connection string
+# Formato: postgresql://postgres:[SUA-SENHA]@db.rjjzkozvicsnjczlsnjr.supabase.co:5432/postgres
+# ⚠️ NUNCA commite a senha. Use variável de ambiente local.
+
+export SUPABASE_DB_URL="postgresql://postgres:SUA_SENHA@db.rjjzkozvicsnjczlsnjr.supabase.co:5432/postgres"
+psql "$SUPABASE_DB_URL" -f supabase/schema/schema.sql
+```
+
+O schema cria:
+
 - 60+ tabelas (`profiles`, `creches`, `criancas`, `turmas`, `eventos`, `recados`, `financial_*`, `saas_*`, `blog_*`, etc.)
 - Enums (`app_role`, tipos de evento, status financeiros, etc.)
 - 25+ funções `SECURITY DEFINER` (has_role, can_access_crianca, is_diretor_of_creche, etc.)
